@@ -33,4 +33,8 @@ return [
         realpath(storage_path('framework/views'))
     ),
 
+    'cache' => env('VIEW_CACHE_ENABLED', false),
+
+    'engine' => 'blade',
+
 ];
