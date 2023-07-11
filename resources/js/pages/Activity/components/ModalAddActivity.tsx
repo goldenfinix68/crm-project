@@ -29,6 +29,7 @@ import {
 } from "@ant-design/icons";
 
 import Title from "antd/es/skeleton/Title";
+
 interface Props {
     isModalOpenAdd: boolean;
     handleOkAdd: () => void;
@@ -158,6 +159,80 @@ const ModalAddActivity = ({
                                 <Select.Option value="busy">Busy</Select.Option>
                                 <Select.Option value="busy">Free</Select.Option>
                             </Select>
+                        </Form.Item>
+                        <Form.Item
+                            label="Internal Note"
+                            name="internal_note"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <Input.TextArea rows={4}></Input.TextArea>
+                        </Form.Item>
+                        <Form.Item
+                            label="Owner"
+                            name="owner"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <Select>
+                                <Select.Option value="Jesse Admin">
+                                    Jesse Admin
+                                </Select.Option>
+                                <Select.Option value="Jesse Ashley">
+                                    Jesse Ashley
+                                </Select.Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item
+                            label="Link Records"
+                            name="link_records"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <Row gutter={12}>
+                                <Col md={12}>
+                                    <Input placeholder="Deal" />
+                                </Col>
+                                <Col md={12}>
+                                    <Input placeholder="Contact" />
+                                </Col>
+                            </Row>
+                        </Form.Item>
+                        <Form.Item
+                            label="Followers"
+                            name="followers"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <Input placeholder="Followers" />
+                        </Form.Item>
+                        <Form.Item
+                            label="Tags"
+                            name="tags"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <Input placeholder="Tags" />
                         </Form.Item>
                     </Form>
                 </Col>
