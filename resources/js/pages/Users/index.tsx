@@ -3,8 +3,18 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { UserAddOutlined } from "@ant-design/icons";
 import UsersTable from "./components/UsersTable";
+import { useQuery } from "react-query";
+import { TUser } from "../../entities";
 
 const Users = () => {
+    const {
+        data: users,
+        isLoading,
+        error,
+    } = useQuery<Array<TUser>>("users", () =>
+        fetch("/api/users").then((response) => response.json())
+    );
+
     return (
         <Card
             title="Users List"
@@ -16,7 +26,7 @@ const Users = () => {
                 </Link>
             }
         >
-            <UsersTable users={[]} />
+            <UsersTable users={users || []} />
         </Card>
     );
 };
