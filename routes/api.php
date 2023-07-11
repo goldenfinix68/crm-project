@@ -24,7 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/telnyx/call/webhook', function(Request $request) {
     \Log::error('INCOMING CALL SUCCESS');
-    \Log::error($request);
+    \Log::info($request);
 });
 Route::get('/telnyx/call/webhook/fail', function(Request $request) {
     \Log::error('INCOMING CALL FAIL');
@@ -34,7 +34,7 @@ Route::get('/telnyx/call/webhook/fail', function(Request $request) {
 Route::get('/telnyx/sms/webhook', function(Request $request) {
     \Log::error('INCOMING SMS SUCCESS');
     $json = json_decode(file_get_contents("php://input"), true);
-    \Log::error($json);
+    \Log::info($json);
 });
 Route::get('/telnyx/sms/webhook/fail', function(Request $request) {
     \Log::error('INCOMING SMS FAIL');
