@@ -3,13 +3,15 @@ import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Welcome from "./pages/Welcome";
 import Home from "./pages/Home";
-import Navigation from "./components/Navigation";
-import Login from "./pages/Login";
+import Login from "./pages/Public/PageLogin/Login";
 import { QueryClientProvider } from "react-query";
 import queryClient from "./queryClient";
-import SideMenu from "./components/SideMenu";
-import Users from "./pages/Users";
 import AddEditUser from "./pages/Users/AddEditUser";
+import SideMenu from "./layout/SideMenu";
+import Users from "./pages/Users";
+
+// css
+import "./assets/css/main/main.css";
 
 const App: React.FC = () => {
     const currentPath = window.location.pathname;
