@@ -4,7 +4,7 @@
     <title>Laravel React App</title>
     
 </head>
-<body>
+<body style="margin: 0">
     <div id="app"></div>
 
     @vite('resources/js/app.tsx')
