@@ -1,6 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+    BrowserRouter as Router,
+    Route,
+    Routes,
+    Navigate,
+} from "react-router-dom";
 import Welcome from "./pages/Welcome";
 import Home from "./pages/Home";
 import Navigation from "./components/Navigation";
@@ -14,13 +19,14 @@ import AddEditUser from "./pages/Users/AddEditUser";
 // css
 import "../sass/dashboard/dashboard.css";
 import PageDashboard from "./pages/PageDashboard/PageDashboard";
+import { useLoggedInUser } from "./api/query/userQuery";
+import PrivateRoute from "./components/PrivateRoute";
 
 const App: React.FC = () => {
-    const currentPath = window.location.pathname;
-    const isLoginPage = currentPath === "/";
+    const isLoginPage = window.location.pathname === "/";
+
     return (
         <Router>
-            {/* <Navigation /> */}
             {isLoginPage ? (
                 <Routes>
                     <Route path="/" element={<Login />} />
@@ -28,14 +34,23 @@ const App: React.FC = () => {
             ) : (
                 <SideMenu>
                     <Routes>
-                        <Route path="/dashboard" element={<PageDashboard />} />
-                        <Route path="/users" element={<Users />} />
-                        <Route path="/users/new" element={<AddEditUser />} />
-                        <Route
-                            path="/users/:userId"
-                            element={<AddEditUser />}
+                        <PrivateRoute
+                            path="/dashboard"
+                            exact
+                            component={PageDashboard}
                         />
-                        <Route path="/home" element={<Home />} />
+                        <PrivateRoute path="/users" component={Users} />
+                        <PrivateRoute
+                            path="/users/new"
+                            exact
+                            component={AddEditUser}
+                        />
+                        <PrivateRoute
+                            path="/users/:userId"
+                            exact
+                            component={AddEditUser}
+                        />
+                        <PrivateRoute path="/home" exact component={Home} />
                     </Routes>
                 </SideMenu>
             )}
