@@ -26,6 +26,10 @@ const App: React.FC = () => {
                     <Routes>
                         <Route path="/users" element={<Users />} />
                         <Route path="/users/new" element={<AddEditUser />} />
+                        <Route
+                            path="/users/:userId"
+                            element={<AddEditUser />}
+                        />
                         <Route path="/home" element={<Home />} />
                     </Routes>
                 </SideMenu>
