@@ -1,12 +1,24 @@
-import React from "react";
-import { Button, Col, Dropdown, Input, Radio, Row, Table, Tooltip } from "antd";
-import type { MenuProps } from "antd";
+import React, { useState } from "react";
+import {
+    Button,
+    Col,
+    Dropdown,
+    Input,
+    Modal,
+    Radio,
+    Row,
+    Space,
+    Table,
+    Tooltip,
+} from "antd";
+import type { MenuProps, Menu } from "antd";
 import type { ColumnsType, TableProps } from "antd/es/table";
 import { TUser } from "../../../entities";
 import type { TableRowSelection } from "antd/es/table/interface";
 import {
     AuditOutlined,
     ContainerOutlined,
+    DownOutlined,
     FilterOutlined,
     GroupOutlined,
     InsertRowBelowOutlined,
@@ -81,7 +93,7 @@ const rowSelection: TableRowSelection<TActivity> = {
     },
 };
 
-const items: MenuProps["items"] = [
+const action_type: MenuProps["items"] = [
     {
         key: "1",
         label: <div>Mass Transfer Activites</div>,
@@ -107,8 +119,31 @@ const items: MenuProps["items"] = [
         label: <div>View Recent Deleted Records</div>,
     },
 ];
+const activities_type: MenuProps["items"] = [
+    {
+        key: "1",
+        label: (
+            <div>
+                <Input.Search></Input.Search>
+            </div>
+        ),
+    },
+];
 
 const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
+    const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
+    const showModalAdd = () => {
+        setIsModalOpenAdd(true);
+    };
+
+    const handleOkAdd = () => {
+        setIsModalOpenAdd(false);
+    };
+
+    const handleCancelAdd = () => {
+        setIsModalOpenAdd(false);
+    };
+
     return (
         <>
             <Row>
@@ -120,10 +155,20 @@ const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
                             marginBottom: 15,
                         }}
                     >
-                        <Button>
-                            <FilterOutlined />
-                            My Open Activities
-                        </Button>
+                        <div>
+                            <Dropdown
+                                menu={{ items: activities_type }}
+                                placement="bottomLeft"
+                                arrow
+                            >
+                                <Button>
+                                    <Space>
+                                        My Open Activities
+                                        <DownOutlined />
+                                    </Space>
+                                </Button>
+                            </Dropdown>
+                        </div>
 
                         <div>
                             <span style={{ marginRight: 10 }}>
@@ -137,11 +182,9 @@ const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
                                 </Radio.Group>
                             </span>
                             <span style={{ marginRight: 10 }}>
-                                <Link to="/activities/new">
-                                    <Button type="primary">
-                                        <PlusCircleOutlined /> &nbsp;Activity
-                                    </Button>
-                                </Link>
+                                <Button type="primary" onClick={showModalAdd}>
+                                    <PlusCircleOutlined /> &nbsp;Activity
+                                </Button>
                             </span>
                             <span style={{ marginRight: 10 }}>
                                 <Tooltip
@@ -155,11 +198,16 @@ const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
                             </span>
                             <span style={{ marginRight: 10 }}>
                                 <Dropdown
-                                    menu={{ items }}
+                                    menu={{ items: action_type }}
                                     placement="bottomLeft"
                                     arrow
                                 >
-                                    <Button>Actions</Button>
+                                    <Button>
+                                        <Space>
+                                            Action
+                                            <DownOutlined />
+                                        </Space>
+                                    </Button>
                                 </Dropdown>
                             </span>
                         </div>
@@ -199,7 +247,9 @@ const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
                         <Radio.Group>
                             <Radio.Button value="Overdue">Overdue</Radio.Button>
                             <Radio.Button value="Today">Today</Radio.Button>
-                            <Radio.Button value="Today">Tomorrow</Radio.Button>
+                            <Radio.Button value="Tomorrow">
+                                Tomorrow
+                            </Radio.Button>
                             <Radio.Button value="This Week">
                                 This Week
                             </Radio.Button>
@@ -215,6 +265,16 @@ const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
                     />
                 </Col>
             </Row>
+            <Modal
+                title="Basic Modal"
+                open={isModalOpenAdd}
+                onOk={handleOkAdd}
+                onCancel={handleCancelAdd}
+            >
+                <p>Some contents...</p>
+                <p>Some contents...</p>
+                <p>Some contents...</p>
+            </Modal>
         </>
     );
 };
