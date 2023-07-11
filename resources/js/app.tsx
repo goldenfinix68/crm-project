@@ -10,6 +10,7 @@ import queryClient from "./queryClient";
 import SideMenu from "./components/SideMenu";
 import Users from "./pages/Users";
 import AddEditUser from "./pages/Users/AddEditUser";
+import Activities from "./pages/Activities/Activities";
 
 const App: React.FC = () => {
     const currentPath = window.location.pathname;
@@ -27,6 +28,7 @@ const App: React.FC = () => {
                         <Route path="/users" element={<Users />} />
                         <Route path="/users/new" element={<AddEditUser />} />
                         <Route path="/home" element={<Home />} />
+                        <Route path="/activities" element={<Activities />} />
                     </Routes>
                 </SideMenu>
             )}
