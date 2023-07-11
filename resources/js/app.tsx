@@ -10,10 +10,11 @@ import queryClient from "./queryClient";
 import SideMenu from "./components/SideMenu";
 import Users from "./pages/Users";
 import AddEditUser from "./pages/Users/AddEditUser";
-import Contacts from "./pages/Activities/Contacts";
+import Contacts from "./pages/PageContacts/Contacts";
 
 // css
 import "../sass/dashboard/dashboard.css";
+import "../sass/contacts/contacts.css";
 import PageDashboard from "./pages/PageDashboard/PageDashboard";
 
 const App: React.FC = () => {
