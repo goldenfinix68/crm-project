@@ -8,6 +8,7 @@ import { DEFAULT_REQUIRED_MESSAGE } from "../../constants";
 import { addUserMutation } from "../../api/mutation/useUserMutation";
 import { TUser } from "../../entities";
 import { useForm } from "antd/es/form/Form";
+import { usefindUser } from "../../api/query/userQuery";
 
 const layout = {
     labelCol: { span: 8 },
@@ -19,15 +20,7 @@ const AddEditUser = () => {
     const { userId } = useParams();
     const [form] = useForm();
 
-    const {
-        data: user,
-        isLoading,
-        error,
-    } = useQuery<TUser>("user", () =>
-        userId
-            ? fetch(`/api/users/${userId}`).then((response) => response.json())
-            : Promise.resolve(null)
-    );
+    const { user, isLoading } = usefindUser(userId ?? "");
 
     const mutation = useMutation(addUserMutation, {
         onSuccess: () => {

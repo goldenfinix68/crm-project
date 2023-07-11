@@ -20,7 +20,6 @@ import AddEditUser from "./pages/Users/AddEditUser";
 import "../sass/dashboard/dashboard.css";
 import PageDashboard from "./pages/PageDashboard/PageDashboard";
 import { useLoggedInUser } from "./api/query/userQuery";
-import PrivateRoute from "./components/PrivateRoute";
 
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
@@ -34,23 +33,14 @@ const App: React.FC = () => {
             ) : (
                 <SideMenu>
                     <Routes>
-                        <PrivateRoute
-                            path="/dashboard"
-                            exact
-                            component={PageDashboard}
-                        />
-                        <PrivateRoute path="/users" component={Users} />
-                        <PrivateRoute
-                            path="/users/new"
-                            exact
-                            component={AddEditUser}
-                        />
-                        <PrivateRoute
+                        <Route path="/dashboard" element={<PageDashboard />} />
+                        <Route path="/users" element={<Users />} />
+                        <Route path="/users/new" element={<AddEditUser />} />
+                        <Route
                             path="/users/:userId"
-                            exact
-                            component={AddEditUser}
+                            element={<AddEditUser />}
                         />
-                        <PrivateRoute path="/home" exact component={Home} />
+                        <Route path="/home" element={<Home />} />
                     </Routes>
                 </SideMenu>
             )}
