@@ -1,8 +1,15 @@
 import React from "react";
-import { Table } from "antd";
+import { Col, Radio, Row, Table, Tooltip } from "antd";
 import type { ColumnsType, TableProps } from "antd/es/table";
 import { TUser } from "../../../entities";
 import type { TableRowSelection } from "antd/es/table/interface";
+import {
+    AuditOutlined,
+    ContainerOutlined,
+    GroupOutlined,
+    MobileOutlined,
+    PhoneOutlined,
+} from "@ant-design/icons";
 interface TActivity {
     key: React.ReactNode;
     start_date: string;
@@ -71,12 +78,44 @@ const rowSelection: TableRowSelection<TActivity> = {
 
 const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
     return (
-        <Table
-            columns={columns}
-            dataSource={activites}
-            onChange={onChange}
-            rowSelection={{ ...rowSelection }}
-        />
+        <>
+            <Row>
+                <Col md={24}>
+                    <Radio.Group style={{ marginBottom: 15 }}>
+                        <Tooltip title="All" placement="bottom">
+                            <Radio.Button value="all">All</Radio.Button>
+                        </Tooltip>
+                        <Tooltip title="Call" placement="bottom">
+                            <Radio.Button value="default">
+                                <PhoneOutlined />
+                            </Radio.Button>
+                        </Tooltip>
+                        <Tooltip title="Task" placement="bottom">
+                            <Radio.Button value="task">
+                                <AuditOutlined />
+                            </Radio.Button>
+                        </Tooltip>
+                        <Tooltip title="Meeting" placement="bottom">
+                            <Radio.Button value="meeting">
+                                <GroupOutlined />
+                            </Radio.Button>
+                        </Tooltip>
+                        <Tooltip title="Demo" placement="bottom">
+                            <Radio.Button value="demo">
+                                <AuditOutlined />
+                            </Radio.Button>
+                        </Tooltip>
+                    </Radio.Group>
+
+                    <Table
+                        columns={columns}
+                        dataSource={activites}
+                        onChange={onChange}
+                        rowSelection={{ ...rowSelection }}
+                    />
+                </Col>
+            </Row>
+        </>
     );
 };
 
