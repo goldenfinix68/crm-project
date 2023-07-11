@@ -1,15 +1,20 @@
 import React from "react";
-import { Col, Radio, Row, Table, Tooltip } from "antd";
+import { Button, Col, Dropdown, Input, Radio, Row, Table, Tooltip } from "antd";
+import type { MenuProps } from "antd";
 import type { ColumnsType, TableProps } from "antd/es/table";
 import { TUser } from "../../../entities";
 import type { TableRowSelection } from "antd/es/table/interface";
 import {
     AuditOutlined,
     ContainerOutlined,
+    FilterOutlined,
     GroupOutlined,
+    InsertRowBelowOutlined,
     MobileOutlined,
     PhoneOutlined,
+    PlusCircleOutlined,
 } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 interface TActivity {
     key: React.ReactNode;
     start_date: string;
@@ -76,11 +81,89 @@ const rowSelection: TableRowSelection<TActivity> = {
     },
 };
 
+const items: MenuProps["items"] = [
+    {
+        key: "1",
+        label: <div>Mass Transfer Activites</div>,
+    },
+    {
+        key: "2",
+        label: <div>Mass Delete Activites</div>,
+    },
+    {
+        key: "3",
+        label: <div>Mass Update Activites</div>,
+    },
+    {
+        key: "4",
+        label: <div>Import From Excel or CSV file</div>,
+    },
+    {
+        key: "5",
+        label: <div>Export Activites</div>,
+    },
+    {
+        key: "6",
+        label: <div>View Recent Deleted Records</div>,
+    },
+];
+
 const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
     return (
         <>
             <Row>
                 <Col md={24}>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginBottom: 15,
+                        }}
+                    >
+                        <Button>
+                            <FilterOutlined />
+                            My Open Activities
+                        </Button>
+
+                        <div>
+                            <span style={{ marginRight: 10 }}>
+                                <Radio.Group>
+                                    <Radio.Button value="Overdue">
+                                        List
+                                    </Radio.Button>
+                                    <Radio.Button value="Today">
+                                        Calendar
+                                    </Radio.Button>
+                                </Radio.Group>
+                            </span>
+                            <span style={{ marginRight: 10 }}>
+                                <Link to="/activities/new">
+                                    <Button type="primary">
+                                        <PlusCircleOutlined /> &nbsp;Activity
+                                    </Button>
+                                </Link>
+                            </span>
+                            <span style={{ marginRight: 10 }}>
+                                <Tooltip
+                                    title="Manage Columns"
+                                    placement="bottom"
+                                >
+                                    <Button>
+                                        <InsertRowBelowOutlined />
+                                    </Button>
+                                </Tooltip>
+                            </span>
+                            <span style={{ marginRight: 10 }}>
+                                <Dropdown
+                                    menu={{ items }}
+                                    placement="bottomLeft"
+                                    arrow
+                                >
+                                    <Button>Actions</Button>
+                                </Dropdown>
+                            </span>
+                        </div>
+                    </div>
                     <div
                         style={{
                             display: "flex",

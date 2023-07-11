@@ -6,16 +6,7 @@ import ActivityTable from "./components/ActivityTable";
 
 const Activity = () => {
     return (
-        <Card
-            title="Activity List"
-            extra={
-                <Link to="/activities/new">
-                    <Button type="primary">
-                        <PlusCircleOutlined /> &nbsp;Activity
-                    </Button>
-                </Link>
-            }
-        >
+        <Card title="Activity List">
             <ActivityTable activites={[]} />
         </Card>
     );
