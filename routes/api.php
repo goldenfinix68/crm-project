@@ -23,7 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/telnyx/call/webhook', function(Request $request) {
-    \Log::error('INCOMING CALL SUCCESS');
+    \Log::info('INCOMING CALL SUCCESS');
     \Log::info($request);
 });
 Route::get('/telnyx/call/webhook/fail', function(Request $request) {
@@ -32,7 +32,7 @@ Route::get('/telnyx/call/webhook/fail', function(Request $request) {
 });
 
 Route::get('/telnyx/sms/webhook', function(Request $request) {
-    \Log::error('INCOMING SMS SUCCESS');
+    \Log::info('INCOMING SMS SUCCESS');
     $json = json_decode(file_get_contents("php://input"), true);
     \Log::info($json);
 });
