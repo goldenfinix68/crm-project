@@ -3,50 +3,48 @@ import { Table } from "antd";
 import type { ColumnsType, TableProps } from "antd/es/table";
 import { TUser } from "../../../entities";
 import type { TableRowSelection } from "antd/es/table/interface";
-interface TContacts {
+interface TActivity {
     key: React.ReactNode;
-    name: string;
-    email: string;
+    start_date: string;
+    duration: string;
     address: string;
-    mobile: number;
-    countylink: string;
-    acres: string;
+    title2: string;
+    name: string;
     tags: string;
-    owner: string;
 }
 
-const columns: ColumnsType<TContacts> = [
+const columns: ColumnsType<TActivity> = [
     {
-        title: "Name",
-        dataIndex: "name",
+        title: "Title",
+        dataIndex: "title",
     },
     {
-        title: "Email",
-        dataIndex: "email",
+        title: "Start Date",
+        dataIndex: "start_date",
     },
     {
-        title: "Mobile",
-        dataIndex: "mobile",
-    },
-    {
-        title: "County Link",
-        dataIndex: "countylink",
-    },
-    {
-        title: "Acres",
-        dataIndex: "",
-    },
-    {
-        title: "Tags",
-        dataIndex: "",
+        title: "Duration",
+        dataIndex: "duration",
     },
     {
         title: "Owner",
         dataIndex: "owner",
     },
+    {
+        title: "Title",
+        dataIndex: "title2",
+    },
+    {
+        title: "Name",
+        dataIndex: "name",
+    },
+    {
+        title: "Tags",
+        dataIndex: "tags",
+    },
 ];
 
-const onChange: TableProps<TContacts>["onChange"] = (
+const onChange: TableProps<TActivity>["onChange"] = (
     pagination,
     filters,
     sorter,
@@ -55,7 +53,7 @@ const onChange: TableProps<TContacts>["onChange"] = (
     console.log("params", pagination, filters, sorter, extra);
 };
 
-const rowSelection: TableRowSelection<TContacts> = {
+const rowSelection: TableRowSelection<TActivity> = {
     onChange: (selectedRowKeys, selectedRows) => {
         console.log(
             `selectedRowKeys: ${selectedRowKeys}`,
@@ -71,15 +69,15 @@ const rowSelection: TableRowSelection<TContacts> = {
     },
 };
 
-const ContactsTable = ({ contacts }: { contacts: Array<TContacts> }) => {
+const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
     return (
         <Table
             columns={columns}
-            dataSource={contacts}
+            dataSource={activites}
             onChange={onChange}
             rowSelection={{ ...rowSelection }}
         />
     );
 };
 
-export default ContactsTable;
+export default ActivityTable;

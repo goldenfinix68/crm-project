@@ -9,7 +9,7 @@ import queryClient from "./queryClient";
 import AddEditUser from "./pages/Users/AddEditUser";
 import SideMenu from "./layout/SideMenu";
 import Users from "./pages/Users";
-import Contacts from "./pages/Contacts";
+import Activity from "./pages/Activity";
 // css
 import "./assets/css/main/main.css";
 
@@ -29,7 +29,7 @@ const App: React.FC = () => {
                         <Route path="/users" element={<Users />} />
                         <Route path="/users/new" element={<AddEditUser />} />
                         <Route path="/home" element={<Home />} />
-                        <Route path="/contacts" element={<Contacts />} />
+                        <Route path="/activities" element={<Activity />} />
                     </Routes>
                 </SideMenu>
             )}
