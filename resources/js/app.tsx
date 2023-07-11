@@ -33,19 +33,61 @@ const App: React.FC = () => {
             ) : (
                 <SideMenu>
                     <Routes>
-                        <Route path="/dashboard" element={<PageDashboard />} />
-                        <Route path="/users" element={<Users />} />
-                        <Route path="/users/new" element={<AddEditUser />} />
+                        <Route
+                            path="/dashboard"
+                            element={
+                                <PrivateRoute>
+                                    <PageDashboard />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/users"
+                            element={
+                                <PrivateRoute>
+                                    <Users />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/users/new"
+                            element={
+                                <PrivateRoute>
+                                    <AddEditUser />
+                                </PrivateRoute>
+                            }
+                        />
                         <Route
                             path="/users/:userId"
-                            element={<AddEditUser />}
+                            element={
+                                <PrivateRoute>
+                                    <AddEditUser />
+                                </PrivateRoute>
+                            }
                         />
-                        <Route path="/home" element={<Home />} />
+                        <Route
+                            path="/home"
+                            element={
+                                <PrivateRoute>
+                                    <Home />
+                                </PrivateRoute>
+                            }
+                        />
                     </Routes>
                 </SideMenu>
             )}
         </Router>
     );
+};
+
+const PrivateRoute = ({ children }) => {
+    const { user, isLoading } = useLoggedInUser();
+
+    if (isLoading) {
+        return <h1>Loading...</h1>;
+    }
+
+    return user ? children : <Navigate to="/" />;
 };
 
 ReactDOM.render(
