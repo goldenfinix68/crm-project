@@ -2,7 +2,7 @@ import { Card, Button, Form, Input, InputNumber } from "antd";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeftOutlined, UserAddOutlined } from "@ant-design/icons";
-import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
+import { DEFAULT_REQUIRED_MESSAGE } from "../../constants";
 
 const layout = {
     labelCol: { span: 8 },

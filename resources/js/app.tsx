@@ -9,20 +9,27 @@ import { QueryClientProvider } from "react-query";
 import queryClient from "./queryClient";
 import SideMenu from "./components/SideMenu";
 import Users from "./pages/Users";
-import AddEditUser from "./pages/Users/components/AddEditUser";
+import AddEditUser from "./pages/Users/AddEditUser";
 
 const App: React.FC = () => {
+    const currentPath = window.location.pathname;
+    const isLoginPage = currentPath === "/";
     return (
         <Router>
             {/* <Navigation /> */}
-            <SideMenu>
+            {isLoginPage ? (
                 <Routes>
                     <Route path="/" element={<Login />} />
-                    <Route path="/users" element={<Users />} />
-                    <Route path="/users/new" element={<AddEditUser />} />
-                    <Route path="/home" element={<Home />} />
                 </Routes>
-            </SideMenu>
+            ) : (
+                <SideMenu>
+                    <Routes>
+                        <Route path="/users" element={<Users />} />
+                        <Route path="/users/new" element={<AddEditUser />} />
+                        <Route path="/home" element={<Home />} />
+                    </Routes>
+                </SideMenu>
+            )}
         </Router>
     );
 };
