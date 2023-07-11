@@ -81,31 +81,48 @@ const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
         <>
             <Row>
                 <Col md={24}>
-                    <Radio.Group style={{ marginBottom: 15 }}>
-                        <Tooltip title="All" placement="bottom">
-                            <Radio.Button value="all">All</Radio.Button>
-                        </Tooltip>
-                        <Tooltip title="Call" placement="bottom">
-                            <Radio.Button value="default">
-                                <PhoneOutlined />
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginBottom: 15,
+                        }}
+                    >
+                        <Radio.Group>
+                            <Tooltip title="All" placement="bottom">
+                                <Radio.Button value="all">All</Radio.Button>
+                            </Tooltip>
+                            <Tooltip title="Call" placement="bottom">
+                                <Radio.Button value="default">
+                                    <PhoneOutlined />
+                                </Radio.Button>
+                            </Tooltip>
+                            <Tooltip title="Task" placement="bottom">
+                                <Radio.Button value="task">
+                                    <AuditOutlined />
+                                </Radio.Button>
+                            </Tooltip>
+                            <Tooltip title="Meeting" placement="bottom">
+                                <Radio.Button value="meeting">
+                                    <GroupOutlined />
+                                </Radio.Button>
+                            </Tooltip>
+                            <Tooltip title="Demo" placement="bottom">
+                                <Radio.Button value="demo">
+                                    <AuditOutlined />
+                                </Radio.Button>
+                            </Tooltip>
+                        </Radio.Group>
+                        <Radio.Group>
+                            <Radio.Button value="Overdue">Overdue</Radio.Button>
+                            <Radio.Button value="Today">Today</Radio.Button>
+                            <Radio.Button value="Today">Tomorrow</Radio.Button>
+                            <Radio.Button value="This Week">
+                                This Week
                             </Radio.Button>
-                        </Tooltip>
-                        <Tooltip title="Task" placement="bottom">
-                            <Radio.Button value="task">
-                                <AuditOutlined />
-                            </Radio.Button>
-                        </Tooltip>
-                        <Tooltip title="Meeting" placement="bottom">
-                            <Radio.Button value="meeting">
-                                <GroupOutlined />
-                            </Radio.Button>
-                        </Tooltip>
-                        <Tooltip title="Demo" placement="bottom">
-                            <Radio.Button value="demo">
-                                <AuditOutlined />
-                            </Radio.Button>
-                        </Tooltip>
-                    </Radio.Group>
+                            <Radio.Button value="Custom">Custom</Radio.Button>
+                        </Radio.Group>
+                    </div>
 
                     <Table
                         columns={columns}
