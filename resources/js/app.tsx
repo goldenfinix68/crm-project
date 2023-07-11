@@ -12,6 +12,10 @@ import Users from "./pages/Users";
 import AddEditUser from "./pages/Users/AddEditUser";
 import Contacts from "./pages/Activities/Contacts";
 
+// css
+import "../sass/dashboard/dashboard.css";
+import PageDashboard from "./pages/PageDashboard/PageDashboard";
+
 const App: React.FC = () => {
     const currentPath = window.location.pathname;
     const isLoginPage = currentPath === "/";
@@ -25,6 +29,7 @@ const App: React.FC = () => {
             ) : (
                 <SideMenu>
                     <Routes>
+                        <Route path="/dashboard" element={<PageDashboard />} />
                         <Route path="/users" element={<Users />} />
                         <Route path="/users/new" element={<AddEditUser />} />
                         <Route path="/home" element={<Home />} />
