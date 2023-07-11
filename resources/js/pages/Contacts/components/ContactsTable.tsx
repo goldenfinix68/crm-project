@@ -8,7 +8,8 @@ interface TContacts {
     name: string;
     email: string;
     address: string;
-    mobile: string;
+    mobile: number;
+    countylink: string;
     acres: string;
     tags: string;
     owner: string;
@@ -29,7 +30,7 @@ const columns: ColumnsType<TContacts> = [
     },
     {
         title: "County Link",
-        dataIndex: "",
+        dataIndex: "countylink",
     },
     {
         title: "Acres",
