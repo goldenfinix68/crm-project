@@ -1,0 +1,172 @@
+import React, { useState } from "react";
+import {
+    Button,
+    Col,
+    Dropdown,
+    Input,
+    Modal,
+    Radio,
+    Row,
+    Space,
+    Table,
+    Tooltip,
+    Typography,
+    Form,
+    Select,
+    DatePicker,
+} from "antd";
+
+import {
+    AuditOutlined,
+    ContainerOutlined,
+    DownOutlined,
+    FilterOutlined,
+    GroupOutlined,
+    InsertRowBelowOutlined,
+    MobileOutlined,
+    PhoneOutlined,
+    PlusCircleOutlined,
+} from "@ant-design/icons";
+
+import Title from "antd/es/skeleton/Title";
+interface Props {
+    isModalOpenAdd: boolean;
+    handleOkAdd: () => void;
+    handleCancelAdd: () => void;
+}
+const ModalAddActivity = ({
+    isModalOpenAdd,
+    handleOkAdd,
+    handleCancelAdd,
+}: Props) => {
+    const onFinish = (values: any) => {
+        console.log("Success:", values);
+    };
+
+    const onFinishFailed = (errorInfo: any) => {
+        console.log("Failed:", errorInfo);
+    };
+    return (
+        <Modal
+            title="Add New Activity"
+            open={isModalOpenAdd}
+            onOk={handleOkAdd}
+            onCancel={handleCancelAdd}
+            width={800}
+        >
+            <Row>
+                <Col md={16}>
+                    <div>
+                        <Input></Input>
+                    </div>
+                    <br></br>
+                    <Form
+                        name="basic"
+                        labelCol={{ span: 6 }}
+                        wrapperCol={{ span: 18 }}
+                        labelAlign="left"
+                        labelWrap
+                        initialValues={{ remember: true }}
+                        onFinish={onFinish}
+                        onFinishFailed={onFinishFailed}
+                        autoComplete="off"
+                    >
+                        <Form.Item
+                            label="Type"
+                            name="type"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <Select>
+                                <Select.Option value="call">Call</Select.Option>
+                                <Select.Option value="task">Task</Select.Option>
+                                <Select.Option value="meeting">
+                                    Meeting
+                                </Select.Option>
+                                <Select.Option value="demo">Demo</Select.Option>
+                            </Select>
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Date & Time"
+                            name="date_time"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <DatePicker.RangePicker
+                                showTime
+                                format="YYYY-MM-DD HH:mm:ss"
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            label="Invitees"
+                            name="invitees"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <Input placeholder="Add Invitees" />
+                        </Form.Item>
+                        <Form.Item
+                            label="Location"
+                            name="location"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <Input placeholder="Add Location" />
+                        </Form.Item>
+                        <Form.Item
+                            label="Video Conferencing"
+                            name="video_conferencing"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <Select>
+                                <Select.Option value="call">Zoom</Select.Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item
+                            label="Availability"
+                            name="availability"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <Select>
+                                <Select.Option value="busy">Busy</Select.Option>
+                                <Select.Option value="busy">Free</Select.Option>
+                            </Select>
+                        </Form.Item>
+                    </Form>
+                </Col>
+                <Col md={8}>
+                    <div></div>
+                </Col>
+            </Row>
+        </Modal>
+    );
+};
+
+export default ModalAddActivity;

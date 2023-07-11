@@ -10,6 +10,7 @@ import {
     Space,
     Table,
     Tooltip,
+    Typography,
 } from "antd";
 import type { MenuProps, Menu } from "antd";
 import type { ColumnsType, TableProps } from "antd/es/table";
@@ -27,6 +28,8 @@ import {
     PlusCircleOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import Title from "antd/es/skeleton/Title";
+import ModalAddActivity from "./ModalAddActivity";
 interface TActivity {
     key: React.ReactNode;
     start_date: string;
@@ -265,16 +268,11 @@ const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
                     />
                 </Col>
             </Row>
-            <Modal
-                title="Basic Modal"
-                open={isModalOpenAdd}
-                onOk={handleOkAdd}
-                onCancel={handleCancelAdd}
-            >
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-            </Modal>
+            <ModalAddActivity
+                isModalOpenAdd={isModalOpenAdd}
+                handleOkAdd={handleOkAdd}
+                handleCancelAdd={handleCancelAdd}
+            />
         </>
     );
 };
