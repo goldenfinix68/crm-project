@@ -6,7 +6,7 @@ import {
     Routes,
     Navigate,
 } from "react-router-dom";
-import Navigation from "./components/Navigation";
+
 import Login from "./pages/Login";
 import { QueryClientProvider } from "react-query";
 import queryClient from "./queryClient";
@@ -20,8 +20,7 @@ config.autoAddCss = false;
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import "../sass/dashboard/dashboard.css";
 import "../sass/helper/helper.css";
-import "../sass/contacts/contacts.css";
-
+import "./assets/css/activity/activity.css";
 // Pages
 import Welcome from "./pages/Welcome";
 import Users from "./pages/Users";
@@ -29,6 +28,8 @@ import Home from "./pages/Home";
 import AddEditUser from "./pages/Users/AddEditUser";
 import PageDashboard from "./pages/PageDashboard/PageDashboard";
 import Contacts from "./pages/PageContacts/Contacts";
+import Activity from "./pages/Activity";
+// css
 
 //
 import { useLoggedInUser } from "./api/query/userQuery";
@@ -86,6 +87,15 @@ const App: React.FC = () => {
                             }
                         />
                         <Route path="/contacts" element={<Contacts />} />
+
+                        <Route
+                            path="/activities"
+                            element={
+                                <PrivateRoute>
+                                    <Activity />
+                                </PrivateRoute>
+                            }
+                        />
                     </Routes>
                 </SideMenu>
             )}

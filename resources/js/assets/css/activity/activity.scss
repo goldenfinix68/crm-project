@@ -1,0 +1,59 @@
+@import "../variables/variables";
+.FullCalendarActivity {
+    .fc-view-harness {
+        height: 100vh !important;
+    }
+    .fc-toolbar-title {
+        font-size: 14px !important;
+    }
+    .fc-icon {
+        font-size: 14px !important;
+    }
+}
+
+.input-title-no-bottom-only {
+    border: none;
+    border-bottom: 1px solid #000;
+    outline: none;
+    border-radius: 0px;
+    font-size: 20px;
+}
+
+.input-title-no-bottom-only:focus {
+    border-color: black;
+    box-shadow: none !important;
+    border-inline-end-width: 0px;
+}
+.input-title-no-bottom-only:hover {
+    border-color: black;
+    box-shadow: none !important;
+    border-inline-end-width: 0px;
+}
+
+.modal-activity .ant-modal-content {
+    padding: 0;
+    .ant-modal-header {
+        padding: 20px 24px;
+        background: rgb(31, 98, 255);
+        .ant-modal-title {
+            color: #fff;
+        }
+    }
+    .ant-modal-body {
+        padding: 20px 24px;
+        padding-top: 10px;
+    }
+    .ant-modal-footer {
+        border-top: 1px solid #f3efef;
+        padding: 20px 24px;
+    }
+    .ant-modal-close-icon {
+        color: #fff !important;
+    }
+}
+
+.activity-group-row {
+    .anticon {
+        vertical-align: 1px !important;
+    }
+}
