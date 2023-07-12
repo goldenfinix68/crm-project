@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+    HomeOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     UploadOutlined,
@@ -29,19 +30,14 @@ const SideMenu = ({ children }) => {
                     style={{ height: "100vh", backgroundColor: "#F4F5F7" }}
                     items={[
                         {
+                            key: "/dashboard",
+                            icon: <HomeOutlined />,
+                            label: "Dashboard",
+                        },
+                        {
                             key: "/users",
                             icon: <UserOutlined />,
-                            label: "nav 1",
-                        },
-                        {
-                            key: "2",
-                            icon: <VideoCameraOutlined />,
-                            label: "nav 2",
-                        },
-                        {
-                            key: "3",
-                            icon: <UploadOutlined />,
-                            label: "nav 3",
+                            label: "Users",
                         },
                         {
                             key: "/contacts",

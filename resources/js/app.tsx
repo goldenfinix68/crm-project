@@ -1,28 +1,42 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Welcome from "./pages/Welcome";
-import Home from "./pages/Home";
+import {
+    BrowserRouter as Router,
+    Route,
+    Routes,
+    Navigate,
+} from "react-router-dom";
 import Navigation from "./components/Navigation";
 import Login from "./pages/Login";
 import { QueryClientProvider } from "react-query";
 import queryClient from "./queryClient";
 import SideMenu from "./components/SideMenu";
-import Users from "./pages/Users";
-import AddEditUser from "./pages/Users/AddEditUser";
-import Contacts from "./pages/PageContacts/Contacts";
+
+// import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+// config.autoAddCss = false;
 
 // css
+import "@fortawesome/fontawesome-svg-core/styles.css";
 import "../sass/dashboard/dashboard.css";
-import "../sass/contacts/contacts.css";
+import "../sass/helper/helper.css";
+
+// Pages
+import Welcome from "./pages/Welcome";
+import Users from "./pages/Users";
+import Home from "./pages/Home";
+import AddEditUser from "./pages/Users/AddEditUser";
 import PageDashboard from "./pages/PageDashboard/PageDashboard";
+import Contacts from "./pages/PageContacts/Contacts";
+
+//
+import { useLoggedInUser } from "./api/query/userQuery";
 
 const App: React.FC = () => {
-    const currentPath = window.location.pathname;
-    const isLoginPage = currentPath === "/";
+    const isLoginPage = window.location.pathname === "/";
+
     return (
         <Router>
-            {/* <Navigation /> */}
             {isLoginPage ? (
                 <Routes>
                     <Route path="/" element={<Login />} />
@@ -30,16 +44,62 @@ const App: React.FC = () => {
             ) : (
                 <SideMenu>
                     <Routes>
-                        <Route path="/dashboard" element={<PageDashboard />} />
-                        <Route path="/users" element={<Users />} />
-                        <Route path="/users/new" element={<AddEditUser />} />
-                        <Route path="/home" element={<Home />} />
+                        <Route
+                            path="/dashboard"
+                            element={
+                                <PrivateRoute>
+                                    <PageDashboard />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/users"
+                            element={
+                                <PrivateRoute>
+                                    <Users />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/users/new"
+                            element={
+                                <PrivateRoute>
+                                    <AddEditUser />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/users/:userId"
+                            element={
+                                <PrivateRoute>
+                                    <AddEditUser />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/home"
+                            element={
+                                <PrivateRoute>
+                                    <Home />
+                                </PrivateRoute>
+                            }
+                        />
                         <Route path="/contacts" element={<Contacts />} />
                     </Routes>
                 </SideMenu>
             )}
         </Router>
     );
+};
+
+const PrivateRoute = ({ children }) => {
+    const { user, isLoading } = useLoggedInUser();
+
+    if (isLoading) {
+        return <h1>Loading...</h1>;
+    }
+
+    return user ? children : <Navigate to="/" />;
 };
 
 ReactDOM.render(
