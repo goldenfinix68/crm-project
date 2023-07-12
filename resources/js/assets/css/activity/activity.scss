@@ -10,3 +10,22 @@
         font-size: 14px !important;
     }
 }
+
+.input-title-no-bottom-only {
+    border: none;
+    border-bottom: 1px solid #000;
+    outline: none;
+    border-radius: 0px;
+    font-size: 20px;
+}
+
+.input-title-no-bottom-only:focus {
+    border-color: black;
+    box-shadow: none !important;
+    border-inline-end-width: 0px;
+}
+.input-title-no-bottom-only:hover {
+    border-color: black;
+    box-shadow: none !important;
+    border-inline-end-width: 0px;
+}

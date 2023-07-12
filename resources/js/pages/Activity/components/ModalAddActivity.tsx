@@ -62,7 +62,10 @@ const ModalAddActivity = ({
             <Row gutter={12}>
                 <Col md={16}>
                     <div>
-                        <Input></Input>
+                        <Input
+                            placeholder="Write activity title"
+                            className="input-title-no-bottom-only"
+                        ></Input>
                     </div>
                     <br></br>
                     <Form
