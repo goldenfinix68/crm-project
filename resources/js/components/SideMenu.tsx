@@ -6,6 +6,7 @@ import {
     UploadOutlined,
     UserOutlined,
     VideoCameraOutlined,
+    CheckCircleOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Button, theme } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -38,16 +39,11 @@ const SideMenu = ({ children }) => {
                             icon: <UserOutlined />,
                             label: "Users",
                         },
-                        // {
-                        //     key: "2",
-                        //     icon: <VideoCameraOutlined />,
-                        //     label: "nav 2",
-                        // },
-                        // {
-                        //     key: "3",
-                        //     icon: <UploadOutlined />,
-                        //     label: "nav 3",
-                        // },
+                        {
+                            key: "/contacts",
+                            icon: <CheckCircleOutlined />,
+                            label: "Contacts",
+                        },
                     ]}
                     onClick={(e) => {
                         navigate(e.key);

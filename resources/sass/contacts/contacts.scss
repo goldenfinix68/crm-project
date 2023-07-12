@@ -1,0 +1,22 @@
+// Fonts
+@import url("https://fonts.googleapis.com/css?family=Nunito");
+
+// Variables
+@import "../variables/variables.scss";
+
+// Bootstrap
+@import "~bootstrap/scss/bootstrap";
+.dropdown-select {
+    // .ant-select-dropdown {
+    width: 220px !important; /* Adjust the width value as needed */
+    // }
+}
+// .dropdownMenu {
+//     .ant-dropdown-menu {
+//         box-shadow: none !important;
+//         background-color: none !important;
+//     }
+// }
+.anticon {
+    vertical-align: 1px !important;
+}
