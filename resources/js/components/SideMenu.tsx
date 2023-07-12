@@ -7,6 +7,7 @@ import {
     UserOutlined,
     VideoCameraOutlined,
     CheckCircleOutlined,
+    PhoneOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Button, theme } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -41,8 +42,13 @@ const SideMenu = ({ children }) => {
                         },
                         {
                             key: "/contacts",
-                            icon: <CheckCircleOutlined />,
+                            icon: <PhoneOutlined />,
                             label: "Contacts",
+                        },
+                        {
+                            key: "/activities",
+                            icon: <CheckCircleOutlined />,
+                            label: "Activities",
                         },
                     ]}
                     onClick={(e) => {
