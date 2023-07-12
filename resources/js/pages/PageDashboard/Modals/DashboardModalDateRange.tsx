@@ -1,14 +1,24 @@
 import React from "react";
-import { DatePicker, Form, Modal, Select, Typography } from "antd";
+import {
+    Button,
+    DatePicker,
+    Form,
+    Modal,
+    Select,
+    Space,
+    Typography,
+} from "antd";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendar } from "@fortawesome/free-regular-svg-icons";
 
 interface MyComponentProps {
-    modateDateRange: boolean;
-    setModateDateRange: boolean;
+    modalteDateRange: boolean;
+    setModalteDateRange: boolean;
 }
 
 export default function DashboardModalDateRange({
-    modateDateRange,
-    setModateDateRange,
+    modalteDateRange,
+    setModalteDateRange,
 }) {
     const [form] = Form.useForm();
 
@@ -111,25 +121,77 @@ export default function DashboardModalDateRange({
         },
     ];
 
+    const frequency = [
+        {
+            label: "Daily",
+            value: "Daily",
+        },
+        {
+            label: "Weekly",
+            value: "Weekly",
+        },
+        {
+            label: "Monthly",
+            value: "Monthly",
+        },
+        {
+            label: "Quarterly",
+            value: "Quarterly",
+        },
+        {
+            label: "Yearly",
+            value: "Yearly",
+        },
+    ];
+
     return (
         <>
             <Modal
                 title="FILTER BY DATE RANGE"
-                open={modateDateRange}
+                open={modalteDateRange}
                 onCancel={() => {
-                    setModateDateRange(false);
+                    setModalteDateRange(false);
                 }}
                 width={400}
+                footer={[
+                    <Space key={"modal-btns"}>
+                        <Button type="primary">Apply</Button>
+                        <Button onClick={() => setModalteDateRange(false)}>
+                            Cancel
+                        </Button>
+                    </Space>,
+                ]}
             >
                 <Typography.Text>
                     Filter set here will override filters set on individual
                     widgets
                 </Typography.Text>
 
-                <Form form={form}>
-                    <Form.Item name={"date"}>
+                <Form form={form} layout="vertical" className="m-t-md">
+                    <Form.Item name={"date"} label="Date Range">
+                        <Select
+                            className="w-100"
+                            suffixIcon={<FontAwesomeIcon icon={faCalendar} />}
+                        >
+                            {dateRange.map((item, key) => {
+                                return (
+                                    <Select.Option key={key} label={item.value}>
+                                        {item.value}
+                                    </Select.Option>
+                                );
+                            })}
+                        </Select>
+                    </Form.Item>
+
+                    <Form.Item name={"frequency"} label="Frequency">
                         <Select className="w-100">
-                            {/* {dateRange.map} */}
+                            {frequency.map((item, key) => {
+                                return (
+                                    <Select.Option key={key} label={item.value}>
+                                        {item.value}
+                                    </Select.Option>
+                                );
+                            })}
                         </Select>
                     </Form.Item>
                 </Form>

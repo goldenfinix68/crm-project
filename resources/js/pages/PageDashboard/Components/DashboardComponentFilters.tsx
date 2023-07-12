@@ -4,13 +4,21 @@ import { Button, Col, Dropdown, Row, Space } from "antd";
 import { faFilter, faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DashboardModalDateRange from "../Modals/DashboardModalDateRange";
+import DashboardModalUsers from "../Modals/DashboardModalUsers";
+import DashboardModalDeal from "../Modals/DashboardModalDeal";
 
 export default function DashboardComponentFilters() {
-    const [modateDateRange, setModateDateRange] = useState(false);
+    const [modalteDateRange, setModalteDateRange] = useState(false);
+    const [modalteUser, setModalteUser] = useState(false);
+    const [modalteDeal, setModalteDeal] = useState(false);
 
     const handleClick = (val: string) => {
         if (val === "date") {
-            setModateDateRange(true);
+            setModalteDateRange(true);
+        } else if (val === "user") {
+            setModalteUser(true);
+        } else if (val === "deal") {
+            setModalteDeal(true);
         }
     };
     return (
@@ -18,7 +26,11 @@ export default function DashboardComponentFilters() {
             <Row gutter={24} className="m-t-md">
                 <Col xs={24} sm={24} md={24}>
                     <Space wrap>
-                        <Button type="link" className="black" size="small">
+                        <Button
+                            type="link"
+                            className="black p-l-none"
+                            size="small"
+                        >
                             <FontAwesomeIcon
                                 icon={faFilter}
                                 className="m-r-xs"
@@ -55,8 +67,18 @@ export default function DashboardComponentFilters() {
             </Row>
 
             <DashboardModalDateRange
-                modateDateRange={modateDateRange}
-                setModateDateRange={setModateDateRange}
+                modalteDateRange={modalteDateRange}
+                setModalteDateRange={setModalteDateRange}
+            />
+
+            <DashboardModalUsers
+                modalteUser={modalteUser}
+                setModalteUser={setModalteUser}
+            />
+
+            <DashboardModalDeal
+                modalteDeal={modalteDeal}
+                setModalteDeal={setModalteDeal}
             />
         </>
     );

@@ -59,7 +59,7 @@ export default function DashboardComponentButtons() {
         <>
             <Row gutter={24}>
                 <Col xs={12} sm={12} md={12}>
-                    <Button type="link" className="dashboard-filter">
+                    <Button type="link" className="dashboard-filter p-l-none">
                         Default Dashbaord <CaretDownFilled />
                     </Button>
                 </Col>

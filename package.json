@@ -30,6 +30,7 @@
     },
     "dependencies": {
         "@ant-design/icons": "^5.1.4",
+        "@dnd-kit/core": "^6.0.8",
         "@emotion/react": "^11.11.1",
         "@emotion/styled": "^11.11.0",
         "@fortawesome/fontawesome-svg-core": "^6.4.0",
