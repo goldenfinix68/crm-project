@@ -19,6 +19,7 @@ import {
     Typography,
     Menu,
     Dropdown,
+    Input,
 } from "antd";
 import {
     MenuFoldOutlined,
@@ -155,14 +156,36 @@ const handleTabChange = (key) => {
     // Handle tab change event
     console.log("Selected tab:", key);
 };
+const { Search } = Input;
+const onSearch = (value: string) => console.log(value);
 const menu = (
     <Card>
+        <Search
+            placeholder="input search text"
+            allowClear
+            onSearch={onSearch}
+            style={{ width: 200 }}
+        />
         <Tabs defaultActiveKey="tab1" onChange={handleTabChange}>
             <TabPane tab="FAVORITES" key="tab1">
                 Content of Tab 1
             </TabPane>
             <TabPane tab="ALL VIEWS" key="tab2">
-                Content of Tab 2
+                <Menu
+                    style={{
+                        backgroundColor: "none",
+                        boxShadow: "none",
+                    }}
+                    mode="inline"
+                    defaultSelectedKeys={["1"]}
+                    defaultOpenKeys={["sub1"]}
+                >
+                    <Menu.Item key="1">All Contacts</Menu.Item>
+                    <Menu.Item key="2">My Contacts</Menu.Item>
+                    <Menu.Item key="3">New last week</Menu.Item>
+                    <Menu.Item key="4">New this week</Menu.Item>
+                    <Menu.Item key="5">Recently modified Contacts</Menu.Item>
+                </Menu>
             </TabPane>
         </Tabs>
     </Card>
