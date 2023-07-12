@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
     Button,
+    Card,
     Col,
     Dropdown,
     Input,
@@ -9,10 +10,11 @@ import {
     Row,
     Space,
     Table,
+    Tabs,
     Tooltip,
     Typography,
 } from "antd";
-import type { MenuProps, Menu } from "antd";
+import { MenuProps, Menu } from "antd";
 import type { ColumnsType, TableProps } from "antd/es/table";
 import { TUser } from "../../../entities";
 import type { TableRowSelection } from "antd/es/table/interface";
@@ -30,20 +32,25 @@ import {
 import { Link } from "react-router-dom";
 import Title from "antd/es/skeleton/Title";
 import ModalAddActivity from "./ModalAddActivity";
+import Search from "antd/es/input/Search";
+
 interface TActivity {
-    key: React.ReactNode;
+    key: React.Key;
+    title: string;
     start_date: string;
     duration: string;
-    address: string;
+    owner: string;
     title2: string;
     name: string;
-    tags: string;
+    tags: any;
 }
 
 const columns: ColumnsType<TActivity> = [
     {
         title: "Title",
         dataIndex: "title",
+        fixed: "left",
+        width: 300,
     },
     {
         title: "Start Date",
@@ -122,16 +129,42 @@ const action_type: MenuProps["items"] = [
         label: <div>View Recent Deleted Records</div>,
     },
 ];
-const activities_type: MenuProps["items"] = [
-    {
-        key: "1",
-        label: (
-            <div>
-                <Input.Search></Input.Search>
-            </div>
-        ),
-    },
-];
+
+const activities_type = (
+    <Card>
+        <Search
+            placeholder="input search text"
+            allowClear
+            // onSearch={onSearch}
+            style={{ width: 200 }}
+        />
+        <Tabs
+            defaultActiveKey="tab1"
+            // onChange={handleTabChange}
+        >
+            <Tabs.TabPane tab="FAVORITES" key="tab1">
+                You have no favorties
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="ALL VIEWS" key="tab2">
+                <Menu
+                    style={{
+                        backgroundColor: "none",
+                        boxShadow: "none",
+                    }}
+                    mode="inline"
+                    defaultSelectedKeys={["1"]}
+                    defaultOpenKeys={["sub1"]}
+                >
+                    <Menu.Item key="1">Activites I am following</Menu.Item>
+                    <Menu.Item key="2">All Closed Activities</Menu.Item>
+                    <Menu.Item key="3">All Open Activities</Menu.Item>
+                    <Menu.Item key="4">My Open Activities</Menu.Item>
+                    <Menu.Item key="5">My Overdue Activites</Menu.Item>
+                </Menu>
+            </Tabs.TabPane>
+        </Tabs>
+    </Card>
+);
 
 const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
@@ -160,9 +193,8 @@ const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
                     >
                         <div>
                             <Dropdown
-                                menu={{ items: activities_type }}
+                                overlay={activities_type}
                                 placement="bottomLeft"
-                                arrow
                             >
                                 <Button>
                                     <Space>
@@ -203,7 +235,6 @@ const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
                                 <Dropdown
                                     menu={{ items: action_type }}
                                     placement="bottomLeft"
-                                    arrow
                                 >
                                     <Button>
                                         <Space>
@@ -265,6 +296,7 @@ const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
                         dataSource={activites}
                         onChange={onChange}
                         rowSelection={{ ...rowSelection }}
+                        scroll={{ x: 1300 }}
                     />
                 </Col>
             </Row>
