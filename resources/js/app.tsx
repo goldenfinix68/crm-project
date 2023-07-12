@@ -12,7 +12,12 @@ import { QueryClientProvider } from "react-query";
 import queryClient from "./queryClient";
 import SideMenu from "./components/SideMenu";
 
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+config.autoAddCss = false;
+
 // css
+import "@fortawesome/fontawesome-svg-core/styles.css";
 import "../sass/dashboard/dashboard.css";
 import "../sass/helper/helper.css";
 
