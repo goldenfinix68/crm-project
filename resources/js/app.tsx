@@ -6,19 +6,24 @@ import {
     Routes,
     Navigate,
 } from "react-router-dom";
-import Welcome from "./pages/Welcome";
-import Home from "./pages/Home";
 import Navigation from "./components/Navigation";
 import Login from "./pages/Login";
 import { QueryClientProvider } from "react-query";
 import queryClient from "./queryClient";
 import SideMenu from "./components/SideMenu";
-import Users from "./pages/Users";
-import AddEditUser from "./pages/Users/AddEditUser";
 
 // css
 import "../sass/dashboard/dashboard.css";
+import "../sass/helper/helper.css";
+
+// Pages
+import Welcome from "./pages/Welcome";
+import Users from "./pages/Users";
+import Home from "./pages/Home";
+import AddEditUser from "./pages/Users/AddEditUser";
 import PageDashboard from "./pages/PageDashboard/PageDashboard";
+
+//
 import { useLoggedInUser } from "./api/query/userQuery";
 
 const App: React.FC = () => {
