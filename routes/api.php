@@ -43,3 +43,24 @@ Route::post('/telnyx/sms/webhook/fail', function(Request $request) {
     $json = json_decode(file_get_contents("php://input"), true);
     \Log::error($json);
 });
+Route::get('/telnyx/call/webhook', function(Request $request) {
+    \Log::info('INCOMING CALL SUCCESS');
+    $json = json_decode(file_get_contents("php://input"), true);
+    \Log::info($json);
+});
+Route::get('/telnyx/call/webhook/fail', function(Request $request) {
+    \Log::error('INCOMING CALL FAIL');
+    $json = json_decode(file_get_contents("php://input"), true);
+    \Log::info($json);
+});
+
+Route::get('/telnyx/sms/webhook', function(Request $request) {
+    \Log::info('INCOMING SMS SUCCESS');
+    $json = json_decode(file_get_contents("php://input"), true);
+    \Log::info($json);
+});
+Route::get('/telnyx/sms/webhook/fail', function(Request $request) {
+    \Log::error('INCOMING SMS FAIL');
+    $json = json_decode(file_get_contents("php://input"), true);
+    \Log::error($json);
+});
