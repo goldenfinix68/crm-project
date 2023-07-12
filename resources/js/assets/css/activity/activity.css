@@ -1,11 +1,9 @@
 .FullCalendarActivity .fc-view-harness {
   height: 100vh !important;
 }
-
 .FullCalendarActivity .fc-toolbar-title {
   font-size: 14px !important;
 }
-
 .FullCalendarActivity .fc-icon {
   font-size: 14px !important;
 }
@@ -20,46 +18,38 @@
 
 .input-title-no-bottom-only:focus {
   border-color: black;
-  -webkit-box-shadow: none !important;
-          box-shadow: none !important;
+  box-shadow: none !important;
   border-inline-end-width: 0px;
 }
 
 .input-title-no-bottom-only:hover {
   border-color: black;
-  -webkit-box-shadow: none !important;
-          box-shadow: none !important;
+  box-shadow: none !important;
   border-inline-end-width: 0px;
 }
 
 .modal-activity .ant-modal-content {
   padding: 0;
 }
-
 .modal-activity .ant-modal-content .ant-modal-header {
   padding: 20px 24px;
-  background: #1f62ff;
+  background: rgb(31, 98, 255);
 }
-
 .modal-activity .ant-modal-content .ant-modal-header .ant-modal-title {
   color: #fff;
 }
-
 .modal-activity .ant-modal-content .ant-modal-body {
   padding: 20px 24px;
   padding-top: 10px;
 }
-
 .modal-activity .ant-modal-content .ant-modal-footer {
   border-top: 1px solid #f3efef;
   padding: 20px 24px;
 }
-
 .modal-activity .ant-modal-content .ant-modal-close-icon {
   color: #fff !important;
 }
 
 .activity-group-row .anticon {
   vertical-align: 1px !important;
-}
-/*# sourceMappingURL=activity.css.map */
+}/*# sourceMappingURL=activity.css.map */
