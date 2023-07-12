@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
     Button,
     Col,
@@ -29,7 +29,9 @@ import {
 } from "@ant-design/icons";
 
 import Title from "antd/es/skeleton/Title";
-
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
 interface Props {
     isModalOpenAdd: boolean;
     handleOkAdd: () => void;
@@ -47,15 +49,17 @@ const ModalAddActivity = ({
     const onFinishFailed = (errorInfo: any) => {
         console.log("Failed:", errorInfo);
     };
+
+    const calendar = useRef();
     return (
         <Modal
             title="Add New Activity"
             open={isModalOpenAdd}
             onOk={handleOkAdd}
             onCancel={handleCancelAdd}
-            width={800}
+            width={850}
         >
-            <Row>
+            <Row gutter={12}>
                 <Col md={16}>
                     <div>
                         <Input></Input>
@@ -237,7 +241,20 @@ const ModalAddActivity = ({
                     </Form>
                 </Col>
                 <Col md={8}>
-                    <div></div>
+                    <div className={"FullCalendarActivity"}>
+                        <FullCalendar
+                            plugins={[dayGridPlugin, timeGridPlugin]}
+                            initialView="timeGridDay"
+                            headerToolbar={{
+                                left: "prev",
+                                center: "title",
+                                right: "next",
+                            }}
+                            weekends={false}
+                            events={[]}
+                            eventContent={<></>}
+                        />
+                    </div>
                 </Col>
             </Row>
         </Modal>
