@@ -1,8 +1,14 @@
 import { Card, Button, Form, Input, InputNumber } from "antd";
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useMutation, useQuery } from "react-query";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeftOutlined, UserAddOutlined } from "@ant-design/icons";
+
 import { DEFAULT_REQUIRED_MESSAGE } from "../../constants";
+import { addUserMutation } from "../../api/mutation/useUserMutation";
+import { TUser } from "../../entities";
+import { useForm } from "antd/es/form/Form";
+import { usefindUser } from "../../api/query/userQuery";
 
 const layout = {
     labelCol: { span: 8 },
@@ -11,12 +17,36 @@ const layout = {
 
 const AddEditUser = () => {
     const navigate = useNavigate();
-    const onFinish = (values: any) => {
-        console.log(values);
+    const { userId } = useParams();
+    const [form] = useForm();
+
+    const { user, isLoading } = usefindUser(userId ?? "");
+
+    const mutation = useMutation(addUserMutation, {
+        onSuccess: () => {
+            navigate("/users"); // Redirect to the users list page after successful submission
+        },
+    });
+
+    const onFinish = (values: TUser) => {
+        mutation.mutate(values);
     };
+
+    React.useEffect(() => {
+        if (user) {
+            form.setFieldsValue(user);
+        } else {
+            form.resetFields();
+        }
+    }, [user]);
+
+    if (isLoading) {
+        return <h1>Loading...</h1>;
+    }
+
     return (
         <Card
-            title="Add user"
+            title={`${user ? "Edit" : "Add"} user`}
             extra={
                 <Link to="/users">
                     <Button type="link">
@@ -27,12 +57,16 @@ const AddEditUser = () => {
         >
             <Form
                 name="basic"
+                form={form}
                 {...layout}
                 style={{ maxWidth: 600 }}
-                initialValues={{ remember: true }}
                 onFinish={onFinish}
                 autoComplete="off"
+                // initialValues={userId ? user : []}
             >
+                <Form.Item name="id" style={{ display: "none" }}>
+                    <Input />
+                </Form.Item>
                 <Form.Item
                     label="First Name"
                     name="firstName"
@@ -84,7 +118,11 @@ const AddEditUser = () => {
                 </Form.Item>
 
                 <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                    <Button type="primary" htmlType="submit">
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        loading={mutation.isLoading}
+                    >
                         Submit
                     </Button>
                 </Form.Item>

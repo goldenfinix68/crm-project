@@ -1,0 +1,33 @@
+// Fonts
+@import url("https://fonts.googleapis.com/css?family=Nunito");
+
+// Variables
+@import "../variables/variables.scss";
+
+// Bootstrap
+@import "~bootstrap/scss/bootstrap";
+
+.dashboard-filter {
+    font-size: 20px;
+    color: black;
+
+    .anticon-caret-down {
+        svg {
+            font-size: 14px;
+            margin-top: -6px;
+        }
+    }
+}
+
+.dashboard-actions {
+    .anticon-caret-down {
+        svg {
+            font-size: 14px;
+            margin-top: -6px;
+        }
+    }
+}
+
+.dashboard-right-buttons {
+    text-align: right;
+}
