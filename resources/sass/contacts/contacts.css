@@ -12034,4 +12034,8 @@ textarea.form-control-lg {
 }
 .dropdown-select {
   width: 220px !important; /* Adjust the width value as needed */
+}
+
+.anticon {
+  vertical-align: 1px !important;
 }/*# sourceMappingURL=contacts.css.map */
