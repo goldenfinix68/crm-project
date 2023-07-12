@@ -15,8 +15,8 @@ class UserSeeder extends Seeder
     {
         $userData = [
             [
-                'first_name' => 'John',
-                'last_name' => 'Doe',
+                'firstName' => 'John',
+                'lastName' => 'Doe',
                 'username' => 'admin',
                 'email' => 'admin@test.com',
                 'password' => 'Admin123!',
@@ -30,8 +30,8 @@ class UserSeeder extends Seeder
         foreach ($userData as $key => $row) {
             $user = \App\Models\User::create(
                 [
-                    'first_name' => $row['first_name'],
-                    'last_name' => $row['last_name'],
+                    'firstName' => $row['firstName'],
+                    'lastName' => $row['lastName'],
                     'email' => $row['email'],
                     'password' => bcrypt($row['password']),
                     // 'username' => $row['username'],
