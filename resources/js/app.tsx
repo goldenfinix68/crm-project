@@ -6,7 +6,7 @@ import {
     Routes,
     Navigate,
 } from "react-router-dom";
-import Navigation from "./components/Navigation";
+
 import Login from "./pages/Login";
 import { QueryClientProvider } from "react-query";
 import queryClient from "./queryClient";
