@@ -29,3 +29,25 @@
     box-shadow: none !important;
     border-inline-end-width: 0px;
 }
+
+.modal-activity .ant-modal-content {
+    padding: 0;
+    .ant-modal-header {
+        padding: 20px 24px;
+        background: rgb(31, 98, 255);
+        .ant-modal-title {
+            color: #fff;
+        }
+    }
+    .ant-modal-body {
+        padding: 20px 24px;
+        padding-top: 10px;
+    }
+    .ant-model-footer {
+        border-top: 1px solid #f3efef;
+        padding: 20px 24px;
+    }
+    .ant-modal-close-icon {
+        color: #fff !important;
+    }
+}

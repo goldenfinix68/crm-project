@@ -53,6 +53,7 @@ const ModalAddActivity = ({
     const calendar = useRef();
     return (
         <Modal
+            className="modal-activity"
             title="Add New Activity"
             open={isModalOpenAdd}
             onOk={handleOkAdd}
