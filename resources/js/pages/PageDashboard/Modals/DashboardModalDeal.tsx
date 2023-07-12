@@ -8,18 +8,20 @@ import {
     Space,
     Typography,
 } from "antd";
+import type, { SelectProps } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar } from "@fortawesome/free-regular-svg-icons";
 
 interface MyComponentProps {
     modalteDeal: boolean;
-    setModalteDeal: boolean;
+    setModalteDeal: any;
 }
 
-export default function DashboardModalDeal({ modalteDeal, setModalteDeal }) {
+const DashboardModalDeal: React.FC<MyComponentProps> = (props) => {
+    const { modalteDeal, setModalteDeal } = props;
     const [form] = Form.useForm();
 
-    const users = [
+    const users: SelectProps["options"] = [
         {
             label: "Sales",
             value: "Sales",
@@ -65,4 +67,6 @@ export default function DashboardModalDeal({ modalteDeal, setModalteDeal }) {
             </Modal>
         </>
     );
-}
+};
+
+export default DashboardModalDeal;

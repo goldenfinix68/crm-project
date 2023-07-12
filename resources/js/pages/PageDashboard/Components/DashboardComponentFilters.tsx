@@ -7,7 +7,7 @@ import DashboardModalDateRange from "../Modals/DashboardModalDateRange";
 import DashboardModalUsers from "../Modals/DashboardModalUsers";
 import DashboardModalDeal from "../Modals/DashboardModalDeal";
 
-export default function DashboardComponentFilters() {
+const DashboardComponentFilters: React.FC = () => {
     const [modalteDateRange, setModalteDateRange] = useState(false);
     const [modalteUser, setModalteUser] = useState(false);
     const [modalteDeal, setModalteDeal] = useState(false);
@@ -21,6 +21,7 @@ export default function DashboardComponentFilters() {
             setModalteDeal(true);
         }
     };
+
     return (
         <>
             <Row gutter={24} className="m-t-md">
@@ -82,4 +83,6 @@ export default function DashboardComponentFilters() {
             />
         </>
     );
-}
+};
+
+export default DashboardComponentFilters;

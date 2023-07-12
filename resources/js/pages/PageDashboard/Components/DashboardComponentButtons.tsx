@@ -1,60 +1,61 @@
 import { CaretDownFilled } from "@ant-design/icons";
+import type { MenuProps } from "antd";
 import { Button, Col, Dropdown, Row, Space } from "antd";
 import React from "react";
 
-export default function DashboardComponentButtons() {
-    const items = [
-        {
-            key: "1",
-            label: (
-                <a rel="noopener noreferrer" href="#">
-                    Clone Dashboard
-                </a>
-            ),
-        },
-        {
-            key: "2",
-            label: (
-                <a rel="noopener noreferrer" href="#">
-                    Edit Dashboard
-                </a>
-            ),
-        },
-        {
-            key: "3",
-            label: (
-                <a rel="noopener noreferrer" href="#">
-                    Delete Dashboard
-                </a>
-            ),
-            disabled: true,
-        },
-        {
-            key: "4",
-            label: (
-                <a rel="noopener noreferrer" href="#">
-                    Email this Dashboard
-                </a>
-            ),
-        },
-        {
-            key: "5",
-            label: (
-                <a rel="noopener noreferrer" href="#">
-                    Manage your recurring emails
-                </a>
-            ),
-        },
-        {
-            key: "6",
-            label: (
-                <a rel="noopener noreferrer" href="#">
-                    Manage Dashboards
-                </a>
-            ),
-        },
-    ];
+const items: MenuProps["items"] = [
+    {
+        key: "1",
+        label: (
+            <a rel="noopener noreferrer" href="#">
+                Clone Dashboard
+            </a>
+        ),
+    },
+    {
+        key: "2",
+        label: (
+            <a rel="noopener noreferrer" href="#">
+                Edit Dashboard
+            </a>
+        ),
+    },
+    {
+        key: "3",
+        label: (
+            <a rel="noopener noreferrer" href="#">
+                Delete Dashboard
+            </a>
+        ),
+        disabled: true,
+    },
+    {
+        key: "4",
+        label: (
+            <a rel="noopener noreferrer" href="#">
+                Email this Dashboard
+            </a>
+        ),
+    },
+    {
+        key: "5",
+        label: (
+            <a rel="noopener noreferrer" href="#">
+                Manage your recurring emails
+            </a>
+        ),
+    },
+    {
+        key: "6",
+        label: (
+            <a rel="noopener noreferrer" href="#">
+                Manage Dashboards
+            </a>
+        ),
+    },
+];
 
+const DashboardComponentButtons: React.FC = () => {
     return (
         <>
             <Row gutter={24}>
@@ -86,4 +87,6 @@ export default function DashboardComponentButtons() {
             </Row>
         </>
     );
-}
+};
+
+export default DashboardComponentButtons;

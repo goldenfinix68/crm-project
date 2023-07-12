@@ -3,7 +3,11 @@ import DashboardComponentButtons from "./Components/DashboardComponentButtons";
 import DashboardComponentFilters from "./Components/DashboardComponentFilters";
 import DashboardComponentWidget from "./Components/DashboardComponentWidget";
 
-export default function PageDashboard() {
+interface MyProps {
+    props: any;
+}
+
+const PageDashboard: React.FC<MyProps> = (props) => {
     return (
         <>
             <DashboardComponentButtons />
@@ -13,4 +17,6 @@ export default function PageDashboard() {
             <DashboardComponentWidget />
         </>
     );
-}
+};
+
+export default PageDashboard;
