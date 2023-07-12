@@ -9,12 +9,23 @@ import {
     Space,
     Typography,
 } from "antd";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-    const loginMutation = useMutation((credentials: any) =>
-        axios.post("/api/login", credentials)
+    const loginMutation = useMutation(
+        async (credentials: any) => {
+            const response = await axios.post("/api/login", credentials);
+            return response.data.access_token;
+        },
+        {
+            onSuccess: (data) => {
+                console.log(data);
+                localStorage.setItem("access_token", data);
+                window.location.replace("/users");
+            },
+        }
     );
     const onFinish = async (values: any) => {
         try {

@@ -1,6 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+    BrowserRouter as Router,
+    Route,
+    Routes,
+    Navigate,
+} from "react-router-dom";
 import Welcome from "./pages/Welcome";
 import Home from "./pages/Home";
 import Navigation from "./components/Navigation";
@@ -14,13 +19,13 @@ import AddEditUser from "./pages/Users/AddEditUser";
 // css
 import "../sass/dashboard/dashboard.css";
 import PageDashboard from "./pages/PageDashboard/PageDashboard";
+import { useLoggedInUser } from "./api/query/userQuery";
 
 const App: React.FC = () => {
-    const currentPath = window.location.pathname;
-    const isLoginPage = currentPath === "/";
+    const isLoginPage = window.location.pathname === "/";
+
     return (
         <Router>
-            {/* <Navigation /> */}
             {isLoginPage ? (
                 <Routes>
                     <Route path="/" element={<Login />} />
@@ -28,19 +33,61 @@ const App: React.FC = () => {
             ) : (
                 <SideMenu>
                     <Routes>
-                        <Route path="/dashboard" element={<PageDashboard />} />
-                        <Route path="/users" element={<Users />} />
-                        <Route path="/users/new" element={<AddEditUser />} />
+                        <Route
+                            path="/dashboard"
+                            element={
+                                <PrivateRoute>
+                                    <PageDashboard />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/users"
+                            element={
+                                <PrivateRoute>
+                                    <Users />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/users/new"
+                            element={
+                                <PrivateRoute>
+                                    <AddEditUser />
+                                </PrivateRoute>
+                            }
+                        />
                         <Route
                             path="/users/:userId"
-                            element={<AddEditUser />}
+                            element={
+                                <PrivateRoute>
+                                    <AddEditUser />
+                                </PrivateRoute>
+                            }
                         />
-                        <Route path="/home" element={<Home />} />
+                        <Route
+                            path="/home"
+                            element={
+                                <PrivateRoute>
+                                    <Home />
+                                </PrivateRoute>
+                            }
+                        />
                     </Routes>
                 </SideMenu>
             )}
         </Router>
     );
+};
+
+const PrivateRoute = ({ children }) => {
+    const { user, isLoading } = useLoggedInUser();
+
+    if (isLoading) {
+        return <h1>Loading...</h1>;
+    }
+
+    return user ? children : <Navigate to="/" />;
 };
 
 ReactDOM.render(
