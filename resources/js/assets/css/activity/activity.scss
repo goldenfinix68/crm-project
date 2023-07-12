@@ -1,0 +1,12 @@
+@import "../variables/variables";
+.FullCalendarActivity {
+    .fc-view-harness {
+        height: 100vh !important;
+    }
+    .fc-toolbar-title {
+        font-size: 14px !important;
+    }
+    .fc-icon {
+        font-size: 14px !important;
+    }
+}

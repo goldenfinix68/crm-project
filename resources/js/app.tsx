@@ -12,7 +12,7 @@ import Users from "./pages/Users";
 import Activity from "./pages/Activity";
 // css
 import "./assets/css/main/main.css";
-
+import "./assets/css/activity/activity.css";
 const App: React.FC = () => {
     const currentPath = window.location.pathname;
     const isLoginPage = currentPath === "/";
