@@ -43,11 +43,17 @@
         padding: 20px 24px;
         padding-top: 10px;
     }
-    .ant-model-footer {
+    .ant-modal-footer {
         border-top: 1px solid #f3efef;
         padding: 20px 24px;
     }
     .ant-modal-close-icon {
         color: #fff !important;
+    }
+}
+
+.activity-group-row {
+    .anticon {
+        vertical-align: 1px !important;
     }
 }

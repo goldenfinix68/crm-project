@@ -149,7 +149,7 @@ const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
 
     return (
         <>
-            <Row>
+            <Row className="activity-group-row">
                 <Col md={24}>
                     <div
                         style={{

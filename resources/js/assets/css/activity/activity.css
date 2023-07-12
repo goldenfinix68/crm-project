@@ -50,12 +50,16 @@
   padding-top: 10px;
 }
 
-.modal-activity .ant-modal-content .ant-model-footer {
+.modal-activity .ant-modal-content .ant-modal-footer {
   border-top: 1px solid #f3efef;
   padding: 20px 24px;
 }
 
 .modal-activity .ant-modal-content .ant-modal-close-icon {
   color: #fff !important;
+}
+
+.activity-group-row .anticon {
+  vertical-align: 1px !important;
 }
 /*# sourceMappingURL=activity.css.map */
