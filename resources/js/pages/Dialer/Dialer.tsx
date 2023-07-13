@@ -33,7 +33,7 @@ function Phone() {
     const client = useContext(TelnyxRTCContext);
 
     client?.on("telnyx.ready", () => {
-        console.log("client ready");
+        // console.log("client ready");
         // client?.newCall({
         //     destinationNumber: "+1702-472-0013",
         //     callerNumber: "+16062221172",
