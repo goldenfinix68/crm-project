@@ -40,6 +40,7 @@ import Dialer from "./pages/Dialer/Dialer";
 
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
+    const isDialer = window.location.pathname === "/dialer";
 
     return (
         <Router>
@@ -47,10 +48,13 @@ const App: React.FC = () => {
                 <Routes>
                     <Route path="/" element={<Login />} />
                 </Routes>
+            ) : isDialer ? (
+                <Routes>
+                    <Route path="/dialer" element={<Dialer />} />
+                </Routes>
             ) : (
                 <SideMenu>
                     <Routes>
-                        <Route path="/dialer" element={<Dialer />} />
                         <Route
                             path="/dashboard"
                             element={
