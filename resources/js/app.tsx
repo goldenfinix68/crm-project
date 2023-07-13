@@ -20,6 +20,7 @@ import AddEditUser from "./pages/Users/AddEditUser";
 import "../sass/dashboard/dashboard.css";
 import PageDashboard from "./pages/PageDashboard/PageDashboard";
 import { useLoggedInUser } from "./api/query/userQuery";
+import Dialer from "./pages/Dialer/Dialer";
 
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
@@ -33,6 +34,7 @@ const App: React.FC = () => {
             ) : (
                 <SideMenu>
                     <Routes>
+                        <Route path="/dialer" element={<Dialer />} />
                         <Route
                             path="/dashboard"
                             element={
