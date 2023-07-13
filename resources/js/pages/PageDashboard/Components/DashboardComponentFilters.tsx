@@ -24,14 +24,17 @@ const DashboardComponentFilters: React.FC = () => {
 
     return (
         <>
-            <Row gutter={24} className="m-t-md">
-                <Col xs={24} sm={24} md={24}>
+            <Row gutter={24} className="m-t-lg m-b-md">
+                <Col
+                    xs={24}
+                    sm={24}
+                    md={24}
+                    style={{
+                        paddingLeft: 18,
+                    }}
+                >
                     <Space wrap>
-                        <Button
-                            type="link"
-                            className="black p-l-none"
-                            size="small"
-                        >
+                        <Button type="link" className="black" size="small">
                             <FontAwesomeIcon
                                 icon={faFilter}
                                 className="m-r-xs"

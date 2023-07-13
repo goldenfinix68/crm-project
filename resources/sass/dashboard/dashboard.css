@@ -12048,4 +12048,23 @@ textarea.form-control-lg {
 
 .dashboard-right-buttons {
   text-align: right;
+}
+
+.setup-guide {
+  border-radius: 5px;
+  border-color: #f0f0f0 !important;
+}
+.setup-guide .ant-list-header {
+  border: 0px;
+  padding: 16px 24px 10px !important;
+}
+.setup-guide .ant-list-items {
+  margin-bottom: 10px;
+}
+.setup-guide .ant-list-items .ant-list-item {
+  border: 0px;
+  height: 45px !important;
+}
+.setup-guide .ant-list-items .ant-list-item:hover {
+  background: #f2f2f2;
 }/*# sourceMappingURL=dashboard.css.map */
