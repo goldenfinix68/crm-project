@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import {
     Button,
@@ -38,6 +38,8 @@ import {
     LockOutlined,
 } from "@ant-design/icons";
 import type { ColumnsType, TableProps } from "antd/es/table";
+import ContactsComponentsAddContacts from "./Components/ContactsComponentsAddContacts";
+import ContactsComponentsFilter from "./Components/ContactsComponentsFilter";
 
 interface DataType {
     key: React.Key;
@@ -209,7 +211,9 @@ const menu = (
     </Card>
 );
 
-const Activities = () => {
+const Contacts = () => {
+    const [isModalOpen, setisModalOpen] = useState(false);
+    const [open, setOpen] = useState(false);
     return (
         <Card>
             <Row style={{ marginBottom: "20px" }}>
@@ -234,6 +238,9 @@ const Activities = () => {
                             display: "flex",
                             alignItems: "center",
                         }}
+                        onClick={() => {
+                            setOpen(true);
+                        }}
                     >
                         <FunnelPlotOutlined />
                     </Button>
@@ -244,6 +251,9 @@ const Activities = () => {
                             marginRight: "10px",
                             display: "flex",
                             alignItems: "center",
+                        }}
+                        onClick={() => {
+                            setisModalOpen(true);
                         }}
                     >
                         Contact
@@ -299,8 +309,14 @@ const Activities = () => {
                     />
                 </Col>
             </Row>
+
+            <ContactsComponentsAddContacts
+                isModalOpen={isModalOpen}
+                setIsModalOpen={setisModalOpen}
+            />
+            <ContactsComponentsFilter open={open} setOpen={setOpen} />
         </Card>
     );
 };
 
-export default Activities;
+export default Contacts;
