@@ -40,6 +40,7 @@ import {
 import type { ColumnsType, TableProps } from "antd/es/table";
 import ContactsComponentsAddContacts from "./Components/ContactsComponentsAddContacts";
 import ContactsComponentsFilter from "./Components/ContactsComponentsFilter";
+import ContactsComponentsManageColumn from "./Components/ContactsComponentsManageColumn";
 
 interface DataType {
     key: React.Key;
@@ -213,6 +214,8 @@ const menu = (
 
 const Contacts = () => {
     const [isModalOpen, setisModalOpen] = useState(false);
+    const [isModalManageColumnOpen, setIsModalManageColumnOpen] =
+        useState(false);
     const [open, setOpen] = useState(false);
     return (
         <Card>
@@ -259,6 +262,7 @@ const Contacts = () => {
                         Contact
                     </Button>
                     <Button
+                        onClick={() => setIsModalManageColumnOpen(true)}
                         style={{
                             marginRight: "10px",
                             display: "flex",
@@ -315,6 +319,10 @@ const Contacts = () => {
                 setIsModalOpen={setisModalOpen}
             />
             <ContactsComponentsFilter open={open} setOpen={setOpen} />
+            <ContactsComponentsManageColumn
+                isModalManageColumnOpen={isModalManageColumnOpen}
+                setIsModalManageColumnOpen={setIsModalManageColumnOpen}
+            />
         </Card>
     );
 };

@@ -13,7 +13,23 @@ import {
     Checkbox,
     Divider,
 } from "antd";
-
+import {
+    MenuFoldOutlined,
+    MenuUnfoldOutlined,
+    UserOutlined,
+    VideoCameraOutlined,
+    CheckCircleOutlined,
+    FunnelPlotOutlined,
+    PhoneOutlined,
+    FileDoneOutlined,
+    TeamOutlined,
+    PlaySquareOutlined,
+    TableOutlined,
+    PlusCircleOutlined,
+    DownOutlined,
+    LockOutlined,
+    CloseOutlined,
+} from "@ant-design/icons";
 import React, { useState } from "react";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
 
@@ -40,12 +56,13 @@ const ContactsComponentsAddContacts: React.FC<
     return (
         <>
             <Modal
+                closable={false}
                 className="your-modal"
                 width={650}
                 title={null}
                 open={isModalOpen}
                 onCancel={() => setIsModalOpen(false)}
-                style={{ maxHeight: "800px", overflow: "auto" }}
+                style={{ maxHeight: "700px" }}
                 footer={null}
                 // footer={[
                 //     <Button type="primary">Save</Button>,
@@ -59,10 +76,14 @@ const ContactsComponentsAddContacts: React.FC<
                     <Typography.Title level={5}>
                         Add New Contact
                     </Typography.Title>
-                    <Button type="link" className="m-r-xl">
+                    <Button type="link" style={{ marginRight: "-270px" }}>
                         {" "}
                         <u>Manage Fields</u>
                     </Button>
+                    <Button
+                        onClick={() => setIsModalOpen(false)}
+                        icon={<CloseOutlined />}
+                    />
                 </div>
                 <div className="modal-content">
                     <Row gutter={24} className="m-b-md m-t-md">

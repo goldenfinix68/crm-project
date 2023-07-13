@@ -17,6 +17,10 @@ import {
 
 import React, { useState } from "react";
 
+const handleChange = (value: string) => {
+    console.log(`selected ${value}`);
+};
+
 interface ContactsComponentsFilter {
     open: boolean;
     setOpen: any;
@@ -29,14 +33,43 @@ const ContactsComponentsFilter: React.FC<ContactsComponentsFilter> = ({
     return (
         <>
             <Drawer
-                title="Basic Drawer"
+                title="Filters"
                 placement="right"
                 onClose={() => setOpen(false)}
                 open={open}
+                mask={false}
+                extra={<Button type="link">Clear all</Button>}
+                footer={[<Button type="primary">Save as View</Button>]}
             >
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
+                <Select
+                    defaultValue="Match all filters (AND)"
+                    style={{ width: "100%" }}
+                    onChange={handleChange}
+                    options={[
+                        {
+                            value: "Match all filters (AND)",
+                            label: "Match all filters (AND)",
+                        },
+                        {
+                            value: "Match any filters (OR)",
+                            label: "Match any filters (OR)",
+                        },
+                    ]}
+                />
+
+                <Typography.Title className="m-t-md" level={5}>
+                    SELECTED FILTERS
+                </Typography.Title>
+
+                <Typography
+                    className="m-t-xl"
+                    style={{ display: "flex", justifyContent: "center" }}
+                >
+                    No selected filters found
+                </Typography>
+                <Button type="primary" block className="m-t-xl">
+                    Add Filter
+                </Button>
             </Drawer>
         </>
     );
