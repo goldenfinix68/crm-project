@@ -1,9 +1,11 @@
 .FullCalendarActivity .fc-view-harness {
   height: 100vh !important;
 }
+
 .FullCalendarActivity .fc-toolbar-title {
   font-size: 14px !important;
 }
+
 .FullCalendarActivity .fc-icon {
   font-size: 14px !important;
 }
@@ -18,38 +20,93 @@
 
 .input-title-no-bottom-only:focus {
   border-color: black;
-  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+          box-shadow: none !important;
   border-inline-end-width: 0px;
 }
 
 .input-title-no-bottom-only:hover {
   border-color: black;
-  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+          box-shadow: none !important;
   border-inline-end-width: 0px;
 }
 
 .modal-activity .ant-modal-content {
   padding: 0;
 }
+
 .modal-activity .ant-modal-content .ant-modal-header {
   padding: 20px 24px;
-  background: rgb(31, 98, 255);
+  background: #1f62ff;
 }
+
 .modal-activity .ant-modal-content .ant-modal-header .ant-modal-title {
   color: #fff;
 }
+
 .modal-activity .ant-modal-content .ant-modal-body {
   padding: 20px 24px;
   padding-top: 10px;
 }
+
 .modal-activity .ant-modal-content .ant-modal-footer {
   border-top: 1px solid #f3efef;
   padding: 20px 24px;
 }
+
 .modal-activity .ant-modal-content .ant-modal-close-icon {
   color: #fff !important;
 }
 
 .activity-group-row .anticon {
   vertical-align: 1px !important;
-}/*# sourceMappingURL=activity.css.map */
+}
+
+.mainDealArrow .bx-pager {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 50px;
+  border-left: 1px solid #dfe1e6;
+}
+
+.mainDealArrow .bx-pager .bx-pager-item {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 100%;
+  -webkit-box-flex: 0;
+      -ms-flex: 0 25%;
+          flex: 0 25%;
+  border-top: 1px solid #dfe1e6;
+  border-bottom: 1px solid #dfe1e6;
+}
+
+.mainDealArrow .bx-pager .bx-pager-item .bx-pager-link {
+  text-decoration: none;
+  color: #222;
+  font-size: 13px;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  padding-left: 16px;
+  text-align: center;
+}
+
+.mainDealArrow .bx-pager .bx-pager-item .arrow {
+  border: solid #dfe1e6;
+  display: inline-block;
+  padding: 13px;
+  border-width: 0 1px 1px 0;
+  -webkit-transform: translateY(15.5px) rotate(-45deg) skew(-15deg, -15deg) translateX(18px);
+          transform: translateY(15.5px) rotate(-45deg) skew(-15deg, -15deg) translateX(18px);
+  background-color: #fff;
+}
+/*# sourceMappingURL=activity.css.map */

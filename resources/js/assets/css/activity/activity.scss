@@ -57,3 +57,46 @@
         vertical-align: 1px !important;
     }
 }
+
+.mainDealArrow {
+    .bx-pager {
+        display: flex;
+        align-items: center;
+        height: 50px;
+        border-left: 1px solid #dfe1e6;
+    }
+    .bx-pager .bx-pager-item {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        flex: 0 25%;
+        border-top: 1px solid #dfe1e6;
+        border-bottom: 1px solid #dfe1e6;
+    }
+    .bx-pager .bx-pager-item .bx-pager-link {
+        text-decoration: none;
+        color: #222;
+        font-size: 13px;
+        flex: 1;
+        padding-left: 16px;
+        text-align: center;
+    }
+    .bx-pager .bx-pager-item .arrow {
+        border: solid #dfe1e6;
+        display: inline-block;
+        padding: 13px;
+        border-width: 0 1px 1px 0;
+        transform: translateY(15.5px) rotate(-45deg) skew(-15deg, -15deg)
+            translateX(18px);
+        background-color: #fff;
+    }
+    .bx-pager .bx-pager-item.active {
+        // background-color: #d68a3a;
+    }
+    .bx-pager .bx-pager-item.active .bx-pager-link {
+        // color: white;
+    }
+    .bx-pager .bx-pager-item.active .arrow {
+        // background-color: #d68a3a;
+    }
+}
