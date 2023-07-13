@@ -49,7 +49,7 @@ if (process.env.APP_ENV == "local") {
     //     "/Users/joshuasaubon/.config/valet/Certificates/crm-jesse.test.crt"
     // );
     var privkey = fs.readFileSync(
-        "/home/speedlead/ssl/keys/b7c2d_303a5_692274b99764598589137252b9489dcb.key.key"
+        "/home/speedlead/ssl/keys/b7c2d_303a5_692274b99764598589137252b9489dcb.key"
     );
     var cert = fs.readFileSync(
         "/home/speedlead/ssl/certs/speedlead_click_b7c2d_303a5_1720289275_2858492ae59161565d3c8f5ffed9f0fe.crt"
