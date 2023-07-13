@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use ElephantIO\Client;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -66,4 +67,53 @@ Route::get('/telnyx/sms/webhook/fail', function(Request $request) {
     \Log::error('INCOMING SMS FAIL');
     $json = json_decode(file_get_contents("php://input"), true);
     \Log::error($json);
+});
+Route::get('/telnyx/call/dial', function(Request $request) {
+    // $url = 'https://crm-jesse.test:4001';
+    // $client = new Client(Client::engine(Client::CLIENT_4X, $url));
+    // $client->initialize();
+    // $client->of('/');
+
+    // // emit an event to the server
+    // $data = ['username' => 'my-user'];
+    // $client->emit('message', $data);
+
+    /**
+     * Requires libcurl
+     */
+
+    $curl = curl_init();
+
+    $payload = array(
+        "to" => "+16062221172",
+        "from" => "+17024720013",
+        "from_display_name" => "JESSE CRM",
+        "connection_id" => "7267xxxxxxxxxxxxxx",
+        "webhook_url" => "https://speedlead.click/api/telnyx/call/webhook",
+        "webhook_url_method" => "POST",
+        "stream_url" => "wss://speedlead.click:4001",
+        "stream_track" => "both_tracks",
+    );
+
+    curl_setopt_array($curl, [
+        CURLOPT_HTTPHEADER => [
+            "Authorization: Bearer KEY01863E241D4044AE34F1747FEB8D276B_DG8X9WGM116zWgnL9ETUlu",
+            "Content-Type: application/json"
+        ],
+        CURLOPT_POSTFIELDS => json_encode($payload),
+        CURLOPT_URL => "https://api.telnyx.com/v2/calls",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_CUSTOMREQUEST => "POST",
+    ]);
+
+    $response = curl_exec($curl);
+    $error = curl_error($curl);
+
+    curl_close($curl);
+
+    if ($error) {
+        echo "cURL Error #:" . $error;
+    } else {
+        echo $response;
+    }
 });

@@ -36,6 +36,7 @@ import Activity from "./pages/Activity";
 
 //
 import { useLoggedInUser } from "./api/query/userQuery";
+import Dialer from "./pages/Dialer/Dialer";
 
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
@@ -49,6 +50,7 @@ const App: React.FC = () => {
             ) : (
                 <SideMenu>
                     <Routes>
+                        <Route path="/dialer" element={<Dialer />} />
                         <Route
                             path="/dashboard"
                             element={
