@@ -58,12 +58,21 @@
     }
 }
 
+.deal-group-row {
+    .anticon {
+        vertical-align: 1px !important;
+    }
+}
+
 .mainDealArrow {
+    overflow-x: scroll;
+    min-height: 400px;
     .bx-pager {
         display: flex;
         align-items: center;
         height: 50px;
         border-left: 1px solid #dfe1e6;
+        width: 1700px;
     }
     .bx-pager .bx-pager-item {
         display: flex;

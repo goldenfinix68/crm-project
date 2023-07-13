@@ -127,7 +127,7 @@ const Deal = () => {
     );
 
     return (
-        <Row className="activity-group-row">
+        <Row className="deal-group-row">
             <Col md={24}>
                 <Card title="Deals">
                     <div
