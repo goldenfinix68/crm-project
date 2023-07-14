@@ -74,3 +74,9 @@
     background-color: #ececec;
     cursor: pointer;
 }
+
+.avatarText {
+    .ant-avatar-string {
+        line-height: 29px !important;
+    }
+}

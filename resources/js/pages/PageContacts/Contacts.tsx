@@ -36,6 +36,7 @@ import {
     PlusCircleOutlined,
     DownOutlined,
     LockOutlined,
+    CaretDownOutlined,
 } from "@ant-design/icons";
 import type { ColumnsType, TableProps } from "antd/es/table";
 import ContactsComponentsAddContacts from "./Components/ContactsComponentsAddContacts";
@@ -60,7 +61,17 @@ const columns: ColumnsType<DataType> = [
         dataIndex: "name",
         render: (text: string, record: DataType) => (
             <>
-                <Avatar src={record.avatar} size={32} />
+                <Avatar
+                    className="avatarText"
+                    // src={record.avatar}
+                    size={32}
+                    style={{
+                        backgroundColor: "#1677FF",
+                        verticalAlign: "middle",
+                    }}
+                >
+                    {record.name.charAt(0)}
+                </Avatar>
                 <span style={{ marginLeft: "8px" }}>{text}</span>
             </>
         ),
@@ -119,8 +130,8 @@ const data: DataType[] = [
     },
     {
         key: "2",
-        name: "Anita Hehr Ashtbla Realtor",
-        email: "Anita@gmail.com",
+        name: "Ben Hehr Ashtbla Realtor",
+        email: "Ben@gmail.com",
         mobile: "+14405645612",
         countryLink: "https://google.com",
         acres: "0",
@@ -131,8 +142,8 @@ const data: DataType[] = [
     },
     {
         key: "3",
-        name: "Anthony Iafrate",
-        email: "Anthony@gmail.com",
+        name: "Clyd Iafrate",
+        email: "Clyd@gmail.com",
         mobile: "+14412345678",
         countryLink: "https://google.com",
         acres: "33.66",
@@ -142,8 +153,8 @@ const data: DataType[] = [
     },
     {
         key: "4",
-        name: "Anton Fuduric",
-        email: "Anton@gmail.com",
+        name: "David Fuduric",
+        email: "David@gmail.com",
         mobile: "+14405612378",
         countryLink: "https://google.com",
         acres: "0.15",
@@ -225,8 +236,9 @@ const Contacts = () => {
                         <Button
                             className="ant-dropdown-link"
                             onClick={(e) => e.preventDefault()}
+                            icon={<FunnelPlotOutlined />}
                         >
-                            All Contacts
+                            All Contacts <CaretDownOutlined />
                         </Button>
                     </Dropdown>
                 </Col>

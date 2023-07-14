@@ -12089,4 +12089,8 @@ textarea.form-control-lg {
 .clickable-item:hover {
   background-color: #ececec;
   cursor: pointer;
+}
+
+.avatarText .ant-avatar-string {
+  line-height: 29px !important;
 }/*# sourceMappingURL=contacts.css.map */
