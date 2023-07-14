@@ -1,4 +1,11 @@
 import { CaretDownFilled } from "@ant-design/icons";
+import {
+    DragDropContext,
+    Draggable,
+    Droppable,
+    DropResult,
+    DraggableLocation,
+} from "react-beautiful-dnd";
 import type { MenuProps } from "antd";
 import {
     Button,
@@ -12,6 +19,8 @@ import {
     Typography,
     Checkbox,
     Divider,
+    List,
+    Card,
 } from "antd";
 import {
     MenuFoldOutlined,
@@ -29,6 +38,7 @@ import {
     DownOutlined,
     LockOutlined,
     CloseOutlined,
+    HolderOutlined,
 } from "@ant-design/icons";
 import React, { useState } from "react";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
@@ -36,6 +46,30 @@ import type { CheckboxChangeEvent } from "antd/es/checkbox";
 interface ContactsComponentsManageColumnProps {
     isModalManageColumnOpen: boolean;
     setIsModalManageColumnOpen: any;
+}
+
+interface ListItem {
+    id: string;
+    title: string;
+}
+
+interface ListProps {
+    listData: ListItem[];
+    setListData: React.Dispatch<React.SetStateAction<ListItem[]>>;
+}
+
+interface DraggableItemProps {
+    item: ListItem;
+    index: number;
+}
+
+interface DroppableListProps {
+    items: ListItem[];
+}
+
+interface DragEndResult {
+    source: DraggableLocation;
+    destination?: DraggableLocation | null;
 }
 
 // const handleChange = (value: string) => {
@@ -53,6 +87,94 @@ const onChange = (e: CheckboxChangeEvent) => {
 const ContactsComponentsManageColumn: React.FC<
     ContactsComponentsManageColumnProps
 > = ({ isModalManageColumnOpen, setIsModalManageColumnOpen }) => {
+    const initialListData: ListItem[] = [
+        { id: "1", title: "Name" },
+        { id: "2", title: "Email" },
+        { id: "3", title: "Mobile" },
+        { id: "4", title: "Country Link" },
+        { id: "5", title: "Acres" },
+        { id: "6", title: "Tags" },
+        { id: "7", title: "Owner" },
+        { id: "8", title: "First Name" },
+        { id: "9", title: "Last Name" },
+    ];
+
+    const [listData, setListData] = useState<ListItem[]>(initialListData);
+
+    const handleDragEnd = (result: DragEndResult) => {
+        if (!result.destination) {
+            return;
+        }
+
+        const items = Array.from(listData);
+        const [reorderedItem] = items.splice(result.source.index, 1);
+
+        if (result.destination.index !== undefined) {
+            items.splice(result.destination.index, 0, reorderedItem);
+        }
+
+        setListData(items);
+    };
+
+    const DraggableItem: React.FC<DraggableItemProps> = ({ item, index }) => (
+        <Draggable draggableId={item.id} index={index}>
+            {(provided) => (
+                <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                >
+                    <List.Item className="listSize">
+                        <Card
+                            className="cardSize"
+                            style={{
+                                display: "block",
+                                width: "100%",
+                            }}
+                        >
+                            <Row>
+                                <Col
+                                    md={22}
+                                    xs={22}
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <HolderOutlined className="m-r-sm" />
+                                    {item.title}
+                                </Col>
+                                <Col md={2} xs={2}>
+                                    <Button type="text">
+                                        <CloseOutlined />
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </Card>
+                    </List.Item>
+                </div>
+            )}
+        </Draggable>
+    );
+
+    const DroppableList: React.FC<DroppableListProps> = ({ items }) => (
+        <Droppable droppableId="list">
+            {(provided) => (
+                <div ref={provided.innerRef} {...provided.droppableProps}>
+                    <List>
+                        {items.map((item, index) => (
+                            <DraggableItem
+                                key={item.id}
+                                item={item}
+                                index={index}
+                            />
+                        ))}
+                        {provided.placeholder}
+                    </List>
+                </div>
+            )}
+        </Droppable>
+    );
     return (
         <>
             <Modal
@@ -580,6 +702,438 @@ const ContactsComponentsManageColumn: React.FC<
                                     >
                                         Last Note Added By
                                     </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Latitude
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Salesmate Score
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Longitude
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Last Note Added At
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Last Note Added
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Create Longitude
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Create Latitude
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Create Address
+                                    </Checkbox>
+                                    <br />
+                                    <Typography.Title
+                                        className="m-t-md"
+                                        level={5}
+                                    >
+                                        Smart Fields
+                                    </Typography.Title>
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Last Communication Date
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Last Communication Mode
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Last Communication By
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Won Deals
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Won Deals Amount
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Lost Deals
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Open Deals
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Lost Deals Amount
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Open Deals Amount
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Total Activities
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Closed Activities
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Last Email Sent Date
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Last Email Received Date
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Open Activities
+                                    </Checkbox>
+                                    <br />
+                                    <Typography.Title
+                                        className="m-t-md"
+                                        level={5}
+                                    >
+                                        Analytics
+                                    </Typography.Title>
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Device
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Search Engine
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        OS
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Browser
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Browser Version
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Current URL
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Host
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        IP Address
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Path Name
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Country Code
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Region
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        User ID
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Screen Width
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Screen Height
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Library
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Library Version
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Initial Referral URL
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Initial Referral Domain
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Referral URL
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Referral Domain
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Event Type
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        UTM Source
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        UTM Campaign
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        UTM Term
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        UTM Medium
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        UTM Content
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Total Sessions
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Last Seen
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Last Chat Date
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Last Chat Received Date
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Continent Code
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Browser Language
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        IOS App Version
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        IOS Device
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        IOS OS Version
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Android App Version
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Android Device
+                                    </Checkbox>
+                                    <br />
+                                    <Checkbox
+                                        onChange={onChange}
+                                        className="m-t-sm"
+                                    >
+                                        Android OS Version
+                                    </Checkbox>
                                 </Col>
                             </Row>
                         </Col>
@@ -595,6 +1149,13 @@ const ContactsComponentsManageColumn: React.FC<
                                     Selected fields
                                 </Typography.Title>
                                 <Button type="link">Clear all</Button>
+                            </Row>
+                            <Row>
+                                <Col md={24}>
+                                    <DragDropContext onDragEnd={handleDragEnd}>
+                                        <DroppableList items={listData} />
+                                    </DragDropContext>
+                                </Col>
                             </Row>
                         </Col>
                     </Row>
