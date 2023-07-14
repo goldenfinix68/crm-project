@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import {
     Button,
@@ -35,8 +35,12 @@ import {
     TableOutlined,
     PlusCircleOutlined,
     DownOutlined,
+    LockOutlined,
 } from "@ant-design/icons";
 import type { ColumnsType, TableProps } from "antd/es/table";
+import ContactsComponentsAddContacts from "./Components/ContactsComponentsAddContacts";
+import ContactsComponentsFilter from "./Components/ContactsComponentsFilter";
+import ContactsComponentsManageColumn from "./Components/ContactsComponentsManageColumn";
 
 interface DataType {
     key: React.Key;
@@ -160,15 +164,21 @@ const { Search } = Input;
 const onSearch = (value: string) => console.log(value);
 const menu = (
     <Card>
-        <Search
-            placeholder="input search text"
-            allowClear
-            onSearch={onSearch}
-            style={{ width: 200 }}
-        />
+        <Search placeholder="Search views" allowClear onSearch={onSearch} />
         <Tabs defaultActiveKey="tab1" onChange={handleTabChange}>
             <TabPane tab="FAVORITES" key="tab1">
-                Content of Tab 1
+                <Typography.Title
+                    className="m-t-md"
+                    level={5}
+                    style={{ display: "flex", justifyContent: "center" }}
+                >
+                    You have no favorites
+                </Typography.Title>
+                <Typography
+                    style={{ display: "flex", justifyContent: "center" }}
+                >
+                    Select views as favorites to make it appear here.
+                </Typography>
             </TabPane>
             <TabPane tab="ALL VIEWS" key="tab2">
                 <Menu
@@ -180,18 +190,33 @@ const menu = (
                     defaultSelectedKeys={["1"]}
                     defaultOpenKeys={["sub1"]}
                 >
-                    <Menu.Item key="1">All Contacts</Menu.Item>
-                    <Menu.Item key="2">My Contacts</Menu.Item>
-                    <Menu.Item key="3">New last week</Menu.Item>
-                    <Menu.Item key="4">New this week</Menu.Item>
-                    <Menu.Item key="5">Recently modified Contacts</Menu.Item>
+                    <Typography className="m-b-sm">SYSTEM</Typography>
+                    <Menu.Item key="1" icon={<LockOutlined />}>
+                        All Contacts
+                    </Menu.Item>
+                    <Menu.Item key="2" icon={<LockOutlined />}>
+                        My Contacts
+                    </Menu.Item>
+                    <Menu.Item key="3" icon={<LockOutlined />}>
+                        New last week
+                    </Menu.Item>
+                    <Menu.Item key="4" icon={<LockOutlined />}>
+                        New this week
+                    </Menu.Item>
+                    <Menu.Item key="5" icon={<LockOutlined />}>
+                        Recently modified Contacts
+                    </Menu.Item>
                 </Menu>
             </TabPane>
         </Tabs>
     </Card>
 );
 
-const Activities = () => {
+const Contacts = () => {
+    const [isModalOpen, setisModalOpen] = useState(false);
+    const [isModalManageColumnOpen, setIsModalManageColumnOpen] =
+        useState(false);
+    const [open, setOpen] = useState(false);
     return (
         <Card>
             <Row style={{ marginBottom: "20px" }}>
@@ -216,6 +241,9 @@ const Activities = () => {
                             display: "flex",
                             alignItems: "center",
                         }}
+                        onClick={() => {
+                            setOpen(true);
+                        }}
                     >
                         <FunnelPlotOutlined />
                     </Button>
@@ -227,10 +255,14 @@ const Activities = () => {
                             display: "flex",
                             alignItems: "center",
                         }}
+                        onClick={() => {
+                            setisModalOpen(true);
+                        }}
                     >
                         Contact
                     </Button>
                     <Button
+                        onClick={() => setIsModalManageColumnOpen(true)}
                         style={{
                             marginRight: "10px",
                             display: "flex",
@@ -281,8 +313,18 @@ const Activities = () => {
                     />
                 </Col>
             </Row>
+
+            <ContactsComponentsAddContacts
+                isModalOpen={isModalOpen}
+                setIsModalOpen={setisModalOpen}
+            />
+            <ContactsComponentsFilter open={open} setOpen={setOpen} />
+            <ContactsComponentsManageColumn
+                isModalManageColumnOpen={isModalManageColumnOpen}
+                setIsModalManageColumnOpen={setIsModalManageColumnOpen}
+            />
         </Card>
     );
 };
 
-export default Activities;
+export default Contacts;
