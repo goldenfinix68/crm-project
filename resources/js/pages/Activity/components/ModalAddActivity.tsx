@@ -58,7 +58,7 @@ const ModalAddActivity = ({
             open={isModalOpenAdd}
             onOk={handleOkAdd}
             onCancel={handleCancelAdd}
-            width={850}
+            width={980}
         >
             <Row gutter={12}>
                 <Col md={16}>

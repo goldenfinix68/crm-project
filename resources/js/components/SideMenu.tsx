@@ -8,9 +8,11 @@ import {
     VideoCameraOutlined,
     CheckCircleOutlined,
     PhoneOutlined,
+    DollarCircleOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Button, theme } from "antd";
 import { useNavigate } from "react-router-dom";
+import Deal from "../pages/Deal";
 
 const { Header, Sider, Content } = Layout;
 
@@ -49,6 +51,11 @@ const SideMenu = ({ children }) => {
                             key: "/activities",
                             icon: <CheckCircleOutlined />,
                             label: "Activities",
+                        },
+                        {
+                            key: "/deals",
+                            icon: <DollarCircleOutlined />,
+                            label: "Deals",
                         },
                     ]}
                     onClick={(e) => {
