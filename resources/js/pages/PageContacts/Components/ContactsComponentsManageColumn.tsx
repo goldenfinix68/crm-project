@@ -42,6 +42,7 @@ import {
 } from "@ant-design/icons";
 import React, { useState } from "react";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
+import ContactsComponentsAddCustomField from "./ContactsComponentsAddCustomField";
 
 interface ContactsComponentsManageColumnProps {
     isModalManageColumnOpen: boolean;
@@ -100,6 +101,8 @@ const ContactsComponentsManageColumn: React.FC<
     ];
 
     const [listData, setListData] = useState<ListItem[]>(initialListData);
+
+    const [isModalAddCustomField, setModalAddCustomField] = useState(false);
 
     const handleDragEnd = (result: DragEndResult) => {
         if (!result.destination) {
@@ -197,7 +200,11 @@ const ContactsComponentsManageColumn: React.FC<
                     <Typography.Title level={5}>
                         Manage Columns
                     </Typography.Title>
-                    <Button type="link" style={{ marginRight: "-640px" }}>
+                    <Button
+                        type="link"
+                        style={{ marginRight: "-640px" }}
+                        onClick={() => setModalAddCustomField(true)}
+                    >
                         {" "}
                         <u>Add Custom Field</u>
                     </Button>
@@ -1173,6 +1180,11 @@ const ContactsComponentsManageColumn: React.FC<
                         Cancel
                     </Button>
                 </div>
+
+                <ContactsComponentsAddCustomField
+                    isModalAddCustomField={isModalAddCustomField}
+                    setModalAddCustomField={setModalAddCustomField}
+                />
             </Modal>
         </>
     );
