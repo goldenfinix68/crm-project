@@ -32,6 +32,7 @@ import Title from "antd/es/skeleton/Title";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
+import TextArea from "antd/es/input/TextArea";
 interface Props {
     isModalOpenAdd: boolean;
     handleOkAdd: () => void;
@@ -58,7 +59,7 @@ const ModalAddDeal = ({
             open={isModalOpenAdd}
             onOk={handleOkAdd}
             onCancel={handleCancelAdd}
-            width={850}
+            width={980}
         >
             <Row gutter={12}>
                 <Col md={16}>
@@ -85,7 +86,7 @@ const ModalAddDeal = ({
                             <Input placeholder="Title" />
                         </Form.Item>
 
-                        <Row gutter={12}>
+                        <Row gutter={24}>
                             <Col md={12}>
                                 <Form.Item
                                     label="Contact"
@@ -155,7 +156,16 @@ const ModalAddDeal = ({
                                 </Form.Item>
                             </Col>
                             <Col md={12}>
-                                <Form.Item label="Currency" name="currency">
+                                <Form.Item
+                                    label="Currency"
+                                    name="currency"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "this is required",
+                                        },
+                                    ]}
+                                >
                                     <Select defaultValue={"USD"}>
                                         <Select.Option value="USD">
                                             USD
@@ -167,7 +177,58 @@ const ModalAddDeal = ({
                                 </Form.Item>
                             </Col>
                             <Col md={12}>
-                                <Form.Item label="Source" name="source">
+                                <Form.Item
+                                    label="Source"
+                                    name="source"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "this is required",
+                                        },
+                                    ]}
+                                >
+                                    <Select defaultValue={"ACQ"}>
+                                        <Select.Option value="ACQ">
+                                            ACQ
+                                        </Select.Option>
+                                        <Select.Option value="Referrals">
+                                            Marketing
+                                        </Select.Option>
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                            <Col md={12}>
+                                <Form.Item
+                                    label="Stage"
+                                    name="stage"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "this is required",
+                                        },
+                                    ]}
+                                >
+                                    <Select defaultValue={"Comp & Qualify"}>
+                                        <Select.Option value="ACQ">
+                                            Comp & Qualify
+                                        </Select.Option>
+                                        <Select.Option value="Referrals">
+                                            First Offer Given
+                                        </Select.Option>
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                            <Col md={12}>
+                                <Form.Item
+                                    label="Source"
+                                    name="source"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "this is required",
+                                        },
+                                    ]}
+                                >
                                     <Select defaultValue={"ADS"}>
                                         <Select.Option value="ADS">
                                             ADS
@@ -179,7 +240,16 @@ const ModalAddDeal = ({
                                 </Form.Item>
                             </Col>
                             <Col md={12}>
-                                <Form.Item label="Priority" name="priority">
+                                <Form.Item
+                                    label="Priority"
+                                    name="priority"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "this is required",
+                                        },
+                                    ]}
+                                >
                                     <Select defaultValue={"High"}>
                                         <Select.Option value="High">
                                             High
@@ -193,8 +263,18 @@ const ModalAddDeal = ({
                                     </Select>
                                 </Form.Item>
                             </Col>
+
                             <Col md={12}>
-                                <Form.Item label="Status" name="status">
+                                <Form.Item
+                                    label="Status"
+                                    name="status"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "this is required",
+                                        },
+                                    ]}
+                                >
                                     <Select defaultValue={"High"}>
                                         <Select.Option value="Open">
                                             Open
@@ -208,24 +288,48 @@ const ModalAddDeal = ({
                                     </Select>
                                 </Form.Item>
                             </Col>
+                            <Col md={24} style={{ marginBottom: 15 }}>
+                                <b>Details</b>
+                            </Col>
+
+                            <Col md={24}>
+                                <Form.Item label="Details" name="details">
+                                    <TextArea></TextArea>
+                                </Form.Item>
+                            </Col>
+                            <Col md={24}>
+                                <Form.Item label="Tags" name="tags">
+                                    <Input placeholder="Tags" />
+                                </Form.Item>
+                            </Col>
                         </Row>
                     </Form>
                 </Col>
-                <Col md={8}>
-                    <div className={"FullCalendarActivity"}>
-                        <FullCalendar
-                            plugins={[dayGridPlugin, timeGridPlugin]}
-                            initialView="timeGridDay"
-                            headerToolbar={{
-                                left: "prev",
-                                center: "title",
-                                right: "next",
-                            }}
-                            weekends={false}
-                            events={[]}
-                            eventContent={<></>}
-                        />
-                    </div>
+                <Col md={8} style={{ padding: 20 }}>
+                    <Row>
+                        <Col md={24}>
+                            <div
+                                style={{
+                                    fontSize: 18,
+                                    fontWeight: "bold",
+                                }}
+                            >
+                                Teamm mates
+                            </div>
+                            <Input placeholder="Search User" />
+                        </Col>
+                        <Col md={24}>
+                            <div
+                                style={{
+                                    fontSize: 18,
+                                    fontWeight: "bold",
+                                }}
+                            >
+                                Participants
+                            </div>
+                            <Input placeholder="Search Contact" />
+                        </Col>
+                    </Row>
                 </Col>
             </Row>
         </Modal>
