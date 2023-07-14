@@ -11,7 +11,7 @@ import {
     Row,
     Col,
 } from "antd";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
     UserAddOutlined,
@@ -21,8 +21,24 @@ import {
     FilterOutlined,
 } from "@ant-design/icons";
 import Search from "antd/es/input/Search";
-
+import ModalAddDeal from "./components/ModalAddDeal";
+import Filter from "./components/Filter";
 const Deal = () => {
+    const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
+    const showModalAdd = () => {
+        setIsModalOpenAdd(true);
+    };
+
+    const handleOkAdd = () => {
+        setIsModalOpenAdd(false);
+    };
+
+    const handleCancelAdd = () => {
+        setIsModalOpenAdd(false);
+    };
+
+    const [openFilter, setOpenFilter] = useState(false);
+
     const action: MenuProps["items"] = [
         {
             key: "1",
@@ -181,7 +197,12 @@ const Deal = () => {
 
                         <div>
                             <span style={{ marginRight: 10 }}>
-                                <Button icon={<FilterOutlined />}></Button>
+                                <Button
+                                    icon={<FilterOutlined />}
+                                    onClick={() => {
+                                        setOpenFilter(true);
+                                    }}
+                                ></Button>
                             </span>
                             <span style={{ marginRight: 10 }}>
                                 <Radio.Group>
@@ -194,7 +215,7 @@ const Deal = () => {
                                 </Radio.Group>
                             </span>
                             <span style={{ marginRight: 10 }}>
-                                <Button type="primary">
+                                <Button type="primary" onClick={showModalAdd}>
                                     <PlusCircleOutlined /> &nbsp;Deal
                                 </Button>
                             </span>
@@ -217,76 +238,95 @@ const Deal = () => {
 
                     <div>
                         <div className="mainDealArrow">
-                            <div className="container">
-                                <div className="bx-pager bx-default-pager">
-                                    <div className="bx-pager-item active">
-                                        <a
-                                            className="bx-pager-link "
-                                            data-slide-index="0"
-                                            href=""
-                                        >
+                            <div className="bx-pager bx-default-pager">
+                                <div className="bx-pager-item active">
+                                    <a
+                                        className="bx-pager-link "
+                                        data-slide-index="0"
+                                        href=""
+                                    >
+                                        {" "}
+                                        <div>
+                                            <b>Comp & Qualify</b>
+                                        </div>
+                                        <div> $0</div>
+                                    </a>
+
+                                    <div className="arrow"></div>
+                                </div>
+
+                                <div className="bx-pager-item">
+                                    <a
+                                        className="bx-pager-link"
+                                        data-slide-index="1"
+                                        href=""
+                                    >
+                                        {" "}
+                                        <div>
+                                            <b>First Offer Given</b>
+                                        </div>
+                                        <div> $0</div>
+                                    </a>
+
+                                    <div className="arrow"></div>
+                                </div>
+
+                                <div className="bx-pager-item">
+                                    <a
+                                        className="bx-pager-link"
+                                        data-slide-index="2"
+                                        href=""
+                                    >
+                                        {" "}
+                                        <div>
                                             {" "}
-                                            <div>Comp & Qualify</div>
-                                            <div> $0</div>
-                                        </a>
+                                            <b>In Negotiation</b>
+                                        </div>
+                                        <div> $0</div>
+                                    </a>
+                                    <div className="arrow"></div>
+                                </div>
 
-                                        <div className="arrow"></div>
-                                    </div>
-
-                                    <div className="bx-pager-item">
-                                        <a
-                                            className="bx-pager-link"
-                                            data-slide-index="1"
-                                            href=""
-                                        >
+                                <div className="bx-pager-item">
+                                    <a
+                                        className="bx-pager-link"
+                                        data-slide-index="3"
+                                        href=""
+                                    >
+                                        {" "}
+                                        <div>
                                             {" "}
-                                            <div>First Offer Given</div>
-                                            <div> $0</div>
-                                        </a>
-
-                                        <div className="arrow"></div>
-                                    </div>
-
-                                    <div className="bx-pager-item">
-                                        <a
-                                            className="bx-pager-link"
-                                            data-slide-index="2"
-                                            href=""
-                                        >
-                                            {" "}
-                                            <div> In Negotiation</div>
-                                            <div> $0</div>
-                                        </a>
-                                        <div className="arrow"></div>
-                                    </div>
-
-                                    <div className="bx-pager-item">
-                                        <a
-                                            className="bx-pager-link"
-                                            data-slide-index="3"
-                                            href=""
-                                        >
-                                            {" "}
-                                            <div> Verbal Offer Accepted</div>
-                                            <div> $0</div>
-                                        </a>
-                                        <div className="arrow"></div>
-                                    </div>
-                                    <div className="bx-pager-item">
-                                        <a
-                                            className="bx-pager-link"
-                                            data-slide-index="3"
-                                            href=""
-                                        >
-                                            <div> Under Contract</div>
-                                            <div> $111,000</div>
-                                        </a>
-                                        <div className="arrow"></div>
-                                    </div>
+                                            <b>Verbal Offer Accepted</b>
+                                        </div>
+                                        <div> $0</div>
+                                    </a>
+                                    <div className="arrow"></div>
+                                </div>
+                                <div className="bx-pager-item">
+                                    <a
+                                        className="bx-pager-link"
+                                        data-slide-index="3"
+                                        href=""
+                                    >
+                                        <div>
+                                            <b>Under Contract</b>{" "}
+                                        </div>
+                                        <div> $111,000</div>
+                                    </a>
+                                    <div className="arrow"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <Filter
+                        openFilter={openFilter}
+                        setOpenFilter={setOpenFilter}
+                    />
+                    <ModalAddDeal
+                        isModalOpenAdd={isModalOpenAdd}
+                        handleOkAdd={handleOkAdd}
+                        handleCancelAdd={handleCancelAdd}
+                    />
                 </Card>
             </Col>
         </Row>

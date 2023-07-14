@@ -63,10 +63,12 @@
         vertical-align: 1px !important;
     }
 }
+//deals
 
 .mainDealArrow {
     overflow-x: scroll;
     min-height: 400px;
+    margin-left: -24px;
     .bx-pager {
         display: flex;
         align-items: center;
@@ -99,13 +101,13 @@
             translateX(18px);
         background-color: #fff;
     }
-    .bx-pager .bx-pager-item.active {
-        // background-color: #d68a3a;
-    }
-    .bx-pager .bx-pager-item.active .bx-pager-link {
-        // color: white;
-    }
-    .bx-pager .bx-pager-item.active .arrow {
-        // background-color: #d68a3a;
-    }
+    // .bx-pager .bx-pager-item.active {
+    //     // background-color: #d68a3a;
+    // }
+    // .bx-pager .bx-pager-item.active .bx-pager-link {
+    //     // color: white;
+    // }
+    // .bx-pager .bx-pager-item.active .arrow {
+    //     // background-color: #d68a3a;
+    // }
 }

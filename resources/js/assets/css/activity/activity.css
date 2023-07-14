@@ -70,6 +70,7 @@
 .mainDealArrow {
   overflow-x: scroll;
   min-height: 400px;
+  margin-left: -24px;
 }
 
 .mainDealArrow .bx-pager {
