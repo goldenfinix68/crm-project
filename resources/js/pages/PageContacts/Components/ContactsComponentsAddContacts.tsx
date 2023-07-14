@@ -73,16 +73,23 @@ const ContactsComponentsAddContacts: React.FC<
                 // ]}
             >
                 <div className="modal-header">
-                    <Typography.Title level={5}>
+                    <Typography.Title level={5} style={{ color: "white" }}>
                         Add New Contact
                     </Typography.Title>
-                    <Button type="link" style={{ marginRight: "-270px" }}>
+                    <Button
+                        type="link"
+                        style={{ marginRight: "-270px", color: "white" }}
+                    >
                         {" "}
                         <u>Manage Fields</u>
                     </Button>
                     <Button
+                        style={{
+                            backgroundColor: "rgba(0, 0, 0, 0.5)",
+                            border: "0px",
+                        }}
                         onClick={() => setIsModalOpen(false)}
-                        icon={<CloseOutlined />}
+                        icon={<CloseOutlined style={{ color: "white" }} />}
                     />
                 </div>
                 <div className="modal-content">
