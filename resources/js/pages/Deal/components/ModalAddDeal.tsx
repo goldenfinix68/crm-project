@@ -60,9 +60,14 @@ const ModalAddDeal = ({
             onOk={handleOkAdd}
             onCancel={handleCancelAdd}
             width={980}
+            footer={[
+                <Button type="primary">Save</Button>,
+                <Button type="primary">Save and add other</Button>,
+                <Button>Cancel</Button>,
+            ]}
         >
             <Row gutter={12}>
-                <Col md={16}>
+                <Col md={16} className="col-1-modal-act">
                     <Form
                         layout="vertical"
                         name="basic"
@@ -305,7 +310,7 @@ const ModalAddDeal = ({
                         </Row>
                     </Form>
                 </Col>
-                <Col md={8} style={{ padding: 20 }}>
+                <Col md={8} style={{ padding: 20 }} className="col-2-modal-act">
                     <Row>
                         <Col md={24}>
                             <div
