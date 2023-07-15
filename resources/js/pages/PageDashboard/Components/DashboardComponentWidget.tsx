@@ -32,9 +32,6 @@ const DashboardComponentWidget: React.FC = () => {
                         y: 0,
                         w: 12,
                         h: 3.2,
-                        minW: 1,
-                        maxW: 12,
-                        minH: 3,
                     }}
                 >
                     <Row gutter={[12, 10]}>
@@ -61,8 +58,6 @@ const DashboardComponentWidget: React.FC = () => {
                         y: 0,
                         w: 12,
                         h: 2,
-                        minW: 1,
-                        maxW: 12,
                     }}
                 ></Card>
 
