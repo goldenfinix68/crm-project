@@ -81,9 +81,25 @@
     }
 }
 .custom-tabs .ant-tabs-nav {
-    margin-bottom: 1px; /* Adjust the margin-bottom value as per your requirement */
+    // margin-bottom: 1px; /* Adjust the margin-bottom value as per your requirement */
+    width: 230px;
+    height: 73vh;
 }
 
 .custom-tabs .ant-tabs-tab {
-    margin-top: 1px; /* Adjust the margin-right value as per your requirement */
+    margin-top: 1px !important; /* Adjust the margin-right value as per your requirement */
+}
+
+.custom-tabs .ant-tabs-tab-active {
+    background-color: transparent;
+}
+
+.custom-tabs .ant-tabs-ink-bar {
+    display: none;
+}
+
+.CustomCard {
+    .ant-card-body {
+        padding: 0px !important;
+    }
 }

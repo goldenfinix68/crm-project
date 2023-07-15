@@ -130,10 +130,16 @@ const Inbox = () => {
     //     },
     // ];
     return (
-        <Card>
+        <Card className="CustomCard">
             <Row>
                 <Col md={10} xs={10} style={{ height: "80vh" }}>
-                    <Button>wew</Button>
+                    <Button
+                        type="primary"
+                        style={{ marginTop: "15px", marginLeft: "15px" }}
+                    >
+                        <MailOutlined />
+                        Compose
+                    </Button>
                     <Tabs
                         className="custom-tabs"
                         tabPosition="left"
@@ -141,7 +147,7 @@ const Inbox = () => {
                             borderBottom: "none",
                             borderRight: "1px solid #e8e8e8",
                         }}
-                        size="large"
+                        size="small"
                     >
                         <TabPane
                             tab={
@@ -203,6 +209,11 @@ const Inbox = () => {
                         </TabPane>
                     </Tabs>
                 </Col>
+                <Col
+                    md={14}
+                    xs={14}
+                    style={{ backgroundColor: "#F5F5F5" }}
+                ></Col>
             </Row>
         </Card>
     );
