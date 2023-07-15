@@ -238,7 +238,29 @@ const Deal = () => {
                             </span>
                         </div>
                     </div>
-
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginBottom: 15,
+                        }}
+                    >
+                        <div></div>
+                        <div>
+                            <span style={{ marginRight: 15 }}>
+                                {" "}
+                                # of Deals: <b>$0</b>
+                            </span>
+                            <span style={{ marginRight: 15 }}>
+                                {" "}
+                                Pipeline Value: <b>$0</b>
+                            </span>
+                            <span>
+                                {" "}
+                                Forecase Value: <b>$0</b>
+                            </span>
+                        </div>
+                    </div>
                     <div>
                         <div className="mainDealArrow">
                             <div className="bx-pager bx-default-pager">
