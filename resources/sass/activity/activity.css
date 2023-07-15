@@ -33,6 +33,36 @@
   border-inline-end-width: 0px;
 }
 
+.modal-activity .modal-header {
+  background: #1f62ff;
+  padding: 16px;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  margin-left: -8px;
+  margin-right: -8px;
+  margin-top: -20px;
+  z-index: 99;
+}
+
+.modal-activity .modal-footer {
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+  background-color: #ffffff;
+  padding: 16px;
+  text-align: right;
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 0;
+  padding-left: -10px;
+  padding-right: -10px;
+  margin-left: -6px;
+  margin-right: -6px;
+  margin-bottom: -20px;
+  z-index: 99;
+}
+
 .modal-activity .col-1-modal-act {
   padding: 24px;
   padding-left: 24px !important;

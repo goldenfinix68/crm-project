@@ -20,7 +20,7 @@ config.autoAddCss = false;
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import "../sass/dashboard/dashboard.css";
 import "../sass/helper/helper.css";
-import "./assets/css/activity/activity.css";
+import "../sass/activity/activity.css";
 import "/node_modules/react-grid-layout/css/styles.css";
 import "/node_modules/react-resizable/css/styles.css";
 import "../sass/contacts/contacts.css";

@@ -18,6 +18,7 @@ import {
 
 import {
     AuditOutlined,
+    CloseOutlined,
     ContainerOutlined,
     DownOutlined,
     FilterOutlined,
@@ -54,17 +55,34 @@ const ModalAddActivity = ({
     return (
         <Modal
             className="modal-activity"
-            title="Add New Activity"
             open={isModalOpenAdd}
             onOk={handleOkAdd}
             onCancel={handleCancelAdd}
             width={980}
-            footer={[
-                <Button type="primary">Save</Button>,
-                <Button type="primary">Save and add other</Button>,
-                <Button>Cancel</Button>,
-            ]}
+            footer={null}
+            title={null}
+            closable={false}
         >
+            <div className="modal-header">
+                <Typography.Title level={5} style={{ color: "white" }}>
+                    Add New Activity
+                </Typography.Title>
+                <Button
+                    type="link"
+                    style={{ marginRight: "-559px", color: "white" }}
+                >
+                    {" "}
+                    <u>Manage Fields</u>
+                </Button>
+                <Button
+                    onClick={handleCancelAdd}
+                    style={{
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        border: "0px",
+                    }}
+                    icon={<CloseOutlined style={{ color: "white" }} />}
+                />
+            </div>
             <Row gutter={12}>
                 <Col md={16} className="col-1-modal-act">
                     <div>
@@ -266,6 +284,15 @@ const ModalAddActivity = ({
                     </div>
                 </Col>
             </Row>
+            <div className="modal-footer">
+                <Button className="m-r-xs" type="primary">
+                    Save
+                </Button>
+                <Button className="m-r-xs" type="primary">
+                    Save and add other
+                </Button>
+                <Button onClick={handleCancelAdd}>Cancel</Button>
+            </div>
         </Modal>
     );
 };
