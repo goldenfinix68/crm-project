@@ -65,11 +65,11 @@ const ModalAddActivity = ({
         >
             <div className="modal-header">
                 <Typography.Title level={5} style={{ color: "white" }}>
-                    Add New Deal
+                    Add New Activity
                 </Typography.Title>
                 <Button
                     type="link"
-                    style={{ marginRight: "-559", color: "white" }}
+                    style={{ marginRight: "-559px", color: "white" }}
                 >
                     {" "}
                     <u>Manage Fields</u>

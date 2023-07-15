@@ -43,7 +43,7 @@ import {
 import React, { useState } from "react";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
 
-interface ActivityComponentsManageColumnProps {
+interface ModalManageColumn {
     isModalManageColumnOpen: boolean;
     setIsModalManageColumnOpen: any;
 }
@@ -84,19 +84,17 @@ const onChange = (e: CheckboxChangeEvent) => {
     console.log(`checked = ${e.target.checked}`);
 };
 
-const ActivityComponentsManageColumn: React.FC<
-    ActivityComponentsManageColumnProps
-> = ({ isModalManageColumnOpen, setIsModalManageColumnOpen }) => {
+const ModalManageColumn: React.FC<ModalManageColumn> = ({
+    isModalManageColumnOpen,
+    setIsModalManageColumnOpen,
+}) => {
     const initialListData: ListItem[] = [
-        { id: "1", title: "Name" },
-        { id: "2", title: "Email" },
-        { id: "3", title: "Mobile" },
-        { id: "4", title: "Country Link" },
-        { id: "5", title: "Acres" },
+        { id: "1", title: "Title" },
+        { id: "2", title: "Start Date" },
+        { id: "3", title: "Duration" },
+        { id: "4", title: "Owner" },
+        { id: "5", title: "Name" },
         { id: "6", title: "Tags" },
-        { id: "7", title: "Owner" },
-        { id: "8", title: "First Name" },
-        { id: "9", title: "Last Name" },
     ];
 
     const [listData, setListData] = useState<ListItem[]>(initialListData);
@@ -187,6 +185,7 @@ const ActivityComponentsManageColumn: React.FC<
                 open={isModalManageColumnOpen}
                 onCancel={() => setIsModalManageColumnOpen(false)}
                 footer={null}
+
                 // footer={[
                 //     <Button type="primary">Save</Button>,
                 //     <Button type="primary">Save and add other</Button>,
@@ -196,20 +195,24 @@ const ActivityComponentsManageColumn: React.FC<
                 // ]}
             >
                 <div className="modal-header">
-                    <Typography.Title level={5}>
+                    <Typography.Title level={5} style={{ color: "white" }}>
                         Manage Columns
                     </Typography.Title>
                     <Button
                         type="link"
-                        style={{ marginRight: "-640px" }}
+                        style={{ marginRight: "-559px", color: "white" }}
                         onClick={() => setModalAddCustomField(true)}
                     >
                         {" "}
                         <u>Add Custom Field</u>
                     </Button>
                     <Button
+                        style={{
+                            backgroundColor: "rgba(0, 0, 0, 0.5)",
+                            border: "0px",
+                        }}
                         onClick={() => setIsModalManageColumnOpen(false)}
-                        icon={<CloseOutlined />}
+                        icon={<CloseOutlined style={{ color: "white" }} />}
                     />
                 </div>
                 <div className="modal-content">
@@ -1184,4 +1187,4 @@ const ActivityComponentsManageColumn: React.FC<
     );
 };
 
-export default ActivityComponentsManageColumn;
+export default ModalManageColumn;
