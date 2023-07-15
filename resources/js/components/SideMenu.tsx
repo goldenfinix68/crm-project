@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import {
+    HomeOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     UploadOutlined,
     UserOutlined,
     VideoCameraOutlined,
+    CheckCircleOutlined,
+    PhoneOutlined,
+    DollarCircleOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Button, theme } from "antd";
 import { useNavigate } from "react-router-dom";
+import Deal from "../pages/Deal";
 
 const { Header, Sider, Content } = Layout;
 
@@ -28,19 +33,29 @@ const SideMenu = ({ children }) => {
                     style={{ height: "100vh", backgroundColor: "#F4F5F7" }}
                     items={[
                         {
+                            key: "/dashboard",
+                            icon: <HomeOutlined />,
+                            label: "Dashboard",
+                        },
+                        {
                             key: "/users",
                             icon: <UserOutlined />,
-                            label: "nav 1",
+                            label: "Users",
                         },
                         {
-                            key: "2",
-                            icon: <VideoCameraOutlined />,
-                            label: "nav 2",
+                            key: "/contacts",
+                            icon: <PhoneOutlined />,
+                            label: "Contacts",
                         },
                         {
-                            key: "3",
-                            icon: <UploadOutlined />,
-                            label: "nav 3",
+                            key: "/activities",
+                            icon: <CheckCircleOutlined />,
+                            label: "Activities",
+                        },
+                        {
+                            key: "/deals",
+                            icon: <DollarCircleOutlined />,
+                            label: "Deals",
                         },
                     ]}
                     onClick={(e) => {
@@ -54,8 +69,8 @@ const SideMenu = ({ children }) => {
                 ></Header>
                 <Content
                     style={{
-                        margin: "24px 16px",
-                        padding: 24,
+                        // margin: "24px 16px",
+                        // padding: 24,
                         minHeight: 280,
                     }}
                 >

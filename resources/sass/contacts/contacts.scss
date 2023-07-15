@@ -1,0 +1,82 @@
+// Fonts
+@import url("https://fonts.googleapis.com/css?family=Nunito");
+
+// Variables
+@import "../variables/variables.scss";
+
+// Bootstrap
+@import "~bootstrap/scss/bootstrap";
+.dropdown-select {
+    // .ant-select-dropdown {
+    width: 220px !important; /* Adjust the width value as needed */
+    // }
+}
+// .dropdownMenu {
+//     .ant-dropdown-menu {
+//         box-shadow: none !important;
+//         background-color: none !important;
+//     }
+// }
+.anticon {
+    vertical-align: 1px !important;
+}
+
+.your-modal .ant-modal-content {
+    display: flex;
+    flex-direction: column;
+    background-color: #f4f5f7;
+}
+
+.your-modal .modal-content {
+    flex-grow: 1;
+    // overflow-y: auto;
+}
+
+.your-modal .modal-footer {
+    flex-shrink: 0;
+    background-color: #ffffff;
+    padding: 16px;
+    text-align: right;
+    position: sticky;
+    bottom: 0;
+    padding-left: -10px;
+    padding-right: -10px;
+    margin-left: -24px;
+    margin-right: -24px;
+    margin-bottom: -20px;
+}
+
+.your-modal .modal-header {
+    background-color: #1677ff;
+    padding: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    margin-left: -24px;
+    margin-right: -24px;
+    margin-top: -20px;
+}
+
+.cardSize {
+    margin-bottom: -20px;
+    .ant-card-body {
+        padding: 10px !important;
+    }
+}
+.listSize {
+    .ant-list .ant-list-item {
+        // margin-bottom: -20px !important;
+        padding: 2px !important;
+    }
+}
+
+.clickable-item:hover {
+    background-color: #ececec;
+    cursor: pointer;
+}
+
+.avatarText {
+    .ant-avatar-string {
+        line-height: 29px !important;
+    }
+}
