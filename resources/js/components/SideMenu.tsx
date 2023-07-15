@@ -54,7 +54,6 @@ const SideMenu = ({ children }) => {
                 ></Header>
                 <Content
                     style={{
-                        margin: "24px 16px",
                         padding: 24,
                         minHeight: 280,
                     }}
