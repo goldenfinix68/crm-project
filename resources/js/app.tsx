@@ -34,6 +34,7 @@ import PageDashboard from "./pages/PageDashboard/PageDashboard";
 import Contacts from "./pages/PageContacts/Contacts";
 import Activity from "./pages/Activity";
 import Deal from "./pages/Deal";
+import Inbox from "./pages/Inbox/Inbox";
 // css
 
 //
@@ -106,6 +107,14 @@ const App: React.FC = () => {
                             element={
                                 <PrivateRoute>
                                     <Deal />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/inbox"
+                            element={
+                                <PrivateRoute>
+                                    <Inbox />
                                 </PrivateRoute>
                             }
                         />
