@@ -19,6 +19,9 @@ import {
     DownOutlined,
     InsertRowBelowOutlined,
     FilterOutlined,
+    PhoneOutlined,
+    MailOutlined,
+    UserOutlined,
 } from "@ant-design/icons";
 import Search from "antd/es/input/Search";
 import ModalAddDeal from "./components/ModalAddDeal";
@@ -316,6 +319,49 @@ const Deal = () => {
                                     <div className="arrow"></div>
                                 </div>
                             </div>
+
+                            <Card style={{ width: 338 }}>
+                                <div>Ron Tanburinno - ASHTABULA</div>
+                                <div style={{ fontSize: 12, color: "#9b9999" }}>
+                                    Ron Tanburinno - $0{" "}
+                                </div>
+                                <div style={{ fontSize: 10, color: "#9b9999" }}>
+                                    None
+                                </div>
+
+                                <div style={{ marginTop: 10, float: "right" }}>
+                                    <span
+                                        style={{
+                                            marginLeft: 5,
+                                            padding: 4,
+                                            border: " 1px solid #e5e5e5",
+                                            borderRadius: "53%",
+                                        }}
+                                    >
+                                        <PhoneOutlined />
+                                    </span>
+                                    <span
+                                        style={{
+                                            marginLeft: 5,
+                                            padding: 4,
+                                            border: " 1px solid #e5e5e5",
+                                            borderRadius: "53%",
+                                        }}
+                                    >
+                                        <MailOutlined />
+                                    </span>
+                                    <span
+                                        style={{
+                                            marginLeft: 5,
+                                            padding: 4,
+                                            border: " 1px solid #e5e5e5",
+                                            borderRadius: "53%",
+                                        }}
+                                    >
+                                        <UserOutlined />
+                                    </span>
+                                </div>
+                            </Card>
                         </div>
                     </div>
                     <Filter
