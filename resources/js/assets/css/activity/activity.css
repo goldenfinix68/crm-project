@@ -1,9 +1,11 @@
 .FullCalendarActivity .fc-view-harness {
   height: 100vh !important;
 }
+
 .FullCalendarActivity .fc-toolbar-title {
   font-size: 14px !important;
 }
+
 .FullCalendarActivity .fc-icon {
   font-size: 14px !important;
 }
@@ -14,42 +16,127 @@
   outline: none;
   border-radius: 0px;
   font-size: 20px;
+  background-color: transparent;
 }
 
 .input-title-no-bottom-only:focus {
   border-color: black;
-  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+          box-shadow: none !important;
   border-inline-end-width: 0px;
 }
 
 .input-title-no-bottom-only:hover {
   border-color: black;
-  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+          box-shadow: none !important;
   border-inline-end-width: 0px;
+}
+
+.modal-activity .col-1-modal-act {
+  padding: 24px;
+  padding-left: 24px !important;
+  padding-right: 24px !important;
+}
+
+.modal-activity .col-2-modal-act {
+  padding: 24px;
+  background: white;
+  border-left: 1px solid #c6c8cd;
+  padding-left: 24px !important;
+  padding-right: 24px !important;
 }
 
 .modal-activity .ant-modal-content {
   padding: 0;
 }
+
 .modal-activity .ant-modal-content .ant-modal-header {
   padding: 20px 24px;
-  background: rgb(31, 98, 255);
+  background: #1f62ff;
+  margin-bottom: 0px;
 }
+
 .modal-activity .ant-modal-content .ant-modal-header .ant-modal-title {
   color: #fff;
 }
+
 .modal-activity .ant-modal-content .ant-modal-body {
-  padding: 20px 24px;
-  padding-top: 10px;
+  padding: 8px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  background: #f4f5f7;
 }
+
 .modal-activity .ant-modal-content .ant-modal-footer {
   border-top: 1px solid #f3efef;
   padding: 20px 24px;
+  margin-top: 0px;
 }
+
 .modal-activity .ant-modal-content .ant-modal-close-icon {
   color: #fff !important;
 }
 
 .activity-group-row .anticon {
   vertical-align: 1px !important;
-}/*# sourceMappingURL=activity.css.map */
+}
+
+.deal-group-row .anticon {
+  vertical-align: 1px !important;
+}
+
+.mainDealArrow {
+  overflow-x: scroll;
+  min-height: 400px;
+  margin-left: -24px;
+}
+
+.mainDealArrow .bx-pager {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 50px;
+  border-left: 1px solid #dfe1e6;
+  width: 1700px;
+}
+
+.mainDealArrow .bx-pager .bx-pager-item {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 100%;
+  -webkit-box-flex: 0;
+      -ms-flex: 0 25%;
+          flex: 0 25%;
+  border-top: 1px solid #dfe1e6;
+  border-bottom: 1px solid #dfe1e6;
+}
+
+.mainDealArrow .bx-pager .bx-pager-item .bx-pager-link {
+  text-decoration: none;
+  color: #222;
+  font-size: 13px;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  padding-left: 16px;
+  text-align: center;
+}
+
+.mainDealArrow .bx-pager .bx-pager-item .arrow {
+  border: solid #dfe1e6;
+  display: inline-block;
+  padding: 13px;
+  border-width: 0 1px 1px 0;
+  -webkit-transform: translateY(15.5px) rotate(-45deg) skew(-15deg, -15deg) translateX(18px);
+          transform: translateY(15.5px) rotate(-45deg) skew(-15deg, -15deg) translateX(18px);
+  background-color: #fff;
+}
+/*# sourceMappingURL=activity.css.map */

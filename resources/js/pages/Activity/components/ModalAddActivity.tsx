@@ -58,10 +58,15 @@ const ModalAddActivity = ({
             open={isModalOpenAdd}
             onOk={handleOkAdd}
             onCancel={handleCancelAdd}
-            width={850}
+            width={980}
+            footer={[
+                <Button type="primary">Save</Button>,
+                <Button type="primary">Save and add other</Button>,
+                <Button>Cancel</Button>,
+            ]}
         >
             <Row gutter={12}>
-                <Col md={16}>
+                <Col md={16} className="col-1-modal-act">
                     <div>
                         <Input
                             placeholder="Write activity title"
@@ -244,7 +249,7 @@ const ModalAddActivity = ({
                         </Form.Item>
                     </Form>
                 </Col>
-                <Col md={8}>
+                <Col md={8} className="col-2-modal-act">
                     <div className={"FullCalendarActivity"}>
                         <FullCalendar
                             plugins={[dayGridPlugin, timeGridPlugin]}
