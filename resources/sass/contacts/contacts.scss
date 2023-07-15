@@ -47,7 +47,7 @@
 }
 
 .your-modal .modal-header {
-    background-color: #ffffff;
+    background-color: #1677ff;
     padding: 16px;
     position: sticky;
     top: 0;
@@ -73,4 +73,10 @@
 .clickable-item:hover {
     background-color: #ececec;
     cursor: pointer;
+}
+
+.avatarText {
+    .ant-avatar-string {
+        line-height: 29px !important;
+    }
 }
