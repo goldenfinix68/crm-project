@@ -73,11 +73,21 @@ const ModalAddDeal = ({
                 <Typography.Title level={5} style={{ color: "white" }}>
                     Add New Deal
                 </Typography.Title>
-                <Button type="link" style={{ marginRight: "-270px" }}>
+                <Button
+                    type="link"
+                    style={{ marginRight: "-559px", color: "white" }}
+                >
                     {" "}
                     <u>Manage Fields</u>
                 </Button>
-                <Button onClick={handleCancelAdd} icon={<CloseOutlined />} />
+                <Button
+                    onClick={handleCancelAdd}
+                    style={{
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        border: "0px",
+                    }}
+                    icon={<CloseOutlined style={{ color: "white" }} />}
+                />
             </div>
             <Row gutter={12}>
                 <Col md={16} className="col-1-modal-act">
