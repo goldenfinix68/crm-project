@@ -6,19 +6,37 @@ import {
     Routes,
     Navigate,
 } from "react-router-dom";
-import Welcome from "./pages/Welcome";
-import Home from "./pages/Home";
-import Navigation from "./components/Navigation";
+
 import Login from "./pages/Login";
 import { QueryClientProvider } from "react-query";
 import queryClient from "./queryClient";
 import SideMenu from "./components/SideMenu";
-import Users from "./pages/Users";
-import AddEditUser from "./pages/Users/AddEditUser";
+
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+config.autoAddCss = false;
 
 // css
+import "@fortawesome/fontawesome-svg-core/styles.css";
 import "../sass/dashboard/dashboard.css";
+import "../sass/helper/helper.css";
+import "../sass/activity/activity.css";
+import "/node_modules/react-grid-layout/css/styles.css";
+import "/node_modules/react-resizable/css/styles.css";
+import "../sass/contacts/contacts.css";
+
+// Pages
+import Welcome from "./pages/Welcome";
+import Users from "./pages/Users";
+import Home from "./pages/Home";
+import AddEditUser from "./pages/Users/AddEditUser";
 import PageDashboard from "./pages/PageDashboard/PageDashboard";
+import Contacts from "./pages/PageContacts/Contacts";
+import Activity from "./pages/Activity";
+import Deal from "./pages/Deal";
+// css
+
+//
 import { useLoggedInUser } from "./api/query/userQuery";
 import Dialer from "./pages/Dialer/Dialer";
 import ContactView from "./pages/ContactView";
@@ -86,6 +104,24 @@ const App: React.FC = () => {
                             element={
                                 <PrivateRoute>
                                     <Home />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route path="/contacts" element={<Contacts />} />
+
+                        <Route
+                            path="/activities"
+                            element={
+                                <PrivateRoute>
+                                    <Activity />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/deals"
+                            element={
+                                <PrivateRoute>
+                                    <Deal />
                                 </PrivateRoute>
                             }
                         />
