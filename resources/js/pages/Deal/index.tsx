@@ -19,6 +19,9 @@ import {
     DownOutlined,
     InsertRowBelowOutlined,
     FilterOutlined,
+    PhoneOutlined,
+    MailOutlined,
+    UserOutlined,
 } from "@ant-design/icons";
 import Search from "antd/es/input/Search";
 import ModalAddDeal from "./components/ModalAddDeal";
@@ -235,7 +238,29 @@ const Deal = () => {
                             </span>
                         </div>
                     </div>
-
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginBottom: 15,
+                        }}
+                    >
+                        <div></div>
+                        <div>
+                            <span style={{ marginRight: 15 }}>
+                                {" "}
+                                # of Deals: <b>$0</b>
+                            </span>
+                            <span style={{ marginRight: 15 }}>
+                                {" "}
+                                Pipeline Value: <b>$0</b>
+                            </span>
+                            <span>
+                                {" "}
+                                Forecase Value: <b>$0</b>
+                            </span>
+                        </div>
+                    </div>
                     <div>
                         <div className="mainDealArrow">
                             <div className="bx-pager bx-default-pager">
@@ -315,6 +340,65 @@ const Deal = () => {
                                     </a>
                                     <div className="arrow"></div>
                                 </div>
+                            </div>
+                            <div style={{ padding: 10 }}>
+                                <Card style={{ width: 320 }}>
+                                    <div>Ron Tanburinno - ASHTABULA</div>
+                                    <div
+                                        style={{
+                                            fontSize: 12,
+                                            color: "#9b9999",
+                                        }}
+                                    >
+                                        Ron Tanburinno - $0{" "}
+                                    </div>
+                                    <div
+                                        style={{
+                                            fontSize: 10,
+                                            color: "#9b9999",
+                                        }}
+                                    >
+                                        None
+                                    </div>
+
+                                    <div
+                                        style={{
+                                            marginTop: 10,
+                                            float: "right",
+                                        }}
+                                    >
+                                        <span
+                                            style={{
+                                                marginLeft: 5,
+                                                padding: 4,
+                                                border: " 1px solid #e5e5e5",
+                                                borderRadius: "53%",
+                                            }}
+                                        >
+                                            <PhoneOutlined />
+                                        </span>
+                                        <span
+                                            style={{
+                                                marginLeft: 5,
+                                                padding: 4,
+                                                border: " 1px solid #e5e5e5",
+                                                borderRadius: "53%",
+                                            }}
+                                        >
+                                            <MailOutlined />
+                                        </span>
+                                        <span
+                                            style={{
+                                                marginLeft: 5,
+                                                padding: 4,
+                                                border: " 1px solid #e5e5e5",
+                                                borderRadius: "53%",
+                                            }}
+                                        >
+                                            <UserOutlined />
+                                        </span>
+                                    </div>
+                                </Card>
                             </div>
                         </div>
                     </div>

@@ -33,7 +33,7 @@ import { Link } from "react-router-dom";
 import Title from "antd/es/skeleton/Title";
 import ModalAddActivity from "./ModalAddActivity";
 import Search from "antd/es/input/Search";
-
+import ModalManageColumn from "./ModalManageColumn";
 interface TActivity {
     key: React.Key;
     title: string;
@@ -180,6 +180,9 @@ const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
         setIsModalOpenAdd(false);
     };
 
+    const [isModalManageColumnOpen, setIsModalManageColumnOpen] =
+        useState(false);
+
     return (
         <>
             <Row className="activity-group-row">
@@ -226,7 +229,11 @@ const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
                                     title="Manage Columns"
                                     placement="bottom"
                                 >
-                                    <Button>
+                                    <Button
+                                        onClick={() => {
+                                            setIsModalManageColumnOpen(true);
+                                        }}
+                                    >
                                         <InsertRowBelowOutlined />
                                     </Button>
                                 </Tooltip>
@@ -304,6 +311,10 @@ const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
                 isModalOpenAdd={isModalOpenAdd}
                 handleOkAdd={handleOkAdd}
                 handleCancelAdd={handleCancelAdd}
+            />
+            <ModalManageColumn
+                isModalManageColumnOpen={isModalManageColumnOpen}
+                setIsModalManageColumnOpen={setIsModalManageColumnOpen}
             />
         </>
     );
