@@ -12032,20 +12032,6 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
-.dashboard-filter {
-  font-size: 20px;
-  color: black;
-}
-.dashboard-filter .anticon-caret-down svg {
-  font-size: 14px;
-  margin-top: -6px;
-}
-
-.dashboard-actions .anticon-caret-down svg {
-  font-size: 14px;
-  margin-top: -6px;
-}
-
 .dashboard-right-buttons {
   text-align: right;
 }

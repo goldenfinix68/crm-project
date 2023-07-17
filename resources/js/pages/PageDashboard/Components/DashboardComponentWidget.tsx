@@ -13,6 +13,8 @@ import {
     Typography,
     Table,
     Radio,
+    Divider,
+    Tag,
 } from "antd";
 import type, { SelectProps } from "antd";
 import {
@@ -27,6 +29,8 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ColumnsType } from "antd/es/table";
 import { faTrashAlt } from "@fortawesome/free-regular-svg-icons";
+
+import arrorImg from "../../../assets/images/deal-arrow.png";
 
 const data = [
     {
@@ -330,6 +334,169 @@ const dataTable: DataType[] = [
     },
 ];
 
+interface DataTypeContact {
+    key: React.Key;
+    name: string;
+    type: any[];
+    email: string;
+    mobile: string;
+    phone: string;
+    date_updated: string;
+}
+
+const columnsContact: ColumnsType<DataTypeContact> = [
+    {
+        title: "Name",
+        dataIndex: "name",
+        key: "name",
+        ellipsis: true,
+        width: 150,
+    },
+    {
+        title: "Type",
+        dataIndex: "type",
+        key: "type",
+        width: 100,
+        render: (text, record) => {
+            return (
+                <>
+                    {record?.type &&
+                        record?.type.length > 0 &&
+                        record?.type.map((item, key) => {
+                            return <Tag key={key}>{item}</Tag>;
+                        })}
+                </>
+            );
+        },
+    },
+    {
+        title: "Email",
+        dataIndex: "email",
+        key: "email",
+        width: 180,
+    },
+    {
+        title: "Mobile",
+        dataIndex: "mobile",
+        key: "mobile",
+        width: 180,
+    },
+    {
+        title: "Phone",
+        dataIndex: "phone",
+        key: "phone",
+        width: 180,
+    },
+    {
+        title: "Last Modified Date",
+        dataIndex: "date_updated",
+        key: "date_updated",
+        width: 180,
+    },
+];
+
+const dataTableContact: DataTypeContact[] = [
+    {
+        key: "1",
+        name: "Evergreen City Office",
+        type: ["No Type"],
+        email: "donners4x4@msn.com",
+        mobile: "+14402478900",
+        phone: "(440) 655-8610",
+        date_updated: "Jul 07, 2023 04:33 PM",
+    },
+    {
+        key: "2",
+        name: "Evergreen City Office",
+        type: ["No Type"],
+        email: "donners4x4@msn.com",
+        mobile: "+14402478900",
+        phone: "(440) 655-8610",
+        date_updated: "Jul 07, 2023 04:33 PM",
+    },
+    {
+        key: "3",
+        name: "Evergreen City Office",
+        type: ["No Type"],
+        email: "donners4x4@msn.com",
+        mobile: "+14402478900",
+        phone: "(440) 655-8610",
+        date_updated: "Jul 07, 2023 04:33 PM",
+    },
+    {
+        key: "4",
+        name: "Evergreen City Office",
+        type: ["No Type"],
+        email: "donners4x4@msn.com",
+        mobile: "+14402478900",
+        phone: "(440) 655-8610",
+        date_updated: "Jul 07, 2023 04:33 PM",
+    },
+    {
+        key: "5",
+        name: "Evergreen City Office",
+        type: ["No Type"],
+        email: "donners4x4@msn.com",
+        mobile: "+14402478900",
+        phone: "(440) 655-8610",
+        date_updated: "Jul 07, 2023 04:33 PM",
+    },
+    {
+        key: "6",
+        name: "Evergreen City Office",
+        type: ["No Type"],
+        email: "donners4x4@msn.com",
+        mobile: "+14402478900",
+        phone: "(440) 655-8610",
+        date_updated: "Jul 07, 2023 04:33 PM",
+    },
+    {
+        key: "7",
+        name: "Evergreen City Office",
+        type: ["No Type"],
+        email: "donners4x4@msn.com",
+        mobile: "+14402478900",
+        phone: "(440) 655-8610",
+        date_updated: "Jul 07, 2023 04:33 PM",
+    },
+    {
+        key: "8",
+        name: "Evergreen City Office",
+        type: ["No Type"],
+        email: "donners4x4@msn.com",
+        mobile: "+14402478900",
+        phone: "(440) 655-8610",
+        date_updated: "Jul 07, 2023 04:33 PM",
+    },
+    {
+        key: "9",
+        name: "Evergreen City Office",
+        type: ["No Type"],
+        email: "donners4x4@msn.com",
+        mobile: "+14402478900",
+        phone: "(440) 655-8610",
+        date_updated: "Jul 07, 2023 04:33 PM",
+    },
+    {
+        key: "10",
+        name: "Evergreen City Office",
+        type: ["No Type"],
+        email: "donners4x4@msn.com",
+        mobile: "+14402478900",
+        phone: "(440) 655-8610",
+        date_updated: "Jul 07, 2023 04:33 PM",
+    },
+    {
+        key: "11",
+        name: "Evergreen City Office",
+        type: ["No Type"],
+        email: "donners4x4@msn.com",
+        mobile: "+14402478900",
+        phone: "(440) 655-8610",
+        date_updated: "Jul 07, 2023 04:33 PM",
+    },
+];
+
 const DashboardComponentWidget: React.FC = () => {
     // const layouts = getLayoutsFromSomewhere();
 
@@ -477,7 +644,7 @@ const DashboardComponentWidget: React.FC = () => {
                                             <Col
                                                 xs={24}
                                                 sm={24}
-                                                md={12}
+                                                md={24}
                                                 key={key}
                                             >
                                                 <Button block size="large">
@@ -511,7 +678,7 @@ const DashboardComponentWidget: React.FC = () => {
                                 title={
                                     <div className="p-t-md">
                                         <Typography.Text className="font-22px">
-                                            Deal performance
+                                            My Activities
                                         </Typography.Text>
                                         <br />
                                         <Row gutter={24} className="m-t-md">
@@ -647,13 +814,201 @@ const DashboardComponentWidget: React.FC = () => {
                             dataSource={dataTable}
                             scroll={{ x: 1500, y: 250 }}
                             pagination={false}
+                            rowKey={(record) => record.key}
                         />
                     </Card>
                 </Col>
 
-                <Col xs={24} sm={24} md={12}></Col>
-                <Col xs={24} sm={24} md={12}></Col>
-                <Col xs={24} sm={24} md={12}></Col>
+                <Col xs={24} sm={24} md={24}>
+                    <Card
+                        style={{ minHeight: 150 }}
+                        headStyle={{ border: 0 }}
+                        title={
+                            <div className="p-t-md">
+                                <Typography.Text className="font-22px">
+                                    Deal pipeline
+                                </Typography.Text>
+                                <br />
+                                <Typography.Text
+                                    className="font-12px"
+                                    style={{ color: "#505f79" }}
+                                >
+                                    Period: Jun 18, 2023 - Jul 17, 2023
+                                </Typography.Text>
+                            </div>
+                        }
+                    >
+                        <Space
+                            wrap
+                            className="w-100"
+                            split={<img src={arrorImg} />}
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                            }}
+                        >
+                            <div>
+                                <Typography.Text
+                                    style={{ color: "rgb(7, 71, 166)" }}
+                                >
+                                    Future Counties
+                                </Typography.Text>{" "}
+                                <br />
+                                <br />
+                                <Typography.Text>$0</Typography.Text>
+                                <br />
+                                <br />
+                                <Typography.Text>0 Dead</Typography.Text>
+                            </div>
+                            <div>
+                                <Typography.Text
+                                    style={{ color: "rgb(31, 98, 255)" }}
+                                >
+                                    Aggregate Reference Parcels
+                                </Typography.Text>{" "}
+                                <br />
+                                <br />
+                                <Typography.Text>$0</Typography.Text>
+                                <br />
+                                <br />
+                                <Typography.Text>0 Dead</Typography.Text>
+                            </div>
+                            <div>
+                                <Typography.Text
+                                    style={{ color: "rgb(0, 141, 166)" }}
+                                >
+                                    Reference APN Scraping
+                                </Typography.Text>{" "}
+                                <br />
+                                <br />
+                                <Typography.Text>$0</Typography.Text>
+                                <br />
+                                <br />
+                                <Typography.Text>0 Dead</Typography.Text>
+                            </div>
+                            <div>
+                                <Typography.Text
+                                    style={{ color: "rgb(0, 163, 191)" }}
+                                >
+                                    Pricing
+                                </Typography.Text>{" "}
+                                <br />
+                                <br />
+                                <Typography.Text>$0</Typography.Text>
+                                <br />
+                                <br />
+                                <Typography.Text>0 Dead</Typography.Text>
+                            </div>
+                            <div>
+                                <Typography.Text
+                                    style={{ color: "rgb(0, 102, 68)" }}
+                                >
+                                    Currently Mailing
+                                </Typography.Text>{" "}
+                                <br />
+                                <br />
+                                <Typography.Text>$0</Typography.Text>
+                                <br />
+                                <br />
+                                <Typography.Text>0 Dead</Typography.Text>
+                            </div>
+                            <div>
+                                <Typography.Text
+                                    style={{ color: "rgb(0, 102, 68)" }}
+                                >
+                                    Completely Mailed
+                                </Typography.Text>{" "}
+                                <br />
+                                <br />
+                                <Typography.Text>$0</Typography.Text>
+                                <br />
+                                <br />
+                                <Typography.Text>0 Dead</Typography.Text>
+                            </div>
+                        </Space>
+                    </Card>
+                </Col>
+                <Col xs={24} sm={24} md={12}>
+                    <Card
+                        // title="Deal performance"
+                        title={
+                            <div className="p-t-md">
+                                <Typography.Text className="font-22px">
+                                    Activity performance overview
+                                </Typography.Text>
+                                <br />
+                                <Typography.Text
+                                    className="font-12px"
+                                    style={{ color: "#505f79" }}
+                                >
+                                    Period: Jun 15, 2023 - Jul 14, 2023
+                                </Typography.Text>
+                            </div>
+                        }
+                        headStyle={{ border: 0 }}
+                        style={{ height: 450 }}
+                        bodyStyle={{ height: 355, overflow: "auto" }}
+                    >
+                        <Row gutter={[12, 10]}>
+                            {dataDeal.map((item, key) => {
+                                return (
+                                    <Col xs={24} sm={24} md={24} key={key}>
+                                        <Button block size="large">
+                                            <Space
+                                                wrap
+                                                style={{
+                                                    display: "flex",
+                                                    justifyContent:
+                                                        "space-between",
+                                                }}
+                                            >
+                                                <Typography.Text>
+                                                    {item.title}
+                                                </Typography.Text>
+                                                <Typography.Text>
+                                                    <Space wrap>
+                                                        {item.count}
+                                                    </Space>
+                                                </Typography.Text>
+                                            </Space>
+                                        </Button>
+                                    </Col>
+                                );
+                            })}
+                        </Row>
+                    </Card>
+                </Col>
+                <Col xs={24} sm={24} md={12}>
+                    <Card
+                        // title="Deal performance"
+                        title={
+                            <div className="p-t-md">
+                                <Typography.Text className="font-22px">
+                                    Contacts most recently updated
+                                </Typography.Text>
+                                <br />
+                                <Typography.Text
+                                    className="font-12px"
+                                    style={{ color: "#505f79" }}
+                                >
+                                    Period: Jun 15, 2023 - Jul 14, 2023
+                                </Typography.Text>
+                            </div>
+                        }
+                        headStyle={{ border: 0 }}
+                        style={{ height: 450 }}
+                        bodyStyle={{ height: 355, overflow: "auto" }}
+                    >
+                        <Table
+                            columns={columnsContact}
+                            dataSource={dataTableContact}
+                            scroll={{ x: 1500, y: 280 }}
+                            pagination={false}
+                            rowKey={(record) => record.key}
+                            size="small"
+                        />
+                    </Card>
+                </Col>
                 <Col xs={24} sm={24} md={12}></Col>
             </Row>
         </>
