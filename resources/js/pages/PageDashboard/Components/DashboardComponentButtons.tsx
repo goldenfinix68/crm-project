@@ -60,10 +60,11 @@ const DashboardComponentButtons: React.FC = () => {
         <>
             <Row gutter={24}>
                 <Col xs={12} sm={12} md={12}>
-                    <Button type="link" className="dashboard-filter p-l-none">
+                    <Button type="link" className="dashboard-filter">
                         Default Dashbaord <CaretDownFilled />
                     </Button>
                 </Col>
+
                 <Col
                     xs={12}
                     sm={12}

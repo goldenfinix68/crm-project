@@ -62,7 +62,7 @@ const App: React.FC = () => {
                             path="/dashboard"
                             element={
                                 <PrivateRoute>
-                                    <PageDashboard />
+                                    <PageDashboard props={""} />
                                 </PrivateRoute>
                             }
                         />

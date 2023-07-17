@@ -23,14 +23,26 @@ const SideMenu = ({ children }) => {
     } = theme.useToken();
 
     return (
-        <Layout style={{ height: "100vh" }}>
-            <Sider trigger={null} collapsible collapsed={true}>
+        <Layout style={{ minHeight: "100vh" }}>
+            <Sider
+                trigger={null}
+                collapsible
+                collapsed={true}
+                style={{
+                    backgroundColor: "#F4F5F7",
+                    borderInlineEnd: "1px solid rgba(5, 5, 5, 0.06)",
+                }}
+            >
                 <div className="demo-logo-vertical" />
                 <Menu
                     theme="light"
                     mode="inline"
                     defaultSelectedKeys={["1"]}
-                    style={{ height: "100vh", backgroundColor: "#F4F5F7" }}
+                    style={{
+                        minHeight: "100vh",
+                        backgroundColor: "#F4F5F7",
+                        border: 0,
+                    }}
                     items={[
                         {
                             key: "/dashboard",

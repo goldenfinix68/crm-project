@@ -7,27 +7,49 @@
 // Bootstrap
 @import "~bootstrap/scss/bootstrap";
 
-.dashboard-filter {
-    font-size: 20px;
-    color: black;
+// .dashboard-filter {
+//     font-size: 20px;
+//     color: black;
 
-    .anticon-caret-down {
-        svg {
-            font-size: 14px;
-            margin-top: -6px;
-        }
-    }
-}
+//     .anticon-caret-down {
+//         svg {
+//             font-size: 14px;
+//             margin-top: -6px;
+//         }
+//     }
+// }
 
-.dashboard-actions {
-    .anticon-caret-down {
-        svg {
-            font-size: 14px;
-            margin-top: -6px;
-        }
-    }
-}
+// .dashboard-actions {
+//     .anticon-caret-down {
+//         svg {
+//             font-size: 14px;
+//             margin-top: -6px;
+//         }
+//     }
+// }
 
 .dashboard-right-buttons {
     text-align: right;
+}
+
+.setup-guide {
+    border-radius: 5px;
+    border-color: #f0f0f0 !important;
+
+    .ant-list-header {
+        border: 0px;
+        padding: 16px 24px 10px !important;
+    }
+
+    .ant-list-items {
+        margin-bottom: 10px;
+        .ant-list-item {
+            border: 0px;
+            height: 45px !important;
+        }
+
+        .ant-list-item:hover {
+            background: #f2f2f2;
+        }
+    }
 }
