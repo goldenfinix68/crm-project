@@ -1,6 +1,9 @@
-import { Col, Row } from "antd";
+import { Card, Col, Row, Space } from "antd";
 import React from "react";
 import ContactInfo from "./components/ContactInfo";
+import ActionsTabs from "./components/ActionsTabs";
+import ContactsWall from "./components/ContactsWall";
+import CollapsibleDetails from "./components/ActivityTab";
 
 const ContactView = () => {
     return (
@@ -8,8 +11,15 @@ const ContactView = () => {
             <Col span={7}>
                 <ContactInfo />
             </Col>
-            <Col span={10}></Col>
-            <Col span={7}></Col>
+            <Col span={10}>
+                <ActionsTabs />
+                <div style={{ paddingTop: "15px" }}>
+                    <ContactsWall />
+                </div>
+            </Col>
+            <Col span={7}>
+                <CollapsibleDetails />
+            </Col>
         </Row>
     );
 };

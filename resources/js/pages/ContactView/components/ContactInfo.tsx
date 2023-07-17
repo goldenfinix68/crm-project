@@ -17,6 +17,7 @@ import {
     Button,
     Card,
     Col,
+    Descriptions,
     Divider,
     Dropdown,
     Form,
@@ -184,6 +185,38 @@ const ContactInfo = () => {
                     }
                 />
                 <ActionMenu />
+
+                <Descriptions column={1}>
+                    <Descriptions.Item label="Email">-</Descriptions.Item>
+                    <Descriptions.Item label="Phone">-</Descriptions.Item>
+                    <Descriptions.Item label="Redfin Quick Link">
+                        -
+                    </Descriptions.Item>
+                    <Descriptions.Item label="County Link">-</Descriptions.Item>
+                    <Descriptions.Item label="APN">-</Descriptions.Item>
+                    <Descriptions.Item label="Google Map Link">
+                        -
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Acres">-</Descriptions.Item>
+                    <Descriptions.Item label="Wetlands Status">
+                        -
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Mobile">-</Descriptions.Item>
+                    <Descriptions.Item label="Other Phone">-</Descriptions.Item>
+                    <Descriptions.Item label="Website">-</Descriptions.Item>
+                    <Descriptions.Item label="Address Line 1">
+                        -
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Address Line 2">
+                        -
+                    </Descriptions.Item>
+                    <Descriptions.Item label="City">-</Descriptions.Item>
+                    <Descriptions.Item label="State">-</Descriptions.Item>
+                    <Descriptions.Item label="ZipCode">-</Descriptions.Item>
+                    <Descriptions.Item label="County">-</Descriptions.Item>
+                    <Descriptions.Item label="Description">-</Descriptions.Item>
+                    <Descriptions.Item label="Tags">-</Descriptions.Item>
+                </Descriptions>
             </Space>
         </Card>
     );
