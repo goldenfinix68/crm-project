@@ -45,6 +45,8 @@ import {
     SendOutlined,
     InboxOutlined,
     FileZipOutlined,
+    SearchOutlined,
+    SyncOutlined,
 } from "@ant-design/icons";
 import type { ColumnsType, TableProps } from "antd/es/table";
 import type { MenuProps } from "antd";
@@ -132,7 +134,7 @@ const Inbox = () => {
     return (
         <Card className="CustomCard">
             <Row>
-                <Col md={10} xs={10} style={{ height: "80vh" }}>
+                <Col md={10} xs={12} style={{ height: "92.8vh" }}>
                     <Button
                         type="primary"
                         style={{ marginTop: "15px", marginLeft: "15px" }}
@@ -140,8 +142,21 @@ const Inbox = () => {
                         <MailOutlined />
                         Compose
                     </Button>
+                    <Button
+                        size="small"
+                        type="text"
+                        shape="circle"
+                        style={{
+                            color: "white",
+                            backgroundColor: "gray",
+                            marginLeft: "70px",
+                        }}
+                    >
+                        <SyncOutlined />
+                    </Button>
                     <Tabs
-                        className="custom-tabs"
+                        defaultActiveKey="4"
+                        className="custom-tabs tabpadding"
                         tabPosition="left"
                         tabBarStyle={{
                             borderBottom: "none",
@@ -156,7 +171,9 @@ const Inbox = () => {
                                 </>
                             }
                             key="1"
-                        ></TabPane>
+                        >
+                            Content of Tab 1
+                        </TabPane>
                         <TabPane
                             tab={
                                 <>
@@ -185,7 +202,38 @@ const Inbox = () => {
                             }
                             key="4"
                         >
-                            Content of Tab 3
+                            <Input
+                                suffix={<SearchOutlined />}
+                                placeholder="Search"
+                            />
+                            <Tabs
+                                defaultActiveKey="1"
+                                size="small"
+                                className="custom-tabs2"
+                            >
+                                <TabPane
+                                    className="tabContent"
+                                    tab={<strong>ALL</strong>}
+                                    key="1"
+                                    style={{
+                                        marginTop: "260px",
+                                        color: "gray",
+                                    }}
+                                >
+                                    No emails found.
+                                </TabPane>
+                                <TabPane
+                                    className="tabContent"
+                                    tab={<strong>UNREAD</strong>}
+                                    key="2"
+                                    style={{
+                                        marginTop: "260px",
+                                        color: "gray",
+                                    }}
+                                >
+                                    No emails found.
+                                </TabPane>
+                            </Tabs>
                         </TabPane>
                         <TabPane
                             tab={
@@ -195,7 +243,7 @@ const Inbox = () => {
                             }
                             key="5"
                         >
-                            Content of Tab 3
+                            Content of Tab 5
                         </TabPane>
                         <TabPane
                             tab={
@@ -205,13 +253,13 @@ const Inbox = () => {
                             }
                             key="6"
                         >
-                            Content of Tab 3
+                            Content of Tab 6
                         </TabPane>
                     </Tabs>
                 </Col>
                 <Col
                     md={14}
-                    xs={14}
+                    xs={12}
                     style={{ backgroundColor: "#F5F5F5" }}
                 ></Col>
             </Row>
