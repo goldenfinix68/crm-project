@@ -5,9 +5,10 @@ export type TUser = {
     email: string;
 };
 
-export type TType = {
+export type TContactType = {
     id?: string;
-    title: string;
+    name: string;
+    highlight: string;
 };
 
 export type TContact = {

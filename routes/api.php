@@ -21,6 +21,7 @@ Route::post('/logout', 'App\Http\Controllers\Api\AuthController@logout')->middle
 Route::middleware('auth:api')->group(function () {
     Route::resource('/users', 'App\Http\Controllers\Api\UsersController');
     Route::resource('/contacts', 'App\Http\Controllers\Api\ContactsController');
+    Route::resource('/contact-types', 'App\Http\Controllers\Api\ContactTypesController');
 
     Route::get('/user', function (Request $request) {
         return $request->user();
