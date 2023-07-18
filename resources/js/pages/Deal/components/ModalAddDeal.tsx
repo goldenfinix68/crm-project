@@ -14,6 +14,7 @@ import {
     Form,
     Select,
     DatePicker,
+    notification,
 } from "antd";
 
 import {
@@ -34,23 +35,43 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import TextArea from "antd/es/input/TextArea";
+import { useNavigate } from "react-router-dom";
+import { useForm } from "antd/es/form/Form";
+import { useMutation } from "react-query";
+import { useDealMutation } from "../../../api/mutation/useDealMutation";
 interface Props {
     isModalOpenAdd: boolean;
     handleOkAdd: () => void;
     handleCancelAdd: () => void;
 }
+
 const ModalAddDeal = ({
     isModalOpenAdd,
     handleOkAdd,
     handleCancelAdd,
 }: Props) => {
+    const navigate = useNavigate();
+    const [form] = useForm();
     const onFinish = (values: any) => {
-        console.log("Success:", values);
+        mutation.mutate({
+            ...values,
+            estimated_close_date:
+                values.estimated_close_date.format("YYYY-MM-DD"),
+        });
     };
 
-    const onFinishFailed = (errorInfo: any) => {
-        console.log("Failed:", errorInfo);
-    };
+    const mutation = useMutation(useDealMutation, {
+        onSuccess: (res) => {
+            // navigate("/users"); // Redirect to the users list page after successful submission
+            if (res.success) {
+                notification.success({
+                    message: "Deal",
+                    description: "Successfully Added",
+                });
+                handleCancelAdd();
+            }
+        },
+    });
 
     const calendar = useRef();
     return (
@@ -92,13 +113,12 @@ const ModalAddDeal = ({
             <Row gutter={12}>
                 <Col md={16} className="col-1-modal-act">
                     <Form
+                        form={form}
                         layout="vertical"
                         name="basic"
                         labelAlign="left"
                         labelWrap
-                        initialValues={{ remember: true }}
                         onFinish={onFinish}
-                        onFinishFailed={onFinishFailed}
                         autoComplete="off"
                     >
                         <Form.Item
@@ -132,7 +152,7 @@ const ModalAddDeal = ({
                             <Col md={12}>
                                 <Form.Item
                                     label="Win Probability"
-                                    name="contact"
+                                    name="win_probability"
                                 >
                                     <Input
                                         placeholder="Win Probability"
@@ -151,7 +171,7 @@ const ModalAddDeal = ({
                                         },
                                     ]}
                                 >
-                                    <Select defaultValue={"Jesse Ashley"}>
+                                    <Select placeholder="Owner">
                                         <Select.Option value="Jesse Admin">
                                             Jesse Admin
                                         </Select.Option>
@@ -163,8 +183,8 @@ const ModalAddDeal = ({
                             </Col>
                             <Col md={12}>
                                 <Form.Item
-                                    label="Estimated"
-                                    name="Estimated Close Date"
+                                    label="Estimated Close Date"
+                                    name="estimated_close_date"
                                     rules={[
                                         {
                                             required: true,
@@ -194,7 +214,7 @@ const ModalAddDeal = ({
                                         },
                                     ]}
                                 >
-                                    <Select defaultValue={"USD"}>
+                                    <Select placeholder="Currency">
                                         <Select.Option value="USD">
                                             USD
                                         </Select.Option>
@@ -206,8 +226,8 @@ const ModalAddDeal = ({
                             </Col>
                             <Col md={12}>
                                 <Form.Item
-                                    label="Source"
-                                    name="source"
+                                    label="Pipeline"
+                                    name="pipeline"
                                     rules={[
                                         {
                                             required: true,
@@ -215,7 +235,7 @@ const ModalAddDeal = ({
                                         },
                                     ]}
                                 >
-                                    <Select defaultValue={"ACQ"}>
+                                    <Select placeholder="Pipeline">
                                         <Select.Option value="ACQ">
                                             ACQ
                                         </Select.Option>
@@ -236,7 +256,7 @@ const ModalAddDeal = ({
                                         },
                                     ]}
                                 >
-                                    <Select defaultValue={"Comp & Qualify"}>
+                                    <Select placeholder="Stage">
                                         <Select.Option value="ACQ">
                                             Comp & Qualify
                                         </Select.Option>
@@ -257,7 +277,7 @@ const ModalAddDeal = ({
                                         },
                                     ]}
                                 >
-                                    <Select defaultValue={"ADS"}>
+                                    <Select placeholder="Source">
                                         <Select.Option value="ADS">
                                             ADS
                                         </Select.Option>
@@ -278,7 +298,7 @@ const ModalAddDeal = ({
                                         },
                                     ]}
                                 >
-                                    <Select defaultValue={"High"}>
+                                    <Select placeholder="Priority">
                                         <Select.Option value="High">
                                             High
                                         </Select.Option>
@@ -303,7 +323,7 @@ const ModalAddDeal = ({
                                         },
                                     ]}
                                 >
-                                    <Select defaultValue={"High"}>
+                                    <Select placeholder="Status">
                                         <Select.Option value="Open">
                                             Open
                                         </Select.Option>
@@ -361,7 +381,13 @@ const ModalAddDeal = ({
                 </Col>
             </Row>
             <div className="modal-footer">
-                <Button className="m-r-xs" type="primary">
+                <Button
+                    className="m-r-xs"
+                    type="primary"
+                    onClick={() => {
+                        form.submit();
+                    }}
+                >
                     Save
                 </Button>
                 <Button className="m-r-xs" type="primary">
