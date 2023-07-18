@@ -39,6 +39,7 @@ import Deal from "./pages/Deal";
 //
 import { useLoggedInUser } from "./api/query/userQuery";
 import Dialer from "./pages/Dialer/Dialer";
+import ContactView from "./pages/ContactView";
 
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
@@ -61,7 +62,7 @@ const App: React.FC = () => {
                             path="/dashboard"
                             element={
                                 <PrivateRoute>
-                                    <PageDashboard />
+                                    <PageDashboard props={""} />
                                 </PrivateRoute>
                             }
                         />
@@ -86,6 +87,15 @@ const App: React.FC = () => {
                             element={
                                 <PrivateRoute>
                                     <AddEditUser />
+                                </PrivateRoute>
+                            }
+                        />
+
+                        <Route
+                            path="/contacts/:contactId"
+                            element={
+                                <PrivateRoute>
+                                    <ContactView />
                                 </PrivateRoute>
                             }
                         />
