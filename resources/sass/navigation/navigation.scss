@@ -1,0 +1,33 @@
+// Fonts
+@import url("https://fonts.googleapis.com/css?family=Nunito");
+
+// Variables
+@import "../variables/variables.scss";
+
+// Bootstrap
+@import "~bootstrap/scss/bootstrap";
+
+.header-search-bar {
+    .ant-dropdown-menu {
+        max-height: 300px;
+        overflow: auto;
+
+        .ant-dropdown-menu-item {
+            .list-data {
+                width: 450px;
+                display: flex;
+                align-items: center;
+
+                img {
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 100px;
+                }
+
+                .list-data-info {
+                    color: #576380;
+                }
+            }
+        }
+    }
+}
