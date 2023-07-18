@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Contact;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ContactsController extends Controller
 {
@@ -41,7 +42,7 @@ class ContactsController extends Controller
             'lastName' => 'required',
         ]);
 
-        $contact = Contact::create($request);
+        $contact = Contact::create($request->all());
 
         
         return response()->json($contact, 200);

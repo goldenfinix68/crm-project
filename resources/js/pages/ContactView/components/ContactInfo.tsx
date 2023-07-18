@@ -38,7 +38,7 @@ import ActionMenuBtn from "./ActionMenuBtn";
 import AvatarWithPopover from "./AvatarWithPopover";
 import ActionMenu from "./ActionMenu";
 import { useMutation } from "react-query";
-import { addTypeMutation } from "../../../api/mutation/useTypeMutation";
+import { addTypeMutation } from "../../../api/mutation/useContactMutation";
 import { TContactType } from "../../../entities";
 import { useContactTypesAll } from "../../../api/query/contactsQuery";
 import queryClient from "../../../queryClient";

@@ -34,6 +34,10 @@ import {
 import React, { useState } from "react";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
+import { useMutation } from "react-query";
+import { addContactMutation } from "../../../api/mutation/useContactMutation";
+import queryClient from "../../../queryClient";
+import { TContact } from "../../../entities";
 
 interface ContactsComponentsAddContactsProps {
     isModalOpen: boolean;
@@ -56,11 +60,21 @@ const ContactsComponentsAddContacts = ({
     isModalOpen,
     setIsModalOpen,
 }: ContactsComponentsAddContactsProps) => {
-    const [form] = Form.useForm();
+    const [form] = Form.useForm<TContact>();
+    const [isAddNew, seIsAddNew] = useState(false);
 
-    const handleFinish = (values) => {
+    const addContact = useMutation(addContactMutation, {
+        onSuccess: () => {
+            console.log("success");
+            //queryClient.invalidateQueries("contactTypesAll");
+            form.resetFields();
+            setIsModalOpen(false);
+        },
+    });
+
+    const handleFinish = (values: TContact) => {
+        addContact.mutate(values);
         console.log(values);
-        // Perform form submission logic here
     };
     return (
         <>
@@ -102,7 +116,12 @@ const ContactsComponentsAddContacts = ({
                     />
                 </div>
                 <div className="modal-content">
-                    <Form form={form} onFinish={handleFinish} layout="vertical">
+                    <Form
+                        form={form}
+                        onFinish={handleFinish}
+                        layout="vertical"
+                        initialValues={{ ownerId: 1 }}
+                    >
                         <Row gutter={24} className="m-t-md">
                             <Col md={12} xs={12}>
                                 <Form.Item
@@ -182,18 +201,18 @@ const ContactsComponentsAddContacts = ({
                                 </Form.Item>
                             </Col>
                             <Col md={12} xs={12}>
-                                <Form.Item name="owner" label="Owner">
+                                <Form.Item name="ownerId" label="Owner">
                                     <Select
                                         defaultValue="Jesse Admin"
                                         style={{ width: "100%" }}
                                         onChange={handleChange}
                                         options={[
                                             {
-                                                value: "jesse admin",
+                                                value: 1,
                                                 label: "Jesse Admin",
                                             },
                                             {
-                                                value: "jesse ashley",
+                                                value: 2,
                                                 label: "Jesse Ashley",
                                             },
                                         ]}
@@ -672,7 +691,15 @@ const ContactsComponentsAddContacts = ({
                     </Form>
                 </div>
                 <div className="modal-footer">
-                    <Button className="m-r-xs" type="primary">
+                    <Button
+                        className="m-r-xs"
+                        type="primary"
+                        onClick={() => {
+                            form.validateFields().then((values) => {
+                                form.submit();
+                            });
+                        }}
+                    >
                         Save
                     </Button>
                     <Button className="m-r-xs" type="primary">
