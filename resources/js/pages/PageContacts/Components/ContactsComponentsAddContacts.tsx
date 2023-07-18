@@ -320,10 +320,7 @@ const ContactsComponentsAddContacts = ({
                                     name="emailOptOutReason"
                                     label="Email Opt Out Reason"
                                 >
-                                    <Input.TextArea
-                                        maxLength={6}
-                                        placeholder="Email Opt Out Reason"
-                                    />
+                                    <Input.TextArea placeholder="Email Opt Out Reason" />
                                 </Form.Item>
                             </Col>
                         </Row>
