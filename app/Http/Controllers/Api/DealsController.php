@@ -15,7 +15,7 @@ class DealsController extends Controller
      */
     public function index()
     {
-        //
+        return Deal::all();
     }
 
     /**

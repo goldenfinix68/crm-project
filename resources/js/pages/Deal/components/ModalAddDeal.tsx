@@ -259,10 +259,10 @@ const ModalAddDeal = ({
                                     ]}
                                 >
                                     <Select placeholder="Stage">
-                                        <Select.Option value="ACQ">
+                                        <Select.Option value="Comp & Qualify">
                                             Comp & Qualify
                                         </Select.Option>
-                                        <Select.Option value="Referrals">
+                                        <Select.Option value="First Offer Given">
                                             First Offer Given
                                         </Select.Option>
                                     </Select>

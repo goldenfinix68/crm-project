@@ -12,7 +12,7 @@ import {
     Col,
     List,
 } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
     UserAddOutlined,
@@ -36,13 +36,32 @@ import {
     DropResult,
     DraggableLocation,
 } from "react-beautiful-dnd";
-
+import Board from "react-trello";
+import { useDealsAll } from "../../api/query/dealQuery";
 interface ListItem {
     id: string;
     title: string;
 }
 
+interface Card {
+    id: number;
+    title: string;
+    label: string;
+    description: string;
+}
+
+interface Lane {
+    id: string;
+    title: string;
+    label: string;
+    style: {
+        width: number;
+    };
+    cards: Card[];
+}
+
 const Deal = () => {
+    const { deals, isLoading } = useDealsAll();
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
     const showModalAdd = () => {
         setIsModalOpenAdd(true);
@@ -161,6 +180,111 @@ const Deal = () => {
         </Card>
     );
 
+    const initialBoardData: { lanes: Lane[] } = {
+        lanes: [
+            {
+                id: "Comp & Qualify",
+                title: "Comp & Qualify",
+                label: "20/70",
+                style: {
+                    width: 280,
+                },
+                cards: [],
+            },
+            {
+                id: "First Offer Given",
+                title: "First Offer Given",
+                label: "10/20",
+                style: {
+                    width: 280,
+                },
+                cards: [],
+            },
+            {
+                id: "In Negotiation",
+                title: "In Negotiation",
+                label: "0/0",
+                style: {
+                    width: 280,
+                },
+                cards: [],
+            },
+            {
+                id: "Verbal Offer Accepted",
+                title: "Verbal Offer Accepted",
+                style: {
+                    width: 280,
+                },
+                label: "2/5",
+                cards: [],
+            },
+            {
+                id: "Under Contract",
+                title: "Under Contract",
+                style: {
+                    width: 280,
+                },
+                label: "2/5",
+                cards: [],
+            },
+        ],
+    };
+
+    const [boardData, setBoardData] = useState(initialBoardData);
+
+    useEffect(() => {
+        if (deals) {
+            const data: { lanes: Lane[] } = { ...initialBoardData }; // Clone the initial data
+            deals.forEach((x: any, key: any) => {
+                if (x.stage == "Comp & Qualify") {
+                    data.lanes[0].cards.push({
+                        id: x.id,
+                        title: x.owner,
+                        label: "",
+                        description: x.owner + " -  $" + x.value,
+                    });
+                }
+                if (x.stage == "First Offer Given") {
+                    data.lanes[1].cards.push({
+                        id: x.id,
+                        title: x.owner,
+                        label: "",
+                        description: x.owner + " -  $" + x.value,
+                    });
+                }
+                if (x.stage == "In Negotiation") {
+                    data.lanes[2].cards.push({
+                        id: x.id,
+                        title: x.owner,
+                        label: "",
+                        description: x.owner + " -  $" + x.value,
+                    });
+                }
+                if (x.stage == "Verbal Offer Accepted") {
+                    data.lanes[3].cards.push({
+                        id: x.id,
+                        title: x.owner,
+                        label: "",
+                        description: x.owner + " -  $" + x.value,
+                    });
+                }
+                if (x.stage == "Under Contract") {
+                    data.lanes[4].cards.push({
+                        id: x.id,
+                        title: x.owner,
+                        label: "",
+                        description: x.owner + " -  $" + x.value,
+                    });
+                }
+            });
+            setBoardData(data);
+        }
+    }, [deals]);
+
+    useEffect(() => {
+        console.log("boardData", boardData.lanes);
+    }, [boardData]);
+
     return (
         <Row className="deal-group-row">
             <Col md={24}>
@@ -278,7 +402,27 @@ const Deal = () => {
                         </div>
                     </div>
                     <div>
-                        <div className="mainDealArrow"></div>
+                        <div className="mainDealArrow">
+                            <div style={{ width: "100%", height: "100vh" }}>
+                                <Board
+                                    draggable
+                                    data={boardData}
+                                    laneDraggable={false}
+                                    // handleDragStart={handleDragStart}
+                                    // handleDragEnd={handleDragEnd}
+                                    className="react-trello-board board"
+                                    cardDragClass="card-drag"
+                                    cardDropClass="card-drop"
+                                    // onCardClick={onCardClick}
+                                    style={{ background: "none!important" }}
+                                    // onCardDelete={onCardDelete}
+                                    customCardLayout={true}
+                                    // components={{
+                                    //     Card: CustomCard,
+                                    // }}
+                                />
+                            </div>
+                        </div>
                     </div>
                     <Filter
                         openFilter={openFilter}
