@@ -39,6 +39,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "antd/es/form/Form";
 import { useMutation } from "react-query";
 import { useDealMutation } from "../../../api/mutation/useDealMutation";
+
 interface Props {
     isModalOpenAdd: boolean;
     handleOkAdd: () => void;
@@ -74,6 +75,7 @@ const ModalAddDeal = ({
     });
 
     const calendar = useRef();
+
     return (
         <Modal
             className="modal-activity"

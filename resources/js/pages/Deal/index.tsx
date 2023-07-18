@@ -10,6 +10,7 @@ import {
     Menu,
     Row,
     Col,
+    List,
 } from "antd";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
@@ -22,10 +23,25 @@ import {
     PhoneOutlined,
     MailOutlined,
     UserOutlined,
+    HolderOutlined,
+    CloseOutlined,
 } from "@ant-design/icons";
 import Search from "antd/es/input/Search";
 import ModalAddDeal from "./components/ModalAddDeal";
 import Filter from "./components/Filter";
+import {
+    DragDropContext,
+    Draggable,
+    Droppable,
+    DropResult,
+    DraggableLocation,
+} from "react-beautiful-dnd";
+
+interface ListItem {
+    id: string;
+    title: string;
+}
+
 const Deal = () => {
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
     const showModalAdd = () => {
@@ -262,145 +278,7 @@ const Deal = () => {
                         </div>
                     </div>
                     <div>
-                        <div className="mainDealArrow">
-                            <div className="bx-pager bx-default-pager">
-                                <div className="bx-pager-item active">
-                                    <a
-                                        className="bx-pager-link "
-                                        data-slide-index="0"
-                                        href=""
-                                    >
-                                        {" "}
-                                        <div>
-                                            <b>Comp & Qualify</b>
-                                        </div>
-                                        <div> $0</div>
-                                    </a>
-
-                                    <div className="arrow"></div>
-                                </div>
-
-                                <div className="bx-pager-item">
-                                    <a
-                                        className="bx-pager-link"
-                                        data-slide-index="1"
-                                        href=""
-                                    >
-                                        {" "}
-                                        <div>
-                                            <b>First Offer Given</b>
-                                        </div>
-                                        <div> $0</div>
-                                    </a>
-
-                                    <div className="arrow"></div>
-                                </div>
-
-                                <div className="bx-pager-item">
-                                    <a
-                                        className="bx-pager-link"
-                                        data-slide-index="2"
-                                        href=""
-                                    >
-                                        {" "}
-                                        <div>
-                                            {" "}
-                                            <b>In Negotiation</b>
-                                        </div>
-                                        <div> $0</div>
-                                    </a>
-                                    <div className="arrow"></div>
-                                </div>
-
-                                <div className="bx-pager-item">
-                                    <a
-                                        className="bx-pager-link"
-                                        data-slide-index="3"
-                                        href=""
-                                    >
-                                        {" "}
-                                        <div>
-                                            {" "}
-                                            <b>Verbal Offer Accepted</b>
-                                        </div>
-                                        <div> $0</div>
-                                    </a>
-                                    <div className="arrow"></div>
-                                </div>
-                                <div className="bx-pager-item">
-                                    <a
-                                        className="bx-pager-link"
-                                        data-slide-index="3"
-                                        href=""
-                                    >
-                                        <div>
-                                            <b>Under Contract</b>{" "}
-                                        </div>
-                                        <div> $111,000</div>
-                                    </a>
-                                    <div className="arrow"></div>
-                                </div>
-                            </div>
-                            <div style={{ padding: 10 }}>
-                                <Card style={{ width: 320 }}>
-                                    <div>Ron Tanburinno - ASHTABULA</div>
-                                    <div
-                                        style={{
-                                            fontSize: 12,
-                                            color: "#9b9999",
-                                        }}
-                                    >
-                                        Ron Tanburinno - $0{" "}
-                                    </div>
-                                    <div
-                                        style={{
-                                            fontSize: 10,
-                                            color: "#9b9999",
-                                        }}
-                                    >
-                                        None
-                                    </div>
-
-                                    <div
-                                        style={{
-                                            marginTop: 10,
-                                            float: "right",
-                                        }}
-                                    >
-                                        <span
-                                            style={{
-                                                marginLeft: 5,
-                                                padding: 4,
-                                                border: " 1px solid #e5e5e5",
-                                                borderRadius: "53%",
-                                            }}
-                                        >
-                                            <PhoneOutlined />
-                                        </span>
-                                        <span
-                                            style={{
-                                                marginLeft: 5,
-                                                padding: 4,
-                                                border: " 1px solid #e5e5e5",
-                                                borderRadius: "53%",
-                                            }}
-                                        >
-                                            <MailOutlined />
-                                        </span>
-                                        <span
-                                            style={{
-                                                marginLeft: 5,
-                                                padding: 4,
-                                                border: " 1px solid #e5e5e5",
-                                                borderRadius: "53%",
-                                            }}
-                                        >
-                                            <UserOutlined />
-                                        </span>
-                                    </div>
-                                </Card>
-                            </div>
-                        </div>
+                        <div className="mainDealArrow"></div>
                     </div>
                     <Filter
                         openFilter={openFilter}
