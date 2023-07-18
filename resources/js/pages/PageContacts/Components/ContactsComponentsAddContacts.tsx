@@ -273,7 +273,9 @@ const ContactsComponentsAddContacts: React.FC<
                             </Typography>
                             <Input placeholder="Subdivision" />
                         </Col>
+
                         <Col md={12} xs={12}>
+                            <Typography className="m-b-xs">APN</Typography>
                             <Input placeholder="APN" />
                         </Col>
                     </Row>
@@ -448,7 +450,7 @@ const ContactsComponentsAddContacts: React.FC<
                     <Row gutter={24} className="m-b-md">
                         <Col md={12} xs={12}>
                             <Typography className="m-b-xs">
-                                MarketAreaNam
+                                MarketAreaName
                             </Typography>
                             <Input placeholder="MarketAreaName" />
                         </Col>
