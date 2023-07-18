@@ -80,3 +80,53 @@
         line-height: 29px !important;
     }
 }
+.custom-tabs .ant-tabs-nav {
+    // margin-bottom: 1px; /* Adjust the margin-bottom value as per your requirement */
+    width: 230px;
+    height: 87vh;
+}
+
+.custom-tabs .ant-tabs-tab {
+    margin-top: 1px !important; /* Adjust the margin-right value as per your requirement */
+}
+
+.custom-tabs .ant-tabs-tab-active {
+    background-color: transparent;
+}
+
+.custom-tabs .ant-tabs-ink-bar {
+    display: none;
+}
+
+.CustomCard {
+    .ant-card-body {
+        padding: 0px !important;
+    }
+}
+
+.tabpadding {
+    .ant-tabs-tabpane {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+}
+
+.custom-tabs2 .ant-tabs-nav {
+    // margin-bottom: 1px; /* Adjust the margin-bottom value as per your requirement */
+    width: 100%;
+    height: 100%;
+}
+
+// .custom-tabs2 .ant-tabs-tab-active {
+//     background-color: "blue";
+// }
+
+.custom-tabs2 .ant-tabs-ink-bar {
+    display: flex;
+    background: #1677ff !important;
+}
+
+.tabContent {
+    display: flex;
+    justify-content: center;
+}

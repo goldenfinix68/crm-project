@@ -37,6 +37,7 @@ import {
     DownOutlined,
     LockOutlined,
     CaretDownOutlined,
+    EditOutlined,
 } from "@ant-design/icons";
 import type { ColumnsType, TableProps } from "antd/es/table";
 import ContactsComponentsAddContacts from "./Components/ContactsComponentsAddContacts";
@@ -61,8 +62,13 @@ const columns: ColumnsType<DataType> = [
         dataIndex: "name",
         render: (text: string, record: DataType) => (
             <>
+                <Button
+                    type="text"
+                    className="m-r-sm"
+                    icon={<EditOutlined />}
+                />
                 <Avatar
-                    className="avatarText"
+                    className="avatarText m-r-sm"
                     // src={record.avatar}
                     size={32}
                     style={{
@@ -78,7 +84,7 @@ const columns: ColumnsType<DataType> = [
         sorter: (a, b) => a.name.length - b.name.length,
         defaultSortOrder: "descend",
         fixed: "left",
-        width: 300,
+        width: 350,
     },
     {
         title: "Email",
