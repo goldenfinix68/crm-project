@@ -8,6 +8,7 @@ const DropdownComponent = ({
     menuList,
     label,
     floatRight = false,
+    showCarret = true,
     ...rest
 }: any) => {
     return (
@@ -21,6 +22,7 @@ const DropdownComponent = ({
             }
             trigger={["click"]}
             {...rest}
+            handleButtonClick={(e) => console.log(e)}
         >
             <Typography.Text
                 style={{
@@ -30,7 +32,10 @@ const DropdownComponent = ({
                     justifyContent: floatRight ? "flex-end" : "flex-start",
                 }}
             >
-                {label} <CaretDownFilled style={{ marginLeft: 4 }} size={1} />
+                {label}{" "}
+                {showCarret && (
+                    <CaretDownFilled style={{ marginLeft: 4 }} size={1} />
+                )}
             </Typography.Text>
         </Dropdown>
     );
