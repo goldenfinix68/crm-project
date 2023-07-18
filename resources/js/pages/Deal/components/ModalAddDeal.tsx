@@ -39,7 +39,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "antd/es/form/Form";
 import { useMutation } from "react-query";
 import { useDealMutation } from "../../../api/mutation/useDealMutation";
-
+import { useDealsAll } from "../../../api/query/dealQuery";
 interface Props {
     isModalOpenAdd: boolean;
     handleOkAdd: () => void;
@@ -51,6 +51,7 @@ const ModalAddDeal = ({
     handleOkAdd,
     handleCancelAdd,
 }: Props) => {
+    const { refetch } = useDealsAll();
     const navigate = useNavigate();
     const [form] = useForm();
     const onFinish = (values: any) => {
@@ -69,6 +70,8 @@ const ModalAddDeal = ({
                     message: "Deal",
                     description: "Successfully Added",
                 });
+
+                refetch();
                 handleCancelAdd();
             }
         },
@@ -195,6 +198,7 @@ const ModalAddDeal = ({
                                     ]}
                                 >
                                     <DatePicker
+                                        style={{ width: "100%" }}
                                         showTime
                                         format="YYYY-MM-DD HH:mm:ss"
                                     />
@@ -219,9 +223,6 @@ const ModalAddDeal = ({
                                     <Select placeholder="Currency">
                                         <Select.Option value="USD">
                                             USD
-                                        </Select.Option>
-                                        <Select.Option value="Comp & Qualify">
-                                            Comp & Qualify
                                         </Select.Option>
                                     </Select>
                                 </Form.Item>
