@@ -150,412 +150,430 @@ const ContactsComponentsAddContacts = ({
                         </Row>
                         <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Acres
-                                </Typography>
-                                <Input placeholder="Acres" />
+                                <Form.Item name="acres" label="Acres">
+                                    <Input placeholder="Acres" />
+                                </Form.Item>
                             </Col>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Email
-                                </Typography>
-                                <Input placeholder="Email" />
+                                <Form.Item name="email" label="Email">
+                                    <Input placeholder="Email" />
+                                </Form.Item>
                             </Col>
                         </Row>
                         <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Job Title
-                                </Typography>
-                                <Input placeholder="Job Title" />
+                                <Form.Item name="jobTitle" label="Job Title">
+                                    <Input placeholder="Job Title" />
+                                </Form.Item>
                             </Col>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Phone
-                                </Typography>
-                                <Input placeholder="Phone" />
+                                <Form.Item name="phone" label="Phone">
+                                    <Input placeholder="Phone" />
+                                </Form.Item>
                             </Col>
                         </Row>
                         <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Other Phone
-                                </Typography>
-                                <Input placeholder="Other Phone" />
-                            </Col>
-                            <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Owner
-                                </Typography>
-                                <Select
-                                    defaultValue="Jesse Admin"
-                                    style={{ width: "100%" }}
-                                    onChange={handleChange}
-                                    options={[
-                                        {
-                                            value: "jesse admin",
-                                            label: "Jesse Admin",
-                                        },
-                                        {
-                                            value: "jesse ashley",
-                                            label: "Jesse Ashley",
-                                        },
-                                    ]}
-                                />
-                            </Col>
-                        </Row>
-                        <Row gutter={24}>
-                            <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Email 2
-                                </Typography>
-                                <Input placeholder="Email 2" />
-                            </Col>
-                            <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">Type</Typography>
-                                <Select
-                                    defaultValue="Select"
-                                    style={{ width: "100%" }}
-                                    onChange={handleChangeType}
-                                    options={[
-                                        {
-                                            value: "Customer",
-                                            label: "Customer",
-                                        },
-                                        {
-                                            value: "Lead",
-                                            label: "Lead",
-                                        },
-                                        { value: "Vendor", label: "Vendor" },
-                                        {
-                                            value: "Partner",
-                                            label: "Partner",
-                                        },
-                                        {
-                                            value: "Competitor",
-                                            label: "Competitor",
-                                        },
-                                        {
-                                            value: "Reseller",
-                                            label: "Reseller",
-                                        },
-                                        {
-                                            value: "Other",
-                                            label: "Other",
-                                        },
-                                    ]}
-                                />
-                            </Col>
-                        </Row>
-                        <Row gutter={24}>
-                            <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Mailing Street Address
-                                </Typography>
-                                <Input placeholder="Mailing Street Address" />
-                            </Col>
-                            <Col md={12} xs={12}>
-                                {/* <Typography className="m-b-xs">
-                            Email Opt Out
-                        </Typography> */}
-                                <Checkbox
-                                    className={"m-t-lg"}
-                                    onChange={onChange}
+                                <Form.Item
+                                    name="otherPhone"
+                                    label="Other Phone"
                                 >
-                                    Email Opt Out
-                                </Checkbox>
+                                    <Input placeholder="Other Phone" />
+                                </Form.Item>
+                            </Col>
+                            <Col md={12} xs={12}>
+                                <Form.Item name="owner" label="Owner">
+                                    <Select
+                                        defaultValue="Jesse Admin"
+                                        style={{ width: "100%" }}
+                                        onChange={handleChange}
+                                        options={[
+                                            {
+                                                value: "jesse admin",
+                                                label: "Jesse Admin",
+                                            },
+                                            {
+                                                value: "jesse ashley",
+                                                label: "Jesse Ashley",
+                                            },
+                                        ]}
+                                    />
+                                </Form.Item>
                             </Col>
                         </Row>
-                        <Row gutter={24} className="m-b-md">
+                        <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Mailing City
-                                </Typography>
-                                <Input placeholder="Mailing City" />
+                                <Form.Item name="email2" label="Email 2">
+                                    <Input placeholder="Email 2" />
+                                </Form.Item>
                             </Col>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Mailing State
-                                </Typography>
-                                <Input placeholder="Mailing State" />
+                                <Form.Item name="type" label="Type">
+                                    <Select
+                                        defaultValue="Select"
+                                        style={{ width: "100%" }}
+                                        onChange={handleChangeType}
+                                        options={[
+                                            {
+                                                value: "Customer",
+                                                label: "Customer",
+                                            },
+                                            {
+                                                value: "Lead",
+                                                label: "Lead",
+                                            },
+                                            {
+                                                value: "Vendor",
+                                                label: "Vendor",
+                                            },
+                                            {
+                                                value: "Partner",
+                                                label: "Partner",
+                                            },
+                                            {
+                                                value: "Competitor",
+                                                label: "Competitor",
+                                            },
+                                            {
+                                                value: "Reseller",
+                                                label: "Reseller",
+                                            },
+                                            {
+                                                value: "Other",
+                                                label: "Other",
+                                            },
+                                        ]}
+                                    />
+                                </Form.Item>
                             </Col>
                         </Row>
-                        <Row gutter={24} className="m-b-md">
+                        <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                {/* <Typography className="m-b-xs">SMS Opt Out</Typography> */}
-                                <Checkbox
-                                    className={"m-t-lg"}
-                                    onChange={onChange}
+                                <Form.Item
+                                    name="mailingStreetAddress"
+                                    label="Mailing Street Address"
                                 >
-                                    SMS Opt Out
-                                </Checkbox>
+                                    <Input placeholder="Mailing Street Address" />
+                                </Form.Item>
                             </Col>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Email Opt Out Reason
-                                </Typography>
-                                <Input.TextArea
-                                    maxLength={6}
-                                    placeholder="Email Opt Out Reason"
-                                />
-                            </Col>
-                        </Row>
-                        <Row gutter={24} className="m-b-md">
-                            <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Mailing Zip
-                                </Typography>
-                                <Input placeholder="Mailing Zip" />
-                            </Col>
-                            <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Mailing County
-                                </Typography>
-                                <Input placeholder="Mailing County" />
+                                <Form.Item name="emailOptOut">
+                                    <Checkbox
+                                        className={"m-t-lg"}
+                                        onChange={onChange}
+                                    >
+                                        Email Opt Out
+                                    </Checkbox>
+                                </Form.Item>
                             </Col>
                         </Row>
-                        <Row gutter={24} className="m-b-md">
+                        <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Subdivision
-                                </Typography>
-                                <Input placeholder="Subdivision" />
+                                <Form.Item
+                                    name="mailingCity"
+                                    label="Mailing City"
+                                >
+                                    <Input placeholder="Mailing City" />
+                                </Form.Item>
+                            </Col>
+                            <Col md={12} xs={12}>
+                                <Form.Item
+                                    name="mailingState"
+                                    label="Mailing State"
+                                >
+                                    <Input placeholder="Mailing State" />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={24}>
+                            <Col md={12} xs={12}>
+                                <Form.Item name="smsOptOut">
+                                    <Checkbox
+                                        className={"m-t-lg"}
+                                        onChange={onChange}
+                                    >
+                                        SMS Opt Out
+                                    </Checkbox>
+                                </Form.Item>
+                            </Col>
+                            <Col md={12} xs={12}>
+                                <Form.Item
+                                    name="emailOptOutReason"
+                                    label="Email Opt Out Reason"
+                                >
+                                    <Input.TextArea
+                                        maxLength={6}
+                                        placeholder="Email Opt Out Reason"
+                                    />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={24}>
+                            <Col md={12} xs={12}>
+                                <Form.Item
+                                    name="mailingZip"
+                                    label="Mailing Zip"
+                                >
+                                    <Input placeholder="Mailing Zip" />
+                                </Form.Item>
+                            </Col>
+                            <Col md={12} xs={12}>
+                                <Form.Item
+                                    name="mailingCounty"
+                                    label="Mailing County"
+                                >
+                                    <Input placeholder="Mailing County" />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={24}>
+                            <Col md={12} xs={12}>
+                                <Form.Item
+                                    name="subdivision"
+                                    label="Subdivision"
+                                >
+                                    <Input placeholder="Subdivision" />
+                                </Form.Item>
                             </Col>
 
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">APN</Typography>
-                                <Input placeholder="APN" />
+                                <Form.Item name="apn" label="APN">
+                                    <Input placeholder="APN" />
+                                </Form.Item>
                             </Col>
                         </Row>
-                        <Row gutter={24} className="m-b-md">
+                        <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Google Map Link
-                                </Typography>
-                                <Input placeholder="Google Map Link" />
+                                <Form.Item
+                                    name="googleMapLink"
+                                    label="Google Map Link"
+                                >
+                                    <Input placeholder="Google Map Link" />
+                                </Form.Item>
                             </Col>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Road Frontage (ft)
-                                </Typography>
-                                <Input placeholder="Road Frontage (ft)" />
-                            </Col>
-                        </Row>
-                        <Row gutter={24} className="m-b-md">
-                            <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Redfin Quick Link
-                                </Typography>
-                                <Input placeholder="Redfin Quick Link" />
-                            </Col>
-                            <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Opening Bid
-                                </Typography>
-                                <Input placeholder="Opening Bid" />
+                                <Form.Item
+                                    name="roadFrontage"
+                                    label="Road Frontage (ft)"
+                                >
+                                    <Input placeholder="Road Frontage (ft)" />
+                                </Form.Item>
                             </Col>
                         </Row>
-                        <Row gutter={24} className="m-b-md">
+                        <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Assessed Value
-                                </Typography>
-                                <Input placeholder="Assessed Value" />
+                                <Form.Item
+                                    name="redfinQuickLink"
+                                    label="Redfin Quick Link"
+                                >
+                                    <Input placeholder="Redfin Quick Link" />
+                                </Form.Item>
                             </Col>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Assessed vs. Opening Bid Margin (manual)
-                                </Typography>
-                                <Input placeholder="Assessed vs. Opening Bid Margin (manual)" />
-                            </Col>
-                        </Row>
-                        <Row gutter={24} className="m-b-md">
-                            <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Assessed vs. Opening Bid Multiple (manual)
-                                </Typography>
-                                <Input placeholder="Assessed vs. Opening Bid Multiple (manual)" />
-                            </Col>
-                            <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Wetlands Status
-                                </Typography>
-                                <Select
-                                    defaultValue="Select"
-                                    style={{ width: "100%" }}
-                                    onChange={handleChangeType}
-                                    options={[
-                                        { value: "None", label: "None" },
-                                        {
-                                            value: "Small Portion",
-                                            label: "Small Portion",
-                                        },
-                                        { value: "Half", label: "Half" },
-                                        {
-                                            value: "Most",
-                                            label: "Most",
-                                        },
-                                        { value: "All", label: "All" },
-                                    ]}
-                                />
+                                <Form.Item
+                                    name="openingBid"
+                                    label="Opening Bid"
+                                >
+                                    <Input placeholder="Opening Bid" />
+                                </Form.Item>
                             </Col>
                         </Row>
-                        <Row gutter={24} className="m-b-md">
+                        <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Legal Description
-                                </Typography>
-                                <Input placeholder="Legal Description" />
+                                <Form.Item
+                                    name="assessedValue"
+                                    label="Assessed Value"
+                                >
+                                    <Input placeholder="Assessed Value" />
+                                </Form.Item>
                             </Col>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Subdivision
-                                </Typography>
-                                <Input placeholder="Subdivision" />
-                            </Col>
-                        </Row>
-                        <Row gutter={24} className="m-b-md">
-                            <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Flood Zone
-                                </Typography>
-                                <Select
-                                    defaultValue="Yes"
-                                    style={{ width: "100%" }}
-                                    onChange={handleChangeType}
-                                    options={[
-                                        { value: "Yes", label: "Yes" },
-                                        {
-                                            value: "No",
-                                            label: "No",
-                                        },
-                                    ]}
-                                />
-                            </Col>
-                            <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Topography
-                                </Typography>
-                                <Input placeholder="Topography" />
+                                <Form.Item
+                                    name="assessedVsOpeningBidMargin"
+                                    label="Assessed vs. Opening Bid Margin (manual)"
+                                >
+                                    <Input placeholder="Assessed vs. Opening Bid Margin (manual)" />
+                                </Form.Item>
                             </Col>
                         </Row>
-                        <Row gutter={24} className="m-b-md">
+                        <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Wireless 1
-                                </Typography>
-                                <Input placeholder="Wireless 1" />
+                                <Form.Item
+                                    name="assessedVsOpeningBidMultiple"
+                                    label="Assessed vs. Opening Bid Multiple (manual)"
+                                >
+                                    <Input placeholder="Assessed vs. Opening Bid Multiple (manual)" />
+                                </Form.Item>
                             </Col>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Wireless 2
-                                </Typography>
-                                <Input placeholder="Wireless 2" />
-                            </Col>
-                        </Row>
-                        <Row gutter={24} className="m-b-md">
-                            <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Wireless 3
-                                </Typography>
-                                <Input placeholder="Wireless 3" />
-                            </Col>
-                            <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Wireless 4
-                                </Typography>
-                                <Input placeholder="Wireless 4" />
-                            </Col>
-                        </Row>
-                        <Row gutter={24} className="m-b-md">
-                            <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Landline 1
-                                </Typography>
-                                <Input placeholder="Landline 1" />
-                            </Col>
-                            <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Landline 2
-                                </Typography>
-                                <Input placeholder="Landline 2" />
+                                <Form.Item
+                                    name="wetlandsStatus"
+                                    label="Wetlands Status"
+                                >
+                                    <Select
+                                        defaultValue="Select"
+                                        style={{ width: "100%" }}
+                                        onChange={handleChangeType}
+                                        options={[
+                                            { value: "None", label: "None" },
+                                            {
+                                                value: "Small Portion",
+                                                label: "Small Portion",
+                                            },
+                                            { value: "Half", label: "Half" },
+                                            {
+                                                value: "Most",
+                                                label: "Most",
+                                            },
+                                            { value: "All", label: "All" },
+                                        ]}
+                                    />
+                                </Form.Item>
                             </Col>
                         </Row>
-                        <Row gutter={24} className="m-b-md">
+                        <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Landline 3
-                                </Typography>
-                                <Input placeholder="Landline 3" />
+                                <Form.Item
+                                    name="legalDescription"
+                                    label="Legal Description"
+                                >
+                                    <Input placeholder="Legal Description" />
+                                </Form.Item>
                             </Col>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Landline 4
-                                </Typography>
-                                <Input placeholder="Landline 4" />
+                                <Form.Item name="subdivision" label="Subdivion">
+                                    <Input placeholder="Subdivision" />
+                                </Form.Item>
                             </Col>
                         </Row>
-                        <Row gutter={24} className="m-b-md">
+                        <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    MarketAreaName
-                                </Typography>
-                                <Input placeholder="MarketAreaName" />
+                                <Form.Item name="floodZone" label="Flood Zone">
+                                    <Select
+                                        defaultValue="Yes"
+                                        style={{ width: "100%" }}
+                                        onChange={handleChangeType}
+                                        options={[
+                                            { value: "Yes", label: "Yes" },
+                                            {
+                                                value: "No",
+                                                label: "No",
+                                            },
+                                        ]}
+                                    />
+                                </Form.Item>
+                            </Col>
+                            <Col md={12} xs={12}>
+                                <Form.Item name="topography" label="Topography">
+                                    <Input placeholder="Topography" />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={24}>
+                            <Col md={12} xs={12}>
+                                <Form.Item name="wireless1" label="Wireless 1">
+                                    <Input placeholder="Wireless 1" />
+                                </Form.Item>
+                            </Col>
+                            <Col md={12} xs={12}>
+                                <Form.Item name="wireless2" label="Wireless 2">
+                                    <Input placeholder="Wireless 2" />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={24}>
+                            <Col md={12} xs={12}>
+                                <Form.Item name="wireless3" label="Wireless 3">
+                                    <Input placeholder="Wireless 3" />
+                                </Form.Item>
+                            </Col>
+                            <Col md={12} xs={12}>
+                                <Form.Item name="wireless4" label="Wireless 4">
+                                    <Input placeholder="Wireless 4" />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={24}>
+                            <Col md={12} xs={12}>
+                                <Form.Item name="landline1" label="Landline 1">
+                                    <Input placeholder="Landline 1" />
+                                </Form.Item>
+                            </Col>
+                            <Col md={12} xs={12}>
+                                <Form.Item name="landline2" label="Landline 2">
+                                    <Input placeholder="Landline 2" />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={24}>
+                            <Col md={12} xs={12}>
+                                <Form.Item name="landline3" label="Landline 3">
+                                    <Input placeholder="Landline 3" />
+                                </Form.Item>
+                            </Col>
+                            <Col md={12} xs={12}>
+                                <Form.Item name="landline4" label="Landline 4">
+                                    <Input placeholder="Landline 4" />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={24}>
+                            <Col md={12} xs={12}>
+                                <Form.Item
+                                    name="marketAreaName"
+                                    label="MarketAreaName"
+                                >
+                                    <Input placeholder="MarketAreaName" />
+                                </Form.Item>
                             </Col>
                             <Col md={12} xs={12}></Col>
                         </Row>
-                        <Row gutter={24} className="m-b-md">
+                        <Row gutter={24} className="m-b-sm">
                             <Col>
                                 <Typography.Title level={5}>
                                     Social
                                 </Typography.Title>
                             </Col>
                         </Row>
-                        <Row gutter={24} className="m-b-md">
+                        <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Skype
-                                </Typography>
-                                <Input placeholder="Skype" />
+                                <Form.Item name="skype" label="Skype">
+                                    <Input placeholder="Skype" />
+                                </Form.Item>
                             </Col>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Website
-                                </Typography>
-                                <Input placeholder="Website" />
+                                <Form.Item name="website" label="Website">
+                                    <Input placeholder="Website" />
+                                </Form.Item>
                             </Col>
                         </Row>
 
                         <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Facebook
-                                </Typography>
-                                <Input placeholder="Skype" />
+                                <Form.Item name="facebook" label="Facebook">
+                                    <Input placeholder="Facebook" />
+                                </Form.Item>
                             </Col>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    LinkedIn
-                                </Typography>
-                                <Input placeholder="Website" />
+                                <Form.Item name="linkedin" label="LinkedIn">
+                                    <Input placeholder="LinkedIn" />
+                                </Form.Item>
                             </Col>
                         </Row>
                         <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Twitter
-                                </Typography>
-                                <Input placeholder="Skype" />
+                                <Form.Item name="twitter" label="Twitter">
+                                    <Input placeholder="Twitter" />
+                                </Form.Item>
                             </Col>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Instagram
-                                </Typography>
-                                <Input placeholder="Website" />
+                                <Form.Item name="instagram" label="Instagram">
+                                    <Input placeholder="Instagram" />
+                                </Form.Item>
                             </Col>
                         </Row>
 
-                        <Row gutter={24}>
+                        <Row gutter={24} className="m-b-sm">
                             <Col>
                                 <Typography.Title level={5}>
                                     Details
@@ -564,30 +582,35 @@ const ContactsComponentsAddContacts = ({
                         </Row>
                         <Row gutter={24}>
                             <Col md={24} xs={24}>
-                                <Typography className="m-b-xs">
-                                    Description
-                                </Typography>
-                                <Input.TextArea
-                                    maxLength={6}
-                                    placeholder="Description"
-                                />
+                                <Form.Item
+                                    name="description"
+                                    label="Description"
+                                >
+                                    <Input.TextArea
+                                        maxLength={6}
+                                        placeholder="Description"
+                                    />
+                                </Form.Item>
                             </Col>
                         </Row>
                         <Row gutter={24}>
                             <Col md={24} xs={24}>
-                                <Typography className="m-b-xs">Tags</Typography>
-                                <Input placeholder="Tags" />
+                                <Form.Item name="tags" label="Tags">
+                                    <Input placeholder="Tags" />
+                                </Form.Item>
                             </Col>
                         </Row>
                         <Row gutter={24}>
                             <Col md={24} xs={24}>
-                                <Typography className="m-b-xs">
-                                    Legal Description
-                                </Typography>
-                                <Input placeholder="Legal Description" />
+                                <Form.Item
+                                    name="legalDescription"
+                                    label="Legal Description"
+                                >
+                                    <Input placeholder="Legal Description" />
+                                </Form.Item>
                             </Col>
                         </Row>
-                        <Row gutter={24}>
+                        <Row gutter={24} className="m-b-sm">
                             <Col>
                                 <Typography.Title level={5}>
                                     Address
@@ -596,53 +619,54 @@ const ContactsComponentsAddContacts = ({
                         </Row>
                         <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Address Line 1
-                                </Typography>
-                                <Input placeholder="Address Line 1" />
+                                <Form.Item
+                                    name="addressLine1"
+                                    label=" Address Line 1"
+                                >
+                                    <Input placeholder="Address Line 1" />
+                                </Form.Item>
                             </Col>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Address Line 2
-                                </Typography>
-                                <Input placeholder="Address Line 2" />
-                            </Col>
-                        </Row>
-
-                        <Row gutter={24}>
-                            <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">City</Typography>
-                                <Input placeholder="City" />
-                            </Col>
-                            <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    County
-                                </Typography>
-                                <Input placeholder="County" />
+                                <Form.Item
+                                    name="addressLine2"
+                                    label="Address Line 2"
+                                >
+                                    <Input placeholder="Address Line 2" />
+                                </Form.Item>
                             </Col>
                         </Row>
 
                         <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    ZipCode
-                                </Typography>
-                                <Input placeholder="ZipCode" />
+                                <Form.Item name="city" label="City">
+                                    <Input placeholder="City" />
+                                </Form.Item>
                             </Col>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    State
-                                </Typography>
-                                <Input placeholder="State" />
+                                <Form.Item name="county" label="County">
+                                    <Input placeholder="County" />
+                                </Form.Item>
                             </Col>
                         </Row>
 
                         <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                <Typography className="m-b-xs">
-                                    Country
-                                </Typography>
-                                <Input placeholder="Country" />
+                                <Form.Item name="zipCode" label="Zip Code">
+                                    <Input placeholder="Zip Code" />
+                                </Form.Item>
+                            </Col>
+                            <Col md={12} xs={12}>
+                                <Form.Item name="state" label="State">
+                                    <Input placeholder="State" />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+
+                        <Row gutter={24}>
+                            <Col md={12} xs={12}>
+                                <Form.Item name="country" label="Country">
+                                    <Input placeholder="Country" />
+                                </Form.Item>
                             </Col>
                         </Row>
                     </Form>
