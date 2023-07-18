@@ -39,15 +39,22 @@ import Inbox from "./pages/Inbox/Inbox";
 
 //
 import { useLoggedInUser } from "./api/query/userQuery";
+import Dialer from "./pages/Dialer/Dialer";
+import ContactView from "./pages/ContactView";
 
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
+    const isDialer = window.location.pathname === "/dialer";
 
     return (
         <Router>
             {isLoginPage ? (
                 <Routes>
                     <Route path="/" element={<Login />} />
+                </Routes>
+            ) : isDialer ? (
+                <Routes>
+                    <Route path="/dialer" element={<Dialer />} />
                 </Routes>
             ) : (
                 <SideMenu>
@@ -56,7 +63,7 @@ const App: React.FC = () => {
                             path="/dashboard"
                             element={
                                 <PrivateRoute>
-                                    <PageDashboard />
+                                    <PageDashboard props={""} />
                                 </PrivateRoute>
                             }
                         />
@@ -81,6 +88,15 @@ const App: React.FC = () => {
                             element={
                                 <PrivateRoute>
                                     <AddEditUser />
+                                </PrivateRoute>
+                            }
+                        />
+
+                        <Route
+                            path="/contacts/:contactId"
+                            element={
+                                <PrivateRoute>
+                                    <ContactView />
                                 </PrivateRoute>
                             }
                         />

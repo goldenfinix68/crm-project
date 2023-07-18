@@ -7,10 +7,10 @@ interface MyProps {
     props: any;
 }
 
-const PageDashboard: React.FC<MyProps> = (props) => {
+const PageDashboard: React.FC = () => {
     return (
         <>
-            <DashboardComponentButtons />
+            {/* <DashboardComponentButtons /> */}
 
             <DashboardComponentFilters />
 

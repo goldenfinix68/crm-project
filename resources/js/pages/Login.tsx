@@ -23,7 +23,7 @@ const Login = () => {
             onSuccess: (data) => {
                 console.log(data);
                 localStorage.setItem("access_token", data);
-                window.location.replace("/users");
+                window.location.replace("/dashboard");
             },
         }
     );
