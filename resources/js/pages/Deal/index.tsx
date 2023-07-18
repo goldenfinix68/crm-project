@@ -185,7 +185,7 @@ const Deal = () => {
             {
                 id: "Comp & Qualify",
                 title: "Comp & Qualify",
-                label: "20/70",
+                label: "",
                 style: {
                     width: 280,
                 },
@@ -194,7 +194,7 @@ const Deal = () => {
             {
                 id: "First Offer Given",
                 title: "First Offer Given",
-                label: "10/20",
+                label: "",
                 style: {
                     width: 280,
                 },
@@ -203,7 +203,7 @@ const Deal = () => {
             {
                 id: "In Negotiation",
                 title: "In Negotiation",
-                label: "0/0",
+                label: "",
                 style: {
                     width: 280,
                 },
@@ -215,7 +215,7 @@ const Deal = () => {
                 style: {
                     width: 280,
                 },
-                label: "2/5",
+                label: "",
                 cards: [],
             },
             {
@@ -224,7 +224,7 @@ const Deal = () => {
                 style: {
                     width: 280,
                 },
-                label: "2/5",
+                label: "",
                 cards: [],
             },
         ],

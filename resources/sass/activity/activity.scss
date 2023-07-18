@@ -31,6 +31,8 @@
     border-inline-end-width: 0px;
 }
 
+//activity
+
 .modal-activity {
     .modal-header {
         background: rgb(31, 98, 255);
@@ -154,4 +156,8 @@
     // .bx-pager .bx-pager-item.active .arrow {
     //     // background-color: #d68a3a;
     // }
+}
+
+.react-trello-board {
+    background-color: #fff !important;
 }

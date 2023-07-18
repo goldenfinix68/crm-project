@@ -265,6 +265,15 @@ const ModalAddDeal = ({
                                         <Select.Option value="First Offer Given">
                                             First Offer Given
                                         </Select.Option>
+                                        <Select.Option value="In Negotiation">
+                                            In Negotiation
+                                        </Select.Option>
+                                        <Select.Option value="Verbal Offer Accepted">
+                                            Verbal Offer Accepted
+                                        </Select.Option>
+                                        <Select.Option value="Under Contract">
+                                            Under Contract
+                                        </Select.Option>
                                     </Select>
                                 </Form.Item>
                             </Col>
