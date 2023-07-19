@@ -174,7 +174,15 @@ const ContactsComponentsAddContacts = ({
                                 </Form.Item>
                             </Col>
                             <Col md={12} xs={12}>
-                                <Form.Item name="email" label="Email">
+                                <Form.Item
+                                    name="email"
+                                    label="Email"
+                                    rules={[
+                                        {
+                                            type: "email",
+                                        },
+                                    ]}
+                                >
                                     <Input placeholder="Email" />
                                 </Form.Item>
                             </Col>
@@ -222,12 +230,20 @@ const ContactsComponentsAddContacts = ({
                         </Row>
                         <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                <Form.Item name="email2" label="Email 2">
+                                <Form.Item
+                                    name="email2"
+                                    label="Email 2"
+                                    rules={[
+                                        {
+                                            type: "email",
+                                        },
+                                    ]}
+                                >
                                     <Input placeholder="Email 2" />
                                 </Form.Item>
                             </Col>
                             <Col md={12} xs={12}>
-                                <Form.Item name="type" label="Type">
+                                <Form.Item name="typeId" label="Type">
                                     <Select
                                         defaultValue="Select"
                                         style={{ width: "100%" }}
@@ -335,7 +351,7 @@ const ContactsComponentsAddContacts = ({
                             </Col>
                             <Col md={12} xs={12}>
                                 <Form.Item
-                                    name="mailingCounty"
+                                    name="mailingCountry"
                                     label="Mailing County"
                                 >
                                     <Input placeholder="Mailing County" />
@@ -353,7 +369,7 @@ const ContactsComponentsAddContacts = ({
                             </Col>
 
                             <Col md={12} xs={12}>
-                                <Form.Item name="apn" label="APN">
+                                <Form.Item name="APN" label="APN">
                                     <Input placeholder="APN" />
                                 </Form.Item>
                             </Col>
@@ -361,7 +377,7 @@ const ContactsComponentsAddContacts = ({
                         <Row gutter={24}>
                             <Col md={12} xs={12}>
                                 <Form.Item
-                                    name="googleMapLink"
+                                    name="gMapLink"
                                     label="Google Map Link"
                                 >
                                     <Input placeholder="Google Map Link" />
@@ -379,7 +395,7 @@ const ContactsComponentsAddContacts = ({
                         <Row gutter={24}>
                             <Col md={12} xs={12}>
                                 <Form.Item
-                                    name="redfinQuickLink"
+                                    name="redfinLink"
                                     label="Redfin Quick Link"
                                 >
                                     <Input placeholder="Redfin Quick Link" />
@@ -405,7 +421,7 @@ const ContactsComponentsAddContacts = ({
                             </Col>
                             <Col md={12} xs={12}>
                                 <Form.Item
-                                    name="assessedVsOpeningBidMargin"
+                                    name="assessedVsOpeningMargin"
                                     label="Assessed vs. Opening Bid Margin (manual)"
                                 >
                                     <Input placeholder="Assessed vs. Opening Bid Margin (manual)" />
@@ -415,7 +431,7 @@ const ContactsComponentsAddContacts = ({
                         <Row gutter={24}>
                             <Col md={12} xs={12}>
                                 <Form.Item
-                                    name="assessedVsOpeningBidMultiple"
+                                    name="assessedVsOpeningMultiple"
                                     label="Assessed vs. Opening Bid Multiple (manual)"
                                 >
                                     <Input placeholder="Assessed vs. Opening Bid Multiple (manual)" />
@@ -457,14 +473,17 @@ const ContactsComponentsAddContacts = ({
                                 </Form.Item>
                             </Col>
                             <Col md={12} xs={12}>
-                                <Form.Item name="subdivision" label="Subdivion">
+                                <Form.Item
+                                    name="legalSubdivision"
+                                    label="Subdivision"
+                                >
                                     <Input placeholder="Subdivision" />
                                 </Form.Item>
                             </Col>
                         </Row>
                         <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                <Form.Item name="floodZone" label="Flood Zone">
+                                <Form.Item name="floodzone" label="Flood Zone">
                                     <Select
                                         defaultValue="Yes"
                                         style={{ width: "100%" }}
@@ -599,13 +618,10 @@ const ContactsComponentsAddContacts = ({
                         <Row gutter={24}>
                             <Col md={24} xs={24}>
                                 <Form.Item
-                                    name="description"
+                                    name="detailsDescription"
                                     label="Description"
                                 >
-                                    <Input.TextArea
-                                        maxLength={6}
-                                        placeholder="Description"
-                                    />
+                                    <Input.TextArea placeholder="Description" />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -619,7 +635,7 @@ const ContactsComponentsAddContacts = ({
                         <Row gutter={24}>
                             <Col md={24} xs={24}>
                                 <Form.Item
-                                    name="legalDescription"
+                                    name="detailsLegalDescription"
                                     label="Legal Description"
                                 >
                                     <Input placeholder="Legal Description" />
