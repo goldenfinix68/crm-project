@@ -1,5 +1,6 @@
 import { useMutation } from "react-query";
 import { TContact, TContactType } from "../../entities";
+import { notification } from "antd";
 
 export const addTypeMutation = async (type: TContactType) => {
     const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
@@ -32,5 +33,9 @@ export const addContactMutation = async (contact: TContact) => {
     if (!response.ok) {
         throw new Error(data.message || "Failed to add contact type");
     }
+    notification.success({
+        message: "Success",
+        description: "Successfully created",
+    });
     return data;
 };

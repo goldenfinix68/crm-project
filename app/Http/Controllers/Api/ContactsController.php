@@ -16,7 +16,7 @@ class ContactsController extends Controller
      */
     public function index()
     {
-        return Contact::all();
+        return Contact::with('owner')->get();
     }
 
     /**
@@ -46,6 +46,7 @@ class ContactsController extends Controller
 
         
         return response()->json($contact, 200);
+      
     }
 
     /**

@@ -22,3 +22,21 @@ export const useContactTypesAll = () => {
         isError,
     };
 };
+
+export const useContactsAll = () => {
+    const { data, isLoading, isError } = useQuery("contacts", async () => {
+        const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+        const response = await axios.get("/api/contacts", {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+        return response.data;
+    });
+
+    return {
+        contacts: data,
+        isLoading,
+        isError,
+    };
+};

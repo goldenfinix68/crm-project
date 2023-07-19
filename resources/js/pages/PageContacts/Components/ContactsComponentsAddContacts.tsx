@@ -323,10 +323,7 @@ const ContactsComponentsAddContacts = ({
                         <Row gutter={24}>
                             <Col md={12} xs={12}>
                                 <Form.Item name="smsOptOut">
-                                    <Checkbox
-                                        className={"m-t-lg"}
-                                        onChange={onChange}
-                                    >
+                                    <Checkbox className={"m-t-lg"}>
                                         SMS Opt Out
                                     </Checkbox>
                                 </Form.Item>
