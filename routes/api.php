@@ -14,61 +14,64 @@ use ElephantIO\Client;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 Route::post('/login', 'App\Http\Controllers\Api\AuthController@login');
 Route::post('/logout', 'App\Http\Controllers\Api\AuthController@logout')->middleware('auth:api');
 
 
 Route::middleware('auth:api')->group(function () {
     Route::resource('/users', 'App\Http\Controllers\Api\UsersController');
+    Route::resource('/deals', 'App\Http\Controllers\Api\DealsController');
+    Route::post('/deals/useDealUpdateBoardMutation', 'App\Http\Controllers\Api\DealsController@useDealUpdateBoardMutation');
 
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
 });
 
-Route::post('/telnyx/call/webhook', function(Request $request) {
+Route::post('/telnyx/call/webhook', function (Request $request) {
     \Log::info('INCOMING CALL SUCCESS');
     $json = json_decode(file_get_contents("php://input"), true);
     \Log::info($json);
 });
-Route::post('/telnyx/call/webhook/fail', function(Request $request) {
+Route::post('/telnyx/call/webhook/fail', function (Request $request) {
     \Log::error('INCOMING CALL FAIL');
     $json = json_decode(file_get_contents("php://input"), true);
     \Log::info($json);
 });
 
-Route::post('/telnyx/sms/webhook', function(Request $request) {
+Route::post('/telnyx/sms/webhook', function (Request $request) {
     \Log::info('INCOMING SMS SUCCESS');
     $json = json_decode(file_get_contents("php://input"), true);
     \Log::info($json);
 });
-Route::post('/telnyx/sms/webhook/fail', function(Request $request) {
+Route::post('/telnyx/sms/webhook/fail', function (Request $request) {
     \Log::error('INCOMING SMS FAIL');
     $json = json_decode(file_get_contents("php://input"), true);
     \Log::error($json);
 });
-Route::get('/telnyx/call/webhook', function(Request $request) {
+Route::get('/telnyx/call/webhook', function (Request $request) {
     \Log::info('INCOMING CALL SUCCESS');
     $json = json_decode(file_get_contents("php://input"), true);
     \Log::info($json);
 });
-Route::get('/telnyx/call/webhook/fail', function(Request $request) {
+Route::get('/telnyx/call/webhook/fail', function (Request $request) {
     \Log::error('INCOMING CALL FAIL');
     $json = json_decode(file_get_contents("php://input"), true);
     \Log::info($json);
 });
 
-Route::get('/telnyx/sms/webhook', function(Request $request) {
+Route::get('/telnyx/sms/webhook', function (Request $request) {
     \Log::info('INCOMING SMS SUCCESS');
     $json = json_decode(file_get_contents("php://input"), true);
     \Log::info($json);
 });
-Route::get('/telnyx/sms/webhook/fail', function(Request $request) {
+Route::get('/telnyx/sms/webhook/fail', function (Request $request) {
     \Log::error('INCOMING SMS FAIL');
     $json = json_decode(file_get_contents("php://input"), true);
     \Log::error($json);
 });
-Route::get('/telnyx/call/dial', function(Request $request) {
+Route::get('/telnyx/call/dial', function (Request $request) {
     // $url = 'https://crm-jesse.test:4001';
     // $client = new Client(Client::engine(Client::CLIENT_4X, $url));
     // $client->initialize();

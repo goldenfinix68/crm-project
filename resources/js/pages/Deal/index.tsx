@@ -10,8 +10,10 @@ import {
     Menu,
     Row,
     Col,
+    List,
+    notification,
 } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
     UserAddOutlined,
@@ -22,11 +24,46 @@ import {
     PhoneOutlined,
     MailOutlined,
     UserOutlined,
+    HolderOutlined,
+    CloseOutlined,
 } from "@ant-design/icons";
 import Search from "antd/es/input/Search";
 import ModalAddDeal from "./components/ModalAddDeal";
 import Filter from "./components/Filter";
+import {
+    DragDropContext,
+    Draggable,
+    Droppable,
+    DropResult,
+    DraggableLocation,
+} from "react-beautiful-dnd";
+import Board from "react-trello";
+import { useDealsAll } from "../../api/query/dealQuery";
+import { useMutation } from "react-query";
+import {
+    useDealMutation,
+    useDealUpdateBoardMutation,
+} from "../../api/mutation/useDealMutation";
+import moment from "moment";
+
+interface Card {
+    id: number;
+    title: React.ReactNode;
+    laneId: any;
+}
+
+interface Lane {
+    id: string;
+    title: string;
+    label: string;
+    style: {
+        width: number;
+    };
+    cards: Card[];
+}
+
 const Deal = () => {
+    const { deals, isLoading, refetch } = useDealsAll();
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
     const showModalAdd = () => {
         setIsModalOpenAdd(true);
@@ -144,6 +181,176 @@ const Deal = () => {
             </Tabs>
         </Card>
     );
+
+    const initialBoardData: { lanes: Lane[] } = {
+        lanes: [
+            {
+                id: "Comp & Qualify",
+                title: "Comp & Qualify",
+                label: "",
+                style: {
+                    width: 280,
+                },
+                cards: [],
+            },
+            {
+                id: "First Offer Given",
+                title: "First Offer Given",
+                label: "",
+                style: {
+                    width: 280,
+                },
+                cards: [],
+            },
+            {
+                id: "In Negotiation",
+                title: "In Negotiation",
+                label: "",
+                style: {
+                    width: 280,
+                },
+                cards: [],
+            },
+            {
+                id: "Verbal Offer Accepted",
+                title: "Verbal Offer Accepted",
+                style: {
+                    width: 280,
+                },
+                label: "",
+                cards: [],
+            },
+            {
+                id: "Under Contract",
+                title: "Under Contract",
+                style: {
+                    width: 280,
+                },
+                label: "",
+                cards: [],
+            },
+        ],
+    };
+
+    const [boardData, setBoardData] = useState(initialBoardData);
+
+    useEffect(() => {
+        if (deals) {
+            const data: { lanes: Lane[] } = { ...initialBoardData }; // Clone the initial data
+            deals.forEach((x: any, key: any) => {
+                if (x.stage == "Comp & Qualify") {
+                    data.lanes[0].cards.push({
+                        id: x.id,
+                        title: cardDiv(x),
+                        laneId: x.stage,
+                    });
+                }
+                if (x.stage == "First Offer Given") {
+                    data.lanes[1].cards.push({
+                        id: x.id,
+                        title: cardDiv(x),
+                        laneId: x.stage,
+                    });
+                }
+                if (x.stage == "In Negotiation") {
+                    data.lanes[2].cards.push({
+                        id: x.id,
+                        title: cardDiv(x),
+                        laneId: x.stage,
+                    });
+                }
+                if (x.stage == "Verbal Offer Accepted") {
+                    data.lanes[3].cards.push({
+                        id: x.id,
+                        title: cardDiv(x),
+                        laneId: x.stage,
+                    });
+                }
+                if (x.stage == "Under Contract") {
+                    data.lanes[4].cards.push({
+                        id: x.id,
+                        title: cardDiv(x),
+                        laneId: x.stage,
+                    });
+                }
+            });
+            setBoardData(data);
+        }
+    }, [deals]);
+
+    const cardDiv = (x: any) => {
+        return (
+            <div>
+                <Card style={{ width: "100%" }}>
+                    <div>{x.owner} </div>
+                    <div
+                        style={{
+                            fontSize: 12,
+                            color: "#9b9999",
+                        }}
+                    >
+                        {x.owner} - ${x.value}{" "}
+                    </div>
+                    <div
+                        style={{
+                            fontSize: 10,
+                            color: "#9b9999",
+                        }}
+                    >
+                        {moment(x.estimated_close_date).format("LL")}
+                    </div>
+
+                    <div
+                        style={{
+                            marginTop: 10,
+                            float: "right",
+                        }}
+                    >
+                        <span
+                            style={{
+                                marginLeft: 5,
+                                padding: 4,
+                                border: " 1px solid #e5e5e5",
+                                borderRadius: "53%",
+                            }}
+                        >
+                            <PhoneOutlined />
+                        </span>
+                        <span
+                            style={{
+                                marginLeft: 5,
+                                padding: 4,
+                                border: " 1px solid #e5e5e5",
+                                borderRadius: "53%",
+                            }}
+                        >
+                            <MailOutlined />
+                        </span>
+                        <span
+                            style={{
+                                marginLeft: 5,
+                                padding: 4,
+                                border: " 1px solid #e5e5e5",
+                                borderRadius: "53%",
+                            }}
+                        >
+                            <UserOutlined />
+                        </span>
+                    </div>
+                </Card>
+            </div>
+        );
+    };
+
+    const mutation = useMutation(useDealUpdateBoardMutation, {
+        onSuccess: (res) => {
+            console.log(res);
+        },
+    });
+
+    const onDataChangeBoard = (newData: any) => {
+        mutation.mutate(newData);
+    };
 
     return (
         <Row className="deal-group-row">
@@ -263,142 +470,19 @@ const Deal = () => {
                     </div>
                     <div>
                         <div className="mainDealArrow">
-                            <div className="bx-pager bx-default-pager">
-                                <div className="bx-pager-item active">
-                                    <a
-                                        className="bx-pager-link "
-                                        data-slide-index="0"
-                                        href=""
-                                    >
-                                        {" "}
-                                        <div>
-                                            <b>Comp & Qualify</b>
-                                        </div>
-                                        <div> $0</div>
-                                    </a>
-
-                                    <div className="arrow"></div>
-                                </div>
-
-                                <div className="bx-pager-item">
-                                    <a
-                                        className="bx-pager-link"
-                                        data-slide-index="1"
-                                        href=""
-                                    >
-                                        {" "}
-                                        <div>
-                                            <b>First Offer Given</b>
-                                        </div>
-                                        <div> $0</div>
-                                    </a>
-
-                                    <div className="arrow"></div>
-                                </div>
-
-                                <div className="bx-pager-item">
-                                    <a
-                                        className="bx-pager-link"
-                                        data-slide-index="2"
-                                        href=""
-                                    >
-                                        {" "}
-                                        <div>
-                                            {" "}
-                                            <b>In Negotiation</b>
-                                        </div>
-                                        <div> $0</div>
-                                    </a>
-                                    <div className="arrow"></div>
-                                </div>
-
-                                <div className="bx-pager-item">
-                                    <a
-                                        className="bx-pager-link"
-                                        data-slide-index="3"
-                                        href=""
-                                    >
-                                        {" "}
-                                        <div>
-                                            {" "}
-                                            <b>Verbal Offer Accepted</b>
-                                        </div>
-                                        <div> $0</div>
-                                    </a>
-                                    <div className="arrow"></div>
-                                </div>
-                                <div className="bx-pager-item">
-                                    <a
-                                        className="bx-pager-link"
-                                        data-slide-index="3"
-                                        href=""
-                                    >
-                                        <div>
-                                            <b>Under Contract</b>{" "}
-                                        </div>
-                                        <div> $111,000</div>
-                                    </a>
-                                    <div className="arrow"></div>
-                                </div>
-                            </div>
-                            <div style={{ padding: 10 }}>
-                                <Card style={{ width: 320 }}>
-                                    <div>Ron Tanburinno - ASHTABULA</div>
-                                    <div
-                                        style={{
-                                            fontSize: 12,
-                                            color: "#9b9999",
-                                        }}
-                                    >
-                                        Ron Tanburinno - $0{" "}
-                                    </div>
-                                    <div
-                                        style={{
-                                            fontSize: 10,
-                                            color: "#9b9999",
-                                        }}
-                                    >
-                                        None
-                                    </div>
-
-                                    <div
-                                        style={{
-                                            marginTop: 10,
-                                            float: "right",
-                                        }}
-                                    >
-                                        <span
-                                            style={{
-                                                marginLeft: 5,
-                                                padding: 4,
-                                                border: " 1px solid #e5e5e5",
-                                                borderRadius: "53%",
-                                            }}
-                                        >
-                                            <PhoneOutlined />
-                                        </span>
-                                        <span
-                                            style={{
-                                                marginLeft: 5,
-                                                padding: 4,
-                                                border: " 1px solid #e5e5e5",
-                                                borderRadius: "53%",
-                                            }}
-                                        >
-                                            <MailOutlined />
-                                        </span>
-                                        <span
-                                            style={{
-                                                marginLeft: 5,
-                                                padding: 4,
-                                                border: " 1px solid #e5e5e5",
-                                                borderRadius: "53%",
-                                            }}
-                                        >
-                                            <UserOutlined />
-                                        </span>
-                                    </div>
-                                </Card>
+                            <div style={{ width: "100%", height: "100vh" }}>
+                                <Board
+                                    draggable
+                                    data={boardData}
+                                    laneDraggable={false}
+                                    hideCardDeleteIcon={true}
+                                    className="react-trello-board board"
+                                    cardDragClass="card-drag"
+                                    cardDropClass="card-drop"
+                                    style={{ background: "none!important" }}
+                                    customCardLayout={true}
+                                    onDataChange={onDataChangeBoard}
+                                />
                             </div>
                         </div>
                     </div>
