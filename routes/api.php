@@ -22,6 +22,7 @@ Route::post('/logout', 'App\Http\Controllers\Api\AuthController@logout')->middle
 Route::middleware('auth:api')->group(function () {
     Route::resource('/users', 'App\Http\Controllers\Api\UsersController');
     Route::resource('/deals', 'App\Http\Controllers\Api\DealsController');
+    Route::post('/deals/useDealUpdateBoardMutation', 'App\Http\Controllers\Api\DealsController@useDealUpdateBoardMutation');
 
     Route::get('/user', function (Request $request) {
         return $request->user();

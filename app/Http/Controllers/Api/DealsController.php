@@ -15,7 +15,7 @@ class DealsController extends Controller
      */
     public function index()
     {
-        return Deal::all();
+        return Deal::orderBy('sort', 'asc')->get();
     }
 
     /**
@@ -27,7 +27,12 @@ class DealsController extends Controller
     public function store(Request $request)
     {
 
+
+
         $data = Deal::create($request->all());
+        $data->sort = $data->id;
+        $data->save();
+
 
         return response()->json(['success' => true, 'data' => $data], 200);
     }
@@ -64,5 +69,26 @@ class DealsController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function useDealUpdateBoardMutation(Request $request)
+    {
+
+        $data = $request->lanes;
+        $cards = [];
+        foreach ($data as $key => $val) {
+            foreach ($val['cards'] as $cardkey => $valkey) {
+                array_push($cards,  $valkey);
+            }
+        }
+
+        foreach ($cards as $key => $val) {
+            $find = Deal::find($val['id']);
+            $find->stage = $val['laneId'];
+            $find->sort = $key;
+            $find->save();
+        }
+
+        return response()->json(['success' => true, 'data' => $data], 200);
     }
 }
