@@ -170,18 +170,41 @@
   background-color: #fff;
 }
 
-.react-trello-board {
-  background-color: #fff !important;
-}
-
 .react-trello-board section {
   margin: 0px !important;
   background: #fff !important;
   padding: 0px !important;
+  width: 300px !important;
 }
 
 .react-trello-board section .sc-gLfKCG.sc-ftDPCE {
   padding: 20px;
   border: 1px solid #e3e3e3;
+}
+
+.react-trello-board section div.sc-jqNall {
+  width: 300px !important;
+}
+
+.react-trello-board section article {
+  border-bottom: none;
+  max-width: 300px !important;
+  padding: 0;
+}
+
+.react-trello-board section article header {
+  display: initial;
+}
+
+.react-trello-board section article header span.sc-ipUqZP {
+  display: none;
+}
+
+.react-trello-board section article header div.sc-ivuxny {
+  display: none;
+}
+
+.react-trello-board section .smooth-dnd-container {
+  min-height: 50vh;
 }
 /*# sourceMappingURL=activity.css.map */

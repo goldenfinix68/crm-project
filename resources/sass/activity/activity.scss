@@ -159,15 +159,39 @@
 }
 
 .react-trello-board {
-    background-color: #fff !important;
+    // background-color: #fff !important;
 
     section {
         margin: 0px !important;
         background: #fff !important;
         padding: 0px !important;
+        width: 300px !important;
         .sc-gLfKCG.sc-ftDPCE {
             padding: 20px;
             border: 1px solid #e3e3e3;
+        }
+        div.sc-jqNall {
+            width: 300px !important;
+        }
+
+        article {
+            border-bottom: none;
+            max-width: 300px !important;
+            padding: 0;
+            // background-color: none;
+
+            header {
+                display: initial;
+                span.sc-ipUqZP {
+                    display: none;
+                }
+                div.sc-ivuxny {
+                    display: none;
+                }
+            }
+        }
+        .smooth-dnd-container {
+            min-height: 50vh;
         }
     }
 }

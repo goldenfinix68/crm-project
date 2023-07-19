@@ -38,6 +38,7 @@ import {
 } from "react-beautiful-dnd";
 import Board from "react-trello";
 import { useDealsAll } from "../../api/query/dealQuery";
+import moment from "moment";
 interface ListItem {
     id: string;
     title: string;
@@ -45,9 +46,7 @@ interface ListItem {
 
 interface Card {
     id: number;
-    title: string;
-    label: string;
-    description: string;
+    title: React.ReactNode;
 }
 
 interface Lane {
@@ -232,6 +231,20 @@ const Deal = () => {
 
     const [boardData, setBoardData] = useState(initialBoardData);
 
+    const handleDragEnd = (
+        cardId: any,
+        sourceLaneId: any,
+        targetLaneId: any,
+        position: any,
+        cardDetails: any
+    ) => {
+        console.log(cardId);
+        console.log(sourceLaneId);
+        console.log(targetLaneId);
+        console.log(position);
+        console.log(cardDetails);
+    };
+
     useEffect(() => {
         if (deals) {
             const data: { lanes: Lane[] } = { ...initialBoardData }; // Clone the initial data
@@ -239,41 +252,31 @@ const Deal = () => {
                 if (x.stage == "Comp & Qualify") {
                     data.lanes[0].cards.push({
                         id: x.id,
-                        title: x.owner,
-                        label: "",
-                        description: x.owner + " -  $" + x.value,
+                        title: cardDiv(x),
                     });
                 }
                 if (x.stage == "First Offer Given") {
                     data.lanes[1].cards.push({
                         id: x.id,
-                        title: x.owner,
-                        label: "",
-                        description: x.owner + " -  $" + x.value,
+                        title: cardDiv(x),
                     });
                 }
                 if (x.stage == "In Negotiation") {
                     data.lanes[2].cards.push({
                         id: x.id,
-                        title: x.owner,
-                        label: "",
-                        description: x.owner + " -  $" + x.value,
+                        title: cardDiv(x),
                     });
                 }
                 if (x.stage == "Verbal Offer Accepted") {
                     data.lanes[3].cards.push({
                         id: x.id,
-                        title: x.owner,
-                        label: "",
-                        description: x.owner + " -  $" + x.value,
+                        title: cardDiv(x),
                     });
                 }
                 if (x.stage == "Under Contract") {
                     data.lanes[4].cards.push({
                         id: x.id,
-                        title: x.owner,
-                        label: "",
-                        description: x.owner + " -  $" + x.value,
+                        title: cardDiv(x),
                     });
                 }
             });
@@ -284,6 +287,70 @@ const Deal = () => {
     useEffect(() => {
         console.log("boardData", boardData.lanes);
     }, [boardData]);
+
+    const cardDiv = (x: any) => {
+        return (
+            <div>
+                <Card style={{ width: "100%" }}>
+                    <div>{x.owner} </div>
+                    <div
+                        style={{
+                            fontSize: 12,
+                            color: "#9b9999",
+                        }}
+                    >
+                        {x.owner} - ${x.value}{" "}
+                    </div>
+                    <div
+                        style={{
+                            fontSize: 10,
+                            color: "#9b9999",
+                        }}
+                    >
+                        {moment(x.estimated_close_date).format("LL")}
+                    </div>
+
+                    <div
+                        style={{
+                            marginTop: 10,
+                            float: "right",
+                        }}
+                    >
+                        <span
+                            style={{
+                                marginLeft: 5,
+                                padding: 4,
+                                border: " 1px solid #e5e5e5",
+                                borderRadius: "53%",
+                            }}
+                        >
+                            <PhoneOutlined />
+                        </span>
+                        <span
+                            style={{
+                                marginLeft: 5,
+                                padding: 4,
+                                border: " 1px solid #e5e5e5",
+                                borderRadius: "53%",
+                            }}
+                        >
+                            <MailOutlined />
+                        </span>
+                        <span
+                            style={{
+                                marginLeft: 5,
+                                padding: 4,
+                                border: " 1px solid #e5e5e5",
+                                borderRadius: "53%",
+                            }}
+                        >
+                            <UserOutlined />
+                        </span>
+                    </div>
+                </Card>
+            </div>
+        );
+    };
 
     return (
         <Row className="deal-group-row">
@@ -409,7 +476,7 @@ const Deal = () => {
                                     data={boardData}
                                     laneDraggable={false}
                                     // handleDragStart={handleDragStart}
-                                    // handleDragEnd={handleDragEnd}
+                                    handleDragEnd={handleDragEnd}
                                     className="react-trello-board board"
                                     cardDragClass="card-drag"
                                     cardDropClass="card-drop"
