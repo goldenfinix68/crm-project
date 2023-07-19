@@ -12048,4 +12048,29 @@ textarea.form-control-lg {
 }
 .header-search-bar .ant-dropdown-menu .ant-dropdown-menu-item .list-data .list-data-info {
   color: #576380;
+}
+
+.header-quick-add .ant-dropdown-menu .ant-dropdown-menu-item .list-data {
+  width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.header-btn .header-btn-plus {
+  width: 13px;
+  height: 13px;
+  background-color: #09b749;
+  color: white;
+  padding: 2px;
+  border-radius: 100px;
+}
+
+.header-call .ant-dropdown-menu .ant-dropdown-menu-item .list-data {
+  width: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
 }/*# sourceMappingURL=navigation.css.map */
