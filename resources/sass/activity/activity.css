@@ -170,6 +170,10 @@
   background-color: #fff;
 }
 
+.react-trello-board {
+  background-color: #fff !important;
+}
+
 .react-trello-board section {
   margin: 0px !important;
   background: #fff !important;
@@ -184,6 +188,8 @@
 
 .react-trello-board section div.sc-jqNall {
   width: 300px !important;
+  padding-right: 5px;
+  padding-left: 5px;
 }
 
 .react-trello-board section article {
