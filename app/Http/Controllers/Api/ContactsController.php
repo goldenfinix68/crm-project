@@ -14,9 +14,38 @@ class ContactsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Contact::with('owner')->get();
+        // return Contact::with('owner')->get();
+
+        $data = Contact::select([
+            'contacts.*',
+            \DB::raw("(SELECT CONCAT(users.firstName, ' ', users.lastName)) as `owner`"),
+        ])
+        ->leftJoin('users', 'users.id', '=', 'contacts.ownerId');
+        
+        if (isset($request->search)) { 
+            $data = $data->where(function ($q) use ($request) {
+                $q->orWhere('id', 'LIKE', "%$search%");
+            });
+        }
+       
+        if ($request->sort_order != '') {
+            $data->orderBy($request->sort_field, $request->sort_order == 'ascend' ? 'asc' : 'desc');
+        } else {
+            $data->orderBy('id', 'desc');
+        }
+
+        if (isset($request->pageSize)) {
+            $data = $data->paginate($request->pageSize);
+        } else {
+            $data = $data->get();
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ], 200);
     }
 
     /**

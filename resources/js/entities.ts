@@ -67,5 +67,5 @@ export type TContact = {
     country?: string;
     zipCode?: string;
     state?: string;
-    owner?: object;
+    owner?: string;
 };

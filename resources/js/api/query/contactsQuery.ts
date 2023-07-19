@@ -10,6 +10,9 @@ export const useContactTypesAll = () => {
             const response = await axios.get("/api/contact-types", {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
+                    // data: {
+                    //     id: 1,
+                    // },
                 },
             });
             return response.data;
@@ -31,7 +34,7 @@ export const useContactsAll = () => {
                 Authorization: `Bearer ${accessToken}`,
             },
         });
-        return response.data;
+        return response.data.data;
     });
 
     return {
