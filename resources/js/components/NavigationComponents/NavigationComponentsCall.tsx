@@ -3,18 +3,20 @@ import {
     Button,
     Checkbox,
     Col,
+    Divider,
     Dropdown,
     Form,
     Input,
     Row,
     Select,
     Space,
+    Switch,
     Tabs,
     Typography,
 } from "antd";
 import type { MenuProps, SelectProps, TabsProps } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPhone } from "@fortawesome/free-solid-svg-icons";
+import { faLaptop, faPhone } from "@fortawesome/free-solid-svg-icons";
 import validataRules from "../../providers/validateRules";
 
 import PhoneInput from "react-phone-input-2";
@@ -317,7 +319,107 @@ const NavigationComponentsCall: React.FC = () => {
         {
             key: "6",
             label: `SETTINGS`,
-            children: `Content of Tab Pane 3`,
+            children: (
+                <>
+                    <Space
+                        wrap
+                        className="w-100"
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <Typography.Text>
+                            Available to take phone calls
+                        </Typography.Text>
+
+                        <Switch size="small" checked />
+                    </Space>
+
+                    <Space
+                        wrap
+                        className="w-100 m-t-sm"
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <Checkbox checked>Answer calls in browser</Checkbox>
+
+                        <FontAwesomeIcon
+                            icon={faLaptop}
+                            style={{ fontSize: 12 }}
+                        />
+                    </Space>
+
+                    <Space
+                        wrap
+                        className="w-100 m-t-sm"
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <Checkbox checked>
+                            Forward calls to mobile phone
+                        </Checkbox>
+
+                        <FontAwesomeIcon
+                            icon={faLaptop}
+                            style={{ fontSize: 12 }}
+                        />
+                    </Space>
+
+                    <Space
+                        wrap
+                        className="w-100 m-t-sm"
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <Checkbox checked>Answer calls on mobile app</Checkbox>
+
+                        <FontAwesomeIcon
+                            icon={faLaptop}
+                            style={{ fontSize: 12 }}
+                        />
+                    </Space>
+
+                    <Divider />
+
+                    <Typography.Text strong>Device Settings</Typography.Text>
+
+                    <Row gutter={12}>
+                        <Col span={24}>
+                            <Typography.Text>Microphone</Typography.Text>
+                            <br />
+                            <Select
+                                className="w-100"
+                                disabled
+                                placeholder="No microphone found"
+                            ></Select>
+                        </Col>
+                        <Col span={24} className="m-t-sm">
+                            <Typography.Text>Speaker/Headset</Typography.Text>
+                            <br />
+                            <Select
+                                className="w-100"
+                                disabled
+                                placeholder="No speaker found"
+                            ></Select>
+                        </Col>
+
+                        <Col span={24} className="m-t-lg m-b-xs  text-right">
+                            <Typography.Link
+                                style={{ textDecoration: "underline" }}
+                            >
+                                Learn More
+                            </Typography.Link>
+                        </Col>
+                    </Row>
+                </>
+            ),
         },
     ];
 
@@ -328,7 +430,7 @@ const NavigationComponentsCall: React.FC = () => {
                 <div className="list-data">
                     <Tabs
                         className="w-100"
-                        defaultActiveKey="6"
+                        defaultActiveKey="1"
                         items={itemTabs}
                         onChange={onChange}
                     />
@@ -345,8 +447,8 @@ const NavigationComponentsCall: React.FC = () => {
                 placement="bottomRight"
                 overlayClassName="header-call"
                 trigger={["click"]}
-                // open={true}
-                open={showCall}
+                open={true}
+                // open={showCall}
                 onOpenChange={() => setShowCall(!showCall)}
             >
                 <FontAwesomeIcon
