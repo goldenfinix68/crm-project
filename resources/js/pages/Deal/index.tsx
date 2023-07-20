@@ -39,7 +39,7 @@ import {
 } from "react-beautiful-dnd";
 import Board from "react-trello";
 import { useDealsAll } from "../../api/query/dealQuery";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import {
     useDealMutation,
     useDealUpdateBoardMutation,
@@ -63,7 +63,14 @@ interface Lane {
 }
 
 const Deal = () => {
-    const { deals, isLoading, refetch } = useDealsAll("");
+    const queryClient = useQueryClient();
+    const [filerPage, setFilterPage] = useState({
+        pipeline: "",
+        title: "",
+        open_deals: "",
+    });
+
+    const { deals, isLoading, refetch } = useDealsAll(filerPage);
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
     const showModalAdd = () => {
         setIsModalOpenAdd(true);
@@ -76,6 +83,17 @@ const Deal = () => {
     const handleCancelAdd = () => {
         setIsModalOpenAdd(false);
     };
+
+    const onClickACQ = (value: string) => {
+        setFilterPage({
+            ...filerPage,
+            pipeline: value,
+        });
+    };
+
+    useEffect(() => {
+        refetch();
+    }, [filerPage]);
 
     const [openFilter, setOpenFilter] = useState(false);
 
@@ -108,11 +126,11 @@ const Deal = () => {
     const acq: MenuProps["items"] = [
         {
             key: "1",
-            label: <div>Marketing</div>,
+            label: <div onClick={() => onClickACQ("Marketing")}>Marketing</div>,
         },
         {
             key: "2",
-            label: <div>ACQ</div>,
+            label: <div onClick={() => onClickACQ("ACQ")}>ACQ</div>,
         },
     ];
     const title: MenuProps["items"] = [
@@ -237,7 +255,7 @@ const Deal = () => {
     useEffect(() => {
         if (deals) {
             const data: { lanes: Lane[] } = { ...initialBoardData }; // Clone the initial data
-            deals.forEach((x: any, key: any) => {
+            deals.data.forEach((x: any, key: any) => {
                 if (x.stage == "Comp & Qualify") {
                     data.lanes[0].cards.push({
                         id: x.id,

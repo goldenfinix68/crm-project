@@ -13,9 +13,15 @@ class DealsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Deal::orderBy('sort', 'asc')->get();
+        $data = Deal::orderBy('sort', 'asc');
+        if ($request->pipeline) {
+            $data->where('pipeline', $request->pipeline);
+        }
+        $data = $data->get();
+
+        return response()->json(['success' => true, 'data' => $data], 200);
     }
 
     /**
