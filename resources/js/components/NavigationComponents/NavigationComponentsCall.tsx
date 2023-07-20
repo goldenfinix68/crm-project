@@ -447,8 +447,8 @@ const NavigationComponentsCall: React.FC = () => {
                 placement="bottomRight"
                 overlayClassName="header-call"
                 trigger={["click"]}
-                open={true}
-                // open={showCall}
+                // open={true}
+                open={showCall}
                 onOpenChange={() => setShowCall(!showCall)}
             >
                 <FontAwesomeIcon
