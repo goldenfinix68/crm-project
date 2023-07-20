@@ -194,8 +194,6 @@ const Deal = () => {
                             boxShadow: "none",
                         }}
                         mode="inline"
-                        defaultSelectedKeys={["1"]}
-                        defaultOpenKeys={["sub1"]}
                     >
                         <Menu.Item
                             key="1"
