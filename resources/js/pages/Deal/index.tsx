@@ -431,6 +431,11 @@ const Deal = () => {
         mutation.mutate(newData);
     };
 
+    const [listBoard, setListBoar] = useState("Board");
+    const onChangeListBoard = (e: any) => {
+        setListBoar(e.target.value);
+    };
+
     return (
         <Row className="deal-group-row">
             <Col md={24}>
@@ -482,11 +487,15 @@ const Deal = () => {
                                 ></Button>
                             </span>
                             <span style={{ marginRight: 10 }}>
-                                <Radio.Group>
-                                    <Radio.Button value="Overdue">
+                                <Radio.Group
+                                    value={listBoard}
+                                    buttonStyle="solid"
+                                    onChange={onChangeListBoard}
+                                >
+                                    <Radio.Button value="List">
                                         List
                                     </Radio.Button>
-                                    <Radio.Button value="Today">
+                                    <Radio.Button value="Board">
                                         Board
                                     </Radio.Button>
                                 </Radio.Group>
