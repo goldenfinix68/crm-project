@@ -45,6 +45,7 @@ import {
     useDealUpdateBoardMutation,
 } from "../../api/mutation/useDealMutation";
 import moment from "moment";
+import DealsTable from "./components/DealsTable";
 
 interface Card {
     id: number;
@@ -62,6 +63,14 @@ interface Lane {
     cards: Card[];
 }
 
+interface TDeals {
+    title: string;
+    name: string;
+    value: string;
+    stage: string;
+    status: string;
+    owner: string;
+}
 const Deal = () => {
     const queryClient = useQueryClient();
     const [filterPage, setFilterPage] = useState({
@@ -310,52 +319,57 @@ const Deal = () => {
             },
         ],
     };
-
+    const [listBoard, setListBoard] = useState("Board");
     const [boardData, setBoardData] = useState(initialBoardData);
-
+    const [listData, setListData] = useState<TDeals[]>([]);
     useEffect(() => {
         if (deals) {
-            const data: { lanes: Lane[] } = { ...initialBoardData }; // Clone the initial data
-            deals.data.forEach((x: any, key: any) => {
-                if (x.stage == "Comp & Qualify") {
-                    data.lanes[0].cards.push({
-                        id: x.id,
-                        title: cardDiv(x),
-                        laneId: x.stage,
-                    });
-                }
-                if (x.stage == "First Offer Given") {
-                    data.lanes[1].cards.push({
-                        id: x.id,
-                        title: cardDiv(x),
-                        laneId: x.stage,
-                    });
-                }
-                if (x.stage == "In Negotiation") {
-                    data.lanes[2].cards.push({
-                        id: x.id,
-                        title: cardDiv(x),
-                        laneId: x.stage,
-                    });
-                }
-                if (x.stage == "Verbal Offer Accepted") {
-                    data.lanes[3].cards.push({
-                        id: x.id,
-                        title: cardDiv(x),
-                        laneId: x.stage,
-                    });
-                }
-                if (x.stage == "Under Contract") {
-                    data.lanes[4].cards.push({
-                        id: x.id,
-                        title: cardDiv(x),
-                        laneId: x.stage,
-                    });
-                }
-            });
-            setBoardData(data);
+            if (listBoard != "List") {
+                const data: { lanes: Lane[] } = { ...initialBoardData }; // Clone the initial data
+                deals.data.forEach((x: any, key: any) => {
+                    if (x.stage == "Comp & Qualify") {
+                        data.lanes[0].cards.push({
+                            id: x.id,
+                            title: cardDiv(x),
+                            laneId: x.stage,
+                        });
+                    }
+                    if (x.stage == "First Offer Given") {
+                        data.lanes[1].cards.push({
+                            id: x.id,
+                            title: cardDiv(x),
+                            laneId: x.stage,
+                        });
+                    }
+                    if (x.stage == "In Negotiation") {
+                        data.lanes[2].cards.push({
+                            id: x.id,
+                            title: cardDiv(x),
+                            laneId: x.stage,
+                        });
+                    }
+                    if (x.stage == "Verbal Offer Accepted") {
+                        data.lanes[3].cards.push({
+                            id: x.id,
+                            title: cardDiv(x),
+                            laneId: x.stage,
+                        });
+                    }
+                    if (x.stage == "Under Contract") {
+                        data.lanes[4].cards.push({
+                            id: x.id,
+                            title: cardDiv(x),
+                            laneId: x.stage,
+                        });
+                    }
+                });
+                setBoardData(data);
+            } else {
+                setListData(deals.data);
+                console.log("wew", deals.data);
+            }
         }
-    }, [deals]);
+    }, [deals, listBoard]);
 
     const cardDiv = (x: any) => {
         return (
@@ -431,9 +445,9 @@ const Deal = () => {
         mutation.mutate(newData);
     };
 
-    const [listBoard, setListBoar] = useState("Board");
     const onChangeListBoard = (e: any) => {
-        setListBoar(e.target.value);
+        setListBoard(e.target.value);
+        refetch();
     };
 
     return (
@@ -544,24 +558,31 @@ const Deal = () => {
                             </span>
                         </div>
                     </div>
-                    <div>
-                        <div className="mainDealArrow">
-                            <div style={{ width: "100%", height: "100vh" }}>
-                                <Board
-                                    draggable
-                                    data={boardData}
-                                    laneDraggable={false}
-                                    hideCardDeleteIcon={true}
-                                    className="react-trello-board board"
-                                    cardDragClass="card-drag"
-                                    cardDropClass="card-drop"
-                                    style={{ background: "none!important" }}
-                                    customCardLayout={true}
-                                    onDataChange={onDataChangeBoard}
-                                />
+                    {listBoard != "List" ? (
+                        <div>
+                            <div className="mainDealArrow">
+                                <div style={{ width: "100%", height: "100vh" }}>
+                                    <Board
+                                        draggable
+                                        data={boardData}
+                                        laneDraggable={false}
+                                        hideCardDeleteIcon={true}
+                                        className="react-trello-board board"
+                                        cardDragClass="card-drag"
+                                        cardDropClass="card-drop"
+                                        style={{ background: "none!important" }}
+                                        customCardLayout={true}
+                                        onDataChange={onDataChangeBoard}
+                                    />
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    ) : (
+                        <div>
+                            <DealsTable deals={listData} />
+                        </div>
+                    )}
+
                     <Filter
                         openFilter={openFilter}
                         setOpenFilter={setOpenFilter}
