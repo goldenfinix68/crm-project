@@ -1,0 +1,123 @@
+// Fonts
+@import url("https://fonts.googleapis.com/css?family=Nunito");
+
+// Variables
+@import "../variables/variables.scss";
+
+// Bootstrap
+@import "~bootstrap/scss/bootstrap";
+
+.header-search-bar {
+    .ant-dropdown-menu {
+        max-height: 300px;
+        overflow: auto;
+
+        .ant-dropdown-menu-item {
+            .list-data {
+                width: 450px;
+                display: flex;
+                align-items: center;
+
+                img {
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 100px;
+                }
+
+                .list-data-info {
+                    color: #576380;
+                }
+            }
+        }
+    }
+}
+
+.header-quick-add {
+    .ant-dropdown-menu {
+        .ant-dropdown-menu-item {
+            .list-data {
+                width: 200px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+.header-btn {
+    .header-btn-plus {
+        width: 13px;
+        height: 13px;
+        background-color: #09b749;
+        color: white;
+        padding: 2px;
+        border-radius: 100px;
+    }
+}
+
+.header-call {
+    .ant-dropdown-menu {
+        .ant-dropdown-menu-item {
+            .list-data {
+                width: 500px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                cursor: pointer;
+            }
+        }
+
+        .ant-dropdown-menu-item:hover {
+            background-color: transparent !important;
+        }
+    }
+}
+
+.form-remove-label-mb {
+    .ant-form-item-label {
+        padding: 0;
+
+        label {
+            color: #505f79 !important;
+        }
+    }
+}
+
+.react-tel-input {
+    .form-control {
+        height: 30px;
+    }
+
+    .form-control:focus {
+        box-shadow: none;
+    }
+}
+
+.search {
+    display: flex;
+}
+.react-tel-input .country-list .search-box {
+    width: 100%;
+    margin-right: 14px;
+}
+
+.btn-browser {
+    width: 100px;
+    padding: 4px 8px;
+    color: #fff !important;
+    background-color: #1f62ff;
+    border-color: #1f62ff;
+}
+
+.btn-phone {
+    width: 90px;
+    padding: 4px 8px;
+    color: #fff !important;
+    background-color: #09b749;
+    border-color: #09b749;
+}
+.btn-phone:hover {
+    border-color: #09b749 !important;
+}

@@ -18,4 +18,7 @@ export default defineConfig({
             "@css": path.resolve(__dirname, "./resoureces/css"),
         },
     },
+    define: {
+        "process.env": {},
+    },
 });

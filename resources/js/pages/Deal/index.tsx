@@ -10,8 +10,10 @@ import {
     Menu,
     Row,
     Col,
+    List,
+    notification,
 } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
     UserAddOutlined,
@@ -22,11 +24,62 @@ import {
     PhoneOutlined,
     MailOutlined,
     UserOutlined,
+    HolderOutlined,
+    CloseOutlined,
 } from "@ant-design/icons";
 import Search from "antd/es/input/Search";
 import ModalAddDeal from "./components/ModalAddDeal";
 import Filter from "./components/Filter";
+import {
+    DragDropContext,
+    Draggable,
+    Droppable,
+    DropResult,
+    DraggableLocation,
+} from "react-beautiful-dnd";
+import Board from "react-trello";
+import { useDealsAll } from "../../api/query/dealQuery";
+import { useMutation, useQueryClient } from "react-query";
+import {
+    useDealMutation,
+    useDealUpdateBoardMutation,
+} from "../../api/mutation/useDealMutation";
+import moment from "moment";
+import DealsTable from "./components/DealsTable";
+
+interface Card {
+    id: number;
+    title: React.ReactNode;
+    laneId: any;
+}
+
+interface Lane {
+    id: string;
+    title: string;
+    label: string;
+    style: {
+        width: number;
+    };
+    cards: Card[];
+}
+
+interface TDeals {
+    title: string;
+    name: string;
+    value: string;
+    stage: string;
+    status: string;
+    owner: string;
+}
 const Deal = () => {
+    const queryClient = useQueryClient();
+    const [filterPage, setFilterPage] = useState({
+        pipeline: "ACQ",
+        title: "",
+        status: "All Deals",
+    });
+
+    const { deals, isLoading, refetch } = useDealsAll(filterPage);
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
     const showModalAdd = () => {
         setIsModalOpenAdd(true);
@@ -39,6 +92,25 @@ const Deal = () => {
     const handleCancelAdd = () => {
         setIsModalOpenAdd(false);
     };
+
+    const onClickACQ = (value: string) => {
+        setFilterPage({
+            ...filterPage,
+            pipeline: value,
+        });
+    };
+
+    const onClickStatus = (value: string) => {
+        setFilterPage({
+            ...filterPage,
+            status: value,
+        });
+        console.log(value);
+    };
+
+    useEffect(() => {
+        refetch();
+    }, [filterPage]);
 
     const [openFilter, setOpenFilter] = useState(false);
 
@@ -71,11 +143,11 @@ const Deal = () => {
     const acq: MenuProps["items"] = [
         {
             key: "1",
-            label: <div>Marketing</div>,
+            label: <div onClick={() => onClickACQ("Marketing")}>Marketing</div>,
         },
         {
             key: "2",
-            label: <div>ACQ</div>,
+            label: <div onClick={() => onClickACQ("ACQ")}>ACQ</div>,
         },
     ];
     const title: MenuProps["items"] = [
@@ -131,19 +203,252 @@ const Deal = () => {
                             boxShadow: "none",
                         }}
                         mode="inline"
-                        defaultSelectedKeys={["1"]}
-                        defaultOpenKeys={["sub1"]}
                     >
-                        <Menu.Item key="1">Activites I am following</Menu.Item>
-                        <Menu.Item key="2">All Closed Activities</Menu.Item>
-                        <Menu.Item key="3">All Open Activities</Menu.Item>
-                        <Menu.Item key="4">My Open Activities</Menu.Item>
-                        <Menu.Item key="5">My Overdue Activites</Menu.Item>
+                        <Menu.Item
+                            key="1"
+                            onClick={() => onClickStatus("All Deals")}
+                        >
+                            All Deals
+                        </Menu.Item>
+                        <Menu.Item
+                            key="2"
+                            onClick={() => onClickStatus("All Open Deals")}
+                        >
+                            All Open Deals
+                        </Menu.Item>
+                        <Menu.Item
+                            key="3"
+                            onClick={() =>
+                                onClickStatus("Deals Closing Next Month")
+                            }
+                        >
+                            Deals Closing Next Month
+                        </Menu.Item>
+                        <Menu.Item
+                            key="4"
+                            onClick={() =>
+                                onClickStatus("Deals Closing This Month")
+                            }
+                        >
+                            Deals Closing This Month
+                        </Menu.Item>
+                        {/* <Menu.Item
+                            key="5"
+                            onClick={() =>
+                                onClickStatus("Deals I am following")
+                            }
+                        >
+                            Deals I am following
+                        </Menu.Item>
+                        <Menu.Item
+                            key="6"
+                            onClick={() => onClickStatus("My Open Deals")}
+                        >
+                            My Open Deals
+                        </Menu.Item>
+                        <Menu.Item
+                            key="7"
+                            onClick={() => onClickStatus("My Ovderdue Deals")}
+                        >
+                            My Ovderdue Deals
+                        </Menu.Item> */}
+                        <Menu.Item
+                            key="8"
+                            onClick={() => onClickStatus("Lost Deals")}
+                        >
+                            Lost Deals
+                        </Menu.Item>
+                        <Menu.Item
+                            key="9"
+                            onClick={() => onClickStatus("Won Deals")}
+                        >
+                            Won Deals
+                        </Menu.Item>
                     </Menu>
                 </Tabs.TabPane>
             </Tabs>
         </Card>
     );
+
+    const initialBoardData: { lanes: Lane[] } = {
+        lanes: [
+            {
+                id: "Comp & Qualify",
+                title: "Comp & Qualify",
+                label: "",
+                style: {
+                    width: 280,
+                },
+                cards: [],
+            },
+            {
+                id: "First Offer Given",
+                title: "First Offer Given",
+                label: "",
+                style: {
+                    width: 280,
+                },
+                cards: [],
+            },
+            {
+                id: "In Negotiation",
+                title: "In Negotiation",
+                label: "",
+                style: {
+                    width: 280,
+                },
+                cards: [],
+            },
+            {
+                id: "Verbal Offer Accepted",
+                title: "Verbal Offer Accepted",
+                style: {
+                    width: 280,
+                },
+                label: "",
+                cards: [],
+            },
+            {
+                id: "Under Contract",
+                title: "Under Contract",
+                style: {
+                    width: 280,
+                },
+                label: "",
+                cards: [],
+            },
+        ],
+    };
+    const [listBoard, setListBoard] = useState("Board");
+    const [boardData, setBoardData] = useState(initialBoardData);
+    const [listData, setListData] = useState<TDeals[]>([]);
+    useEffect(() => {
+        if (deals) {
+            if (listBoard != "List") {
+                const data: { lanes: Lane[] } = { ...initialBoardData }; // Clone the initial data
+                deals.data.forEach((x: any, key: any) => {
+                    if (x.stage == "Comp & Qualify") {
+                        data.lanes[0].cards.push({
+                            id: x.id,
+                            title: cardDiv(x),
+                            laneId: x.stage,
+                        });
+                    }
+                    if (x.stage == "First Offer Given") {
+                        data.lanes[1].cards.push({
+                            id: x.id,
+                            title: cardDiv(x),
+                            laneId: x.stage,
+                        });
+                    }
+                    if (x.stage == "In Negotiation") {
+                        data.lanes[2].cards.push({
+                            id: x.id,
+                            title: cardDiv(x),
+                            laneId: x.stage,
+                        });
+                    }
+                    if (x.stage == "Verbal Offer Accepted") {
+                        data.lanes[3].cards.push({
+                            id: x.id,
+                            title: cardDiv(x),
+                            laneId: x.stage,
+                        });
+                    }
+                    if (x.stage == "Under Contract") {
+                        data.lanes[4].cards.push({
+                            id: x.id,
+                            title: cardDiv(x),
+                            laneId: x.stage,
+                        });
+                    }
+                });
+                setBoardData(data);
+            } else {
+                setListData(deals.data);
+                console.log("wew", deals.data);
+            }
+        }
+    }, [deals, listBoard]);
+
+    const cardDiv = (x: any) => {
+        return (
+            <div>
+                <Card style={{ width: "100%" }}>
+                    <div>{x.owner} </div>
+                    <div
+                        style={{
+                            fontSize: 12,
+                            color: "#9b9999",
+                        }}
+                    >
+                        {x.owner} - ${x.value}{" "}
+                    </div>
+                    <div
+                        style={{
+                            fontSize: 10,
+                            color: "#9b9999",
+                        }}
+                    >
+                        {moment(x.estimated_close_date).format("LL")}
+                    </div>
+
+                    <div
+                        style={{
+                            marginTop: 10,
+                            float: "right",
+                        }}
+                    >
+                        <span
+                            style={{
+                                marginLeft: 5,
+                                padding: 4,
+                                border: " 1px solid #e5e5e5",
+                                borderRadius: "53%",
+                            }}
+                        >
+                            <PhoneOutlined />
+                        </span>
+                        <span
+                            style={{
+                                marginLeft: 5,
+                                padding: 4,
+                                border: " 1px solid #e5e5e5",
+                                borderRadius: "53%",
+                            }}
+                        >
+                            <MailOutlined />
+                        </span>
+                        <span
+                            style={{
+                                marginLeft: 5,
+                                padding: 4,
+                                border: " 1px solid #e5e5e5",
+                                borderRadius: "53%",
+                            }}
+                        >
+                            <UserOutlined />
+                        </span>
+                    </div>
+                </Card>
+            </div>
+        );
+    };
+
+    const mutation = useMutation(useDealUpdateBoardMutation, {
+        onSuccess: (res) => {
+            console.log(res);
+        },
+    });
+
+    const onDataChangeBoard = (newData: any) => {
+        mutation.mutate(newData);
+    };
+
+    const onChangeListBoard = (e: any) => {
+        setListBoard(e.target.value);
+        refetch();
+    };
 
     return (
         <Row className="deal-group-row">
@@ -164,7 +469,8 @@ const Deal = () => {
                                 >
                                     <Button>
                                         <Space>
-                                            ACQ
+                                            {filterPage.pipeline}
+
                                             <DownOutlined />
                                         </Space>
                                     </Button>
@@ -177,20 +483,7 @@ const Deal = () => {
                                 >
                                     <Button>
                                         <Space>
-                                            My Open Deals
-                                            <DownOutlined />
-                                        </Space>
-                                    </Button>
-                                </Dropdown>
-                            </span>
-                            <span style={{ marginRight: 10 }}>
-                                <Dropdown
-                                    menu={{ items: title }}
-                                    placement="bottomLeft"
-                                >
-                                    <Button>
-                                        <Space>
-                                            Title
+                                            {filterPage.status}
                                             <DownOutlined />
                                         </Space>
                                     </Button>
@@ -208,11 +501,15 @@ const Deal = () => {
                                 ></Button>
                             </span>
                             <span style={{ marginRight: 10 }}>
-                                <Radio.Group>
-                                    <Radio.Button value="Overdue">
+                                <Radio.Group
+                                    value={listBoard}
+                                    buttonStyle="solid"
+                                    onChange={onChangeListBoard}
+                                >
+                                    <Radio.Button value="List">
                                         List
                                     </Radio.Button>
-                                    <Radio.Button value="Today">
+                                    <Radio.Button value="Board">
                                         Board
                                     </Radio.Button>
                                 </Radio.Group>
@@ -261,147 +558,31 @@ const Deal = () => {
                             </span>
                         </div>
                     </div>
-                    <div>
-                        <div className="mainDealArrow">
-                            <div className="bx-pager bx-default-pager">
-                                <div className="bx-pager-item active">
-                                    <a
-                                        className="bx-pager-link "
-                                        data-slide-index="0"
-                                        href=""
-                                    >
-                                        {" "}
-                                        <div>
-                                            <b>Comp & Qualify</b>
-                                        </div>
-                                        <div> $0</div>
-                                    </a>
-
-                                    <div className="arrow"></div>
+                    {listBoard != "List" ? (
+                        <div>
+                            <div className="mainDealArrow">
+                                <div style={{ width: "100%", height: "100vh" }}>
+                                    <Board
+                                        draggable
+                                        data={boardData}
+                                        laneDraggable={false}
+                                        hideCardDeleteIcon={true}
+                                        className="react-trello-board board"
+                                        cardDragClass="card-drag"
+                                        cardDropClass="card-drop"
+                                        style={{ background: "none!important" }}
+                                        customCardLayout={true}
+                                        onDataChange={onDataChangeBoard}
+                                    />
                                 </div>
-
-                                <div className="bx-pager-item">
-                                    <a
-                                        className="bx-pager-link"
-                                        data-slide-index="1"
-                                        href=""
-                                    >
-                                        {" "}
-                                        <div>
-                                            <b>First Offer Given</b>
-                                        </div>
-                                        <div> $0</div>
-                                    </a>
-
-                                    <div className="arrow"></div>
-                                </div>
-
-                                <div className="bx-pager-item">
-                                    <a
-                                        className="bx-pager-link"
-                                        data-slide-index="2"
-                                        href=""
-                                    >
-                                        {" "}
-                                        <div>
-                                            {" "}
-                                            <b>In Negotiation</b>
-                                        </div>
-                                        <div> $0</div>
-                                    </a>
-                                    <div className="arrow"></div>
-                                </div>
-
-                                <div className="bx-pager-item">
-                                    <a
-                                        className="bx-pager-link"
-                                        data-slide-index="3"
-                                        href=""
-                                    >
-                                        {" "}
-                                        <div>
-                                            {" "}
-                                            <b>Verbal Offer Accepted</b>
-                                        </div>
-                                        <div> $0</div>
-                                    </a>
-                                    <div className="arrow"></div>
-                                </div>
-                                <div className="bx-pager-item">
-                                    <a
-                                        className="bx-pager-link"
-                                        data-slide-index="3"
-                                        href=""
-                                    >
-                                        <div>
-                                            <b>Under Contract</b>{" "}
-                                        </div>
-                                        <div> $111,000</div>
-                                    </a>
-                                    <div className="arrow"></div>
-                                </div>
-                            </div>
-                            <div style={{ padding: 10 }}>
-                                <Card style={{ width: 320 }}>
-                                    <div>Ron Tanburinno - ASHTABULA</div>
-                                    <div
-                                        style={{
-                                            fontSize: 12,
-                                            color: "#9b9999",
-                                        }}
-                                    >
-                                        Ron Tanburinno - $0{" "}
-                                    </div>
-                                    <div
-                                        style={{
-                                            fontSize: 10,
-                                            color: "#9b9999",
-                                        }}
-                                    >
-                                        None
-                                    </div>
-
-                                    <div
-                                        style={{
-                                            marginTop: 10,
-                                            float: "right",
-                                        }}
-                                    >
-                                        <span
-                                            style={{
-                                                marginLeft: 5,
-                                                padding: 4,
-                                                border: " 1px solid #e5e5e5",
-                                                borderRadius: "53%",
-                                            }}
-                                        >
-                                            <PhoneOutlined />
-                                        </span>
-                                        <span
-                                            style={{
-                                                marginLeft: 5,
-                                                padding: 4,
-                                                border: " 1px solid #e5e5e5",
-                                                borderRadius: "53%",
-                                            }}
-                                        >
-                                            <MailOutlined />
-                                        </span>
-                                        <span
-                                            style={{
-                                                marginLeft: 5,
-                                                padding: 4,
-                                                border: " 1px solid #e5e5e5",
-                                                borderRadius: "53%",
-                                            }}
-                                        >
-                                            <UserOutlined />
-                                        </span>
-                                    </div>
-                                </Card>
                             </div>
                         </div>
-                    </div>
+                    ) : (
+                        <div>
+                            <DealsTable deals={listData} />
+                        </div>
+                    )}
+
                     <Filter
                         openFilter={openFilter}
                         setOpenFilter={setOpenFilter}
