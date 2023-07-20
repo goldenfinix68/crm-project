@@ -68,5 +68,56 @@
                 cursor: pointer;
             }
         }
+
+        .ant-dropdown-menu-item:hover {
+            background-color: transparent !important;
+        }
     }
+}
+
+.form-remove-label-mb {
+    .ant-form-item-label {
+        padding: 0;
+
+        label {
+            color: #505f79 !important;
+        }
+    }
+}
+
+.react-tel-input {
+    .form-control {
+        height: 30px;
+    }
+
+    .form-control:focus {
+        box-shadow: none;
+    }
+}
+
+.search {
+    display: flex;
+}
+.react-tel-input .country-list .search-box {
+    width: 100%;
+    margin-right: 14px;
+}
+
+.btn-browser {
+    width: 100px;
+    padding: 4px 8px;
+    color: #fff !important;
+    background-color: #1f62ff;
+    border-color: #1f62ff;
+}
+
+.btn-phone {
+    width: 90px;
+    padding: 4px 8px;
+    color: #fff !important;
+    background-color: #09b749;
+    border-color: #09b749;
+}
+.btn-phone:hover {
+    border-color: #09b749 !important;
 }
