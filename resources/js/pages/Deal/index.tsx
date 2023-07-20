@@ -64,13 +64,13 @@ interface Lane {
 
 const Deal = () => {
     const queryClient = useQueryClient();
-    const [filerPage, setFilterPage] = useState({
-        pipeline: "",
+    const [filterPage, setFilterPage] = useState({
+        pipeline: "ACQ",
         title: "",
         open_deals: "",
     });
 
-    const { deals, isLoading, refetch } = useDealsAll(filerPage);
+    const { deals, isLoading, refetch } = useDealsAll(filterPage);
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
     const showModalAdd = () => {
         setIsModalOpenAdd(true);
@@ -86,14 +86,14 @@ const Deal = () => {
 
     const onClickACQ = (value: string) => {
         setFilterPage({
-            ...filerPage,
+            ...filterPage,
             pipeline: value,
         });
     };
 
     useEffect(() => {
         refetch();
-    }, [filerPage]);
+    }, [filterPage]);
 
     const [openFilter, setOpenFilter] = useState(false);
 
@@ -389,7 +389,8 @@ const Deal = () => {
                                 >
                                     <Button>
                                         <Space>
-                                            ACQ
+                                            {filterPage.pipeline}
+
                                             <DownOutlined />
                                         </Space>
                                     </Button>
