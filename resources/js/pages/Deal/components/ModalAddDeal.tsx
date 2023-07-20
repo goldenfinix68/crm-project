@@ -37,9 +37,9 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import TextArea from "antd/es/input/TextArea";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "antd/es/form/Form";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { useDealMutation } from "../../../api/mutation/useDealMutation";
-import { useDealsAll } from "../../../api/query/dealQuery";
+
 interface Props {
     isModalOpenAdd: boolean;
     handleOkAdd: () => void;
@@ -51,7 +51,7 @@ const ModalAddDeal = ({
     handleOkAdd,
     handleCancelAdd,
 }: Props) => {
-    const { refetch } = useDealsAll();
+    const queryClient = useQueryClient();
     const navigate = useNavigate();
     const [form] = useForm();
     const onFinish = (values: any) => {
@@ -70,8 +70,7 @@ const ModalAddDeal = ({
                     message: "Deal",
                     description: "Successfully Added",
                 });
-
-                refetch();
+                queryClient.invalidateQueries("deals");
                 handleCancelAdd();
             }
         },

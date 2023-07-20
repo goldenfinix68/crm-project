@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 import axios from "axios";
 
-export const useDealsAll = () => {
+export const useDealsAll = (url: any) => {
     const { data, isLoading, isError, refetch } = useQuery(
         "deals",
         async () => {

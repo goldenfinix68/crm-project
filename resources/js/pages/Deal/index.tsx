@@ -63,7 +63,7 @@ interface Lane {
 }
 
 const Deal = () => {
-    const { deals, isLoading, refetch } = useDealsAll();
+    const { deals, isLoading, refetch } = useDealsAll("");
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
     const showModalAdd = () => {
         setIsModalOpenAdd(true);
