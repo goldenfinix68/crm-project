@@ -96,50 +96,62 @@ const columns: ColumnsType<TContact> = [
         key: "email",
         title: "Email",
         dataIndex: "email",
+        width: 250,
     },
     {
         key: "mobile",
         title: "Mobile",
         dataIndex: "mobile",
+        width: 200,
     },
     {
         key: "countryLink",
         title: "Country Link",
         dataIndex: "countryLink",
+        width: 200,
     },
     {
         key: "acres",
         title: "Acres",
         dataIndex: "acres",
+        width: 150,
     },
     {
         title: "Tags",
         dataIndex: "tags",
         key: "tags",
-        // render: (tags: string[]) => (
-        //     <>
-        //         {tags.map((tag) => (
-        //             <Tag color="blue" key={tag}>
-        //                 {tag}
-        //             </Tag>
-        //         ))}
-        //     </>
-        // ),
+        render: (text: string, record: TContact) => (
+            <>
+                {/* {record.firstName} */}
+                {record &&
+                    record.tags &&
+                    record.tags.length > 0 &&
+                    record.tags.map((tag) => (
+                        <Tag color="blue" key={tag}>
+                            {tag}
+                        </Tag>
+                    ))}
+            </>
+        ),
+        width: 150,
     },
     {
         key: "owner",
         title: "Owner",
         dataIndex: "owner",
+        width: 200,
     },
     {
         key: "firstName",
         title: "First Name",
         dataIndex: "firstName",
+        width: 200,
     },
     {
         key: "lastName",
         title: "Last Name",
         dataIndex: "lastName",
+        width: 200,
     },
 ];
 

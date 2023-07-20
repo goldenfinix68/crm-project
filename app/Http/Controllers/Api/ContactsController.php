@@ -42,6 +42,17 @@ class ContactsController extends Controller
             $data = $data->get();
         }
 
+        $data = $data->map(function ($q){
+            if($q->tags){
+
+
+                $q->tags = json_decode($q->tags);
+            }
+            return $q;
+        });
+
+        // $data->data['tags'] = json_decode($data->tags);
+
         return response()->json([
             'success' => true,
             'data' => $data
@@ -71,7 +82,13 @@ class ContactsController extends Controller
             'lastName' => 'required',
         ]);
 
-        $contact = Contact::create($request->all());
+        $data = $request->all();
+
+        error_log(json_encode($data));
+
+        $data['tags'] = json_encode($data['tags']);
+
+        $contact = Contact::create($data);
 
         
         return response()->json($contact, 200);

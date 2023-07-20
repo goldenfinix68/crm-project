@@ -59,7 +59,7 @@ export type TContact = {
     twitter?: string;
     instagram?: string;
     detailsDescription?: string;
-    tags?: string;
+    tags?: string[];
     detailsLegalDescription?: string;
     addressLine1?: string;
     addressLine2?: string;

@@ -625,7 +625,12 @@ const ContactsComponentsAddContacts = ({
                         <Row gutter={24}>
                             <Col md={24} xs={24}>
                                 <Form.Item name="tags" label="Tags">
-                                    <Input placeholder="Tags" />
+                                    <Select
+                                        mode="tags"
+                                        style={{ width: "100%" }}
+                                        tokenSeparators={[","]}
+                                        // options={options}
+                                    />
                                 </Form.Item>
                             </Col>
                         </Row>
