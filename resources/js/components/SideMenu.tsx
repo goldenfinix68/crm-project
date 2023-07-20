@@ -14,6 +14,7 @@ import {
 import { Layout, Menu, Button, theme } from "antd";
 import { useNavigate } from "react-router-dom";
 import Deal from "../pages/Deal";
+import Navigation from "./Navigation";
 
 const { Header, Sider, Content } = Layout;
 
@@ -82,9 +83,9 @@ const SideMenu = ({ children }) => {
                 />
             </Sider>
             <Layout>
-                <Header
-                    style={{ padding: 0, background: colorBgContainer }}
-                ></Header>
+                <Header style={{ padding: 0, background: colorBgContainer }}>
+                    <Navigation />
+                </Header>
                 <Content
                     style={{
                         padding: 24,

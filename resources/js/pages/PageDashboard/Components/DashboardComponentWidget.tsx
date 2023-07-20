@@ -289,7 +289,7 @@ const dataTable: DataType[] = [
         user: "Jesse Ashley",
     },
     {
-        key: "1",
+        key: "2",
         date: "Jul 10, 2023 04:36 PM",
         duration: "41s",
         type: "Outbound",
@@ -300,7 +300,7 @@ const dataTable: DataType[] = [
         user: "Jesse Ashley",
     },
     {
-        key: "1",
+        key: "3",
         date: "Jul 10, 2023 04:36 PM",
         duration: "41s",
         type: "Outbound",
@@ -311,7 +311,7 @@ const dataTable: DataType[] = [
         user: "Jesse Ashley",
     },
     {
-        key: "1",
+        key: "4",
         date: "Jul 10, 2023 04:36 PM",
         duration: "41s",
         type: "Outbound",
@@ -322,7 +322,7 @@ const dataTable: DataType[] = [
         user: "Jesse Ashley",
     },
     {
-        key: "1",
+        key: "5",
         date: "Jul 10, 2023 04:36 PM",
         duration: "41s",
         type: "Outbound",
