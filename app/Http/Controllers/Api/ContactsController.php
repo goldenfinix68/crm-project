@@ -85,10 +85,12 @@ class ContactsController extends Controller
         $data = $request->all();
 
         error_log(json_encode($data));
+        if (isset($data['tags'])) {
+            $data['tags'] = json_encode($data['tags']);
+        }
+        
 
-        $data['tags'] = json_encode($data['tags']);
-
-        $contact = Contact::create($data);
+        $contact = Contact::updateOrCreate(['id' => isset($data['id'])? $data['id'] : null],$data);
 
         
         return response()->json($contact, 200);
