@@ -263,6 +263,7 @@ const menu = (
 );
 
 const Contacts = () => {
+    const [isTContact, setTContact] = useState();
     const { contacts, isLoading } = useContactsAll();
     const [isModalOpen, setisModalOpen] = useState(false);
     const [isModalManageColumnOpen, setIsModalManageColumnOpen] =
