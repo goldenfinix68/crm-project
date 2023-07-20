@@ -37,10 +37,18 @@ import DropdownComponent from "../../../components/DropdownComponent";
 import ActionMenuBtn from "./ActionMenuBtn";
 import AvatarWithPopover from "./AvatarWithPopover";
 import ActionMenu from "./ActionMenu";
+import { useMutation } from "react-query";
+import { addTypeMutation } from "../../../api/mutation/useContactMutation";
+import { TContactType } from "../../../entities";
+import { useContactTypesAll } from "../../../api/query/contactsQuery";
+import queryClient from "../../../queryClient";
 
 const ContactInfo = () => {
     const [isCreateNewTypeOpen, setIsCreateNewTypeOpen] = React.useState(false);
     const [avatarHovered, setAvatarHovered] = React.useState(false);
+
+    const { contactTypes, isLoading } = useContactTypesAll();
+
     const actionMenuList = [
         {
             label: <a href="https://www.antgroup.com">Edit Contact</a>,
@@ -97,9 +105,15 @@ const ContactInfo = () => {
                                             SELECT CONTACT TYPE
                                         </Typography.Text>
                                     </Menu.Item>
-                                    {types.map((item) => (
-                                        <Menu.Item key={item.key}>
-                                            {item.label}
+
+                                    <Menu.Item key={0}>
+                                        <Tag>No Type</Tag>
+                                    </Menu.Item>
+                                    {contactTypes?.map((type) => (
+                                        <Menu.Item key={type.id}>
+                                            <Tag color={type.highlight}>
+                                                {type.name}
+                                            </Tag>
                                         </Menu.Item>
                                     ))}
                                     <Menu.Divider />
@@ -225,6 +239,16 @@ const ContactInfo = () => {
 const CreateNewTypeForm = ({ onClose }: { onClose: () => void }) => {
     const [form] = Form.useForm();
     const highlight = Form.useWatch("highlight", form);
+
+    const addType = useMutation(addTypeMutation, {
+        onSuccess: () => {
+            console.log("success");
+            queryClient.invalidateQueries("contactTypesAll");
+            form.resetFields();
+            onClose();
+        },
+    });
+
     const ColorButton = ({ color }) => (
         <Button
             style={{ backgroundColor: color }}
@@ -238,9 +262,15 @@ const CreateNewTypeForm = ({ onClose }: { onClose: () => void }) => {
             {highlight == color && <CheckOutlined style={{ color: "white" }} />}
         </Button>
     );
+
+    const handleFinish = (values: TContactType) => {
+        console.log(values);
+        addType.mutate(values);
+        // Perform form submission logic here
+    };
     return (
         <Space direction="vertical">
-            <Form form={form} layout="vertical">
+            <Form form={form} layout="vertical" onFinish={handleFinish}>
                 <Form.Item
                     label="Name"
                     name="name"
@@ -289,7 +319,11 @@ const CreateNewTypeForm = ({ onClose }: { onClose: () => void }) => {
                 </Form.Item>
                 <Form.Item>
                     <Space style={{ float: "right" }}>
-                        <Button type="primary" htmlType="submit">
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            loading={addType.isLoading}
+                        >
                             Create
                         </Button>
                         <Button htmlType="reset" onClick={() => onClose()}>

@@ -9,6 +9,7 @@ import {
     CheckCircleOutlined,
     PhoneOutlined,
     DollarCircleOutlined,
+    MailOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Button, theme } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -69,6 +70,11 @@ const SideMenu = ({ children }) => {
                             key: "/deals",
                             icon: <DollarCircleOutlined />,
                             label: "Deals",
+                        },
+                        {
+                            key: "/inbox",
+                            icon: <MailOutlined />,
+                            label: "Inbox",
                         },
                     ]}
                     onClick={(e) => {

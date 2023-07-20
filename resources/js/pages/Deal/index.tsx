@@ -45,6 +45,7 @@ import {
     useDealUpdateBoardMutation,
 } from "../../api/mutation/useDealMutation";
 import moment from "moment";
+import DealsTable from "./components/DealsTable";
 
 interface Card {
     id: number;
@@ -62,6 +63,14 @@ interface Lane {
     cards: Card[];
 }
 
+interface TDeals {
+    title: string;
+    name: string;
+    value: string;
+    stage: string;
+    status: string;
+    owner: string;
+}
 const Deal = () => {
     const queryClient = useQueryClient();
     const [filterPage, setFilterPage] = useState({
@@ -310,52 +319,57 @@ const Deal = () => {
             },
         ],
     };
-
+    const [listBoard, setListBoard] = useState("Board");
     const [boardData, setBoardData] = useState(initialBoardData);
-
+    const [listData, setListData] = useState<TDeals[]>([]);
     useEffect(() => {
         if (deals) {
-            const data: { lanes: Lane[] } = { ...initialBoardData }; // Clone the initial data
-            deals.data.forEach((x: any, key: any) => {
-                if (x.stage == "Comp & Qualify") {
-                    data.lanes[0].cards.push({
-                        id: x.id,
-                        title: cardDiv(x),
-                        laneId: x.stage,
-                    });
-                }
-                if (x.stage == "First Offer Given") {
-                    data.lanes[1].cards.push({
-                        id: x.id,
-                        title: cardDiv(x),
-                        laneId: x.stage,
-                    });
-                }
-                if (x.stage == "In Negotiation") {
-                    data.lanes[2].cards.push({
-                        id: x.id,
-                        title: cardDiv(x),
-                        laneId: x.stage,
-                    });
-                }
-                if (x.stage == "Verbal Offer Accepted") {
-                    data.lanes[3].cards.push({
-                        id: x.id,
-                        title: cardDiv(x),
-                        laneId: x.stage,
-                    });
-                }
-                if (x.stage == "Under Contract") {
-                    data.lanes[4].cards.push({
-                        id: x.id,
-                        title: cardDiv(x),
-                        laneId: x.stage,
-                    });
-                }
-            });
-            setBoardData(data);
+            if (listBoard != "List") {
+                const data: { lanes: Lane[] } = { ...initialBoardData }; // Clone the initial data
+                deals.data.forEach((x: any, key: any) => {
+                    if (x.stage == "Comp & Qualify") {
+                        data.lanes[0].cards.push({
+                            id: x.id,
+                            title: cardDiv(x),
+                            laneId: x.stage,
+                        });
+                    }
+                    if (x.stage == "First Offer Given") {
+                        data.lanes[1].cards.push({
+                            id: x.id,
+                            title: cardDiv(x),
+                            laneId: x.stage,
+                        });
+                    }
+                    if (x.stage == "In Negotiation") {
+                        data.lanes[2].cards.push({
+                            id: x.id,
+                            title: cardDiv(x),
+                            laneId: x.stage,
+                        });
+                    }
+                    if (x.stage == "Verbal Offer Accepted") {
+                        data.lanes[3].cards.push({
+                            id: x.id,
+                            title: cardDiv(x),
+                            laneId: x.stage,
+                        });
+                    }
+                    if (x.stage == "Under Contract") {
+                        data.lanes[4].cards.push({
+                            id: x.id,
+                            title: cardDiv(x),
+                            laneId: x.stage,
+                        });
+                    }
+                });
+                setBoardData(data);
+            } else {
+                setListData(deals.data);
+                console.log("wew", deals.data);
+            }
         }
-    }, [deals]);
+    }, [deals, listBoard]);
 
     const cardDiv = (x: any) => {
         return (
@@ -431,6 +445,11 @@ const Deal = () => {
         mutation.mutate(newData);
     };
 
+    const onChangeListBoard = (e: any) => {
+        setListBoard(e.target.value);
+        refetch();
+    };
+
     return (
         <Row className="deal-group-row">
             <Col md={24}>
@@ -482,11 +501,15 @@ const Deal = () => {
                                 ></Button>
                             </span>
                             <span style={{ marginRight: 10 }}>
-                                <Radio.Group>
-                                    <Radio.Button value="Overdue">
+                                <Radio.Group
+                                    value={listBoard}
+                                    buttonStyle="solid"
+                                    onChange={onChangeListBoard}
+                                >
+                                    <Radio.Button value="List">
                                         List
                                     </Radio.Button>
-                                    <Radio.Button value="Today">
+                                    <Radio.Button value="Board">
                                         Board
                                     </Radio.Button>
                                 </Radio.Group>
@@ -535,24 +558,31 @@ const Deal = () => {
                             </span>
                         </div>
                     </div>
-                    <div>
-                        <div className="mainDealArrow">
-                            <div style={{ width: "100%", height: "100vh" }}>
-                                <Board
-                                    draggable
-                                    data={boardData}
-                                    laneDraggable={false}
-                                    hideCardDeleteIcon={true}
-                                    className="react-trello-board board"
-                                    cardDragClass="card-drag"
-                                    cardDropClass="card-drop"
-                                    style={{ background: "none!important" }}
-                                    customCardLayout={true}
-                                    onDataChange={onDataChangeBoard}
-                                />
+                    {listBoard != "List" ? (
+                        <div>
+                            <div className="mainDealArrow">
+                                <div style={{ width: "100%", height: "100vh" }}>
+                                    <Board
+                                        draggable
+                                        data={boardData}
+                                        laneDraggable={false}
+                                        hideCardDeleteIcon={true}
+                                        className="react-trello-board board"
+                                        cardDragClass="card-drag"
+                                        cardDropClass="card-drop"
+                                        style={{ background: "none!important" }}
+                                        customCardLayout={true}
+                                        onDataChange={onDataChangeBoard}
+                                    />
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    ) : (
+                        <div>
+                            <DealsTable deals={listData} />
+                        </div>
+                    )}
+
                     <Filter
                         openFilter={openFilter}
                         setOpenFilter={setOpenFilter}

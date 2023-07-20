@@ -31,9 +31,6 @@ import {
 } from "@ant-design/icons";
 
 import Title from "antd/es/skeleton/Title";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
 import TextArea from "antd/es/input/TextArea";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "antd/es/form/Form";
@@ -94,37 +91,37 @@ const ModalAddDeal = ({
             //     <Button>Cancel</Button>,
             // ]}
         >
-            <div className="modal-header">
-                <Typography.Title level={5} style={{ color: "white" }}>
-                    Add New Deal
-                </Typography.Title>
-                <Button
-                    type="link"
-                    style={{ marginRight: "-559px", color: "white" }}
-                >
-                    {" "}
-                    <u>Manage Fields</u>
-                </Button>
-                <Button
-                    onClick={handleCancelAdd}
-                    style={{
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                        border: "0px",
-                    }}
-                    icon={<CloseOutlined style={{ color: "white" }} />}
-                />
-            </div>
-            <Row gutter={12}>
-                <Col md={16} className="col-1-modal-act">
-                    <Form
-                        form={form}
-                        layout="vertical"
-                        name="basic"
-                        labelAlign="left"
-                        labelWrap
-                        onFinish={onFinish}
-                        autoComplete="off"
+            <Form
+                form={form}
+                layout="vertical"
+                name="basic"
+                labelAlign="left"
+                labelWrap
+                onFinish={onFinish}
+                autoComplete="off"
+            >
+                <div className="modal-header">
+                    <Typography.Title level={5} style={{ color: "white" }}>
+                        Add New Deal
+                    </Typography.Title>
+                    <Button
+                        type="link"
+                        style={{ marginRight: "-559px", color: "white" }}
                     >
+                        {" "}
+                        <u>Manage Fields</u>
+                    </Button>
+                    <Button
+                        onClick={handleCancelAdd}
+                        style={{
+                            backgroundColor: "rgba(0, 0, 0, 0.5)",
+                            border: "0px",
+                        }}
+                        icon={<CloseOutlined style={{ color: "white" }} />}
+                    />
+                </div>
+                <Row gutter={12}>
+                    <Col md={16} className="col-1-modal-act">
                         <Form.Item
                             label="Title"
                             name="title"
@@ -362,50 +359,48 @@ const ModalAddDeal = ({
                                 </Form.Item>
                             </Col>
                         </Row>
-                    </Form>
-                </Col>
-                <Col md={8} style={{ padding: 20 }} className="col-2-modal-act">
-                    <Row>
-                        <Col md={24}>
-                            <div
-                                style={{
-                                    fontSize: 18,
-                                    fontWeight: "bold",
-                                }}
-                            >
-                                Teamm mates
-                            </div>
-                            <Input placeholder="Search User" />
-                        </Col>
-                        <Col md={24}>
-                            <div
-                                style={{
-                                    fontSize: 18,
-                                    fontWeight: "bold",
-                                }}
-                            >
-                                Participants
-                            </div>
-                            <Input placeholder="Search Contact" />
-                        </Col>
-                    </Row>
-                </Col>
-            </Row>
-            <div className="modal-footer">
-                <Button
-                    className="m-r-xs"
-                    type="primary"
-                    onClick={() => {
-                        form.submit();
-                    }}
-                >
-                    Save
-                </Button>
-                <Button className="m-r-xs" type="primary">
-                    Save and add other
-                </Button>
-                <Button onClick={handleCancelAdd}>Cancel</Button>
-            </div>
+                    </Col>
+                    <Col
+                        md={8}
+                        style={{ padding: 20 }}
+                        className="col-2-modal-act"
+                    >
+                        <Row>
+                            <Col md={24}>
+                                <div
+                                    style={{
+                                        fontSize: 18,
+                                        fontWeight: "bold",
+                                    }}
+                                >
+                                    Teamm mates
+                                </div>
+                                <Input placeholder="Search User" />
+                            </Col>
+                            <Col md={24}>
+                                <div
+                                    style={{
+                                        fontSize: 18,
+                                        fontWeight: "bold",
+                                    }}
+                                >
+                                    Participants
+                                </div>
+                                <Input placeholder="Search Contact" />
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>
+                <div className="modal-footer">
+                    <Button className="m-r-xs" type="primary" htmlType="submit">
+                        Save
+                    </Button>
+                    <Button className="m-r-xs" type="primary">
+                        Save and add other
+                    </Button>
+                    <Button onClick={handleCancelAdd}>Cancel</Button>
+                </div>
+            </Form>
         </Modal>
     );
 };
