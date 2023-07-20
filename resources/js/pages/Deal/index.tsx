@@ -67,7 +67,7 @@ const Deal = () => {
     const [filterPage, setFilterPage] = useState({
         pipeline: "ACQ",
         title: "",
-        open_deals: "",
+        status: "All Deals",
     });
 
     const { deals, isLoading, refetch } = useDealsAll(filterPage);
@@ -89,6 +89,14 @@ const Deal = () => {
             ...filterPage,
             pipeline: value,
         });
+    };
+
+    const onClickStatus = (value: string) => {
+        setFilterPage({
+            ...filterPage,
+            status: value,
+        });
+        console.log(value);
     };
 
     useEffect(() => {
@@ -189,11 +197,66 @@ const Deal = () => {
                         defaultSelectedKeys={["1"]}
                         defaultOpenKeys={["sub1"]}
                     >
-                        <Menu.Item key="1">Activites I am following</Menu.Item>
-                        <Menu.Item key="2">All Closed Activities</Menu.Item>
-                        <Menu.Item key="3">All Open Activities</Menu.Item>
-                        <Menu.Item key="4">My Open Activities</Menu.Item>
-                        <Menu.Item key="5">My Overdue Activites</Menu.Item>
+                        <Menu.Item
+                            key="1"
+                            onClick={() => onClickStatus("All Deals")}
+                        >
+                            All Deals
+                        </Menu.Item>
+                        <Menu.Item
+                            key="2"
+                            onClick={() => onClickStatus("All Open Deals")}
+                        >
+                            All Open Deals
+                        </Menu.Item>
+                        <Menu.Item
+                            key="3"
+                            onClick={() =>
+                                onClickStatus("Deals Closing Next Month")
+                            }
+                        >
+                            Deals Closing Next Month
+                        </Menu.Item>
+                        <Menu.Item
+                            key="4"
+                            onClick={() =>
+                                onClickStatus("Deals Closing This Month")
+                            }
+                        >
+                            Deals Closing This Month
+                        </Menu.Item>
+                        {/* <Menu.Item
+                            key="5"
+                            onClick={() =>
+                                onClickStatus("Deals I am following")
+                            }
+                        >
+                            Deals I am following
+                        </Menu.Item>
+                        <Menu.Item
+                            key="6"
+                            onClick={() => onClickStatus("My Open Deals")}
+                        >
+                            My Open Deals
+                        </Menu.Item>
+                        <Menu.Item
+                            key="7"
+                            onClick={() => onClickStatus("My Ovderdue Deals")}
+                        >
+                            My Ovderdue Deals
+                        </Menu.Item> */}
+                        <Menu.Item
+                            key="8"
+                            onClick={() => onClickStatus("Lost Deals")}
+                        >
+                            Lost Deals
+                        </Menu.Item>
+                        <Menu.Item
+                            key="9"
+                            onClick={() => onClickStatus("Won Deals")}
+                        >
+                            Won Deals
+                        </Menu.Item>
                     </Menu>
                 </Tabs.TabPane>
             </Tabs>
@@ -403,20 +466,7 @@ const Deal = () => {
                                 >
                                     <Button>
                                         <Space>
-                                            My Open Deals
-                                            <DownOutlined />
-                                        </Space>
-                                    </Button>
-                                </Dropdown>
-                            </span>
-                            <span style={{ marginRight: 10 }}>
-                                <Dropdown
-                                    menu={{ items: title }}
-                                    placement="bottomLeft"
-                                >
-                                    <Button>
-                                        <Space>
-                                            Title
+                                            {filterPage.status}
                                             <DownOutlined />
                                         </Space>
                                     </Button>

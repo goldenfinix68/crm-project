@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Deal;
+use Carbon\Carbon;
 
 class DealsController extends Controller
 {
@@ -15,10 +16,36 @@ class DealsController extends Controller
      */
     public function index(Request $request)
     {
+        $end_of_date = Carbon::now()->lastOfMonth();
+        $start_of_date = Carbon::now()->startOfMonth();
+        $start_date = date('Y-m-d', strtotime($start_of_date));
+        $end_date = date('Y-m-d', strtotime($end_of_date));
+
+        $end_of_date_next = Carbon::now()->lastOfMonth()->addMonth();
+        $start_of_date_next = Carbon::now()->startOfMonth()->addMonth();
+        $start_date_next = date('Y-m-d', strtotime($start_of_date_next));
+        $end_date_next = date('Y-m-d', strtotime($end_of_date_next));
+
         $data = Deal::orderBy('sort', 'asc');
         if ($request->pipeline) {
             $data->where('pipeline', $request->pipeline);
         }
+        if ($request->status == 'All Open Deals') {
+            $data->where('status', 'Open');
+        }
+        if ($request->status == 'Deals Closing This Month') {
+            $data = $data->where('estimated_close_date', '>=', $start_date)->where('estimated_close_date', '<=', $end_date);
+        }
+        if ($request->status == 'Deals Closing Next Month') {
+            $data = $data->where('estimated_close_date', '>=', $start_date_next)->where('estimated_close_date', '<=', $end_date_next);
+        }
+        if ($request->status == 'Won Deals') {
+            $data->where('status', 'Won');
+        }
+        if ($request->status == 'Lost Deals') {
+            $data->where('status', 'Lost');
+        }
+
         $data = $data->get();
 
         return response()->json(['success' => true, 'data' => $data], 200);
