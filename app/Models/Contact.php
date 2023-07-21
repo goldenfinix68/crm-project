@@ -62,6 +62,7 @@ class Contact extends Model
         'city',
         'country',
         'zipCode',
-        'state'
+        'state',
+        'wetlandsStatus'
     ];
 }

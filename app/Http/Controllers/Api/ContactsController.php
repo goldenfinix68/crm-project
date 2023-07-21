@@ -56,7 +56,13 @@ class ContactsController extends Controller
      */
     public function show($id)
     {
-        //
+        $contact = Contact::find($id);
+
+        if(empty($contact)){
+            abort(404);
+        }
+
+        return response()->json($contact, 200);
     }
 
     /**
