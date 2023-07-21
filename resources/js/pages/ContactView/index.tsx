@@ -3,12 +3,12 @@ import React, { createContext } from "react";
 import ContactInfo from "./components/ContactInfo";
 import ActionsTabs from "./components/ActionsTabs";
 import ContactsWall from "./components/ContactsWall";
-import CollapsibleDetails from "./components/ActivityTab";
 import { useGetContact } from "../../api/query/contactsQuery";
 import { useParams } from "react-router-dom";
 import { TContact } from "../../entities";
 import LoadingComponent from "../../components/LoadingComponent";
 import ContactContext from "./context";
+import CollapsibleDetails from "./components/CollapsbileDetails";
 
 const ContactView = () => {
     const { contactId } = useParams();

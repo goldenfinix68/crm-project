@@ -76,4 +76,9 @@ class Contact extends Model
     public function owner(){
         return $this->belongsTo(User::class, 'ownerId');
     }
+
+    public function type()
+    {
+        return $this->hasOne(\App\Models\ContactType::class, 'id', 'typeId');
+    }
 }

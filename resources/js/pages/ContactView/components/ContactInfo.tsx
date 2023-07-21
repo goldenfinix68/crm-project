@@ -59,6 +59,7 @@ const ContactInfo = () => {
     const [form] = Form.useForm<TContact>();
     const { contactTypes, isLoading } = useContactTypesAll();
     const { contact } = useContext(ContactContext);
+    const [tagSearchKey, setTagSearchKey] = React.useState("");
 
     const actionMenuList = [
         {
@@ -89,12 +90,18 @@ const ContactInfo = () => {
     const updateContact = useMutation(updateContactMutation, {
         onSuccess: () => {
             form.resetFields();
+            queryClient.invalidateQueries("getContact");
         },
     });
 
     const handleFinish = async (values: TContact) => {
+        console.log(values);
         await updateContact.mutate({ ...values, id: contact.id });
-        form.setFieldsValue(values);
+    };
+
+    const handleTypeChange = (e) => {
+        form.setFieldValue("typeId", e.key);
+        form.submit();
     };
 
     return (
@@ -104,11 +111,20 @@ const ContactInfo = () => {
                     <Col span={12}>
                         <Dropdown
                             overlay={
-                                <Menu>
+                                <Menu
+                                    onClick={handleTypeChange}
+                                    selectedKeys={[contact?.typeId ?? "0"]}
+                                >
                                     <Menu.Item key="search">
-                                        <Input placeholder="Search" />
+                                        <Input
+                                            placeholder="Search"
+                                            onKeyUp={(e: any) =>
+                                                setTagSearchKey(e.target.value)
+                                            }
+                                            onClick={(e) => e.stopPropagation()}
+                                        />
                                     </Menu.Item>
-                                    <Menu.Item key="search" disabled>
+                                    <Menu.Item key="disabled" disabled>
                                         <Typography.Text strong>
                                             SELECT CONTACT TYPE
                                         </Typography.Text>
@@ -117,13 +133,17 @@ const ContactInfo = () => {
                                     <Menu.Item key={0}>
                                         <Tag>No Type</Tag>
                                     </Menu.Item>
-                                    {contactTypes?.map((type) => (
-                                        <Menu.Item key={type.id}>
-                                            <Tag color={type.highlight}>
-                                                {type.name}
-                                            </Tag>
-                                        </Menu.Item>
-                                    ))}
+                                    {contactTypes
+                                        ?.filter((tag) =>
+                                            tag.name.includes(tagSearchKey)
+                                        )
+                                        ?.map((type) => (
+                                            <Menu.Item key={type.id}>
+                                                <Tag color={type.highlight}>
+                                                    {type.name}
+                                                </Tag>
+                                            </Menu.Item>
+                                        ))}
                                     <Menu.Divider />
                                     <Menu.Item key="new">
                                         <a
@@ -162,13 +182,18 @@ const ContactInfo = () => {
                                 visible={isCreateNewTypeOpen}
                                 placement="rightTop"
                             >
-                                <Button
-                                    type="default"
-                                    style={{ backgroundColor: "#E6EAF2" }}
-                                    size="small"
-                                >
-                                    No type
-                                </Button>
+                                {contact.typeId && contact.typeId != "0" ? (
+                                    <Tag
+                                        color={contact.type?.highlight}
+                                        style={{ cursor: "pointer" }}
+                                    >
+                                        {contact.type?.name}
+                                    </Tag>
+                                ) : (
+                                    <Tag style={{ cursor: "pointer" }}>
+                                        No Type
+                                    </Tag>
+                                )}
                             </Popover>
                         </Dropdown>
                     </Col>
@@ -214,12 +239,10 @@ const ContactInfo = () => {
                     <Typography.Text strong>Contact Details</Typography.Text>
                 </Space>
 
-                <Form
-                    form={form}
-                    onFinish={handleFinish}
-                    layout="vertical"
-                    initialValues={contact}
-                >
+                <Form form={form} onFinish={handleFinish} layout="vertical">
+                    <Form.Item name="typeId" style={{ display: "none" }}>
+                        <Input />
+                    </Form.Item>
                     <Descriptions column={1}>
                         <Descriptions.Item label="Email">
                             <EditableText
@@ -386,7 +409,7 @@ const ContactInfo = () => {
                         </Descriptions.Item>
                         <Descriptions.Item label="Tags">
                             <EditableText
-                                type="input"
+                                type="selectTags"
                                 value={contact.tags}
                                 column="tags"
                                 form={form}
@@ -406,9 +429,9 @@ const EditableText = ({
     column,
     form,
 }: {
-    type: "select" | "inputNumber" | "input" | "mention";
+    type: "select" | "inputNumber" | "input" | "selectTags";
     options?: { label: string; value: string }[];
-    value?: string | number;
+    value?: string | number | string[];
     column: string;
     form: any;
 }) => {
@@ -471,17 +494,15 @@ const EditableText = ({
                         ))}
                     </Select>
                 );
-            case "mention":
+            case "selectTags":
                 return (
-                    <Mentions
-                        rows={1}
+                    <Select
+                        mode="tags"
                         style={{ width: "100%" }}
-                        options={options}
-                        onChange={(e) => {
-                            setText(e);
-                        }}
-                        onSelect={(e) => console.log(e)}
+                        tokenSeparators={[","]}
+                        onChange={handleSelectChange}
                         onBlur={handleInputBlur}
+                        // options={options}
                     />
                 );
             default:
@@ -492,7 +513,11 @@ const EditableText = ({
     return (
         <>
             {editing ? (
-                <Form.Item name={[column]} style={{ width: "100%" }}>
+                <Form.Item
+                    name={[column]}
+                    style={{ width: "100%", marginBottom: 0 }}
+                    initialValue={text}
+                >
                     {renderInputComponent()}
                 </Form.Item>
             ) : (
@@ -508,7 +533,6 @@ const CreateNewTypeForm = ({ onClose }: { onClose: () => void }) => {
 
     const addType = useMutation(addTypeMutation, {
         onSuccess: () => {
-            console.log("success");
             queryClient.invalidateQueries("contactTypesAll");
             form.resetFields();
             onClose();

@@ -25,6 +25,7 @@ export type TContact = {
     ownerId: string;
     email2?: string;
     typeId?: string;
+    type?: TContactType;
     mailingStreetAddress?: string;
     emailOptOut?: boolean;
     mailingCity?: string;

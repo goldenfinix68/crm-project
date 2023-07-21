@@ -26,10 +26,10 @@ const ActionsTabs = () => {
             key: "email",
             label: <TabLabel label="EMAIL" />,
         },
-        {
-            key: "addActivity",
-            label: <TabLabel label="ADD ACTIVITY" />,
-        },
+        // {
+        //     key: "addActivity",
+        //     label: <TabLabel label="ADD ACTIVITY" />,
+        // },
         {
             key: "logActivity",
             label: <TabLabel label="LOG ACTIVITY" />,
@@ -47,7 +47,7 @@ const ActionsTabs = () => {
     const contentListNoTitle: Record<string, React.ReactNode> = {
         note: <Notestab />,
         email: <EmailTab />,
-        addActivity: <ActivityTab />,
+        // addActivity: <ActivityTab />,
         logActivity: <LogActivityTab />,
         file: <FileTab />,
     };
