@@ -59,102 +59,6 @@ interface DataType {
     avatar: any;
 }
 
-const columns: ColumnsType<TContact> = [
-    {
-        key: "firstName",
-        title: "Name",
-        dataIndex: "name",
-        render: (text: string, record: TContact) => (
-            <>
-                <Button
-                    type="text"
-                    className="m-r-sm"
-                    icon={<EditOutlined />}
-                />
-                <Avatar
-                    className="avatarText m-r-sm"
-                    // src={record.avatar}
-                    size={32}
-                    style={{
-                        backgroundColor: "#1677FF",
-                        verticalAlign: "middle",
-                    }}
-                >
-                    {record.firstName.charAt(0)}
-                </Avatar>
-                <span style={{ marginLeft: "8px" }}>
-                    {record.firstName} {record.lastName}
-                </span>
-            </>
-        ),
-        sorter: (a, b) => a.firstName.length - b.firstName.length,
-        defaultSortOrder: "descend",
-        fixed: "left",
-        width: 350,
-    },
-    {
-        key: "email",
-        title: "Email",
-        dataIndex: "email",
-        width: 250,
-    },
-    {
-        key: "mobile",
-        title: "Mobile",
-        dataIndex: "mobile",
-        width: 200,
-    },
-    {
-        key: "countryLink",
-        title: "Country Link",
-        dataIndex: "countryLink",
-        width: 200,
-    },
-    {
-        key: "acres",
-        title: "Acres",
-        dataIndex: "acres",
-        width: 150,
-    },
-    {
-        title: "Tags",
-        dataIndex: "tags",
-        key: "tags",
-        render: (text: string, record: TContact) => (
-            <>
-                {/* {record.firstName} */}
-                {record &&
-                    record.tags &&
-                    record.tags.length > 0 &&
-                    record.tags.map((tag) => (
-                        <Tag color="blue" key={tag}>
-                            {tag}
-                        </Tag>
-                    ))}
-            </>
-        ),
-        width: 150,
-    },
-    {
-        key: "owner",
-        title: "Owner",
-        dataIndex: "owner",
-        width: 200,
-    },
-    {
-        key: "firstName",
-        title: "First Name",
-        dataIndex: "firstName",
-        width: 200,
-    },
-    {
-        key: "lastName",
-        title: "Last Name",
-        dataIndex: "lastName",
-        width: 200,
-    },
-];
-
 // const data: DataType[] = [
 //     {
 //         key: "1",
@@ -263,12 +167,119 @@ const menu = (
 );
 
 const Contacts = () => {
-    const [isTContact, setTContact] = useState();
+    const [isTContact, setTContact] = useState<TContact | null>(null);
     const { contacts, isLoading } = useContactsAll();
     const [isModalOpen, setisModalOpen] = useState(false);
     const [isModalManageColumnOpen, setIsModalManageColumnOpen] =
         useState(false);
     const [open, setOpen] = useState(false);
+    const [isTitle, setTitle] = useState("");
+
+    const handleEdit = (record: TContact) => {
+        setTContact(record);
+    };
+
+    const columns: ColumnsType<TContact> = [
+        {
+            key: "firstName",
+            title: "Name",
+            dataIndex: "name",
+            render: (text: string, record: TContact) => (
+                <>
+                    <Button
+                        type="text"
+                        className="m-r-sm"
+                        icon={<EditOutlined />}
+                        onClick={() => {
+                            setisModalOpen(true);
+                            handleEdit(record);
+                            console.log("data", record);
+                            setTitle("Edit Contact");
+                        }}
+                    />
+                    <Avatar
+                        className="avatarText m-r-sm"
+                        // src={record.avatar}
+                        size={32}
+                        style={{
+                            backgroundColor: "#1677FF",
+                            verticalAlign: "middle",
+                        }}
+                    >
+                        {record.firstName.charAt(0)}
+                    </Avatar>
+                    <span style={{ marginLeft: "8px" }}>
+                        {record.firstName} {record.lastName}
+                    </span>
+                </>
+            ),
+            sorter: (a, b) => a.firstName.length - b.firstName.length,
+            defaultSortOrder: "descend",
+            fixed: "left",
+            width: 350,
+        },
+        {
+            key: "email",
+            title: "Email",
+            dataIndex: "email",
+            width: 250,
+        },
+        {
+            key: "mobile",
+            title: "Mobile",
+            dataIndex: "mobile",
+            width: 200,
+        },
+        {
+            key: "countryLink",
+            title: "Country Link",
+            dataIndex: "countryLink",
+            width: 200,
+        },
+        {
+            key: "acres",
+            title: "Acres",
+            dataIndex: "acres",
+            width: 150,
+        },
+        {
+            title: "Tags",
+            dataIndex: "tags",
+            key: "tags",
+            render: (text: string, record: TContact) => (
+                <>
+                    {/* {record.firstName} */}
+                    {record &&
+                        record.tags &&
+                        record.tags.length > 0 &&
+                        record.tags.map((tag) => (
+                            <Tag color="blue" key={tag}>
+                                {tag}
+                            </Tag>
+                        ))}
+                </>
+            ),
+            width: 150,
+        },
+        {
+            key: "owner",
+            title: "Owner",
+            dataIndex: "owner",
+            width: 200,
+        },
+        {
+            key: "firstName",
+            title: "First Name",
+            dataIndex: "firstName",
+            width: 200,
+        },
+        {
+            key: "lastName",
+            title: "Last Name",
+            dataIndex: "lastName",
+            width: 200,
+        },
+    ];
     return (
         <Card>
             <Row style={{ marginBottom: "20px" }}>
@@ -310,6 +321,7 @@ const Contacts = () => {
                         }}
                         onClick={() => {
                             setisModalOpen(true);
+                            setTitle("Add Contact");
                         }}
                     >
                         Contact
@@ -370,6 +382,9 @@ const Contacts = () => {
             <ContactsComponentsAddContacts
                 isModalOpen={isModalOpen}
                 setIsModalOpen={setisModalOpen}
+                record={isTContact}
+                title={isTitle}
+                setTContact={setTContact}
             />
             <ContactsComponentsFilter open={open} setOpen={setOpen} />
             <ContactsComponentsManageColumn

@@ -31,10 +31,10 @@ import {
     LockOutlined,
     CloseOutlined,
 } from "@ant-design/icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { addContactMutation } from "../../../api/mutation/useContactMutation";
 import queryClient from "../../../queryClient";
 import { TContact } from "../../../entities";
@@ -42,6 +42,9 @@ import { TContact } from "../../../entities";
 interface ContactsComponentsAddContactsProps {
     isModalOpen: boolean;
     setIsModalOpen: any;
+    record: any;
+    title: any;
+    setTContact: any;
 }
 
 const handleChange = (value: string) => {
@@ -59,22 +62,44 @@ const onChange = (e: CheckboxChangeEvent) => {
 const ContactsComponentsAddContacts = ({
     isModalOpen,
     setIsModalOpen,
+    record,
+    title,
+    setTContact,
 }: ContactsComponentsAddContactsProps) => {
+    const queryClient = useQueryClient();
     const [form] = Form.useForm<TContact>();
     const [isAddNew, seIsAddNew] = useState(false);
 
     const addContact = useMutation(addContactMutation, {
         onSuccess: () => {
             console.log("success");
+            queryClient.invalidateQueries("contacts");
             //queryClient.invalidateQueries("contactTypesAll");
             form.resetFields();
             setIsModalOpen(false);
+            // queryClient.invalidateQueries("contacts");
         },
     });
 
+    useEffect(() => {
+        if (record) {
+            console.log("record", record);
+            //
+            form.setFieldsValue(record);
+        }
+    }, [record]);
+
+    useEffect(() => {
+        console.log("title", title);
+    }, [title]);
+
     const handleFinish = (values: TContact) => {
-        addContact.mutate(values);
-        console.log(values);
+        console.log(values.id);
+        if (record) {
+            addContact.mutate({ ...values, id: record.id });
+        } else {
+            addContact.mutate(values);
+        }
     };
     return (
         <>
@@ -84,7 +109,13 @@ const ContactsComponentsAddContacts = ({
                 width={650}
                 title={null}
                 open={isModalOpen}
-                onCancel={() => setIsModalOpen(false)}
+                // onCancel={() => {
+                //     console.log("asdasd");
+
+                //     setTContact(null);
+                //     form.resetFields();
+                //     setIsModalOpen(false);
+                // }}
                 style={{ maxHeight: "700px" }}
                 footer={null}
                 // footer={[
@@ -97,7 +128,7 @@ const ContactsComponentsAddContacts = ({
             >
                 <div className="modal-header">
                     <Typography.Title level={5} style={{ color: "white" }}>
-                        Add New Contact
+                        {title}
                     </Typography.Title>
                     <Button
                         type="link"
@@ -111,7 +142,11 @@ const ContactsComponentsAddContacts = ({
                             backgroundColor: "rgba(0, 0, 0, 0.5)",
                             border: "0px",
                         }}
-                        onClick={() => setIsModalOpen(false)}
+                        onClick={() => {
+                            setTContact(null);
+                            form.resetFields();
+                            setIsModalOpen(false);
+                        }}
                         icon={<CloseOutlined style={{ color: "white" }} />}
                     />
                 </div>
@@ -720,7 +755,13 @@ const ContactsComponentsAddContacts = ({
                     <Button className="m-r-xs" type="primary">
                         Save and add other
                     </Button>
-                    <Button onClick={() => setIsModalOpen(false)}>
+                    <Button
+                        onClick={() => {
+                            setTContact(null);
+                            form.resetFields();
+                            setIsModalOpen(false);
+                        }}
+                    >
                         Cancel
                     </Button>
                 </div>
