@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ActivityController extends Controller
 {
@@ -16,9 +17,10 @@ class ActivityController extends Controller
     public function index(Request $request)
     {
         $data = new Activity();
+
         if ($request->search) {
             $data = $data->where(function ($q) use ($request) {
-                $q->orWhere('job_purpose', 'LIKE', "%$request->search%");
+                // $q->orWhere('job_purpose', 'LIKE', "%$request->search%");
             });
         }
 
@@ -52,7 +54,6 @@ class ActivityController extends Controller
         return response()->json([
             'success' => true,
             'data' => $data,
-            'request' => $request->all()
         ], 200);
     }
 

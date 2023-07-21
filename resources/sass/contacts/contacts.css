@@ -12036,10 +12036,6 @@ textarea.form-control-lg {
   width: 220px !important; /* Adjust the width value as needed */
 }
 
-.anticon {
-  vertical-align: 1px !important;
-}
-
 .your-modal .ant-modal-content {
   display: flex;
   flex-direction: column;
