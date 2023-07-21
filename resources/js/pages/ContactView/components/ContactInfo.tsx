@@ -3,7 +3,9 @@ import {
     CaretDownFilled,
     CheckCircleOutlined,
     CheckOutlined,
+    CloseOutlined,
     DownOutlined,
+    EditOutlined,
     EllipsisOutlined,
     LeftOutlined,
     MailFilled,
@@ -21,33 +23,43 @@ import {
     Divider,
     Dropdown,
     Form,
+    FormInstance,
     Input,
+    InputNumber,
+    Mentions,
     Menu,
     MenuProps,
     Popover,
     Radio,
     Row,
+    Select,
     Space,
     Tag,
     Typography,
 } from "antd";
-import React from "react";
+import React, { useContext } from "react";
 import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
 import DropdownComponent from "../../../components/DropdownComponent";
 import ActionMenuBtn from "./ActionMenuBtn";
 import AvatarWithPopover from "./AvatarWithPopover";
 import ActionMenu from "./ActionMenu";
 import { useMutation } from "react-query";
-import { addTypeMutation } from "../../../api/mutation/useContactMutation";
-import { TContactType } from "../../../entities";
+import {
+    addTypeMutation,
+    updateContactMutation,
+} from "../../../api/mutation/useContactMutation";
+import { TContact, TContactType } from "../../../entities";
 import { useContactTypesAll } from "../../../api/query/contactsQuery";
 import queryClient from "../../../queryClient";
+import { useParams } from "react-router-dom";
+import ContactContext from "../context";
 
 const ContactInfo = () => {
     const [isCreateNewTypeOpen, setIsCreateNewTypeOpen] = React.useState(false);
-    const [avatarHovered, setAvatarHovered] = React.useState(false);
-
+    const [form] = Form.useForm<TContact>();
     const { contactTypes, isLoading } = useContactTypesAll();
+    const { contact } = useContext(ContactContext);
+    const [tagSearchKey, setTagSearchKey] = React.useState("");
 
     const actionMenuList = [
         {
@@ -75,20 +87,23 @@ const ContactInfo = () => {
         },
     ];
 
-    const types = [
-        {
-            label: <Tag>No Type</Tag>,
-            key: "0",
+    const updateContact = useMutation(updateContactMutation, {
+        onSuccess: () => {
+            form.resetFields();
+            queryClient.invalidateQueries("getContact");
         },
-        {
-            label: <Tag color="green">Customer</Tag>,
-            key: "1",
-        },
-        {
-            label: <Tag color="cyan">Lead</Tag>,
-            key: "3",
-        },
-    ];
+    });
+
+    const handleFinish = async (values: TContact) => {
+        console.log(values);
+        await updateContact.mutate({ ...values, id: contact.id });
+    };
+
+    const handleTypeChange = (e) => {
+        form.setFieldValue("typeId", e.key);
+        form.submit();
+    };
+
     return (
         <Card style={{ width: "100%" }}>
             <Space direction="vertical" style={{ width: "100%" }} size="large">
@@ -96,11 +111,20 @@ const ContactInfo = () => {
                     <Col span={12}>
                         <Dropdown
                             overlay={
-                                <Menu>
+                                <Menu
+                                    onClick={handleTypeChange}
+                                    selectedKeys={[contact?.typeId ?? "0"]}
+                                >
                                     <Menu.Item key="search">
-                                        <Input placeholder="Search" />
+                                        <Input
+                                            placeholder="Search"
+                                            onKeyUp={(e: any) =>
+                                                setTagSearchKey(e.target.value)
+                                            }
+                                            onClick={(e) => e.stopPropagation()}
+                                        />
                                     </Menu.Item>
-                                    <Menu.Item key="search" disabled>
+                                    <Menu.Item key="disabled" disabled>
                                         <Typography.Text strong>
                                             SELECT CONTACT TYPE
                                         </Typography.Text>
@@ -109,13 +133,17 @@ const ContactInfo = () => {
                                     <Menu.Item key={0}>
                                         <Tag>No Type</Tag>
                                     </Menu.Item>
-                                    {contactTypes?.map((type) => (
-                                        <Menu.Item key={type.id}>
-                                            <Tag color={type.highlight}>
-                                                {type.name}
-                                            </Tag>
-                                        </Menu.Item>
-                                    ))}
+                                    {contactTypes
+                                        ?.filter((tag) =>
+                                            tag.name.includes(tagSearchKey)
+                                        )
+                                        ?.map((type) => (
+                                            <Menu.Item key={type.id}>
+                                                <Tag color={type.highlight}>
+                                                    {type.name}
+                                                </Tag>
+                                            </Menu.Item>
+                                        ))}
                                     <Menu.Divider />
                                     <Menu.Item key="new">
                                         <a
@@ -154,13 +182,18 @@ const ContactInfo = () => {
                                 visible={isCreateNewTypeOpen}
                                 placement="rightTop"
                             >
-                                <Button
-                                    type="default"
-                                    style={{ backgroundColor: "#E6EAF2" }}
-                                    size="small"
-                                >
-                                    No type
-                                </Button>
+                                {contact.typeId && contact.typeId != "0" ? (
+                                    <Tag
+                                        color={contact.type?.highlight}
+                                        style={{ cursor: "pointer" }}
+                                    >
+                                        {contact.type?.name}
+                                    </Tag>
+                                ) : (
+                                    <Tag style={{ cursor: "pointer" }}>
+                                        No Type
+                                    </Tag>
+                                )}
                             </Popover>
                         </Dropdown>
                     </Col>
@@ -177,7 +210,7 @@ const ContactInfo = () => {
                         <AvatarWithPopover />
                     </Badge>
                     <Typography.Title level={5}>
-                        Karl Kenneth Flores
+                        {contact.firstName + " " + contact.lastName}
                     </Typography.Title>
                 </Space>
 
@@ -200,39 +233,297 @@ const ContactInfo = () => {
                 />
                 <ActionMenu />
 
-                <Descriptions column={1}>
-                    <Descriptions.Item label="Email">-</Descriptions.Item>
-                    <Descriptions.Item label="Phone">-</Descriptions.Item>
-                    <Descriptions.Item label="Redfin Quick Link">
-                        -
-                    </Descriptions.Item>
-                    <Descriptions.Item label="County Link">-</Descriptions.Item>
-                    <Descriptions.Item label="APN">-</Descriptions.Item>
-                    <Descriptions.Item label="Google Map Link">
-                        -
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Acres">-</Descriptions.Item>
-                    <Descriptions.Item label="Wetlands Status">
-                        -
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Mobile">-</Descriptions.Item>
-                    <Descriptions.Item label="Other Phone">-</Descriptions.Item>
-                    <Descriptions.Item label="Website">-</Descriptions.Item>
-                    <Descriptions.Item label="Address Line 1">
-                        -
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Address Line 2">
-                        -
-                    </Descriptions.Item>
-                    <Descriptions.Item label="City">-</Descriptions.Item>
-                    <Descriptions.Item label="State">-</Descriptions.Item>
-                    <Descriptions.Item label="ZipCode">-</Descriptions.Item>
-                    <Descriptions.Item label="County">-</Descriptions.Item>
-                    <Descriptions.Item label="Description">-</Descriptions.Item>
-                    <Descriptions.Item label="Tags">-</Descriptions.Item>
-                </Descriptions>
+                <Space
+                    style={{ width: "100%", justifyContent: "space-between" }}
+                >
+                    <Typography.Text strong>Contact Details</Typography.Text>
+                </Space>
+
+                <Form form={form} onFinish={handleFinish} layout="vertical">
+                    <Form.Item name="typeId" style={{ display: "none" }}>
+                        <Input />
+                    </Form.Item>
+                    <Descriptions column={1}>
+                        <Descriptions.Item label="Email">
+                            <EditableText
+                                type="input"
+                                value={contact.email}
+                                column="email"
+                                form={form}
+                            />
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Phone">
+                            <EditableText
+                                type="input"
+                                value={contact.phone}
+                                column="phone"
+                                form={form}
+                            />
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Redfin Quick Link">
+                            <EditableText
+                                type="input"
+                                value={contact.redfinLink}
+                                column="redfinLink"
+                                form={form}
+                            />
+                        </Descriptions.Item>
+                        <Descriptions.Item label="County Link">
+                            <EditableText
+                                type="input"
+                                value={contact.countryLink}
+                                column="countryLink"
+                                form={form}
+                            />
+                        </Descriptions.Item>
+                        <Descriptions.Item label="APN">
+                            <EditableText
+                                type="input"
+                                value={contact.APN}
+                                column="APN"
+                                form={form}
+                            />
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Google Map Link">
+                            <EditableText
+                                type="input"
+                                value={contact.gMapLink}
+                                column="gMapLink"
+                                form={form}
+                            />
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Acres">
+                            <EditableText
+                                type="inputNumber"
+                                value={contact.acres}
+                                column="acres"
+                                form={form}
+                            />
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Wetlands Status">
+                            <EditableText
+                                type="select"
+                                value={contact.wetlandsStatus}
+                                column="wetlandsStatus"
+                                form={form}
+                                options={[
+                                    {
+                                        value: "None",
+                                        label: "None",
+                                    },
+                                    {
+                                        value: "Small Portion",
+                                        label: "Small Portion",
+                                    },
+                                    {
+                                        value: "Half",
+                                        label: "Half",
+                                    },
+                                    {
+                                        value: "Most",
+                                        label: "Most",
+                                    },
+                                    { value: "All", label: "All" },
+                                ]}
+                            />
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Mobile">
+                            <EditableText
+                                type="input"
+                                value={contact.mobile}
+                                column="mobile"
+                                form={form}
+                            />
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Other Phone">
+                            <EditableText
+                                type="input"
+                                value={contact.otherPhone}
+                                column="otherPhone"
+                                form={form}
+                            />
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Website">
+                            <EditableText
+                                type="input"
+                                value={contact.website}
+                                column="website"
+                                form={form}
+                            />
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Address Line 1">
+                            <EditableText
+                                type="input"
+                                value={contact.addressLine1}
+                                column="addressLine1"
+                                form={form}
+                            />
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Address Line 2">
+                            <EditableText
+                                type="input"
+                                value={contact.addressLine2}
+                                column="addressLine2"
+                                form={form}
+                            />
+                        </Descriptions.Item>
+                        <Descriptions.Item label="City">
+                            <EditableText
+                                type="input"
+                                value={contact.city}
+                                column="city"
+                                form={form}
+                            />
+                        </Descriptions.Item>
+                        <Descriptions.Item label="State">
+                            <EditableText
+                                type="input"
+                                value={contact.state}
+                                column="state"
+                                form={form}
+                            />
+                        </Descriptions.Item>
+                        <Descriptions.Item label="ZipCode">
+                            <EditableText
+                                type="inputNumber"
+                                value={contact.zipCode}
+                                column="zipCode"
+                                form={form}
+                            />
+                        </Descriptions.Item>
+                        <Descriptions.Item label="County">
+                            <EditableText
+                                type="input"
+                                value={contact.country}
+                                column="country"
+                                form={form}
+                            />
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Description">
+                            <EditableText
+                                type="input"
+                                value={contact.detailsDescription}
+                                column="detailsDescription"
+                                form={form}
+                            />
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Tags">
+                            <EditableText
+                                type="selectTags"
+                                value={contact.tags}
+                                column="tags"
+                                form={form}
+                            />
+                        </Descriptions.Item>
+                    </Descriptions>
+                </Form>
             </Space>
         </Card>
+    );
+};
+
+const EditableText = ({
+    type,
+    options,
+    value,
+    column,
+    form,
+}: {
+    type: "select" | "inputNumber" | "input" | "selectTags";
+    options?: { label: string; value: string }[];
+    value?: string | number | string[];
+    column: string;
+    form: any;
+}) => {
+    const [editing, setEditing] = React.useState(false);
+    const [text, setText] = React.useState(value ?? "-");
+
+    const handleTextClick = () => {
+        setEditing(true);
+    };
+
+    const handleInputChange = (e) => {
+        setText(e.target.value);
+    };
+
+    const handleSelectChange = (value) => {
+        setText(value);
+    };
+
+    const handleInputBlur = () => {
+        setEditing(false);
+        form.submit();
+    };
+
+    const renderInputComponent = () => {
+        switch (type) {
+            case "input":
+                return (
+                    <Input
+                        value={text}
+                        onChange={handleInputChange}
+                        onBlur={handleInputBlur}
+                        autoFocus
+                    />
+                );
+            case "inputNumber":
+                return (
+                    <InputNumber
+                        value={text}
+                        onChange={handleInputChange}
+                        onBlur={handleInputBlur}
+                        autoFocus
+                    />
+                );
+            case "select":
+                return (
+                    <Select
+                        value={text}
+                        onChange={handleSelectChange}
+                        onBlur={handleInputBlur}
+                        autoFocus
+                        style={{ width: "100%" }}
+                    >
+                        {options?.map((option) => (
+                            <Select.Option
+                                key={option.value}
+                                value={option.value}
+                            >
+                                {option.label}
+                            </Select.Option>
+                        ))}
+                    </Select>
+                );
+            case "selectTags":
+                return (
+                    <Select
+                        mode="tags"
+                        style={{ width: "100%" }}
+                        tokenSeparators={[","]}
+                        onChange={handleSelectChange}
+                        onBlur={handleInputBlur}
+                        // options={options}
+                    />
+                );
+            default:
+                return null;
+        }
+    };
+
+    return (
+        <>
+            {editing ? (
+                <Form.Item
+                    name={[column]}
+                    style={{ width: "100%", marginBottom: 0 }}
+                    initialValue={text}
+                >
+                    {renderInputComponent()}
+                </Form.Item>
+            ) : (
+                <span onClick={handleTextClick}>{text}</span>
+            )}
+        </>
     );
 };
 
@@ -242,7 +533,6 @@ const CreateNewTypeForm = ({ onClose }: { onClose: () => void }) => {
 
     const addType = useMutation(addTypeMutation, {
         onSuccess: () => {
-            console.log("success");
             queryClient.invalidateQueries("contactTypesAll");
             form.resetFields();
             onClose();

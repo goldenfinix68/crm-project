@@ -42,6 +42,7 @@ import Inbox from "./pages/Inbox/Inbox";
 import { useLoggedInUser } from "./api/query/userQuery";
 import Dialer from "./pages/Dialer/Dialer";
 import ContactView from "./pages/ContactView";
+import LoadingComponent from "./components/LoadingComponent";
 
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
@@ -146,7 +147,7 @@ const PrivateRoute = ({ children }) => {
     const { user, isLoading } = useLoggedInUser();
 
     if (isLoading) {
-        return <h1>Loading...</h1>;
+        return <LoadingComponent />;
     }
 
     return user ? children : <Navigate to="/" />;
