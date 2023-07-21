@@ -13,7 +13,7 @@ export type TContactType = {
 
 export type TContact = {
     id: string;
-    firstName: string;
+    firstName: any;
     lastName: string;
     mobile?: string;
     countryLink?: string;

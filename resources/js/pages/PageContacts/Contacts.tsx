@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import {
     Button,
@@ -280,6 +280,26 @@ const Contacts = () => {
             width: 200,
         },
     ];
+
+    const [selectionType, setSelectionType] = useState<"checkbox" | "radio">(
+        "checkbox"
+    );
+
+    const rowSelection = {
+        onChange: (selectedRowKeys: React.Key[], selectedRows: TContact[]) => {
+            console.log(selectedRows);
+            // setSelectionType(selectedRows);
+        },
+        // getCheckboxProps: (record: TContact) => ({
+        //     disabled: record.name === "Disabled User", // Column configuration not to be checked
+        //     name: record.name,
+        // }),
+    };
+
+    // useEffect(() => {
+    //     console.log("selectionType", selectionType);
+    // }, [selectionType]);
+
     return (
         <Card>
             <Row style={{ marginBottom: "20px" }}>
@@ -370,8 +390,10 @@ const Contacts = () => {
                 <Col md={24} lg={24}>
                     <Table
                         rowSelection={{
-                            type: "checkbox",
+                            type: selectionType,
+                            ...rowSelection,
                         }}
+                        rowKey={(record) => record.id}
                         columns={columns}
                         dataSource={contacts}
                         scroll={{ x: 1300 }}
