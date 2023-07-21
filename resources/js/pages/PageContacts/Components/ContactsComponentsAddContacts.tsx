@@ -31,10 +31,10 @@ import {
     LockOutlined,
     CloseOutlined,
 } from "@ant-design/icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { addContactMutation } from "../../../api/mutation/useContactMutation";
 import queryClient from "../../../queryClient";
 import { TContact } from "../../../entities";
@@ -42,6 +42,9 @@ import { TContact } from "../../../entities";
 interface ContactsComponentsAddContactsProps {
     isModalOpen: boolean;
     setIsModalOpen: any;
+    record: any;
+    title: any;
+    setTContact: any;
 }
 
 const handleChange = (value: string) => {
@@ -59,22 +62,44 @@ const onChange = (e: CheckboxChangeEvent) => {
 const ContactsComponentsAddContacts = ({
     isModalOpen,
     setIsModalOpen,
+    record,
+    title,
+    setTContact,
 }: ContactsComponentsAddContactsProps) => {
+    const queryClient = useQueryClient();
     const [form] = Form.useForm<TContact>();
     const [isAddNew, seIsAddNew] = useState(false);
 
     const addContact = useMutation(addContactMutation, {
         onSuccess: () => {
             console.log("success");
+            queryClient.invalidateQueries("contacts");
             //queryClient.invalidateQueries("contactTypesAll");
             form.resetFields();
             setIsModalOpen(false);
+            // queryClient.invalidateQueries("contacts");
         },
     });
 
+    useEffect(() => {
+        if (record) {
+            console.log("record", record);
+            //
+            form.setFieldsValue(record);
+        }
+    }, [record]);
+
+    useEffect(() => {
+        console.log("title", title);
+    }, [title]);
+
     const handleFinish = (values: TContact) => {
-        addContact.mutate(values);
-        console.log(values);
+        console.log(values.id);
+        if (record) {
+            addContact.mutate({ ...values, id: record.id });
+        } else {
+            addContact.mutate(values);
+        }
     };
     return (
         <>
@@ -84,7 +109,13 @@ const ContactsComponentsAddContacts = ({
                 width={650}
                 title={null}
                 open={isModalOpen}
-                onCancel={() => setIsModalOpen(false)}
+                // onCancel={() => {
+                //     console.log("asdasd");
+
+                //     setTContact(null);
+                //     form.resetFields();
+                //     setIsModalOpen(false);
+                // }}
                 style={{ maxHeight: "700px" }}
                 footer={null}
                 // footer={[
@@ -97,7 +128,7 @@ const ContactsComponentsAddContacts = ({
             >
                 <div className="modal-header">
                     <Typography.Title level={5} style={{ color: "white" }}>
-                        Add New Contact
+                        {title}
                     </Typography.Title>
                     <Button
                         type="link"
@@ -111,7 +142,11 @@ const ContactsComponentsAddContacts = ({
                             backgroundColor: "rgba(0, 0, 0, 0.5)",
                             border: "0px",
                         }}
-                        onClick={() => setIsModalOpen(false)}
+                        onClick={() => {
+                            setTContact(null);
+                            form.resetFields();
+                            setIsModalOpen(false);
+                        }}
                         icon={<CloseOutlined style={{ color: "white" }} />}
                     />
                 </div>
@@ -174,7 +209,15 @@ const ContactsComponentsAddContacts = ({
                                 </Form.Item>
                             </Col>
                             <Col md={12} xs={12}>
-                                <Form.Item name="email" label="Email">
+                                <Form.Item
+                                    name="email"
+                                    label="Email"
+                                    rules={[
+                                        {
+                                            type: "email",
+                                        },
+                                    ]}
+                                >
                                     <Input placeholder="Email" />
                                 </Form.Item>
                             </Col>
@@ -222,12 +265,20 @@ const ContactsComponentsAddContacts = ({
                         </Row>
                         <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                <Form.Item name="email2" label="Email 2">
+                                <Form.Item
+                                    name="email2"
+                                    label="Email 2"
+                                    rules={[
+                                        {
+                                            type: "email",
+                                        },
+                                    ]}
+                                >
                                     <Input placeholder="Email 2" />
                                 </Form.Item>
                             </Col>
                             <Col md={12} xs={12}>
-                                <Form.Item name="type" label="Type">
+                                <Form.Item name="typeId" label="Type">
                                     <Select
                                         defaultValue="Select"
                                         style={{ width: "100%" }}
@@ -307,10 +358,7 @@ const ContactsComponentsAddContacts = ({
                         <Row gutter={24}>
                             <Col md={12} xs={12}>
                                 <Form.Item name="smsOptOut">
-                                    <Checkbox
-                                        className={"m-t-lg"}
-                                        onChange={onChange}
-                                    >
+                                    <Checkbox className={"m-t-lg"}>
                                         SMS Opt Out
                                     </Checkbox>
                                 </Form.Item>
@@ -320,10 +368,7 @@ const ContactsComponentsAddContacts = ({
                                     name="emailOptOutReason"
                                     label="Email Opt Out Reason"
                                 >
-                                    <Input.TextArea
-                                        maxLength={6}
-                                        placeholder="Email Opt Out Reason"
-                                    />
+                                    <Input.TextArea placeholder="Email Opt Out Reason" />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -338,7 +383,7 @@ const ContactsComponentsAddContacts = ({
                             </Col>
                             <Col md={12} xs={12}>
                                 <Form.Item
-                                    name="mailingCounty"
+                                    name="mailingCountry"
                                     label="Mailing County"
                                 >
                                     <Input placeholder="Mailing County" />
@@ -356,7 +401,7 @@ const ContactsComponentsAddContacts = ({
                             </Col>
 
                             <Col md={12} xs={12}>
-                                <Form.Item name="apn" label="APN">
+                                <Form.Item name="APN" label="APN">
                                     <Input placeholder="APN" />
                                 </Form.Item>
                             </Col>
@@ -364,7 +409,7 @@ const ContactsComponentsAddContacts = ({
                         <Row gutter={24}>
                             <Col md={12} xs={12}>
                                 <Form.Item
-                                    name="googleMapLink"
+                                    name="gMapLink"
                                     label="Google Map Link"
                                 >
                                     <Input placeholder="Google Map Link" />
@@ -382,7 +427,7 @@ const ContactsComponentsAddContacts = ({
                         <Row gutter={24}>
                             <Col md={12} xs={12}>
                                 <Form.Item
-                                    name="redfinQuickLink"
+                                    name="redfinLink"
                                     label="Redfin Quick Link"
                                 >
                                     <Input placeholder="Redfin Quick Link" />
@@ -408,7 +453,7 @@ const ContactsComponentsAddContacts = ({
                             </Col>
                             <Col md={12} xs={12}>
                                 <Form.Item
-                                    name="assessedVsOpeningBidMargin"
+                                    name="assessedVsOpeningMargin"
                                     label="Assessed vs. Opening Bid Margin (manual)"
                                 >
                                     <Input placeholder="Assessed vs. Opening Bid Margin (manual)" />
@@ -418,7 +463,7 @@ const ContactsComponentsAddContacts = ({
                         <Row gutter={24}>
                             <Col md={12} xs={12}>
                                 <Form.Item
-                                    name="assessedVsOpeningBidMultiple"
+                                    name="assessedVsOpeningMultiple"
                                     label="Assessed vs. Opening Bid Multiple (manual)"
                                 >
                                     <Input placeholder="Assessed vs. Opening Bid Multiple (manual)" />
@@ -460,14 +505,17 @@ const ContactsComponentsAddContacts = ({
                                 </Form.Item>
                             </Col>
                             <Col md={12} xs={12}>
-                                <Form.Item name="subdivision" label="Subdivion">
+                                <Form.Item
+                                    name="legalSubdivision"
+                                    label="Subdivision"
+                                >
                                     <Input placeholder="Subdivision" />
                                 </Form.Item>
                             </Col>
                         </Row>
                         <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                <Form.Item name="floodZone" label="Flood Zone">
+                                <Form.Item name="floodzone" label="Flood Zone">
                                     <Select
                                         defaultValue="Yes"
                                         style={{ width: "100%" }}
@@ -602,27 +650,29 @@ const ContactsComponentsAddContacts = ({
                         <Row gutter={24}>
                             <Col md={24} xs={24}>
                                 <Form.Item
-                                    name="description"
+                                    name="detailsDescription"
                                     label="Description"
                                 >
-                                    <Input.TextArea
-                                        maxLength={6}
-                                        placeholder="Description"
-                                    />
+                                    <Input.TextArea placeholder="Description" />
                                 </Form.Item>
                             </Col>
                         </Row>
                         <Row gutter={24}>
                             <Col md={24} xs={24}>
                                 <Form.Item name="tags" label="Tags">
-                                    <Input placeholder="Tags" />
+                                    <Select
+                                        mode="tags"
+                                        style={{ width: "100%" }}
+                                        tokenSeparators={[","]}
+                                        // options={options}
+                                    />
                                 </Form.Item>
                             </Col>
                         </Row>
                         <Row gutter={24}>
                             <Col md={24} xs={24}>
                                 <Form.Item
-                                    name="legalDescription"
+                                    name="detailsLegalDescription"
                                     label="Legal Description"
                                 >
                                     <Input placeholder="Legal Description" />
@@ -705,7 +755,13 @@ const ContactsComponentsAddContacts = ({
                     <Button className="m-r-xs" type="primary">
                         Save and add other
                     </Button>
-                    <Button onClick={() => setIsModalOpen(false)}>
+                    <Button
+                        onClick={() => {
+                            setTContact(null);
+                            form.resetFields();
+                            setIsModalOpen(false);
+                        }}
+                    >
                         Cancel
                     </Button>
                 </div>

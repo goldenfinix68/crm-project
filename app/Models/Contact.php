@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\User;
+
 class Contact extends Model
 {
     use HasFactory;
@@ -63,6 +65,15 @@ class Contact extends Model
         'country',
         'zipCode',
         'state',
-        'wetlandsStatus'
+        'mailingState',
+        'smsOptOut',
+        'emailOptOutReason',
+        'mailingZip',
+        'wetlandsStatus',
+        'county'
     ];
+
+    public function owner(){
+        return $this->belongsTo(User::class, 'ownerId');
+    }
 }

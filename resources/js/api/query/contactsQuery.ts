@@ -10,6 +10,9 @@ export const useContactTypesAll = () => {
             const response = await axios.get("/api/contact-types", {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
+                    // data: {
+                    //     id: 1,
+                    // },
                 },
             });
             return response.data;
@@ -39,6 +42,24 @@ export const useGetContact = (id: string) => {
 
     return {
         contact: data,
+        isLoading,
+        isError,
+    };
+};
+
+export const useContactsAll = () => {
+    const { data, isLoading, isError } = useQuery("contacts", async () => {
+        const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+        const response = await axios.get("/api/contacts", {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+        return response.data.data;
+    });
+
+    return {
+        contacts: data,
         isLoading,
         isError,
     };

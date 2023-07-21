@@ -39,12 +39,13 @@ import {
 } from "react-beautiful-dnd";
 import Board from "react-trello";
 import { useDealsAll } from "../../api/query/dealQuery";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import {
     useDealMutation,
     useDealUpdateBoardMutation,
 } from "../../api/mutation/useDealMutation";
 import moment from "moment";
+import DealsTable from "./components/DealsTable";
 
 interface Card {
     id: number;
@@ -62,8 +63,23 @@ interface Lane {
     cards: Card[];
 }
 
+interface TDeals {
+    title: string;
+    name: string;
+    value: string;
+    stage: string;
+    status: string;
+    owner: string;
+}
 const Deal = () => {
-    const { deals, isLoading, refetch } = useDealsAll();
+    const queryClient = useQueryClient();
+    const [filterPage, setFilterPage] = useState({
+        pipeline: "ACQ",
+        title: "",
+        status: "All Deals",
+    });
+
+    const { deals, isLoading, refetch } = useDealsAll(filterPage);
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
     const showModalAdd = () => {
         setIsModalOpenAdd(true);
@@ -76,6 +92,25 @@ const Deal = () => {
     const handleCancelAdd = () => {
         setIsModalOpenAdd(false);
     };
+
+    const onClickACQ = (value: string) => {
+        setFilterPage({
+            ...filterPage,
+            pipeline: value,
+        });
+    };
+
+    const onClickStatus = (value: string) => {
+        setFilterPage({
+            ...filterPage,
+            status: value,
+        });
+        console.log(value);
+    };
+
+    useEffect(() => {
+        refetch();
+    }, [filterPage]);
 
     const [openFilter, setOpenFilter] = useState(false);
 
@@ -108,11 +143,11 @@ const Deal = () => {
     const acq: MenuProps["items"] = [
         {
             key: "1",
-            label: <div>Marketing</div>,
+            label: <div onClick={() => onClickACQ("Marketing")}>Marketing</div>,
         },
         {
             key: "2",
-            label: <div>ACQ</div>,
+            label: <div onClick={() => onClickACQ("ACQ")}>ACQ</div>,
         },
     ];
     const title: MenuProps["items"] = [
@@ -168,14 +203,67 @@ const Deal = () => {
                             boxShadow: "none",
                         }}
                         mode="inline"
-                        defaultSelectedKeys={["1"]}
-                        defaultOpenKeys={["sub1"]}
                     >
-                        <Menu.Item key="1">Activites I am following</Menu.Item>
-                        <Menu.Item key="2">All Closed Activities</Menu.Item>
-                        <Menu.Item key="3">All Open Activities</Menu.Item>
-                        <Menu.Item key="4">My Open Activities</Menu.Item>
-                        <Menu.Item key="5">My Overdue Activites</Menu.Item>
+                        <Menu.Item
+                            key="1"
+                            onClick={() => onClickStatus("All Deals")}
+                        >
+                            All Deals
+                        </Menu.Item>
+                        <Menu.Item
+                            key="2"
+                            onClick={() => onClickStatus("All Open Deals")}
+                        >
+                            All Open Deals
+                        </Menu.Item>
+                        <Menu.Item
+                            key="3"
+                            onClick={() =>
+                                onClickStatus("Deals Closing Next Month")
+                            }
+                        >
+                            Deals Closing Next Month
+                        </Menu.Item>
+                        <Menu.Item
+                            key="4"
+                            onClick={() =>
+                                onClickStatus("Deals Closing This Month")
+                            }
+                        >
+                            Deals Closing This Month
+                        </Menu.Item>
+                        {/* <Menu.Item
+                            key="5"
+                            onClick={() =>
+                                onClickStatus("Deals I am following")
+                            }
+                        >
+                            Deals I am following
+                        </Menu.Item>
+                        <Menu.Item
+                            key="6"
+                            onClick={() => onClickStatus("My Open Deals")}
+                        >
+                            My Open Deals
+                        </Menu.Item>
+                        <Menu.Item
+                            key="7"
+                            onClick={() => onClickStatus("My Ovderdue Deals")}
+                        >
+                            My Ovderdue Deals
+                        </Menu.Item> */}
+                        <Menu.Item
+                            key="8"
+                            onClick={() => onClickStatus("Lost Deals")}
+                        >
+                            Lost Deals
+                        </Menu.Item>
+                        <Menu.Item
+                            key="9"
+                            onClick={() => onClickStatus("Won Deals")}
+                        >
+                            Won Deals
+                        </Menu.Item>
                     </Menu>
                 </Tabs.TabPane>
             </Tabs>
@@ -231,52 +319,57 @@ const Deal = () => {
             },
         ],
     };
-
+    const [listBoard, setListBoard] = useState("Board");
     const [boardData, setBoardData] = useState(initialBoardData);
-
+    const [listData, setListData] = useState<TDeals[]>([]);
     useEffect(() => {
         if (deals) {
-            const data: { lanes: Lane[] } = { ...initialBoardData }; // Clone the initial data
-            deals.forEach((x: any, key: any) => {
-                if (x.stage == "Comp & Qualify") {
-                    data.lanes[0].cards.push({
-                        id: x.id,
-                        title: cardDiv(x),
-                        laneId: x.stage,
-                    });
-                }
-                if (x.stage == "First Offer Given") {
-                    data.lanes[1].cards.push({
-                        id: x.id,
-                        title: cardDiv(x),
-                        laneId: x.stage,
-                    });
-                }
-                if (x.stage == "In Negotiation") {
-                    data.lanes[2].cards.push({
-                        id: x.id,
-                        title: cardDiv(x),
-                        laneId: x.stage,
-                    });
-                }
-                if (x.stage == "Verbal Offer Accepted") {
-                    data.lanes[3].cards.push({
-                        id: x.id,
-                        title: cardDiv(x),
-                        laneId: x.stage,
-                    });
-                }
-                if (x.stage == "Under Contract") {
-                    data.lanes[4].cards.push({
-                        id: x.id,
-                        title: cardDiv(x),
-                        laneId: x.stage,
-                    });
-                }
-            });
-            setBoardData(data);
+            if (listBoard != "List") {
+                const data: { lanes: Lane[] } = { ...initialBoardData }; // Clone the initial data
+                deals.data.forEach((x: any, key: any) => {
+                    if (x.stage == "Comp & Qualify") {
+                        data.lanes[0].cards.push({
+                            id: x.id,
+                            title: cardDiv(x),
+                            laneId: x.stage,
+                        });
+                    }
+                    if (x.stage == "First Offer Given") {
+                        data.lanes[1].cards.push({
+                            id: x.id,
+                            title: cardDiv(x),
+                            laneId: x.stage,
+                        });
+                    }
+                    if (x.stage == "In Negotiation") {
+                        data.lanes[2].cards.push({
+                            id: x.id,
+                            title: cardDiv(x),
+                            laneId: x.stage,
+                        });
+                    }
+                    if (x.stage == "Verbal Offer Accepted") {
+                        data.lanes[3].cards.push({
+                            id: x.id,
+                            title: cardDiv(x),
+                            laneId: x.stage,
+                        });
+                    }
+                    if (x.stage == "Under Contract") {
+                        data.lanes[4].cards.push({
+                            id: x.id,
+                            title: cardDiv(x),
+                            laneId: x.stage,
+                        });
+                    }
+                });
+                setBoardData(data);
+            } else {
+                setListData(deals.data);
+                console.log("wew", deals.data);
+            }
         }
-    }, [deals]);
+    }, [deals, listBoard]);
 
     const cardDiv = (x: any) => {
         return (
@@ -352,6 +445,11 @@ const Deal = () => {
         mutation.mutate(newData);
     };
 
+    const onChangeListBoard = (e: any) => {
+        setListBoard(e.target.value);
+        refetch();
+    };
+
     return (
         <Row className="deal-group-row">
             <Col md={24}>
@@ -371,7 +469,8 @@ const Deal = () => {
                                 >
                                     <Button>
                                         <Space>
-                                            ACQ
+                                            {filterPage.pipeline}
+
                                             <DownOutlined />
                                         </Space>
                                     </Button>
@@ -384,20 +483,7 @@ const Deal = () => {
                                 >
                                     <Button>
                                         <Space>
-                                            My Open Deals
-                                            <DownOutlined />
-                                        </Space>
-                                    </Button>
-                                </Dropdown>
-                            </span>
-                            <span style={{ marginRight: 10 }}>
-                                <Dropdown
-                                    menu={{ items: title }}
-                                    placement="bottomLeft"
-                                >
-                                    <Button>
-                                        <Space>
-                                            Title
+                                            {filterPage.status}
                                             <DownOutlined />
                                         </Space>
                                     </Button>
@@ -415,11 +501,15 @@ const Deal = () => {
                                 ></Button>
                             </span>
                             <span style={{ marginRight: 10 }}>
-                                <Radio.Group>
-                                    <Radio.Button value="Overdue">
+                                <Radio.Group
+                                    value={listBoard}
+                                    buttonStyle="solid"
+                                    onChange={onChangeListBoard}
+                                >
+                                    <Radio.Button value="List">
                                         List
                                     </Radio.Button>
-                                    <Radio.Button value="Today">
+                                    <Radio.Button value="Board">
                                         Board
                                     </Radio.Button>
                                 </Radio.Group>
@@ -468,24 +558,31 @@ const Deal = () => {
                             </span>
                         </div>
                     </div>
-                    <div>
-                        <div className="mainDealArrow">
-                            <div style={{ width: "100%", height: "100vh" }}>
-                                <Board
-                                    draggable
-                                    data={boardData}
-                                    laneDraggable={false}
-                                    hideCardDeleteIcon={true}
-                                    className="react-trello-board board"
-                                    cardDragClass="card-drag"
-                                    cardDropClass="card-drop"
-                                    style={{ background: "none!important" }}
-                                    customCardLayout={true}
-                                    onDataChange={onDataChangeBoard}
-                                />
+                    {listBoard != "List" ? (
+                        <div>
+                            <div className="mainDealArrow">
+                                <div style={{ width: "100%", height: "100vh" }}>
+                                    <Board
+                                        draggable
+                                        data={boardData}
+                                        laneDraggable={false}
+                                        hideCardDeleteIcon={true}
+                                        className="react-trello-board board"
+                                        cardDragClass="card-drag"
+                                        cardDropClass="card-drop"
+                                        style={{ background: "none!important" }}
+                                        customCardLayout={true}
+                                        onDataChange={onDataChangeBoard}
+                                    />
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    ) : (
+                        <div>
+                            <DealsTable deals={listData} />
+                        </div>
+                    )}
+
                     <Filter
                         openFilter={openFilter}
                         setOpenFilter={setOpenFilter}

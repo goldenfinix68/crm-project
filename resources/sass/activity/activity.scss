@@ -112,9 +112,10 @@
 //deals
 
 .mainDealArrow {
-    overflow-x: scroll;
+    // overflow-x: scroll;
     min-height: 400px;
     margin-left: -24px;
+    margin-right: -24px;
     .bx-pager {
         display: flex;
         align-items: center;
@@ -193,7 +194,7 @@
             }
         }
         .smooth-dnd-container {
-            min-height: 50vh;
+            min-height: 70vh;
         }
     }
 }

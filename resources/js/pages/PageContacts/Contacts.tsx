@@ -39,10 +39,13 @@ import {
     CaretDownOutlined,
     EditOutlined,
 } from "@ant-design/icons";
-import type { ColumnsType, TableProps } from "antd/es/table";
+import type { ColumnsType, TableProps, ColumnGroupType } from "antd/es/table";
 import ContactsComponentsAddContacts from "./Components/ContactsComponentsAddContacts";
 import ContactsComponentsFilter from "./Components/ContactsComponentsFilter";
 import ContactsComponentsManageColumn from "./Components/ContactsComponentsManageColumn";
+import { useContactsAll } from "../../api/query/contactsQuery";
+import { useQuery } from "react-query";
+import { TContact } from "../../entities";
 
 interface DataType {
     key: React.Key;
@@ -56,119 +59,53 @@ interface DataType {
     avatar: any;
 }
 
-const columns: ColumnsType<DataType> = [
-    {
-        title: "Name",
-        dataIndex: "name",
-        render: (text: string, record: DataType) => (
-            <>
-                <Button
-                    type="text"
-                    className="m-r-sm"
-                    icon={<EditOutlined />}
-                />
-                <Avatar
-                    className="avatarText m-r-sm"
-                    // src={record.avatar}
-                    size={32}
-                    style={{
-                        backgroundColor: "#1677FF",
-                        verticalAlign: "middle",
-                    }}
-                >
-                    {record.name.charAt(0)}
-                </Avatar>
-                <span style={{ marginLeft: "8px" }}>{text}</span>
-            </>
-        ),
-        sorter: (a, b) => a.name.length - b.name.length,
-        defaultSortOrder: "descend",
-        fixed: "left",
-        width: 350,
-    },
-    {
-        title: "Email",
-        dataIndex: "email",
-    },
-    {
-        title: "Mobile",
-        dataIndex: "mobile",
-    },
-    {
-        title: "Country Link",
-        dataIndex: "countryLink",
-    },
-    {
-        title: "Acres",
-        dataIndex: "acres",
-    },
-    {
-        title: "Tags",
-        dataIndex: "tags",
-        key: "tags",
-        render: (tags: string[]) => (
-            <>
-                {tags.map((tag) => (
-                    <Tag color="blue" key={tag}>
-                        {tag}
-                    </Tag>
-                ))}
-            </>
-        ),
-    },
-    {
-        title: "Owner",
-        dataIndex: "owner",
-    },
-];
+// const data: DataType[] = [
+//     {
+//         key: "1",
+//         name: "Al Sedevic Rome Twp Zoning",
+//         email: "Al@gmail.com",
+//         mobile: "+14405612345",
+//         countryLink: "https://google.com",
+//         acres: "0",
+//         tags: ["TaxDeedAuction"],
+//         owner: "Jesse Ashley",
+//         avatar: "U",
+//     },
+//     {
+//         key: "2",
+//         name: "Ben Hehr Ashtbla Realtor",
+//         email: "Ben@gmail.com",
+//         mobile: "+14405645612",
+//         countryLink: "https://google.com",
+//         acres: "0",
+//         tags: [""],
 
-const data: DataType[] = [
-    {
-        key: "1",
-        name: "Al Sedevic Rome Twp Zoning",
-        email: "Al@gmail.com",
-        mobile: "+14405612345",
-        countryLink: "https://google.com",
-        acres: "0",
-        tags: ["TaxDeedAuction"],
-        owner: "Jesse Ashley",
-        avatar: "U",
-    },
-    {
-        key: "2",
-        name: "Ben Hehr Ashtbla Realtor",
-        email: "Ben@gmail.com",
-        mobile: "+14405645612",
-        countryLink: "https://google.com",
-        acres: "0",
-        tags: [""],
-
-        owner: "Jesse Ashley",
-        avatar: "U",
-    },
-    {
-        key: "3",
-        name: "Clyd Iafrate",
-        email: "Clyd@gmail.com",
-        mobile: "+14412345678",
-        countryLink: "https://google.com",
-        acres: "33.66",
-        tags: ["TaxDeedAuction"],
-        owner: "Jesse Ashley",
-        avatar: "U",
-    },
-    {
-        key: "4",
-        name: "David Fuduric",
-        email: "David@gmail.com",
-        mobile: "+14405612378",
-        countryLink: "https://google.com",
-        acres: "0.15",
-        tags: ["DQ"],
-        owner: "Jesse Ashley",
-        avatar: "U",
-    },
-];
+//         owner: "Jesse Ashley",
+//         avatar: "U",
+//     },
+//     {
+//         key: "3",
+//         name: "Clyd Iafrate",
+//         email: "Clyd@gmail.com",
+//         mobile: "+14412345678",
+//         countryLink: "https://google.com",
+//         acres: "33.66",
+//         tags: ["TaxDeedAuction"],
+//         owner: "Jesse Ashley",
+//         avatar: "U",
+//     },
+//     {
+//         key: "4",
+//         name: "David Fuduric",
+//         email: "David@gmail.com",
+//         mobile: "+14405612378",
+//         countryLink: "https://google.com",
+//         acres: "0.15",
+//         tags: ["DQ"],
+//         owner: "Jesse Ashley",
+//         avatar: "U",
+//     },
+// ];
 
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -230,10 +167,119 @@ const menu = (
 );
 
 const Contacts = () => {
+    const [isTContact, setTContact] = useState<TContact | null>(null);
+    const { contacts, isLoading } = useContactsAll();
     const [isModalOpen, setisModalOpen] = useState(false);
     const [isModalManageColumnOpen, setIsModalManageColumnOpen] =
         useState(false);
     const [open, setOpen] = useState(false);
+    const [isTitle, setTitle] = useState("");
+
+    const handleEdit = (record: TContact) => {
+        setTContact(record);
+    };
+
+    const columns: ColumnsType<TContact> = [
+        {
+            key: "firstName",
+            title: "Name",
+            dataIndex: "name",
+            render: (text: string, record: TContact) => (
+                <>
+                    <Button
+                        type="text"
+                        className="m-r-sm"
+                        icon={<EditOutlined />}
+                        onClick={() => {
+                            setisModalOpen(true);
+                            handleEdit(record);
+                            console.log("data", record);
+                            setTitle("Edit Contact");
+                        }}
+                    />
+                    <Avatar
+                        className="avatarText m-r-sm"
+                        // src={record.avatar}
+                        size={32}
+                        style={{
+                            backgroundColor: "#1677FF",
+                            verticalAlign: "middle",
+                        }}
+                    >
+                        {record.firstName.charAt(0)}
+                    </Avatar>
+                    <span style={{ marginLeft: "8px" }}>
+                        {record.firstName} {record.lastName}
+                    </span>
+                </>
+            ),
+            sorter: (a, b) => a.firstName.length - b.firstName.length,
+            defaultSortOrder: "descend",
+            fixed: "left",
+            width: 350,
+        },
+        {
+            key: "email",
+            title: "Email",
+            dataIndex: "email",
+            width: 250,
+        },
+        {
+            key: "mobile",
+            title: "Mobile",
+            dataIndex: "mobile",
+            width: 200,
+        },
+        {
+            key: "countryLink",
+            title: "Country Link",
+            dataIndex: "countryLink",
+            width: 200,
+        },
+        {
+            key: "acres",
+            title: "Acres",
+            dataIndex: "acres",
+            width: 150,
+        },
+        {
+            title: "Tags",
+            dataIndex: "tags",
+            key: "tags",
+            render: (text: string, record: TContact) => (
+                <>
+                    {/* {record.firstName} */}
+                    {record &&
+                        record.tags &&
+                        record.tags.length > 0 &&
+                        record.tags.map((tag) => (
+                            <Tag color="blue" key={tag}>
+                                {tag}
+                            </Tag>
+                        ))}
+                </>
+            ),
+            width: 150,
+        },
+        {
+            key: "owner",
+            title: "Owner",
+            dataIndex: "owner",
+            width: 200,
+        },
+        {
+            key: "firstName",
+            title: "First Name",
+            dataIndex: "firstName",
+            width: 200,
+        },
+        {
+            key: "lastName",
+            title: "Last Name",
+            dataIndex: "lastName",
+            width: 200,
+        },
+    ];
     return (
         <Card>
             <Row style={{ marginBottom: "20px" }}>
@@ -275,6 +321,7 @@ const Contacts = () => {
                         }}
                         onClick={() => {
                             setisModalOpen(true);
+                            setTitle("Add Contact");
                         }}
                     >
                         Contact
@@ -326,7 +373,7 @@ const Contacts = () => {
                             type: "checkbox",
                         }}
                         columns={columns}
-                        dataSource={data}
+                        dataSource={contacts}
                         scroll={{ x: 1300 }}
                     />
                 </Col>
@@ -335,6 +382,9 @@ const Contacts = () => {
             <ContactsComponentsAddContacts
                 isModalOpen={isModalOpen}
                 setIsModalOpen={setisModalOpen}
+                record={isTContact}
+                title={isTitle}
+                setTContact={setTContact}
             />
             <ContactsComponentsFilter open={open} setOpen={setOpen} />
             <ContactsComponentsManageColumn

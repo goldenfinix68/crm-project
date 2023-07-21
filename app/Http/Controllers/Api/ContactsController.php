@@ -14,9 +14,49 @@ class ContactsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Contact::all();
+        // return Contact::with('owner')->get();
+
+        $data = Contact::select([
+            'contacts.*',
+            \DB::raw("(SELECT CONCAT(users.firstName, ' ', users.lastName)) as `owner`"),
+        ])
+        ->leftJoin('users', 'users.id', '=', 'contacts.ownerId');
+        
+        if (isset($request->search)) { 
+            $data = $data->where(function ($q) use ($request) {
+                $q->orWhere('id', 'LIKE', "%$search%");
+            });
+        }
+       
+        if ($request->sort_order != '') {
+            $data->orderBy($request->sort_field, $request->sort_order == 'ascend' ? 'asc' : 'desc');
+        } else {
+            $data->orderBy('id', 'desc');
+        }
+
+        if (isset($request->pageSize)) {
+            $data = $data->paginate($request->pageSize);
+        } else {
+            $data = $data->get();
+        }
+
+        $data = $data->map(function ($q){
+            if($q->tags){
+
+
+                $q->tags = json_decode($q->tags);
+            }
+            return $q;
+        });
+
+        // $data->data['tags'] = json_decode($data->tags);
+
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ], 200);
     }
 
     /**
@@ -42,10 +82,19 @@ class ContactsController extends Controller
             'lastName' => 'required',
         ]);
 
-        $contact = Contact::create($request->all());
+        $data = $request->all();
+
+        error_log(json_encode($data));
+        if (isset($data['tags'])) {
+            $data['tags'] = json_encode($data['tags']);
+        }
+        
+
+        $contact = Contact::updateOrCreate(['id' => isset($data['id'])? $data['id'] : null],$data);
 
         
         return response()->json($contact, 200);
+      
     }
 
     /**
