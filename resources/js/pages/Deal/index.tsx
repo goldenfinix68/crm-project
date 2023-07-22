@@ -27,6 +27,7 @@ import {
     HolderOutlined,
     CloseOutlined,
     PlusCircleFilled,
+    PlusSquareOutlined,
 } from "@ant-design/icons";
 import Search from "antd/es/input/Search";
 import ModalAddDeal from "./components/ModalAddDeal";
@@ -288,7 +289,7 @@ const Deal = () => {
                         <div className="content">Comp & Qualify</div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
-                            <PlusCircleFilled
+                            <PlusSquareOutlined
                                 onClick={() =>
                                     showModalAddDeal("Comp & Qualify")
                                 }
@@ -311,7 +312,7 @@ const Deal = () => {
                         <div className="content">First Offer Given</div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
-                            <PlusCircleFilled
+                            <PlusSquareOutlined
                                 onClick={() =>
                                     showModalAddDeal("First Offer Given")
                                 }
@@ -333,7 +334,7 @@ const Deal = () => {
                         <div className="content">In Negotiation</div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
-                            <PlusCircleFilled
+                            <PlusSquareOutlined
                                 onClick={() =>
                                     showModalAddDeal("In Negotiation")
                                 }
@@ -355,7 +356,7 @@ const Deal = () => {
                         <div className="content">Verbal Offer Accepted</div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
-                            <PlusCircleFilled
+                            <PlusSquareOutlined
                                 onClick={() =>
                                     showModalAddDeal("Verbal Offer Accepted")
                                 }
@@ -377,7 +378,7 @@ const Deal = () => {
                         <div className="content">Under Contract</div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
-                            <PlusCircleFilled
+                            <PlusSquareOutlined
                                 onClick={() =>
                                     showModalAddDeal("Under Contract")
                                 }

@@ -280,6 +280,7 @@
 }
 
 .item-deals-header .add-deals svg {
+  font-size: 18px;
   visibility: hidden;
 }
 
