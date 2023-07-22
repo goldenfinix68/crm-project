@@ -181,9 +181,13 @@
   width: 300px !important;
 }
 
+.react-trello-board section header.jZFhJh {
+  display: block;
+}
+
 .react-trello-board section .sc-gLfKCG.sc-ftDPCE {
-  padding: 20px;
-  border: 1px solid #e3e3e3;
+  position: relative;
+  padding: 0;
 }
 
 .react-trello-board section div.sc-jqNall {
@@ -212,5 +216,59 @@
 
 .react-trello-board section .smooth-dnd-container {
   min-height: 70vh;
+}
+
+.item-deals-header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  position: relative;
+  z-index: 1;
+  height: 50px;
+}
+
+.item-deals-header .active .content {
+  color: #ffffff;
+}
+
+.item-deals-header .active .arrow {
+  background: #d68a3a;
+}
+
+.item-deals-header .content {
+  color: #000000;
+  position: absolute;
+  z-index: 2;
+  margin-left: 20px;
+}
+
+.item-deals-header .arrow {
+  width: 100%;
+  height: 50%;
+  background: #ffffff;
+}
+
+.item-deals-header .arrow.top {
+  -webkit-transform: skew(32deg, 0deg);
+          transform: skew(32deg, 0deg);
+  border-right: 1px solid #d8d3d3;
+  border-top: 1px solid #d8d3d3;
+}
+
+.item-deals-header .arrow.bottom {
+  -webkit-transform: skew(-32deg, 0deg);
+          transform: skew(-32deg, 0deg);
+  border-right: 1px solid #d8d3d3;
+  border-bottom: 1px solid #d8d3d3;
 }
 /*# sourceMappingURL=activity.css.map */

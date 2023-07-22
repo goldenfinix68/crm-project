@@ -55,7 +55,7 @@ interface Card {
 
 interface Lane {
     id: string;
-    title: string;
+    title: React.ReactNode;
     label: string;
     style: {
         width: number;
@@ -274,7 +274,13 @@ const Deal = () => {
         lanes: [
             {
                 id: "Comp & Qualify",
-                title: "Comp & Qualify",
+                title: (
+                    <div className="item-deals-header">
+                        <div className="arrow top"></div>
+                        <div className="content">Comp & Qualify</div>
+                        <div className="arrow bottom"></div>
+                    </div>
+                ),
                 label: "",
                 style: {
                     width: 280,
@@ -283,7 +289,14 @@ const Deal = () => {
             },
             {
                 id: "First Offer Given",
-                title: "First Offer Given",
+
+                title: (
+                    <div className="item-deals-header">
+                        <div className="arrow top"></div>
+                        <div className="content">First Offer Given</div>
+                        <div className="arrow bottom"></div>
+                    </div>
+                ),
                 label: "",
                 style: {
                     width: 280,
@@ -292,7 +305,13 @@ const Deal = () => {
             },
             {
                 id: "In Negotiation",
-                title: "In Negotiation",
+                title: (
+                    <div className="item-deals-header">
+                        <div className="arrow top"></div>
+                        <div className="content">In Negotiation</div>
+                        <div className="arrow bottom"></div>
+                    </div>
+                ),
                 label: "",
                 style: {
                     width: 280,
@@ -301,7 +320,13 @@ const Deal = () => {
             },
             {
                 id: "Verbal Offer Accepted",
-                title: "Verbal Offer Accepted",
+                title: (
+                    <div className="item-deals-header">
+                        <div className="arrow top"></div>
+                        <div className="content">Verbal Offer Accepted</div>
+                        <div className="arrow bottom"></div>
+                    </div>
+                ),
                 style: {
                     width: 280,
                 },
@@ -310,7 +335,13 @@ const Deal = () => {
             },
             {
                 id: "Under Contract",
-                title: "Under Contract",
+                title: (
+                    <div className="item-deals-header">
+                        <div className="arrow top"></div>
+                        <div className="content">Under Contract</div>
+                        <div className="arrow bottom"></div>
+                    </div>
+                ),
                 style: {
                     width: 280,
                 },
