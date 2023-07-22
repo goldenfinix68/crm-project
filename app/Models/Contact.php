@@ -81,4 +81,9 @@ class Contact extends Model
     {
         return $this->hasOne(\App\Models\ContactType::class, 'id', 'typeId');
     }
+
+    public function notes()
+    {
+        return $this->hasMany(\App\Models\Note::class, 'contactId', 'id');
+    }
 }

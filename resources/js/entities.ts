@@ -11,6 +11,12 @@ export type TContactType = {
     highlight: string;
 };
 
+export type TNote = {
+    id?: string;
+    contactId: string;
+    notes: string;
+};
+
 export type TContact = {
     id: string;
     firstName: string;
