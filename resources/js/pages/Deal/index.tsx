@@ -26,6 +26,7 @@ import {
     UserOutlined,
     HolderOutlined,
     CloseOutlined,
+    PlusCircleFilled,
 } from "@ant-design/icons";
 import Search from "antd/es/input/Search";
 import ModalAddDeal from "./components/ModalAddDeal";
@@ -78,10 +79,17 @@ const Deal = () => {
         title: "",
         status: "All Deals",
     });
+    const [showModalAddDealValue, setshowModalAddDealValue] =
+        useState<string>("");
 
     const { deals, isLoading, refetch } = useDealsAll(filterPage);
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
     const showModalAdd = () => {
+        setIsModalOpenAdd(true);
+    };
+
+    const showModalAddDeal = (val: any) => {
+        setshowModalAddDealValue(val);
         setIsModalOpenAdd(true);
     };
 
@@ -279,6 +287,13 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">Comp & Qualify</div>
                         <div className="arrow bottom"></div>
+                        <span className="add-deals">
+                            <PlusCircleFilled
+                                onClick={() =>
+                                    showModalAddDeal("Comp & Qualify")
+                                }
+                            />
+                        </span>
                     </div>
                 ),
                 label: "",
@@ -295,6 +310,13 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">First Offer Given</div>
                         <div className="arrow bottom"></div>
+                        <span className="add-deals">
+                            <PlusCircleFilled
+                                onClick={() =>
+                                    showModalAddDeal("First Offer Given")
+                                }
+                            />
+                        </span>
                     </div>
                 ),
                 label: "",
@@ -310,6 +332,13 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">In Negotiation</div>
                         <div className="arrow bottom"></div>
+                        <span className="add-deals">
+                            <PlusCircleFilled
+                                onClick={() =>
+                                    showModalAddDeal("In Negotiation")
+                                }
+                            />
+                        </span>
                     </div>
                 ),
                 label: "",
@@ -325,6 +354,13 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">Verbal Offer Accepted</div>
                         <div className="arrow bottom"></div>
+                        <span className="add-deals">
+                            <PlusCircleFilled
+                                onClick={() =>
+                                    showModalAddDeal("Verbal Offer Accepted")
+                                }
+                            />
+                        </span>
                     </div>
                 ),
                 style: {
@@ -340,6 +376,13 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">Under Contract</div>
                         <div className="arrow bottom"></div>
+                        <span className="add-deals">
+                            <PlusCircleFilled
+                                onClick={() =>
+                                    showModalAddDeal("Under Contract")
+                                }
+                            />
+                        </span>
                     </div>
                 ),
                 style: {
@@ -622,6 +665,7 @@ const Deal = () => {
                         isModalOpenAdd={isModalOpenAdd}
                         handleOkAdd={handleOkAdd}
                         handleCancelAdd={handleCancelAdd}
+                        showModalAddDealValue={showModalAddDealValue}
                     />
                 </Card>
             </Col>

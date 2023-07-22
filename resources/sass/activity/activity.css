@@ -271,4 +271,19 @@
   border-right: 1px solid #d8d3d3;
   border-bottom: 1px solid #d8d3d3;
 }
+
+.item-deals-header .add-deals {
+  position: absolute;
+  right: 0;
+  margin-right: 10px;
+  margin-bottom: 3px;
+}
+
+.item-deals-header .add-deals svg {
+  visibility: hidden;
+}
+
+.item-deals-header:hover .add-deals svg {
+  visibility: visible;
+}
 /*# sourceMappingURL=activity.css.map */
