@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     Button,
     Col,
@@ -41,12 +41,14 @@ interface Props {
     isModalOpenAdd: boolean;
     handleOkAdd: () => void;
     handleCancelAdd: () => void;
+    showModalAddDealValue: string;
 }
 
 const ModalAddDeal = ({
     isModalOpenAdd,
     handleOkAdd,
     handleCancelAdd,
+    showModalAddDealValue,
 }: Props) => {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
@@ -74,6 +76,14 @@ const ModalAddDeal = ({
     });
 
     const calendar = useRef();
+
+    useEffect(() => {
+        if (showModalAddDealValue) {
+            form.setFieldsValue({
+                stage: showModalAddDealValue,
+            });
+        }
+    }, [showModalAddDealValue]);
 
     return (
         <Modal
