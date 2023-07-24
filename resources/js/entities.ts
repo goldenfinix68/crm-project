@@ -26,6 +26,16 @@ export type TText = {
     message: string;
 };
 
+export type TWallData = {
+    date: string;
+    day: string;
+    month: string;
+    year: string;
+    type: "call" | "text" | "note";
+    note?: TNote;
+    tex?: TText;
+};
+
 export type TContact = {
     id: string;
     firstName: any;
@@ -84,10 +94,5 @@ export type TContact = {
     zipCode?: string;
     state?: string;
     owner?: string;
-    wall?: {
-        date: string;
-        type: "call" | "text" | "note";
-        note?: TNote;
-        tex?: TText;
-    };
+    wall?: TWallData[];
 };
