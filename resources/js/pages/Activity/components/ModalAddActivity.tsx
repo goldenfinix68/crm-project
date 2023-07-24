@@ -15,7 +15,10 @@ import {
     Select,
     DatePicker,
     TimePicker,
+    Checkbox,
 } from "antd";
+
+import type { SelectProps } from "antd";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -29,6 +32,7 @@ import {
     AuditOutlined,
     CloseOutlined,
     ContainerOutlined,
+    DollarOutlined,
     DownOutlined,
     FilterOutlined,
     GroupOutlined,
@@ -36,6 +40,7 @@ import {
     MobileOutlined,
     PhoneOutlined,
     PlusCircleOutlined,
+    UserOutlined,
 } from "@ant-design/icons";
 
 import Title from "antd/es/skeleton/Title";
@@ -50,6 +55,44 @@ interface Props {
     handleOkAdd: () => void;
     handleCancelAdd: () => void;
 }
+
+const optionRecurrence: SelectProps["options"] = [
+    {
+        label: "Doesn’t repeat",
+        value: "Doesn’t repeat",
+    },
+    {
+        label: "Daily",
+        value: "Daily",
+    },
+    {
+        label: "Weekly",
+        value: "Weekly",
+    },
+    {
+        label: "Monthly",
+        value: "Monthly",
+    },
+    {
+        label: "Yearly",
+        value: "Yearly",
+    },
+    {
+        label: "Custom",
+        value: "Custom",
+    },
+];
+
+const optionAvailability: SelectProps["options"] = [
+    {
+        label: "Busy",
+        value: "Busy",
+    },
+    {
+        label: "Free",
+        value: "Free",
+    },
+];
 
 const ModalAddActivity = ({
     isModalOpenAdd,
@@ -68,10 +111,27 @@ const ModalAddActivity = ({
             onOk={handleOkAdd}
             onCancel={handleCancelAdd}
             width={980}
-            footer={false}
             title={
                 <>
                     <Typography.Text> Add New Activity</Typography.Text>
+                </>
+            }
+            footer={
+                <>
+                    <Row gutter={12}>
+                        <Col span={12}>
+                            <Checkbox> Mark as Complete </Checkbox>
+                        </Col>
+                        <Col span={12}>
+                            <Space wrap>
+                                <Button type="primary">Save</Button>
+                                <Button type="primary">
+                                    Save and add other
+                                </Button>
+                                <Button>Cancel</Button>
+                            </Space>
+                        </Col>
+                    </Row>
                 </>
             }
         >
@@ -79,6 +139,8 @@ const ModalAddActivity = ({
                 form={form}
                 initialValues={{
                     type: "Call",
+                    recurrence: "Doesn’t repeat",
+                    availability: "Busy",
                 }}
             >
                 <Row gutter={12}>
@@ -99,7 +161,7 @@ const ModalAddActivity = ({
                             </Col>
                             <Col span={19}>
                                 <Form.Item name={"type"}>
-                                    <Select className="select-type">
+                                    <Select className="select-custom-width">
                                         <Select.Option value="Call">
                                             <FontAwesomeIcon
                                                 icon={faPhoneVolume}
@@ -170,7 +232,7 @@ const ModalAddActivity = ({
                         </Row>
 
                         {!calendarOptions && (
-                            <Row gutter={12}>
+                            <Row gutter={12} style={{ marginBottom: 25 }}>
                                 <Col span={5} className="col-label">
                                     <Typography.Text>
                                         Calendar Options
@@ -187,7 +249,7 @@ const ModalAddActivity = ({
                             </Row>
                         )}
 
-                        {!calendarOptions && (
+                        {calendarOptions && (
                             <Row gutter={12}>
                                 <Col span={5} className="col-label">
                                     <Typography.Text>
@@ -207,29 +269,294 @@ const ModalAddActivity = ({
                                             >
                                                 Call
                                             </Select.Option>
+                                        </Select>
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        )}
+
+                        {calendarOptions && (
+                            <Row gutter={12}>
+                                <Col span={5} className="col-label">
+                                    <Typography.Text>Location</Typography.Text>
+                                </Col>
+                                <Col span={19}>
+                                    <Form.Item name={"location"}>
+                                        <Input placeholder="Add Location" />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        )}
+
+                        {calendarOptions && (
+                            <Row gutter={12}>
+                                <Col span={5} className="col-label">
+                                    <Typography.Text>
+                                        Video Conferencing
+                                    </Typography.Text>
+                                </Col>
+                                <Col span={19}>
+                                    <Form.Item name={"video_conferencing"}>
+                                        <Select
+                                            placeholder="Available video call integrations"
+                                            mode="tags"
+                                            showSearch
+                                        >
                                             <Select.Option
-                                                value="Task"
-                                                search="Task"
+                                                value="Call"
+                                                search="Call"
                                             >
-                                                Task
-                                            </Select.Option>
-                                            <Select.Option
-                                                value="Meeting"
-                                                search="Meeting"
-                                            >
-                                                Meeting
-                                            </Select.Option>
-                                            <Select.Option
-                                                value="Demo"
-                                                search="Demo"
-                                            >
-                                                Demo
+                                                Call
                                             </Select.Option>
                                         </Select>
                                     </Form.Item>
                                 </Col>
                             </Row>
                         )}
+
+                        {calendarOptions && (
+                            <Row gutter={12}>
+                                <Col span={5} className="col-label">
+                                    <Typography.Text>
+                                        Recurrence
+                                    </Typography.Text>
+                                </Col>
+                                <Col span={19}>
+                                    <Form.Item name={"recurrence"}>
+                                        <Select
+                                            placeholder="Select Recurrence"
+                                            showSearch
+                                            className="select-custom-width"
+                                        >
+                                            {optionRecurrence.map(
+                                                (item, key) => {
+                                                    return (
+                                                        <Select.Option
+                                                            key={key}
+                                                            value={item.value}
+                                                            search={item.label}
+                                                        >
+                                                            {item.label}
+                                                        </Select.Option>
+                                                    );
+                                                }
+                                            )}
+                                        </Select>
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        )}
+
+                        <Row gutter={12}>
+                            <Col span={5} className="col-label">
+                                <Typography.Text style={{ color: "red" }}>
+                                    *
+                                </Typography.Text>
+                                <Typography.Text>Availability</Typography.Text>
+                            </Col>
+                            <Col span={19}>
+                                <Form.Item
+                                    name={"availability"}
+                                    rules={[validateRules.required]}
+                                >
+                                    <Select
+                                        placeholder="Availability"
+                                        showSearch
+                                        className="select-custom-width"
+                                    >
+                                        {optionAvailability.map((item, key) => {
+                                            return (
+                                                <Select.Option
+                                                    key={key}
+                                                    value={item.value}
+                                                    search={item.label}
+                                                >
+                                                    {item.label}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                        </Row>
+
+                        <Row gutter={12}>
+                            <Col span={5} className="col-label col-label-note">
+                                <Typography.Text>Internal Note</Typography.Text>
+                            </Col>
+                            <Col span={19}>
+                                <Form.Item
+                                    name={"internal_note"}
+                                    rules={[validateRules.required]}
+                                >
+                                    <Input.TextArea
+                                        rows={3}
+                                        placeholder="Add internal note"
+                                        className="no-resize"
+                                    />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+
+                        <Row gutter={12}>
+                            <Col span={5} className="col-label">
+                                <Typography.Text>Owner</Typography.Text>
+                            </Col>
+                            <Col span={19}>
+                                <Form.Item
+                                    name={"owner_id"}
+                                    rules={[validateRules.required]}
+                                >
+                                    <Select
+                                        placeholder="Owner"
+                                        showSearch
+                                        className="select-custom-width"
+                                    >
+                                        {optionAvailability.map((item, key) => {
+                                            return (
+                                                <Select.Option
+                                                    key={key}
+                                                    value={item.value}
+                                                    search={item.label}
+                                                >
+                                                    {item.label}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                        </Row>
+
+                        <Row gutter={12}>
+                            <Col span={5} className="col-label">
+                                <Typography.Text>Link Records</Typography.Text>
+                            </Col>
+                            <Col span={19}>
+                                <Row gutter={12}>
+                                    <Col span={12}>
+                                        <Form.Item
+                                            name={"deal_id"}
+                                            rules={[validateRules.required]}
+                                        >
+                                            <Select
+                                                placeholder="Deal"
+                                                showSearch
+                                                suffixIcon={<DollarOutlined />}
+                                            >
+                                                {optionAvailability.map(
+                                                    (item, key) => {
+                                                        return (
+                                                            <Select.Option
+                                                                key={key}
+                                                                value={
+                                                                    item.value
+                                                                }
+                                                                search={
+                                                                    item.label
+                                                                }
+                                                            >
+                                                                {item.label}
+                                                            </Select.Option>
+                                                        );
+                                                    }
+                                                )}
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={12}>
+                                        <Form.Item
+                                            name={"contact_id"}
+                                            rules={[validateRules.required]}
+                                        >
+                                            <Select
+                                                placeholder="Contact"
+                                                showSearch
+                                                suffixIcon={<UserOutlined />}
+                                            >
+                                                {optionAvailability.map(
+                                                    (item, key) => {
+                                                        return (
+                                                            <Select.Option
+                                                                key={key}
+                                                                value={
+                                                                    item.value
+                                                                }
+                                                                search={
+                                                                    item.label
+                                                                }
+                                                            >
+                                                                {item.label}
+                                                            </Select.Option>
+                                                        );
+                                                    }
+                                                )}
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+
+                        <Row gutter={12}>
+                            <Col span={5} className="col-label">
+                                <Typography.Text>Followers</Typography.Text>
+                            </Col>
+                            <Col span={19}>
+                                <Form.Item
+                                    name={"follower_id"}
+                                    rules={[validateRules.required]}
+                                >
+                                    <Select
+                                        placeholder="Add Followers"
+                                        showSearch
+                                        mode="multiple"
+                                    >
+                                        {optionAvailability.map((item, key) => {
+                                            return (
+                                                <Select.Option
+                                                    key={key}
+                                                    value={item.value}
+                                                    search={item.label}
+                                                >
+                                                    {item.label}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                        </Row>
+
+                        <Row gutter={12}>
+                            <Col span={5} className="col-label">
+                                <Typography.Text>Tags</Typography.Text>
+                            </Col>
+                            <Col span={19}>
+                                <Form.Item
+                                    name={"tags"}
+                                    rules={[validateRules.required]}
+                                >
+                                    <Select
+                                        placeholder="Tags"
+                                        showSearch
+                                        mode="tags"
+                                    >
+                                        {optionAvailability.map((item, key) => {
+                                            return (
+                                                <Select.Option
+                                                    key={key}
+                                                    value={item.value}
+                                                    search={item.label}
+                                                >
+                                                    {item.label}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                        </Row>
                     </Col>
 
                     <Col span={7}></Col>

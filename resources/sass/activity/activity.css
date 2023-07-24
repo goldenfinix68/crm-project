@@ -162,6 +162,15 @@
   align-items: center;
   justify-content: flex-start;
 }
-.modal-activity .ant-modal-content .select-type {
+.modal-activity .ant-modal-content .col-label .ant-typography {
+  line-height: 14px;
+}
+.modal-activity .ant-modal-content .col-label-note {
+  height: 72px;
+}
+.modal-activity .ant-modal-content .select-custom-width {
   width: 200px;
+}
+.modal-activity .ant-modal-footer {
+  padding: 15px 13px;
 }/*# sourceMappingURL=activity.css.map */

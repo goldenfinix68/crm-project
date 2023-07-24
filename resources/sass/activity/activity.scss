@@ -263,10 +263,22 @@
             display: flex;
             align-items: center;
             justify-content: flex-start;
+
+            .ant-typography {
+                line-height: 14px;
+            }
         }
 
-        .select-type {
+        .col-label-note {
+            height: 72px;
+        }
+
+        .select-custom-width {
             width: 200px;
         }
+    }
+
+    .ant-modal-footer {
+        padding: 15px 13px;
     }
 }

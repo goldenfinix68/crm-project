@@ -18,6 +18,7 @@ config.autoAddCss = false;
 
 // css
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import "../sass/app/app.css";
 import "../sass/navigation/navigation.css";
 import "../sass/dashboard/dashboard.css";
 import "../sass/helper/helper.css";
