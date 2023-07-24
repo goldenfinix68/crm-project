@@ -14,25 +14,12 @@ import {
     Form,
     Select,
     DatePicker,
-    TimePicker,
-    Checkbox,
 } from "antd";
-
-import type { SelectProps } from "antd";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faList,
-    faPhoneVolume,
-    faUsers,
-    faVideo,
-} from "@fortawesome/free-solid-svg-icons";
 
 import {
     AuditOutlined,
     CloseOutlined,
     ContainerOutlined,
-    DollarOutlined,
     DownOutlined,
     FilterOutlined,
     GroupOutlined,
@@ -40,528 +27,272 @@ import {
     MobileOutlined,
     PhoneOutlined,
     PlusCircleOutlined,
-    UserOutlined,
 } from "@ant-design/icons";
 
 import Title from "antd/es/skeleton/Title";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
-
-import validateRules from "../../../providers/validateRules";
-
 interface Props {
     isModalOpenAdd: boolean;
     handleOkAdd: () => void;
     handleCancelAdd: () => void;
 }
-
-const optionRecurrence: SelectProps["options"] = [
-    {
-        label: "Doesn’t repeat",
-        value: "Doesn’t repeat",
-    },
-    {
-        label: "Daily",
-        value: "Daily",
-    },
-    {
-        label: "Weekly",
-        value: "Weekly",
-    },
-    {
-        label: "Monthly",
-        value: "Monthly",
-    },
-    {
-        label: "Yearly",
-        value: "Yearly",
-    },
-    {
-        label: "Custom",
-        value: "Custom",
-    },
-];
-
-const optionAvailability: SelectProps["options"] = [
-    {
-        label: "Busy",
-        value: "Busy",
-    },
-    {
-        label: "Free",
-        value: "Free",
-    },
-];
-
 const ModalAddActivity = ({
     isModalOpenAdd,
     handleOkAdd,
     handleCancelAdd,
 }: Props) => {
-    const [form] = Form.useForm();
-    const [calendarOptions, setCalendarOptions] = useState(false);
+    const onFinish = (values: any) => {
+        console.log("Success:", values);
+    };
+
+    const onFinishFailed = (errorInfo: any) => {
+        console.log("Failed:", errorInfo);
+    };
 
     const calendar = useRef();
     return (
         <Modal
             className="modal-activity"
-            open={true}
-            // open={isModalOpenAdd}
+            open={isModalOpenAdd}
             onOk={handleOkAdd}
             onCancel={handleCancelAdd}
             width={980}
-            title={
-                <>
-                    <Typography.Text> Add New Activity</Typography.Text>
-                </>
-            }
-            footer={
-                <>
-                    <Row gutter={12}>
-                        <Col span={12}>
-                            <Checkbox> Mark as Complete </Checkbox>
-                        </Col>
-                        <Col span={12}>
-                            <Space wrap>
-                                <Button type="primary">Save</Button>
-                                <Button type="primary">
-                                    Save and add other
-                                </Button>
-                                <Button>Cancel</Button>
-                            </Space>
-                        </Col>
-                    </Row>
-                </>
-            }
+            footer={null}
+            title={null}
+            closable={false}
         >
-            <Form
-                form={form}
-                initialValues={{
-                    type: "Call",
-                    recurrence: "Doesn’t repeat",
-                    availability: "Busy",
-                }}
-            >
-                <Row gutter={12}>
-                    <Col span={17} className="p-md p-t-sm">
+            <div className="modal-header">
+                <Typography.Title level={5} style={{ color: "white" }}>
+                    Add New Activity
+                </Typography.Title>
+                <Button
+                    type="link"
+                    style={{ marginRight: "-559px", color: "white" }}
+                >
+                    {" "}
+                    <u>Manage Fields</u>
+                </Button>
+                <Button
+                    onClick={handleCancelAdd}
+                    style={{
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        border: "0px",
+                    }}
+                    icon={<CloseOutlined style={{ color: "white" }} />}
+                />
+            </div>
+            <Row gutter={12}>
+                <Col md={16} className="col-1-modal-act">
+                    <div>
+                        <Input
+                            placeholder="Write activity title"
+                            className="input-title-no-bottom-only"
+                        ></Input>
+                    </div>
+                    <br></br>
+                    <Form
+                        name="basic"
+                        labelCol={{ span: 6 }}
+                        wrapperCol={{ span: 18 }}
+                        labelAlign="left"
+                        labelWrap
+                        initialValues={{ remember: true }}
+                        onFinish={onFinish}
+                        onFinishFailed={onFinishFailed}
+                        autoComplete="off"
+                    >
                         <Form.Item
-                            name={"title"}
-                            rules={[validateRules.required]}
+                            label="Type"
+                            name="type"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
                         >
-                            <Input
-                                placeholder="Write activity title"
-                                className="input-title-no-bottom-only p-l-none"
-                            />
+                            <Select>
+                                <Select.Option value="call">Call</Select.Option>
+                                <Select.Option value="task">Task</Select.Option>
+                                <Select.Option value="meeting">
+                                    Meeting
+                                </Select.Option>
+                                <Select.Option value="demo">Demo</Select.Option>
+                            </Select>
                         </Form.Item>
 
-                        <Row gutter={12}>
-                            <Col span={5} className="col-label">
-                                <Typography.Text>Type</Typography.Text>
-                            </Col>
-                            <Col span={19}>
-                                <Form.Item name={"type"}>
-                                    <Select className="select-custom-width">
-                                        <Select.Option value="Call">
-                                            <FontAwesomeIcon
-                                                icon={faPhoneVolume}
-                                                className="font-12px m-r-xs"
-                                            />
-                                            Call
-                                        </Select.Option>
-                                        <Select.Option value="Task">
-                                            <FontAwesomeIcon
-                                                icon={faList}
-                                                className="font-12px m-r-xs"
-                                            />
-                                            Task
-                                        </Select.Option>
-                                        <Select.Option value="Meeting">
-                                            <FontAwesomeIcon
-                                                icon={faUsers}
-                                                className="font-12px m-r-xs"
-                                            />
-                                            Meeting
-                                        </Select.Option>
-                                        <Select.Option value="Demo">
-                                            <FontAwesomeIcon
-                                                icon={faVideo}
-                                                className="font-12px m-r-xs"
-                                            />
-                                            Demo
-                                        </Select.Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                        </Row>
-
-                        <Row gutter={12}>
-                            <Col span={5} className="col-label">
-                                <Typography.Text>Date & Time</Typography.Text>
-                            </Col>
-                            <Col span={19}>
-                                <Row gutter={12}>
-                                    <Col span={6}>
-                                        <Form.Item name="start_date">
-                                            <DatePicker placeholder="Start Date" />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={6}>
-                                        <Form.Item name="start_date">
-                                            <TimePicker
-                                                format="HH:mm"
-                                                placeholder="Start Time"
-                                            />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={6}>
-                                        <Form.Item name="start_date">
-                                            <TimePicker
-                                                format="HH:mm"
-                                                placeholder="End Time"
-                                            />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={6}>
-                                        <Form.Item name="start_date">
-                                            <DatePicker placeholder="End Date" />
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-
-                        {!calendarOptions && (
-                            <Row gutter={12} style={{ marginBottom: 25 }}>
-                                <Col span={5} className="col-label">
-                                    <Typography.Text>
-                                        Calendar Options
-                                    </Typography.Text>
-                                </Col>
-                                <Col span={19} className="col-label">
-                                    <Typography.Link
-                                        onClick={() => setCalendarOptions(true)}
-                                    >
-                                        Invitees, Location, Video Conferencing,
-                                        Recurrence
-                                    </Typography.Link>
-                                </Col>
-                            </Row>
-                        )}
-
-                        {calendarOptions && (
+                        <Form.Item
+                            label="Date & Time"
+                            name="date_time"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <DatePicker.RangePicker
+                                showTime
+                                format="YYYY-MM-DD HH:mm:ss"
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            label="Invitees"
+                            name="invitees"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <Input placeholder="Add Invitees" />
+                        </Form.Item>
+                        <Form.Item
+                            label="Location"
+                            name="location"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <Input placeholder="Add Location" />
+                        </Form.Item>
+                        <Form.Item
+                            label="Video Conferencing"
+                            name="video_conferencing"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <Select>
+                                <Select.Option value="call">Zoom</Select.Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item
+                            label="Availability"
+                            name="availability"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <Select>
+                                <Select.Option value="busy">Busy</Select.Option>
+                                <Select.Option value="busy">Free</Select.Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item
+                            label="Internal Note"
+                            name="internal_note"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <Input.TextArea rows={4}></Input.TextArea>
+                        </Form.Item>
+                        <Form.Item
+                            label="Owner"
+                            name="owner"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <Select>
+                                <Select.Option value="Jesse Admin">
+                                    Jesse Admin
+                                </Select.Option>
+                                <Select.Option value="Jesse Ashley">
+                                    Jesse Ashley
+                                </Select.Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item
+                            label="Link Records"
+                            name="link_records"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
                             <Row gutter={12}>
-                                <Col span={5} className="col-label">
-                                    <Typography.Text>
-                                        Calendar Options
-                                    </Typography.Text>
+                                <Col md={12}>
+                                    <Input placeholder="Deal" />
                                 </Col>
-                                <Col span={19}>
-                                    <Form.Item name={"invitees"}>
-                                        <Select
-                                            placeholder="Add invitees"
-                                            mode="tags"
-                                            showSearch
-                                        >
-                                            <Select.Option
-                                                value="Call"
-                                                search="Call"
-                                            >
-                                                Call
-                                            </Select.Option>
-                                        </Select>
-                                    </Form.Item>
+                                <Col md={12}>
+                                    <Input placeholder="Contact" />
                                 </Col>
                             </Row>
-                        )}
-
-                        {calendarOptions && (
-                            <Row gutter={12}>
-                                <Col span={5} className="col-label">
-                                    <Typography.Text>Location</Typography.Text>
-                                </Col>
-                                <Col span={19}>
-                                    <Form.Item name={"location"}>
-                                        <Input placeholder="Add Location" />
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-                        )}
-
-                        {calendarOptions && (
-                            <Row gutter={12}>
-                                <Col span={5} className="col-label">
-                                    <Typography.Text>
-                                        Video Conferencing
-                                    </Typography.Text>
-                                </Col>
-                                <Col span={19}>
-                                    <Form.Item name={"video_conferencing"}>
-                                        <Select
-                                            placeholder="Available video call integrations"
-                                            mode="tags"
-                                            showSearch
-                                        >
-                                            <Select.Option
-                                                value="Call"
-                                                search="Call"
-                                            >
-                                                Call
-                                            </Select.Option>
-                                        </Select>
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-                        )}
-
-                        {calendarOptions && (
-                            <Row gutter={12}>
-                                <Col span={5} className="col-label">
-                                    <Typography.Text>
-                                        Recurrence
-                                    </Typography.Text>
-                                </Col>
-                                <Col span={19}>
-                                    <Form.Item name={"recurrence"}>
-                                        <Select
-                                            placeholder="Select Recurrence"
-                                            showSearch
-                                            className="select-custom-width"
-                                        >
-                                            {optionRecurrence.map(
-                                                (item, key) => {
-                                                    return (
-                                                        <Select.Option
-                                                            key={key}
-                                                            value={item.value}
-                                                            search={item.label}
-                                                        >
-                                                            {item.label}
-                                                        </Select.Option>
-                                                    );
-                                                }
-                                            )}
-                                        </Select>
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-                        )}
-
-                        <Row gutter={12}>
-                            <Col span={5} className="col-label">
-                                <Typography.Text style={{ color: "red" }}>
-                                    *
-                                </Typography.Text>
-                                <Typography.Text>Availability</Typography.Text>
-                            </Col>
-                            <Col span={19}>
-                                <Form.Item
-                                    name={"availability"}
-                                    rules={[validateRules.required]}
-                                >
-                                    <Select
-                                        placeholder="Availability"
-                                        showSearch
-                                        className="select-custom-width"
-                                    >
-                                        {optionAvailability.map((item, key) => {
-                                            return (
-                                                <Select.Option
-                                                    key={key}
-                                                    value={item.value}
-                                                    search={item.label}
-                                                >
-                                                    {item.label}
-                                                </Select.Option>
-                                            );
-                                        })}
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                        </Row>
-
-                        <Row gutter={12}>
-                            <Col span={5} className="col-label col-label-note">
-                                <Typography.Text>Internal Note</Typography.Text>
-                            </Col>
-                            <Col span={19}>
-                                <Form.Item
-                                    name={"internal_note"}
-                                    rules={[validateRules.required]}
-                                >
-                                    <Input.TextArea
-                                        rows={3}
-                                        placeholder="Add internal note"
-                                        className="no-resize"
-                                    />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-
-                        <Row gutter={12}>
-                            <Col span={5} className="col-label">
-                                <Typography.Text>Owner</Typography.Text>
-                            </Col>
-                            <Col span={19}>
-                                <Form.Item
-                                    name={"owner_id"}
-                                    rules={[validateRules.required]}
-                                >
-                                    <Select
-                                        placeholder="Owner"
-                                        showSearch
-                                        className="select-custom-width"
-                                    >
-                                        {optionAvailability.map((item, key) => {
-                                            return (
-                                                <Select.Option
-                                                    key={key}
-                                                    value={item.value}
-                                                    search={item.label}
-                                                >
-                                                    {item.label}
-                                                </Select.Option>
-                                            );
-                                        })}
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                        </Row>
-
-                        <Row gutter={12}>
-                            <Col span={5} className="col-label">
-                                <Typography.Text>Link Records</Typography.Text>
-                            </Col>
-                            <Col span={19}>
-                                <Row gutter={12}>
-                                    <Col span={12}>
-                                        <Form.Item
-                                            name={"deal_id"}
-                                            rules={[validateRules.required]}
-                                        >
-                                            <Select
-                                                placeholder="Deal"
-                                                showSearch
-                                                suffixIcon={<DollarOutlined />}
-                                            >
-                                                {optionAvailability.map(
-                                                    (item, key) => {
-                                                        return (
-                                                            <Select.Option
-                                                                key={key}
-                                                                value={
-                                                                    item.value
-                                                                }
-                                                                search={
-                                                                    item.label
-                                                                }
-                                                            >
-                                                                {item.label}
-                                                            </Select.Option>
-                                                        );
-                                                    }
-                                                )}
-                                            </Select>
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={12}>
-                                        <Form.Item
-                                            name={"contact_id"}
-                                            rules={[validateRules.required]}
-                                        >
-                                            <Select
-                                                placeholder="Contact"
-                                                showSearch
-                                                suffixIcon={<UserOutlined />}
-                                            >
-                                                {optionAvailability.map(
-                                                    (item, key) => {
-                                                        return (
-                                                            <Select.Option
-                                                                key={key}
-                                                                value={
-                                                                    item.value
-                                                                }
-                                                                search={
-                                                                    item.label
-                                                                }
-                                                            >
-                                                                {item.label}
-                                                            </Select.Option>
-                                                        );
-                                                    }
-                                                )}
-                                            </Select>
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-
-                        <Row gutter={12}>
-                            <Col span={5} className="col-label">
-                                <Typography.Text>Followers</Typography.Text>
-                            </Col>
-                            <Col span={19}>
-                                <Form.Item
-                                    name={"follower_id"}
-                                    rules={[validateRules.required]}
-                                >
-                                    <Select
-                                        placeholder="Add Followers"
-                                        showSearch
-                                        mode="multiple"
-                                    >
-                                        {optionAvailability.map((item, key) => {
-                                            return (
-                                                <Select.Option
-                                                    key={key}
-                                                    value={item.value}
-                                                    search={item.label}
-                                                >
-                                                    {item.label}
-                                                </Select.Option>
-                                            );
-                                        })}
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                        </Row>
-
-                        <Row gutter={12}>
-                            <Col span={5} className="col-label">
-                                <Typography.Text>Tags</Typography.Text>
-                            </Col>
-                            <Col span={19}>
-                                <Form.Item
-                                    name={"tags"}
-                                    rules={[validateRules.required]}
-                                >
-                                    <Select
-                                        placeholder="Tags"
-                                        showSearch
-                                        mode="tags"
-                                    >
-                                        {optionAvailability.map((item, key) => {
-                                            return (
-                                                <Select.Option
-                                                    key={key}
-                                                    value={item.value}
-                                                    search={item.label}
-                                                >
-                                                    {item.label}
-                                                </Select.Option>
-                                            );
-                                        })}
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                    </Col>
-
-                    <Col span={7}></Col>
-                </Row>
-            </Form>
+                        </Form.Item>
+                        <Form.Item
+                            label="Followers"
+                            name="followers"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <Input placeholder="Followers" />
+                        </Form.Item>
+                        <Form.Item
+                            label="Tags"
+                            name="tags"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <Input placeholder="Tags" />
+                        </Form.Item>
+                    </Form>
+                </Col>
+                <Col md={8} className="col-2-modal-act">
+                    <div className={"FullCalendarActivity"}>
+                        <FullCalendar
+                            plugins={[dayGridPlugin, timeGridPlugin]}
+                            initialView="timeGridDay"
+                            headerToolbar={{
+                                left: "prev",
+                                center: "title",
+                                right: "next",
+                            }}
+                            weekends={false}
+                            events={[]}
+                            eventContent={<></>}
+                        />
+                    </div>
+                </Col>
+            </Row>
+            <div className="modal-footer">
+                <Button className="m-r-xs" type="primary">
+                    Save
+                </Button>
+                <Button className="m-r-xs" type="primary">
+                    Save and add other
+                </Button>
+                <Button onClick={handleCancelAdd}>Cancel</Button>
+            </div>
         </Modal>
     );
 };
