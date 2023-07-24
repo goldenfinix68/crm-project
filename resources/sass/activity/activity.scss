@@ -167,9 +167,14 @@
         background: #fff !important;
         padding: 0px !important;
         width: 300px !important;
+        header.jZFhJh {
+            display: block;
+        }
         .sc-gLfKCG.sc-ftDPCE {
-            padding: 20px;
-            border: 1px solid #e3e3e3;
+            position: relative;
+            padding: 0;
+            // padding: 20px;
+            // border: 1px solid #e3e3e3;
         }
         div.sc-jqNall {
             width: 300px !important;
@@ -199,86 +204,64 @@
     }
 }
 
-.modal-activity {
-    width: 980px;
+.item-deals-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
 
-    .ant-modal-close {
-        margin-top: -3px;
-        background: #0747a6;
-        border: 0;
-        width: 22px;
-        height: 22px;
-        font-size: 19px;
+    z-index: 1;
+    height: 50px;
 
-        .ant-modal-close-icon {
-            font-size: 10px;
-            line-height: 10px;
-            color: #fff;
-            right: 0;
-            width: 22px;
-            height: 22px;
-            top: 1px;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    .active .content {
+        color: #ffffff;
     }
 
-    .ant-modal-close:hover {
-        background: #0747a6;
+    .active .arrow {
+        background: #d68a3a;
     }
 
-    .ant-modal-content {
-        border-radius: 0px;
-        padding: 0;
-
-        .ant-modal-header {
-            background: #1f62ff;
-            border-radius: 0;
-            padding: 15px 17px;
-            border-bottom: 0;
-            height: 52px;
-
-            .ant-modal-title {
-                margin-top: -2px;
-
-                .ant-typography {
-                    color: white;
-                    font-weight: 400;
-                    font-size: 16px;
-                }
-            }
-        }
-
-        // label,
-        // .ant-input,
-        // .ant-typography,
-        // .ant-select-selection-search-input {
-        //     color: #505f79 !important;
-        // }
-
-        .col-label {
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-
-            .ant-typography {
-                line-height: 14px;
-            }
-        }
-
-        .col-label-note {
-            height: 72px;
-        }
-
-        .select-custom-width {
-            width: 200px;
-        }
+    .content {
+        color: #000000;
+        position: absolute;
+        z-index: 2;
+        margin-left: 20px;
     }
 
-    .ant-modal-footer {
-        padding: 15px 13px;
+    .arrow {
+        width: 100%;
+        height: 50%;
+        background: #ffffff;
+    }
+
+    .arrow.top {
+        transform: skew(32deg, 0deg);
+        border-right: 1px solid #d8d3d3;
+        border-top: 1px solid #d8d3d3;
+    }
+
+    .arrow.bottom {
+        transform: skew(-32deg, 0deg);
+        border-right: 1px solid #d8d3d3;
+        border-bottom: 1px solid #d8d3d3;
+    }
+
+    .add-deals {
+        position: absolute;
+        right: 0;
+        margin-right: 10px;
+        margin-bottom: 3px;
+        svg {
+            font-size: 18px;
+            visibility: hidden;
+        }
+    }
+}
+.item-deals-header:hover {
+    .add-deals {
+        svg {
+            visibility: visible;
+        }
     }
 }

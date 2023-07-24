@@ -1,5 +1,7 @@
 import {
     CalendarOutlined,
+    CaretDownOutlined,
+    CaretUpOutlined,
     ClockCircleOutlined,
     DeleteOutlined,
     DownloadOutlined,
@@ -21,10 +23,14 @@ import {
     Typography,
 } from "antd";
 import SubMenu from "antd/es/menu/SubMenu";
-import React from "react";
+import React, { useContext, useRef } from "react";
 import Notestab from "./NotesTab";
+import ContactContext from "../context";
+import { TNote, TWallData } from "../../../entities";
 
 const ContactsWall = () => {
+    const { contact } = useContext(ContactContext);
+    const [currentMonthYear, setCurrentMonthYear] = React.useState("");
     const items = [
         {
             title: "Showing: ",
@@ -58,10 +64,102 @@ const ContactsWall = () => {
     return (
         <Space direction="vertical" style={{ width: "100%" }} size={"large"}>
             <Breadcrumb separator={<span>&nbsp;</span>} items={items} />
-            <Typography.Text>July 2023</Typography.Text>
+            {contact?.wall?.map((data) => {
+                const monthYear = data.month + " " + data.year;
+                if (currentMonthYear != monthYear) {
+                    setCurrentMonthYear(monthYear);
+                }
+                return (
+                    <div>
+                        {currentMonthYear != monthYear ? (
+                            <Typography.Text>{monthYear}</Typography.Text>
+                        ) : null}
+
+                        {data.type == "note" ? <NoteBox data={data} /> : null}
+                    </div>
+                );
+            })}
             <TextBox />
             <CallBox />
         </Space>
+    );
+};
+
+const NoteBox = ({ data }: { data: TWallData }) => {
+    const [expanded, setExpanded] = React.useState(false);
+    const contentRef = useRef<HTMLDivElement>(null);
+    const [divHeight, setDivHeight] = React.useState(0);
+    const [actualContentHeight, setActualContentHeight] = React.useState(0);
+
+    React.useEffect(() => {
+        setDivHeight(contentRef?.current?.getBoundingClientRect().height ?? 0);
+        setActualContentHeight(contentRef?.current?.scrollHeight ?? 0);
+    }, [data.note?.notes, expanded]);
+
+    // Helper function to get the card content
+    const getCardContent = () => {
+        const originalDivHeight = divHeight;
+        return (
+            <Space direction="vertical" size="middle">
+                <Typography.Text>
+                    <div
+                        ref={contentRef}
+                        dangerouslySetInnerHTML={{
+                            __html: data.note?.notes || "",
+                        }}
+                        style={{
+                            // Set the height to 'auto' if expanded or if content height is greater than 300px
+                            height: expanded || divHeight < 300 ? "auto" : 300,
+                            // Add vertical scrollbar when content overflows
+                            overflowY: expanded ? "auto" : "hidden",
+                        }}
+                    />
+                </Typography.Text>
+                {actualContentHeight > 300 && (
+                    <span
+                        onClick={() => setExpanded(!expanded)}
+                        style={{
+                            position: "absolute",
+                            bottom: 0,
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            cursor: "pointer",
+                            fontSize: 24,
+                        }}
+                    >
+                        {expanded ? <CaretUpOutlined /> : <CaretDownOutlined />}
+                    </span>
+                )}
+            </Space>
+        );
+    };
+    return (
+        <Card
+            title={
+                <Typography.Text>
+                    <Avatar
+                        style={{
+                            backgroundColor: "#C0CA33",
+                            verticalAlign: "middle",
+                        }}
+                        size={20}
+                    >
+                        J
+                    </Avatar>{" "}
+                    Note Added - by Jesse
+                </Typography.Text>
+            }
+            bordered={false}
+            extra={data.month.substring(0, 3) + " " + data.day}
+            // Set the height to 300px when not expanded
+            style={{
+                height: expanded || divHeight < 300 ? "auto" : 300,
+                overflow: expanded ? "visible" : "hidden",
+            }}
+            // Add the clickable area to expand/collapse the card
+        >
+            {getCardContent()}
+        </Card>
     );
 };
 

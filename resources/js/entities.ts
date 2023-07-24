@@ -11,9 +11,34 @@ export type TContactType = {
     highlight: string;
 };
 
+export type TNote = {
+    id?: string;
+    contactId: string;
+    notes: string;
+};
+
+export type TText = {
+    id?: string;
+    userId?: string;
+    contactId?: string;
+    from: string;
+    to: string;
+    message: string;
+};
+
+export type TWallData = {
+    date: string;
+    day: string;
+    month: string;
+    year: string;
+    type: "call" | "text" | "note";
+    note?: TNote;
+    tex?: TText;
+};
+
 export type TContact = {
     id: string;
-    firstName: string;
+    firstName: any;
     lastName: string;
     mobile?: string;
     countryLink?: string;
@@ -25,6 +50,7 @@ export type TContact = {
     ownerId: string;
     email2?: string;
     typeId?: string;
+    type?: TContactType;
     mailingStreetAddress?: string;
     emailOptOut?: boolean;
     mailingCity?: string;
@@ -68,4 +94,5 @@ export type TContact = {
     zipCode?: string;
     state?: string;
     owner?: string;
+    wall?: TWallData[];
 };

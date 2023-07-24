@@ -69,6 +69,7 @@ const ContactsComponentsAddContacts = ({
     const queryClient = useQueryClient();
     const [form] = Form.useForm<TContact>();
     const [isAddNew, seIsAddNew] = useState(false);
+    const [saveAndAdd, setSaveAndAdd] = useState(false);
 
     const addContact = useMutation(addContactMutation, {
         onSuccess: () => {
@@ -76,7 +77,9 @@ const ContactsComponentsAddContacts = ({
             queryClient.invalidateQueries("contacts");
             //queryClient.invalidateQueries("contactTypesAll");
             form.resetFields();
-            setIsModalOpen(false);
+            if (!saveAndAdd) {
+                setIsModalOpen(false);
+            }
             // queryClient.invalidateQueries("contacts");
         },
     });
@@ -143,6 +146,7 @@ const ContactsComponentsAddContacts = ({
                             border: "0px",
                         }}
                         onClick={() => {
+                            setSaveAndAdd(false);
                             setTContact(null);
                             form.resetFields();
                             setIsModalOpen(false);
@@ -745,6 +749,7 @@ const ContactsComponentsAddContacts = ({
                         className="m-r-xs"
                         type="primary"
                         onClick={() => {
+                            setSaveAndAdd(false);
                             form.validateFields().then((values) => {
                                 form.submit();
                             });
@@ -752,11 +757,21 @@ const ContactsComponentsAddContacts = ({
                     >
                         Save
                     </Button>
-                    <Button className="m-r-xs" type="primary">
+                    <Button
+                        className="m-r-xs"
+                        type="primary"
+                        onClick={() => {
+                            setSaveAndAdd(true);
+                            form.validateFields().then((values) => {
+                                form.submit();
+                            });
+                        }}
+                    >
                         Save and add other
                     </Button>
                     <Button
                         onClick={() => {
+                            setSaveAndAdd(false);
                             setTContact(null);
                             form.resetFields();
                             setIsModalOpen(false);

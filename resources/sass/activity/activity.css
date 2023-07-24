@@ -83,9 +83,12 @@
   padding: 0px !important;
   width: 300px !important;
 }
+.react-trello-board section header.jZFhJh {
+  display: block;
+}
 .react-trello-board section .sc-gLfKCG.sc-ftDPCE {
-  padding: 20px;
-  border: 1px solid #e3e3e3;
+  position: relative;
+  padding: 0;
 }
 .react-trello-board section div.sc-jqNall {
   width: 300px !important;
@@ -110,67 +113,53 @@
   min-height: 70vh;
 }
 
-.modal-activity {
-  width: 980px;
-}
-.modal-activity .ant-modal-close {
-  margin-top: -3px;
-  background: #0747a6;
-  border: 0;
-  width: 22px;
-  height: 22px;
-  font-size: 19px;
-}
-.modal-activity .ant-modal-close .ant-modal-close-icon {
-  font-size: 10px;
-  line-height: 10px;
-  color: #fff;
-  right: 0;
-  width: 22px;
-  height: 22px;
-  top: 1px;
-  padding: 0;
+.item-deals-header {
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  position: relative;
+  z-index: 1;
+  height: 50px;
 }
-.modal-activity .ant-modal-close:hover {
-  background: #0747a6;
+.item-deals-header .active .content {
+  color: #ffffff;
 }
-.modal-activity .ant-modal-content {
-  border-radius: 0px;
-  padding: 0;
+.item-deals-header .active .arrow {
+  background: #d68a3a;
 }
-.modal-activity .ant-modal-content .ant-modal-header {
-  background: #1f62ff;
-  border-radius: 0;
-  padding: 15px 17px;
-  border-bottom: 0;
-  height: 52px;
+.item-deals-header .content {
+  color: #000000;
+  position: absolute;
+  z-index: 2;
+  margin-left: 20px;
 }
-.modal-activity .ant-modal-content .ant-modal-header .ant-modal-title {
-  margin-top: -2px;
+.item-deals-header .arrow {
+  width: 100%;
+  height: 50%;
+  background: #ffffff;
 }
-.modal-activity .ant-modal-content .ant-modal-header .ant-modal-title .ant-typography {
-  color: white;
-  font-weight: 400;
-  font-size: 16px;
+.item-deals-header .arrow.top {
+  transform: skew(32deg, 0deg);
+  border-right: 1px solid #d8d3d3;
+  border-top: 1px solid #d8d3d3;
 }
-.modal-activity .ant-modal-content .col-label {
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
+.item-deals-header .arrow.bottom {
+  transform: skew(-32deg, 0deg);
+  border-right: 1px solid #d8d3d3;
+  border-bottom: 1px solid #d8d3d3;
 }
-.modal-activity .ant-modal-content .col-label .ant-typography {
-  line-height: 14px;
+.item-deals-header .add-deals {
+  position: absolute;
+  right: 0;
+  margin-right: 10px;
+  margin-bottom: 3px;
 }
-.modal-activity .ant-modal-content .col-label-note {
-  height: 72px;
+.item-deals-header .add-deals svg {
+  font-size: 18px;
+  visibility: hidden;
 }
-.modal-activity .ant-modal-content .select-custom-width {
-  width: 200px;
-}
-.modal-activity .ant-modal-footer {
-  padding: 15px 13px;
+
+.item-deals-header:hover .add-deals svg {
+  visibility: visible;
 }/*# sourceMappingURL=activity.css.map */

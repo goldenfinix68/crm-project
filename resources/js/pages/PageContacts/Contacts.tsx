@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import {
     Button,
@@ -38,6 +38,13 @@ import {
     LockOutlined,
     CaretDownOutlined,
     EditOutlined,
+    CloseOutlined,
+    SaveOutlined,
+    ExportOutlined,
+    CopyOutlined,
+    MailOutlined,
+    MobileOutlined,
+    UnorderedListOutlined,
 } from "@ant-design/icons";
 import type { ColumnsType, TableProps, ColumnGroupType } from "antd/es/table";
 import ContactsComponentsAddContacts from "./Components/ContactsComponentsAddContacts";
@@ -175,6 +182,9 @@ const Contacts = () => {
     const [open, setOpen] = useState(false);
     const [isTitle, setTitle] = useState("");
 
+    const [showDeleteButton, setShowDeleteButton] = useState(false);
+    const [hideHeader, setHideHeader] = useState(true);
+
     const handleEdit = (record: TContact) => {
         setTContact(record);
     };
@@ -280,98 +290,186 @@ const Contacts = () => {
             width: 200,
         },
     ];
+
+    const [selectionType, setSelectionType] = useState<"checkbox" | "radio">(
+        "checkbox"
+    );
+    const [selectedRowsData, setSelectedRows] = useState<React.Key[]>([]);
+
+    const onSelectChange = (
+        selectedRowKeys: React.Key[],
+        selectedRows: TContact[]
+    ) => {
+        console.log(selectedRows);
+        setSelectedRows(selectedRowKeys);
+
+        // setSelectionType(selectedRows);
+    };
+
+    useEffect(() => {
+        setShowDeleteButton(
+            selectedRowsData && selectedRowsData.length > 0 ? true : false
+        );
+    }, [selectedRowsData]);
+
+    const rowSelection = {
+        selectedRowKeys: selectedRowsData,
+        onChange: onSelectChange,
+
+        // setSelectionType(selectedRows);
+    };
+
+    // getCheckboxProps: (record: TContact) => ({
+    //     disabled: record.name === "Disabled User", // Column configuration not to be checked
+    //     name: record.name,
+    // }),
+
+    // useEffect(() => {
+    //     console.log("selectionType", selectionType);
+    // }, [selectionType]);
+
     return (
         <Card>
-            <Row style={{ marginBottom: "20px" }}>
-                <Col md={12} lg={12}>
-                    <Dropdown overlay={menu} trigger={["click"]}>
-                        <Button
-                            className="ant-dropdown-link"
-                            onClick={(e) => e.preventDefault()}
-                            icon={<FunnelPlotOutlined />}
-                        >
-                            All Contacts <CaretDownOutlined />
-                        </Button>
-                    </Dropdown>
-                </Col>
-                <Col
-                    md={12}
-                    lg={12}
-                    style={{ display: "flex", justifyContent: "flex-end" }}
-                >
+            {showDeleteButton ? (
+                <Row style={{ alignItems: "center", marginBottom: "20px" }}>
                     <Button
-                        style={{
-                            marginRight: "10px",
-                            display: "flex",
-                            alignItems: "center",
-                        }}
+                        icon={<CloseOutlined />}
+                        type="text"
+                        className="m-r-md"
                         onClick={() => {
-                            setOpen(true);
+                            setSelectedRows([]);
+                            setShowDeleteButton(false);
                         }}
-                    >
-                        <FunnelPlotOutlined />
+                    ></Button>
+                    <Typography.Text className="m-r-md">
+                        {selectedRowsData?.length + " Selected"}
+                    </Typography.Text>
+                    <Button type="primary" danger className="m-r-sm">
+                        Delete
                     </Button>
-                    <Button
-                        type="primary"
-                        icon={<PlusCircleOutlined />}
-                        style={{
-                            marginRight: "10px",
-                            display: "flex",
-                            alignItems: "center",
-                        }}
-                        onClick={() => {
-                            setisModalOpen(true);
-                            setTitle("Add Contact");
-                        }}
-                    >
-                        Contact
-                    </Button>
-                    <Button
-                        onClick={() => setIsModalManageColumnOpen(true)}
-                        style={{
-                            marginRight: "10px",
-                            display: "flex",
-                            alignItems: "center",
-                        }}
-                    >
-                        <TableOutlined />
-                    </Button>
-                    <Select
-                        dropdownClassName="dropdown-select"
-                        defaultValue="Action"
-                        options={[
-                            {
-                                value: "Transfer",
-                                label: "Mass Transfer Contacts",
-                            },
-                            { value: "Delete", label: "Mass Delete Contacts" },
-                            { value: "Update", label: "Mass Update Contacts" },
-                            { value: "Merge", label: "Merge Contacts" },
 
-                            {
-                                value: "ImportExcel",
-                                label: "Import from Excel or CSV file",
-                            },
-                            {
-                                value: "ImportGoogle",
-                                label: "Import Google Contacts",
-                            },
-                            { value: "Export", label: "Export Contacts" },
-                            {
-                                value: "ViewDeleted",
-                                label: "View Recent Deleted Records",
-                            },
-                        ]}
-                    />
-                </Col>
-            </Row>
+                    <Button icon={<SaveOutlined />} className="m-r-sm">
+                        Update
+                    </Button>
+                    <Button icon={<ExportOutlined />} className="m-r-sm">
+                        Export
+                    </Button>
+                    <Button icon={<CopyOutlined />} className="m-r-sm">
+                        Merge
+                    </Button>
+                    <Button icon={<MailOutlined />} className="m-r-sm">
+                        Email
+                    </Button>
+                    <Button icon={<MobileOutlined />} className="m-r-sm">
+                        Text
+                    </Button>
+                    <Button icon={<CheckCircleOutlined />} className="m-r-sm">
+                        Create Activities
+                    </Button>
+                    <Button icon={<UnorderedListOutlined />}>
+                        Add to List
+                    </Button>
+                </Row>
+            ) : (
+                <Row style={{ marginBottom: "20px" }}>
+                    <Col md={12} lg={12}>
+                        <Dropdown overlay={menu} trigger={["click"]}>
+                            <Button
+                                className="ant-dropdown-link"
+                                onClick={(e) => e.preventDefault()}
+                                icon={<FunnelPlotOutlined />}
+                            >
+                                All Contacts <CaretDownOutlined />
+                            </Button>
+                        </Dropdown>
+                    </Col>
+                    <Col
+                        md={12}
+                        lg={12}
+                        style={{ display: "flex", justifyContent: "flex-end" }}
+                    >
+                        <Button
+                            style={{
+                                marginRight: "10px",
+                                display: "flex",
+                                alignItems: "center",
+                            }}
+                            onClick={() => {
+                                setOpen(true);
+                            }}
+                        >
+                            <FunnelPlotOutlined />
+                        </Button>
+                        <Button
+                            type="primary"
+                            icon={<PlusCircleOutlined />}
+                            style={{
+                                marginRight: "10px",
+                                display: "flex",
+                                alignItems: "center",
+                            }}
+                            onClick={() => {
+                                setisModalOpen(true);
+                                setTitle("Add Contact");
+                            }}
+                        >
+                            Contact
+                        </Button>
+                        <Button
+                            onClick={() => setIsModalManageColumnOpen(true)}
+                            style={{
+                                marginRight: "10px",
+                                display: "flex",
+                                alignItems: "center",
+                            }}
+                        >
+                            <TableOutlined />
+                        </Button>
+                        <Select
+                            dropdownClassName="dropdown-select"
+                            defaultValue="Action"
+                            options={[
+                                {
+                                    value: "Transfer",
+                                    label: "Mass Transfer Contacts",
+                                },
+                                {
+                                    value: "Delete",
+                                    label: "Mass Delete Contacts",
+                                },
+                                {
+                                    value: "Update",
+                                    label: "Mass Update Contacts",
+                                },
+                                { value: "Merge", label: "Merge Contacts" },
+
+                                {
+                                    value: "ImportExcel",
+                                    label: "Import from Excel or CSV file",
+                                },
+                                {
+                                    value: "ImportGoogle",
+                                    label: "Import Google Contacts",
+                                },
+                                { value: "Export", label: "Export Contacts" },
+                                {
+                                    value: "ViewDeleted",
+                                    label: "View Recent Deleted Records",
+                                },
+                            ]}
+                        />
+                    </Col>
+                </Row>
+            )}
 
             <Row>
                 <Col md={24} lg={24}>
                     <Table
                         rowSelection={{
-                            type: "checkbox",
+                            type: selectionType,
+                            ...rowSelection,
                         }}
+                        rowKey={(record) => record.id}
                         columns={columns}
                         dataSource={contacts}
                         scroll={{ x: 1300 }}
