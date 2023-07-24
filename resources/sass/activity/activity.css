@@ -225,4 +225,74 @@
 
 .item-deals-header:hover .add-deals svg {
   visibility: visible;
+}
+
+.modal-activity {
+  width: 980px;
+}
+.modal-activity .ant-modal-close {
+  margin-top: -3px;
+  background: #0747a6;
+  border: 0;
+  width: 22px;
+  height: 22px;
+  font-size: 19px;
+}
+.modal-activity .ant-modal-close .ant-modal-close-icon {
+  font-size: 10px;
+  line-height: 10px;
+  color: #fff;
+  right: 0;
+  width: 22px;
+  height: 22px;
+  top: 1px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal-activity .ant-modal-close:hover {
+  background: #0747a6;
+}
+.modal-activity .ant-modal-content {
+  border-radius: 0px;
+  padding: 0;
+}
+.modal-activity .ant-modal-content .ant-modal-header {
+  background: #1f62ff;
+  border-radius: 0;
+  padding: 15px 17px;
+  border-bottom: 0;
+  height: 52px;
+}
+.modal-activity .ant-modal-content .ant-modal-header .ant-modal-title {
+  margin-top: -2px;
+}
+.modal-activity .ant-modal-content .ant-modal-header .ant-modal-title .ant-typography {
+  color: white;
+  font-weight: 400;
+  font-size: 16px;
+}
+.modal-activity .ant-modal-content .col-label {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.modal-activity .ant-modal-content .col-label .ant-typography {
+  line-height: 14px;
+}
+.modal-activity .ant-modal-content .col-label-note {
+  height: 72px;
+}
+.modal-activity .ant-modal-content .select-custom-width {
+  width: 200px;
+}
+.modal-activity .ant-modal-content .fc .fc-button-primary {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  color: #000;
+}
+.modal-activity .ant-modal-footer {
+  padding: 15px 13px;
 }/*# sourceMappingURL=activity.css.map */
