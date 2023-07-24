@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import {
     Button,
     Col,
@@ -16,35 +16,34 @@ import {
     DatePicker,
 } from "antd";
 
-import {
-    AuditOutlined,
-    CloseOutlined,
-    ContainerOutlined,
-    DownOutlined,
-    FilterOutlined,
-    GroupOutlined,
-    InsertRowBelowOutlined,
-    MobileOutlined,
-    PhoneOutlined,
-    PlusCircleOutlined,
-} from "@ant-design/icons";
+import { CloseOutlined } from "@ant-design/icons";
 
-import Title from "antd/es/skeleton/Title";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
+import { useMutation } from "react-query";
+import { sendTextMutation } from "../../../api/mutation/useTextMutation";
+import ContactContext from "../context";
+import queryClient from "../../../queryClient";
 interface Props {
     isModalOpen: boolean;
     closeModal: () => void;
 }
 const TextModal = ({ isModalOpen, closeModal }: Props) => {
     const [form] = Form.useForm();
-    const onFinish = (values: any) => {
-        console.log("Success:", values);
+    const { contact } = useContext(ContactContext);
+
+    const resetFields = () => {
+        closeModal();
+        form.resetFields();
     };
 
-    const onFinishFailed = (errorInfo: any) => {
-        console.log("Failed:", errorInfo);
+    const sendText = useMutation(sendTextMutation, {
+        onSuccess: () => {
+            queryClient.invalidateQueries("getContact");
+            resetFields();
+        },
+    });
+
+    const onFinish = async (values: any) => {
+        await sendText.mutate({ ...values, contactId: contact.id });
     };
 
     return (
@@ -79,10 +78,13 @@ const TextModal = ({ isModalOpen, closeModal }: Props) => {
                     name="basic"
                     layout="vertical"
                     labelWrap
-                    initialValues={{ to: "+14405633236", from: "outreach" }}
+                    initialValues={{
+                        to: "+14405633236",
+                        from: "Outreach (+1 303-952-1461)",
+                    }}
                     onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
                     autoComplete="off"
+                    form={form}
                 >
                     <Row gutter={12}>
                         <Col span={12}>
@@ -111,7 +113,7 @@ const TextModal = ({ isModalOpen, closeModal }: Props) => {
                                 ]}
                             >
                                 <Select style={{ width: "100%" }}>
-                                    <Select.Option value="outreach">
+                                    <Select.Option value="Outreach (+1 303-952-1461)">
                                         Outreach (+1 303-952-1461)
                                     </Select.Option>
                                     <Select.Option value="task">
@@ -140,7 +142,17 @@ const TextModal = ({ isModalOpen, closeModal }: Props) => {
             </Space>
             <div className="modal-footer">
                 <Space>
-                    <Button type="primary">Send</Button>
+                    <Button
+                        type="primary"
+                        onClick={() =>
+                            form.validateFields().then((values) => {
+                                form.submit();
+                            })
+                        }
+                        loading={sendText.isLoading}
+                    >
+                        Send
+                    </Button>
                     <Button onClick={closeModal}>Schedule</Button>
                     <Button onClick={closeModal}>Cancel</Button>
                 </Space>
