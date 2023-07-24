@@ -59,9 +59,41 @@ const ContactsWall = () => {
         <Space direction="vertical" style={{ width: "100%" }} size={"large"}>
             <Breadcrumb separator={<span>&nbsp;</span>} items={items} />
             <Typography.Text>July 2023</Typography.Text>
+            <NoteBox />
             <TextBox />
             <CallBox />
         </Space>
+    );
+};
+
+const NoteBox = () => {
+    return (
+        <Card
+            title={
+                <Typography.Text>
+                    <Avatar
+                        style={{
+                            backgroundColor: "#C0CA33",
+                            verticalAlign: "middle",
+                        }}
+                        size={20}
+                    >
+                        J
+                    </Avatar>{" "}
+                    Note Added - by Jesse
+                </Typography.Text>
+            }
+            bordered={false}
+            extra="Jul 4"
+        >
+            <Space direction="vertical" size={"middle"}>
+                <Typography.Text>
+                    Hi Jesse. Sorry didn't get back sooner. I'm out of town
+                    until tomorrow. I would love to help you out. I will reach
+                    out tomorrow. Thanks Anita
+                </Typography.Text>
+            </Space>
+        </Card>
     );
 };
 

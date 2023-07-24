@@ -77,7 +77,7 @@ const Notestab = () => {
                 {/**/}
             </Form.Item>
 
-            {notes && (
+            {isFocused && (
                 <Form.Item
                     style={{
                         float: "right",

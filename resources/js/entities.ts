@@ -17,6 +17,15 @@ export type TNote = {
     notes: string;
 };
 
+export type TText = {
+    id?: string;
+    userId?: string;
+    contactId?: string;
+    from: string;
+    to: string;
+    message: string;
+};
+
 export type TContact = {
     id: string;
     firstName: any;
@@ -75,4 +84,10 @@ export type TContact = {
     zipCode?: string;
     state?: string;
     owner?: string;
+    wall?: {
+        date: string;
+        type: "call" | "text" | "note";
+        note?: TNote;
+        tex?: TText;
+    };
 };
