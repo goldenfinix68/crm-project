@@ -24,6 +24,8 @@ export type TText = {
     from: string;
     to: string;
     message: string;
+    type: "sent" | "received";
+    sender: string;
 };
 
 export type TWallData = {
@@ -33,7 +35,7 @@ export type TWallData = {
     year: string;
     type: "call" | "text" | "note";
     note?: TNote;
-    tex?: TText;
+    text?: TText;
 };
 
 export type TContact = {

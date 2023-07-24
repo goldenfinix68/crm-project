@@ -47,7 +47,7 @@ class TextsController extends Controller
         
         $userId = Auth::id();
         
-        $text = Text::create(array_merge($request->all(), ['userId' => $userId]));
+        $text = Text::create(array_merge($request->all(), ['userId' => $userId, 'type'=> 'sent']));
         
         return response()->json($text, 200);
     }

@@ -130,7 +130,7 @@ class Contact extends Model
         $data = $data->merge($notes)->merge($texts);
     
         // Sort the combined data array based on the 'date' in ascending order
-        $sortedData = $data->sortBy('date')->values()->all();
+        $sortedData = $data->sortByDesc('date')->values()->all();
     
         return $sortedData;
     }
