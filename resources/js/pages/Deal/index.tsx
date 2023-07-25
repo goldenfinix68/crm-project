@@ -347,7 +347,7 @@ const Deal = () => {
                         <div className="content">
                             First Offer Given{" "}
                             <div className="total-dollar">
-                                {byTotalDeals.first_given}
+                                ${byTotalDeals.first_given}
                             </div>
                         </div>
                         <div className="arrow bottom"></div>
@@ -374,7 +374,7 @@ const Deal = () => {
                         <div className="content">
                             In Negotiation{" "}
                             <div className="total-dollar">
-                                {byTotalDeals.in_negoation}
+                                ${byTotalDeals.in_negoation}
                             </div>
                         </div>
                         <div className="arrow bottom"></div>
@@ -401,7 +401,7 @@ const Deal = () => {
                         <div className="content">
                             Verbal Offer Accepted{" "}
                             <div className="total-dollar">
-                                {byTotalDeals.verbal_offer_accepted}
+                                ${byTotalDeals.verbal_offer_accepted}
                             </div>
                         </div>
                         <div className="arrow bottom"></div>
@@ -428,7 +428,7 @@ const Deal = () => {
                         <div className="content">
                             Under Contract{" "}
                             <div className="total-dollar">
-                                {byTotalDeals.under_contract}
+                                ${byTotalDeals.under_contract}
                             </div>
                         </div>
                         <div className="arrow bottom"></div>
@@ -512,7 +512,7 @@ const Deal = () => {
                 });
                 setBoardData(data);
 
-                setByTotalDeals(total);
+                // setByTotalDeals(total);
             } else {
                 setListData(deals.data);
                 console.log("wew", deals.data);
