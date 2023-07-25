@@ -73,6 +73,13 @@ interface TDeals {
     status: string;
     owner: string;
 }
+interface Bytotal {
+    comp_qualify: number;
+    first_given: number;
+    in_negoation: number;
+    verbal_offer_accepted: number;
+    under_contract: number;
+}
 const Deal = () => {
     const queryClient = useQueryClient();
     const [filterPage, setFilterPage] = useState({
@@ -85,6 +92,13 @@ const Deal = () => {
 
     const { deals, isLoading, refetch } = useDealsAll(filterPage);
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
+    const [byTotalDeals, setByTotalDeals] = useState<Bytotal>({
+        comp_qualify: 0,
+        first_given: 0,
+        in_negoation: 0,
+        verbal_offer_accepted: 0,
+        under_contract: 0,
+    });
     const showModalAdd = () => {
         setIsModalOpenAdd(true);
     };
@@ -303,7 +317,9 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">
                             Comp & Qualify
-                            <div className="total-dollar">$0</div>
+                            <div className="total-dollar">
+                                {byTotalDeals.comp_qualify}
+                            </div>
                         </div>
                         <div className="arrow bottom"></div>
 
@@ -330,7 +346,9 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">
                             First Offer Given{" "}
-                            <div className="total-dollar">$0</div>
+                            <div className="total-dollar">
+                                {byTotalDeals.first_given}
+                            </div>
                         </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
@@ -355,7 +373,9 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">
                             In Negotiation{" "}
-                            <div className="total-dollar">$0</div>
+                            <div className="total-dollar">
+                                {byTotalDeals.in_negoation}
+                            </div>
                         </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
@@ -380,7 +400,9 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">
                             Verbal Offer Accepted{" "}
-                            <div className="total-dollar">$0</div>
+                            <div className="total-dollar">
+                                {byTotalDeals.verbal_offer_accepted}
+                            </div>
                         </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
@@ -405,7 +427,9 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">
                             Under Contract{" "}
-                            <div className="total-dollar">$0</div>
+                            <div className="total-dollar">
+                                {byTotalDeals.under_contract}
+                            </div>
                         </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
@@ -432,7 +456,7 @@ const Deal = () => {
         if (deals) {
             if (listBoard != "List") {
                 const data: { lanes: Lane[] } = { ...initialBoardData }; // Clone the initial data
-                var total = {
+                var total: Bytotal = {
                     comp_qualify: 0,
                     first_given: 0,
                     in_negoation: 0,
@@ -487,7 +511,8 @@ const Deal = () => {
                     }
                 });
                 setBoardData(data);
-                console.log("total", total);
+
+                setByTotalDeals(total);
             } else {
                 setListData(deals.data);
                 console.log("wew", deals.data);
