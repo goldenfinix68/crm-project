@@ -55,6 +55,7 @@ import { useMutation, useQuery } from "react-query";
 import { TContact } from "../../entities";
 import { deleteContactMutation } from "../../api/mutation/useContactMutation";
 import queryClient from "../../queryClient";
+import { useNavigate } from "react-router";
 
 interface DataType {
     key: React.Key;
@@ -176,6 +177,7 @@ const menu = (
 );
 
 const Contacts = () => {
+    const navigate = useNavigate();
     const [isTContact, setTContact] = useState<TContact | null>(null);
     const { contacts, isLoading } = useContactsAll();
     const [isModalOpen, setisModalOpen] = useState(false);
@@ -221,7 +223,15 @@ const Contacts = () => {
                         {record.firstName.charAt(0)}
                     </Avatar>
                     <span style={{ marginLeft: "8px" }}>
-                        {record.firstName} {record.lastName}
+                        <Button
+                            type="link"
+                            style={{ padding: 0 }}
+                            onClick={() => {
+                                navigate(`/contacts/${record.id}`);
+                            }}
+                        >
+                            {record.firstName} {record.lastName}
+                        </Button>
                     </span>
                 </>
             ),
