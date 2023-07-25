@@ -705,15 +705,23 @@ const Deal = () => {
                         <div>
                             <span style={{ marginRight: 15 }}>
                                 {" "}
-                                # of Deals: <b>$0</b>
+                                # of Deals: <b>{deals && deals.sum.count}</b>
                             </span>
                             <span style={{ marginRight: 15 }}>
                                 {" "}
-                                Pipeline Value: <b>$0</b>
+                                Pipeline Value:{" "}
+                                <b>
+                                    {deals &&
+                                        "$" + toCurrency(deals.sum.sum_upp)}
+                                </b>
                             </span>
                             <span>
                                 {" "}
-                                Forecase Value: <b>$0</b>
+                                Forecasted Value:{" "}
+                                <b>
+                                    {deals &&
+                                        "$" + toCurrency(deals.sum.sum_upp)}
+                                </b>
                             </span>
                         </div>
                     </div>
