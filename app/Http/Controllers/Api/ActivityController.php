@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Laravel\Ui\Presets\React;
 
 class ActivityController extends Controller
 {
@@ -69,8 +70,37 @@ class ActivityController extends Controller
         $data = Activity::updateOrCreate([
             'id' => $request->id
         ], [
-            'job_purpose' => $request->job_purpose,
+            'title' => isset($request->title) ? $request->title : null,
+            'type' => isset($request->type) ? $request->type : null,
+            'start_date' => isset($request->start_date) ? $request->start_date : null,
+            'end_date' => isset($request->end_date) ? $request->end_date : null,
+            'start_time' => isset($request->start_time) ? $request->start_time : null,
+            'end_time' => isset($request->end_time) ? $request->end_time : null,
+            'location' => isset($request->location) ? $request->location : null,
+            'video_conferencing' => isset($request->video_conferencing) ? $request->video_conferencing : null,
+            'recurrence' => isset($request->recurrence) ? $request->recurrence : null,
+            'availability' => isset($request->availability) ? $request->availability : null,
+            'internal_note' => isset($request->internal_note) ? $request->internal_note : null,
+            'owner_id' => isset($request->owner_id) ? $request->owner_id : 0,
+            'deal_id' => isset($request->deal_id) ? $request->deal_id : 0,
+            'contact_id' => isset($request->contact_id) ? $request->contact_id : 0,
+            'follower_id' => isset($request->follower_id) ? $request->follower_id : 0,
+            'status' => 1,
         ]);
+
+        if(isset($request->tags) && count($request->tags) > 0) {
+            \App\Models\ActivityTag::where('activity_id', $data->id)->dalete();
+
+            $tags = $request->tags;
+            foreach ($tags as $key => $tag) {
+                \App\Models\ActivityTag::create([
+                    'activity_id' => $data->id,
+                    'tag' => $tag,
+                ]);
+            }
+        }
+
+
 
         return response()->json([
             'success' => true,
@@ -160,5 +190,16 @@ class ActivityController extends Controller
                 'message' => 'Data could not be deleted'
             ], 500);
         }
+    }
+
+
+    public function get_user(Request $request) {
+        $data = \App\Models\User::get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $data,
+            'user_data' => auth()->user()
+        ], 200);
     }
 }

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     Button,
     Col,
@@ -16,6 +16,7 @@ import {
     DatePicker,
     TimePicker,
     Checkbox,
+    notification,
 } from "antd";
 
 import type { SelectProps } from "antd";
@@ -28,27 +29,23 @@ import {
     faVideo,
 } from "@fortawesome/free-solid-svg-icons";
 
-import {
-    AuditOutlined,
-    CloseOutlined,
-    ContainerOutlined,
-    DollarOutlined,
-    DownOutlined,
-    FilterOutlined,
-    GroupOutlined,
-    InsertRowBelowOutlined,
-    MobileOutlined,
-    PhoneOutlined,
-    PlusCircleOutlined,
-    UserOutlined,
-} from "@ant-design/icons";
+import { DollarOutlined, UserOutlined } from "@ant-design/icons";
 
-import Title from "antd/es/skeleton/Title";
+import moment from "moment";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 
 import validateRules from "../../../providers/validateRules";
+
+import { useMutation, useQueryClient } from "react-query";
+import { addActivityMutation } from "../../../api/mutation/useActivityMutation";
+import { useUsersList } from "../../../api/query/activityQuery";
+
+dayjs.extend(customParseFormat);
 
 interface Props {
     isModalOpenAdd: boolean;
@@ -94,24 +91,58 @@ const optionAvailability: SelectProps["options"] = [
     },
 ];
 
-const onFinish = (values: any) => {
-    console.log("onFinish", values);
-};
-
 const ModalAddActivity = ({
     isModalOpenAdd,
     handleOkAdd,
     handleCancelAdd,
 }: Props) => {
+    const queryClient = useQueryClient();
     const [form] = Form.useForm();
     const [calendarOptions, setCalendarOptions] = useState(false);
 
     const calendar = useRef();
+
+    const onFinish = (values: any) => {
+        values = {
+            ...values,
+            start_date: values.start_date
+                ? dayjs(values.start_date).format("YYYY/MM/DD")
+                : undefined,
+            end_date: values.end_date
+                ? dayjs(values.end_date).format("YYYY/MM/DD")
+                : undefined,
+            start_time: values.start_time
+                ? dayjs(values.start_time).format("HH:mm A")
+                : undefined,
+            end_time: values.end_time
+                ? dayjs(values.end_time).format("HH:mm A")
+                : undefined,
+        };
+
+        console.log("onFinish", values);
+
+        addActivity.mutate(values);
+    };
+
+    const addActivity = useMutation(addActivityMutation, {
+        onSuccess: (res) => {
+            console.log("success");
+            queryClient.invalidateQueries("activities");
+            //queryClient.invalidateQueries("contactTypesAll");
+            // form.resetFields();
+        },
+    });
+
+    const { dataUsers, isLoadingUsers } = useUsersList();
+
+    useEffect(() => {
+        console.log("dataUsers", dataUsers);
+    }, [dataUsers]);
+
     return (
         <Modal
             className="modal-activity"
-            open={true}
-            // open={isModalOpenAdd}
+            open={isModalOpenAdd}
             onOk={handleOkAdd}
             onCancel={handleCancelAdd}
             width={980}
@@ -136,11 +167,11 @@ const ModalAddActivity = ({
                                                 onFinish(values);
                                             })
                                             .catch((info) => {
-                                                // notification.warning({
-                                                //     message: "Warning",
-                                                //     description:
-                                                //         "Please fill-up required fields!",
-                                                // });
+                                                notification.warning({
+                                                    message: "Warning",
+                                                    description:
+                                                        "Please fill-up required fields!",
+                                                });
                                             });
                                     }}
                                 >
@@ -162,6 +193,17 @@ const ModalAddActivity = ({
                     type: "Call",
                     recurrence: "Doesn’t repeat",
                     availability: "Busy",
+                    start_date: dayjs(
+                        moment().format("YYYY/MM/DD"),
+                        "YYYY/MM/DD"
+                    ),
+                    end_date: dayjs(
+                        moment().format("YYYY/MM/DD"),
+                        "YYYY/MM/DD"
+                    ),
+                    owner_id: dataUsers?.user_data?.id
+                        ? dataUsers?.user_data?.id
+                        : null,
                 }}
             >
                 <Row gutter={12}>
@@ -222,30 +264,36 @@ const ModalAddActivity = ({
                             </Col>
                             <Col span={19}>
                                 <Row gutter={12}>
-                                    <Col span={6}>
+                                    <Col span={7}>
                                         <Form.Item name="start_date">
-                                            <DatePicker placeholder="Start Date" />
+                                            <DatePicker
+                                                placeholder="Start Date"
+                                                format={"MMM, DD YYYY"}
+                                            />
                                         </Form.Item>
                                     </Col>
-                                    <Col span={6}>
-                                        <Form.Item name="start_date">
+                                    <Col span={5}>
+                                        <Form.Item name="start_time">
                                             <TimePicker
-                                                format="HH:mm"
+                                                format="HH:mm A"
                                                 placeholder="Start Time"
                                             />
                                         </Form.Item>
                                     </Col>
-                                    <Col span={6}>
-                                        <Form.Item name="start_date">
+                                    <Col span={5}>
+                                        <Form.Item name="end_time">
                                             <TimePicker
-                                                format="HH:mm"
+                                                format="HH:mm A"
                                                 placeholder="End Time"
                                             />
                                         </Form.Item>
                                     </Col>
-                                    <Col span={6}>
-                                        <Form.Item name="start_date">
-                                            <DatePicker placeholder="End Date" />
+                                    <Col span={7}>
+                                        <Form.Item name="end_date">
+                                            <DatePicker
+                                                placeholder="End Date"
+                                                format={"MMM, DD YYYY"}
+                                            />
                                         </Form.Item>
                                     </Col>
                                 </Row>
@@ -273,9 +321,7 @@ const ModalAddActivity = ({
                         {calendarOptions && (
                             <Row gutter={12}>
                                 <Col span={5} className="col-label">
-                                    <Typography.Text>
-                                        Calendar Options
-                                    </Typography.Text>
+                                    <Typography.Text>Invitees</Typography.Text>
                                 </Col>
                                 <Col span={19}>
                                     <Form.Item name={"invitees"}>
@@ -406,10 +452,7 @@ const ModalAddActivity = ({
                                 <Typography.Text>Internal Note</Typography.Text>
                             </Col>
                             <Col span={19}>
-                                <Form.Item
-                                    name={"internal_note"}
-                                    rules={[validateRules.required]}
-                                >
+                                <Form.Item name={"internal_note"}>
                                     <Input.TextArea
                                         rows={3}
                                         placeholder="Add internal note"
@@ -432,18 +475,21 @@ const ModalAddActivity = ({
                                         placeholder="Owner"
                                         showSearch
                                         className="select-custom-width"
+                                        loading={isLoadingUsers}
                                     >
-                                        {optionAvailability.map((item, key) => {
-                                            return (
-                                                <Select.Option
-                                                    key={key}
-                                                    value={item.value}
-                                                    search={item.label}
-                                                >
-                                                    {item.label}
-                                                </Select.Option>
-                                            );
-                                        })}
+                                        {dataUsers &&
+                                            dataUsers?.data &&
+                                            dataUsers?.data.map((item, key) => {
+                                                return (
+                                                    <Select.Option
+                                                        key={key}
+                                                        value={item.id}
+                                                        search={`${item.firstName} ${item.lastName}`}
+                                                    >
+                                                        {`${item.firstName} ${item.lastName}`}
+                                                    </Select.Option>
+                                                );
+                                            })}
                                     </Select>
                                 </Form.Item>
                             </Col>
@@ -456,10 +502,7 @@ const ModalAddActivity = ({
                             <Col span={19}>
                                 <Row gutter={12}>
                                     <Col span={12}>
-                                        <Form.Item
-                                            name={"deal_id"}
-                                            rules={[validateRules.required]}
-                                        >
+                                        <Form.Item name={"deal_id"}>
                                             <Select
                                                 placeholder="Deal"
                                                 showSearch
@@ -486,10 +529,7 @@ const ModalAddActivity = ({
                                         </Form.Item>
                                     </Col>
                                     <Col span={12}>
-                                        <Form.Item
-                                            name={"contact_id"}
-                                            rules={[validateRules.required]}
-                                        >
+                                        <Form.Item name={"contact_id"}>
                                             <Select
                                                 placeholder="Contact"
                                                 showSearch
@@ -524,10 +564,7 @@ const ModalAddActivity = ({
                                 <Typography.Text>Followers</Typography.Text>
                             </Col>
                             <Col span={19}>
-                                <Form.Item
-                                    name={"follower_id"}
-                                    rules={[validateRules.required]}
-                                >
+                                <Form.Item name={"follower_id"}>
                                     <Select
                                         placeholder="Add Followers"
                                         showSearch
@@ -554,10 +591,7 @@ const ModalAddActivity = ({
                                 <Typography.Text>Tags</Typography.Text>
                             </Col>
                             <Col span={19}>
-                                <Form.Item
-                                    name={"tags"}
-                                    rules={[validateRules.required]}
-                                >
+                                <Form.Item name={"tags"}>
                                     <Select
                                         placeholder="Tags"
                                         showSearch

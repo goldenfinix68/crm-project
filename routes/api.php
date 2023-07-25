@@ -27,6 +27,8 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('/notes', 'App\Http\Controllers\Api\NotesController');
     Route::resource('/texts', 'App\Http\Controllers\Api\TextsController');
     Route::post('/deals/useDealUpdateBoardMutation', 'App\Http\Controllers\Api\DealsController@useDealUpdateBoardMutation');
+    Route::resource('/activities', 'App\Http\Controllers\Api\ActivityController');
+    Route::get('/activities_users', 'App\Http\Controllers\Api\ActivityController@get_user');
 
     Route::get('/user', function (Request $request) {
         return $request->user();
