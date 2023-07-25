@@ -582,7 +582,17 @@ const Deal = () => {
     });
 
     const onDataChangeBoard = (newData: any) => {
-        mutation.mutate(newData);
+        const new_data: { id: number; laneId: string }[] = [];
+        newData.lanes.forEach((element: any) => {
+            element.cards.forEach((cards: any) => {
+                new_data.push({
+                    id: cards.id,
+                    laneId: cards.laneId,
+                });
+            });
+        });
+
+        mutation.mutate({ lanes: new_data });
     };
 
     const onChangeListBoard = (e: any) => {

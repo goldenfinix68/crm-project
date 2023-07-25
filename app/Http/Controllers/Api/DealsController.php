@@ -141,9 +141,7 @@ class DealsController extends Controller
         $data = $request->lanes;
         $cards = [];
         foreach ($data as $key => $val) {
-            foreach ($val['cards'] as $cardkey => $valkey) {
-                array_push($cards,  $valkey);
-            }
+            array_push($cards,  $val);
         }
 
         foreach ($cards as $key => $val) {
