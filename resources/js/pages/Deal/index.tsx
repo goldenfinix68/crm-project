@@ -73,6 +73,13 @@ interface TDeals {
     status: string;
     owner: string;
 }
+interface Bytotal {
+    comp_qualify: number;
+    first_given: number;
+    in_negoation: number;
+    verbal_offer_accepted: number;
+    under_contract: number;
+}
 const Deal = () => {
     const queryClient = useQueryClient();
     const [filterPage, setFilterPage] = useState({
@@ -85,6 +92,13 @@ const Deal = () => {
 
     const { deals, isLoading, refetch } = useDealsAll(filterPage);
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
+    const [byTotalDeals, setByTotalDeals] = useState<Bytotal>({
+        comp_qualify: 0,
+        first_given: 0,
+        in_negoation: 0,
+        verbal_offer_accepted: 0,
+        under_contract: 0,
+    });
     const showModalAdd = () => {
         setIsModalOpenAdd(true);
     };
@@ -303,7 +317,9 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">
                             Comp & Qualify
-                            <div className="total-dollar">$0</div>
+                            <div className="total-dollar">
+                                {byTotalDeals.comp_qualify}
+                            </div>
                         </div>
                         <div className="arrow bottom"></div>
 
@@ -330,7 +346,9 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">
                             First Offer Given{" "}
-                            <div className="total-dollar">$0</div>
+                            <div className="total-dollar">
+                                ${byTotalDeals.first_given}
+                            </div>
                         </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
@@ -355,7 +373,9 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">
                             In Negotiation{" "}
-                            <div className="total-dollar">$0</div>
+                            <div className="total-dollar">
+                                ${byTotalDeals.in_negoation}
+                            </div>
                         </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
@@ -380,7 +400,9 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">
                             Verbal Offer Accepted{" "}
-                            <div className="total-dollar">$0</div>
+                            <div className="total-dollar">
+                                ${byTotalDeals.verbal_offer_accepted}
+                            </div>
                         </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
@@ -405,7 +427,9 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">
                             Under Contract{" "}
-                            <div className="total-dollar">$0</div>
+                            <div className="total-dollar">
+                                ${byTotalDeals.under_contract}
+                            </div>
                         </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
@@ -432,13 +456,7 @@ const Deal = () => {
         if (deals) {
             if (listBoard != "List") {
                 const data: { lanes: Lane[] } = { ...initialBoardData }; // Clone the initial data
-                var total = {
-                    comp_qualify: 0,
-                    first_given: 0,
-                    in_negoation: 0,
-                    verbal_offer_accepted: 0,
-                    under_contract: 0,
-                };
+
                 deals.data.forEach((x: any, key: any) => {
                     if (x.stage == "Comp & Qualify") {
                         data.lanes[0].cards.push({
@@ -446,8 +464,6 @@ const Deal = () => {
                             title: cardDiv(x),
                             laneId: x.stage,
                         });
-
-                        total.comp_qualify += x.value ? parseFloat(x.value) : 0;
                     }
                     if (x.stage == "First Offer Given") {
                         data.lanes[1].cards.push({
@@ -455,7 +471,6 @@ const Deal = () => {
                             title: cardDiv(x),
                             laneId: x.stage,
                         });
-                        total.first_given += x.value ? parseFloat(x.value) : 0;
                     }
                     if (x.stage == "In Negotiation") {
                         data.lanes[2].cards.push({
@@ -463,7 +478,6 @@ const Deal = () => {
                             title: cardDiv(x),
                             laneId: x.stage,
                         });
-                        total.in_negoation += x.value ? parseFloat(x.value) : 0;
                     }
                     if (x.stage == "Verbal Offer Accepted") {
                         data.lanes[3].cards.push({
@@ -471,9 +485,6 @@ const Deal = () => {
                             title: cardDiv(x),
                             laneId: x.stage,
                         });
-                        total.under_contract += x.value
-                            ? parseFloat(x.value)
-                            : 0;
                     }
                     if (x.stage == "Under Contract") {
                         data.lanes[4].cards.push({
@@ -481,13 +492,9 @@ const Deal = () => {
                             title: cardDiv(x),
                             laneId: x.stage,
                         });
-                        total.under_contract += x.value
-                            ? parseFloat(x.value)
-                            : 0;
                     }
                 });
                 setBoardData(data);
-                console.log("total", total);
             } else {
                 setListData(deals.data);
                 console.log("wew", deals.data);
@@ -570,12 +577,22 @@ const Deal = () => {
 
     const mutation = useMutation(useDealUpdateBoardMutation, {
         onSuccess: (res) => {
-            console.log(res);
+            console.log("wew", res);
         },
     });
 
     const onDataChangeBoard = (newData: any) => {
-        mutation.mutate(newData);
+        const new_data: { id: number; laneId: string }[] = [];
+        newData.lanes.forEach((element: any) => {
+            element.cards.forEach((cards: any) => {
+                new_data.push({
+                    id: cards.id,
+                    laneId: cards.laneId,
+                });
+            });
+        });
+
+        mutation.mutate({ lanes: new_data });
     };
 
     const onChangeListBoard = (e: any) => {

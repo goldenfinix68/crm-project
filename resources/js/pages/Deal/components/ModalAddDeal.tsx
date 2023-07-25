@@ -15,6 +15,7 @@ import {
     Select,
     DatePicker,
     notification,
+    InputNumber,
 } from "antd";
 
 import {
@@ -212,7 +213,7 @@ const ModalAddDeal = ({
                             </Col>
                             <Col md={12}>
                                 <Form.Item label="Value" name="value">
-                                    <Input placeholder="Value" />
+                                    <InputNumber placeholder="Value" />
                                 </Form.Item>
                             </Col>
                             <Col md={12}>
