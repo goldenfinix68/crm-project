@@ -70,8 +70,7 @@ const ModalAddDeal = ({
                     message: "Deal",
                     description: "Successfully Added",
                 });
-                queryClient.invalidateQueries("deals");
-                handleCancelAdd();
+                handleOkAdd();
             }
         },
     });
@@ -90,7 +89,6 @@ const ModalAddDeal = ({
         <Modal
             className="modal-activity"
             open={isModalOpenAdd}
-            onOk={handleOkAdd}
             onCancel={handleCancelAdd}
             width={980}
             footer={null}

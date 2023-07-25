@@ -18,6 +18,7 @@ import {
 import ContactsComponentsAddContacts from "../../pages/PageContacts/Components/ContactsComponentsAddContacts";
 import ModalAddActivity from "../../pages/Activity/components/ModalAddActivity";
 import ModalAddDeal from "../../pages/Deal/components/ModalAddDeal";
+import queryClient from "../../queryClient";
 
 const NavigationComponentsQuickAdd: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,6 +26,7 @@ const NavigationComponentsQuickAdd: React.FC = () => {
     const [isModalDealOpenAdd, setIsModalDealOpenAdd] = useState(false);
 
     const handleOkAdd = () => {
+        queryClient.invalidateQueries("deals");
         setIsModalOpenAdd(false);
         setIsModalDealOpenAdd(false);
     };

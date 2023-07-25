@@ -110,6 +110,7 @@ const Deal = () => {
 
     const handleOkAdd = () => {
         setIsModalOpenAdd(false);
+        queryClient.invalidateQueries("deals");
     };
 
     const handleCancelAdd = () => {
