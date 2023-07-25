@@ -20,7 +20,7 @@ class CreateTextsTable extends Migration
             $table->string('from');
             $table->string('to');
             $table->text('message');
-            $table->type('to');
+            $table->string('type');
             $table->timestamps();
             $table->softDeletes();
         });
