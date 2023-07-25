@@ -30,7 +30,6 @@ import { TNote, TWallData } from "../../../entities";
 
 const ContactsWall = () => {
     const { contact } = useContext(ContactContext);
-    const [currentMonthYear, setCurrentMonthYear] = React.useState("");
     const items = [
         {
             title: "Showing: ",

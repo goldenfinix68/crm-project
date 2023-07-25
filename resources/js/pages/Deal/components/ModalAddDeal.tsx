@@ -37,6 +37,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "antd/es/form/Form";
 import { useMutation, useQueryClient } from "react-query";
 import { useDealMutation } from "../../../api/mutation/useDealMutation";
+import { useContactsAll } from "../../../api/query/contactsQuery";
 
 interface Props {
     isModalOpenAdd: boolean;
@@ -53,6 +54,7 @@ const ModalAddDeal = ({
 }: Props) => {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
+    const { contacts, isLoading } = useContactsAll();
     const [form] = useForm();
     const onFinish = (values: any) => {
         mutation.mutate({
@@ -148,7 +150,7 @@ const ModalAddDeal = ({
                             <Col md={12}>
                                 <Form.Item
                                     label="Contact"
-                                    name="contact"
+                                    name="contactId"
                                     rules={[
                                         {
                                             required: true,
@@ -156,7 +158,20 @@ const ModalAddDeal = ({
                                         },
                                     ]}
                                 >
-                                    <Input placeholder="Contact" />
+                                    <Select style={{ width: "100%" }}>
+                                        {contacts?.map((contact) => {
+                                            return (
+                                                <Select.Option
+                                                    value={contact.id}
+                                                    key={contact.id}
+                                                >
+                                                    {contact.firstName +
+                                                        " " +
+                                                        contact.lastName}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                    </Select>
                                 </Form.Item>
                             </Col>
                             <Col md={12}>
