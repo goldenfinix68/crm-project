@@ -1,0 +1,178 @@
+.mainDealArrow {
+  min-height: 400px;
+  margin-left: -24px;
+  margin-right: -24px;
+}
+
+.mainDealArrow .bx-pager {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 50px;
+  border-left: 1px solid #dfe1e6;
+  width: 1700px;
+}
+
+.mainDealArrow .bx-pager .bx-pager-item {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 100%;
+  -webkit-box-flex: 0;
+      -ms-flex: 0 25%;
+          flex: 0 25%;
+  border-top: 1px solid #dfe1e6;
+  border-bottom: 1px solid #dfe1e6;
+}
+
+.mainDealArrow .bx-pager .bx-pager-item .bx-pager-link {
+  text-decoration: none;
+  color: #222;
+  font-size: 13px;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  padding-left: 16px;
+  text-align: center;
+}
+
+.mainDealArrow .bx-pager .bx-pager-item .arrow {
+  border: solid #dfe1e6;
+  display: inline-block;
+  padding: 13px;
+  border-width: 0 1px 1px 0;
+  -webkit-transform: translateY(15.5px) rotate(-45deg) skew(-15deg, -15deg) translateX(18px);
+          transform: translateY(15.5px) rotate(-45deg) skew(-15deg, -15deg) translateX(18px);
+  background-color: #fff;
+}
+
+.react-trello-board {
+  background-color: #fff !important;
+}
+
+.react-trello-board section {
+  margin: 0px !important;
+  background: #fff !important;
+  padding: 0px !important;
+  width: 300px !important;
+}
+
+.react-trello-board section header.jZFhJh {
+  display: block;
+}
+
+.react-trello-board section .sc-gLfKCG.sc-ftDPCE {
+  position: relative;
+  padding: 0;
+}
+
+.react-trello-board section div.sc-jqNall {
+  width: 300px !important;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
+.react-trello-board section article {
+  border-bottom: none;
+  max-width: 300px !important;
+  padding: 0;
+}
+
+.react-trello-board section article header {
+  display: initial;
+}
+
+.react-trello-board section article header span.sc-ipUqZP {
+  display: none;
+}
+
+.react-trello-board section article header div.sc-ivuxny {
+  display: none;
+}
+
+.react-trello-board section .smooth-dnd-container {
+  min-height: 70vh;
+}
+
+.item-deals-header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  position: relative;
+  z-index: 1;
+  height: 50px;
+}
+
+.item-deals-header .active .content {
+  color: #ffffff;
+}
+
+.item-deals-header .active .arrow {
+  background: #d68a3a;
+}
+
+.item-deals-header .content {
+  color: #000000;
+  position: absolute;
+  z-index: 2;
+  margin-left: 20px;
+  margin-bottom: 3px;
+}
+
+.item-deals-header .content .total-dollar {
+  font-size: 12px;
+  font-weight: 300;
+}
+
+.item-deals-header .arrow {
+  width: 100%;
+  height: 50%;
+  background: #ffffff;
+}
+
+.item-deals-header .arrow.top {
+  -webkit-transform: skew(32deg, 0deg);
+          transform: skew(32deg, 0deg);
+  border-right: 1px solid #d8d3d3;
+  border-top: 1px solid #d8d3d3;
+}
+
+.item-deals-header .arrow.bottom {
+  -webkit-transform: skew(-32deg, 0deg);
+          transform: skew(-32deg, 0deg);
+  border-right: 1px solid #d8d3d3;
+  border-bottom: 1px solid #d8d3d3;
+}
+
+.item-deals-header .add-deals {
+  position: absolute;
+  right: 0;
+  margin-right: 10px;
+  margin-bottom: 3px;
+}
+
+.item-deals-header .add-deals svg {
+  font-size: 18px;
+  visibility: hidden;
+}
+
+.item-deals-header:hover .add-deals svg {
+  visibility: visible;
+}
+/*# sourceMappingURL=deals.css.map */
