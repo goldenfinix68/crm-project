@@ -456,13 +456,7 @@ const Deal = () => {
         if (deals) {
             if (listBoard != "List") {
                 const data: { lanes: Lane[] } = { ...initialBoardData }; // Clone the initial data
-                var total: Bytotal = {
-                    comp_qualify: 0,
-                    first_given: 0,
-                    in_negoation: 0,
-                    verbal_offer_accepted: 0,
-                    under_contract: 0,
-                };
+
                 deals.data.forEach((x: any, key: any) => {
                     if (x.stage == "Comp & Qualify") {
                         data.lanes[0].cards.push({
@@ -470,8 +464,6 @@ const Deal = () => {
                             title: cardDiv(x),
                             laneId: x.stage,
                         });
-
-                        total.comp_qualify += x.value ? parseFloat(x.value) : 0;
                     }
                     if (x.stage == "First Offer Given") {
                         data.lanes[1].cards.push({
@@ -479,7 +471,6 @@ const Deal = () => {
                             title: cardDiv(x),
                             laneId: x.stage,
                         });
-                        total.first_given += x.value ? parseFloat(x.value) : 0;
                     }
                     if (x.stage == "In Negotiation") {
                         data.lanes[2].cards.push({
@@ -487,7 +478,6 @@ const Deal = () => {
                             title: cardDiv(x),
                             laneId: x.stage,
                         });
-                        total.in_negoation += x.value ? parseFloat(x.value) : 0;
                     }
                     if (x.stage == "Verbal Offer Accepted") {
                         data.lanes[3].cards.push({
@@ -495,9 +485,6 @@ const Deal = () => {
                             title: cardDiv(x),
                             laneId: x.stage,
                         });
-                        total.under_contract += x.value
-                            ? parseFloat(x.value)
-                            : 0;
                     }
                     if (x.stage == "Under Contract") {
                         data.lanes[4].cards.push({
@@ -505,14 +492,9 @@ const Deal = () => {
                             title: cardDiv(x),
                             laneId: x.stage,
                         });
-                        total.under_contract += x.value
-                            ? parseFloat(x.value)
-                            : 0;
                     }
                 });
                 setBoardData(data);
-
-                // setByTotalDeals(total);
             } else {
                 setListData(deals.data);
                 console.log("wew", deals.data);
@@ -595,12 +577,12 @@ const Deal = () => {
 
     const mutation = useMutation(useDealUpdateBoardMutation, {
         onSuccess: (res) => {
-            console.log(res);
+            console.log("wew", res);
         },
     });
 
     const onDataChangeBoard = (newData: any) => {
-        mutation.mutate(newData);
+        mutation.mutate({ lanes: newData });
     };
 
     const onChangeListBoard = (e: any) => {
