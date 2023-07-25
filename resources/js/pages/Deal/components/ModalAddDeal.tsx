@@ -226,7 +226,10 @@ const ModalAddDeal = ({
                             </Col>
                             <Col md={12}>
                                 <Form.Item label="Value" name="value">
-                                    <InputNumber placeholder="Value" />
+                                    <InputNumber
+                                        placeholder="Value"
+                                        style={{ width: "100%" }}
+                                    />
                                 </Form.Item>
                             </Col>
                             <Col md={12}>

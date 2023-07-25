@@ -307,11 +307,13 @@ const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
                     />
                 </Col>
             </Row>
+
             <ModalAddActivity
                 isModalOpenAdd={isModalOpenAdd}
                 handleOkAdd={handleOkAdd}
                 handleCancelAdd={handleCancelAdd}
             />
+
             <ModalManageColumn
                 isModalManageColumnOpen={isModalManageColumnOpen}
                 setIsModalManageColumnOpen={setIsModalManageColumnOpen}

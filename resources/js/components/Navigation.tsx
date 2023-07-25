@@ -113,7 +113,7 @@ const Navigation: React.FC = () => {
                 <Col span={12}>
                     {/* Right Side  */}
                     <Row gutter={12} justify={"end"}>
-                        <Col span={10}>
+                        <Col md={12} lg={10}>
                             <Dropdown
                                 menu={{ items }}
                                 placement="bottomRight"
@@ -130,7 +130,7 @@ const Navigation: React.FC = () => {
                                 />
                             </Dropdown>
                         </Col>
-                        <Col span={4}>
+                        <Col md={8} lg={8} xl={6} xxl={4}>
                             <Space
                                 wrap
                                 className="w-100 header-btn m-l-sm"
