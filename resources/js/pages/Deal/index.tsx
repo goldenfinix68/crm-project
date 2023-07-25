@@ -582,7 +582,7 @@ const Deal = () => {
     });
 
     const onDataChangeBoard = (newData: any) => {
-        mutation.mutate({ lanes: newData });
+        mutation.mutate(newData);
     };
 
     const onChangeListBoard = (e: any) => {
