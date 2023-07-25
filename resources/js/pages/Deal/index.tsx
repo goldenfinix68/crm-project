@@ -190,6 +190,21 @@ const Deal = () => {
         },
     ];
 
+    const phone: MenuProps["items"] = [
+        {
+            key: "1",
+            label: <div>Call Via Browser</div>,
+        },
+        {
+            key: "2",
+            label: <div>Call Via Phone</div>,
+        },
+        {
+            key: "3",
+            label: <div>Send Text</div>,
+        },
+    ];
+
     const activities_type = (
         <Card>
             <Search
@@ -286,8 +301,12 @@ const Deal = () => {
                 title: (
                     <div className="item-deals-header">
                         <div className="arrow top"></div>
-                        <div className="content">Comp & Qualify</div>
+                        <div className="content">
+                            Comp & Qualify
+                            <div className="total-dollar">$0</div>
+                        </div>
                         <div className="arrow bottom"></div>
+
                         <span className="add-deals">
                             <PlusSquareOutlined
                                 onClick={() =>
@@ -309,7 +328,10 @@ const Deal = () => {
                 title: (
                     <div className="item-deals-header">
                         <div className="arrow top"></div>
-                        <div className="content">First Offer Given</div>
+                        <div className="content">
+                            First Offer Given{" "}
+                            <div className="total-dollar">$0</div>
+                        </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
                             <PlusSquareOutlined
@@ -331,7 +353,10 @@ const Deal = () => {
                 title: (
                     <div className="item-deals-header">
                         <div className="arrow top"></div>
-                        <div className="content">In Negotiation</div>
+                        <div className="content">
+                            In Negotiation{" "}
+                            <div className="total-dollar">$0</div>
+                        </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
                             <PlusSquareOutlined
@@ -353,7 +378,10 @@ const Deal = () => {
                 title: (
                     <div className="item-deals-header">
                         <div className="arrow top"></div>
-                        <div className="content">Verbal Offer Accepted</div>
+                        <div className="content">
+                            Verbal Offer Accepted{" "}
+                            <div className="total-dollar">$0</div>
+                        </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
                             <PlusSquareOutlined
@@ -375,7 +403,10 @@ const Deal = () => {
                 title: (
                     <div className="item-deals-header">
                         <div className="arrow top"></div>
-                        <div className="content">Under Contract</div>
+                        <div className="content">
+                            Under Contract{" "}
+                            <div className="total-dollar">$0</div>
+                        </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
                             <PlusSquareOutlined
@@ -401,6 +432,13 @@ const Deal = () => {
         if (deals) {
             if (listBoard != "List") {
                 const data: { lanes: Lane[] } = { ...initialBoardData }; // Clone the initial data
+                var total = {
+                    comp_qualify: 0,
+                    first_given: 0,
+                    in_negoation: 0,
+                    verbal_offer_accepted: 0,
+                    under_contract: 0,
+                };
                 deals.data.forEach((x: any, key: any) => {
                     if (x.stage == "Comp & Qualify") {
                         data.lanes[0].cards.push({
@@ -408,6 +446,8 @@ const Deal = () => {
                             title: cardDiv(x),
                             laneId: x.stage,
                         });
+
+                        total.comp_qualify += x.value ? parseFloat(x.value) : 0;
                     }
                     if (x.stage == "First Offer Given") {
                         data.lanes[1].cards.push({
@@ -415,6 +455,7 @@ const Deal = () => {
                             title: cardDiv(x),
                             laneId: x.stage,
                         });
+                        total.first_given += x.value ? parseFloat(x.value) : 0;
                     }
                     if (x.stage == "In Negotiation") {
                         data.lanes[2].cards.push({
@@ -422,6 +463,7 @@ const Deal = () => {
                             title: cardDiv(x),
                             laneId: x.stage,
                         });
+                        total.in_negoation += x.value ? parseFloat(x.value) : 0;
                     }
                     if (x.stage == "Verbal Offer Accepted") {
                         data.lanes[3].cards.push({
@@ -429,6 +471,9 @@ const Deal = () => {
                             title: cardDiv(x),
                             laneId: x.stage,
                         });
+                        total.under_contract += x.value
+                            ? parseFloat(x.value)
+                            : 0;
                     }
                     if (x.stage == "Under Contract") {
                         data.lanes[4].cards.push({
@@ -436,9 +481,13 @@ const Deal = () => {
                             title: cardDiv(x),
                             laneId: x.stage,
                         });
+                        total.under_contract += x.value
+                            ? parseFloat(x.value)
+                            : 0;
                     }
                 });
                 setBoardData(data);
+                console.log("total", total);
             } else {
                 setListData(deals.data);
                 console.log("wew", deals.data);
@@ -472,6 +521,7 @@ const Deal = () => {
                         style={{
                             marginTop: 10,
                             float: "right",
+                            cursor: "pointer",
                         }}
                     >
                         <span
@@ -481,8 +531,15 @@ const Deal = () => {
                                 border: " 1px solid #e5e5e5",
                                 borderRadius: "53%",
                             }}
+                            title="click to call"
                         >
-                            <PhoneOutlined />
+                            <Dropdown
+                                menu={{ items: phone }}
+                                placement="bottomLeft"
+                                trigger={["click"]}
+                            >
+                                <PhoneOutlined />
+                            </Dropdown>
                         </span>
                         <span
                             style={{
@@ -491,6 +548,7 @@ const Deal = () => {
                                 border: " 1px solid #e5e5e5",
                                 borderRadius: "53%",
                             }}
+                            title="send email"
                         >
                             <MailOutlined />
                         </span>
