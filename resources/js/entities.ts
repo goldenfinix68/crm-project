@@ -28,14 +28,33 @@ export type TText = {
     sender: string;
 };
 
+export type TDeal = {
+    id?: string;
+    title: string;
+    contactId?: string;
+    owner: string;
+    estimated_close_date: string;
+    value?: string;
+    currency?: string;
+    pipeline?: string;
+    source?: string;
+    stage?: string;
+    priority?: string;
+    status?: string;
+    details?: string;
+    tags?: string;
+    sort?: string;
+};
+
 export type TWallData = {
     date: string;
     day: string;
     month: string;
     year: string;
-    type: "call" | "text" | "note";
+    type: "call" | "text" | "note" | "deal";
     note?: TNote;
     text?: TText;
+    deal?: TDeal;
 };
 
 export type TContact = {

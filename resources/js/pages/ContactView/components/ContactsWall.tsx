@@ -16,6 +16,7 @@ import {
     Breadcrumb,
     Button,
     Card,
+    Empty,
     Menu,
     Popover,
     Space,
@@ -30,77 +31,90 @@ import { TNote, TWallData } from "../../../entities";
 
 const ContactsWall = () => {
     const { contact } = useContext(ContactContext);
+    const [showing, setShowing] = React.useState("");
+    const filteredData = contact.wall?.filter((data) =>
+        data.type.includes(showing)
+    );
     const items = [
         {
             title: "Showing: ",
         },
         {
-            title: <a href="">All</a>,
+            title: <a onClick={() => setShowing("")}>All</a>,
         },
         {
-            title: <a href="">Activities</a>,
+            title: <a>Activities</a>,
         },
         {
-            title: <a href="">Deals</a>,
+            title: <a onClick={() => setShowing("deal")}>Deals</a>,
         },
         {
-            title: <a href="">Notes</a>,
+            title: <a onClick={() => setShowing("note")}>Notes</a>,
         },
         {
-            title: <a href="">Emails</a>,
+            title: <a>Emails</a>,
         },
         {
-            title: <a href="">Files</a>,
+            title: <a>Files</a>,
         },
         {
-            title: <a href="">Texts</a>,
+            title: <a onClick={() => setShowing("text")}>Texts</a>,
         },
         {
-            title: <a href="">Updates</a>,
+            title: <a>Files</a>,
         },
     ];
+
+    const feedBox = (data: TWallData) => {
+        if (data.type === "note") {
+            return <NoteBox data={data} />;
+        } else if (data.type === "text") {
+            return <TextBox data={data} />;
+        } else if (data.type === "deal") {
+            return <DealBox data={data} />;
+        } else {
+            return <></>;
+        }
+    };
 
     return (
         <Space direction="vertical" style={{ width: "100%" }} size={"large"}>
             <Breadcrumb separator={<span>&nbsp;</span>} items={items} />
-            {contact?.wall?.map((data, index) => {
-                const monthYear = data.month + " " + data.year;
+            {filteredData?.length ? (
+                filteredData.map((data, index) => {
+                    const monthYear = data.month + " " + data.year;
 
-                // Check if it's the first item or the monthYear has changed
-                if (index !== 0) {
-                    const prevData = contact.wall![index - 1];
-                    const prevMonthYear = prevData.month + " " + prevData.year;
+                    // Check if it's the first item or the monthYear has changed
+                    if (index !== 0) {
+                        const prevData = contact.wall![index - 1];
+                        const prevMonthYear =
+                            prevData.month + " " + prevData.year;
 
-                    // Use a ternary operator directly in the JSX to conditionally render the header
-                    return (
-                        <div key={index}>
-                            {monthYear !== prevMonthYear && (
+                        // Use a ternary operator directly in the JSX to conditionally render the header
+                        return (
+                            <div key={index}>
+                                {monthYear !== prevMonthYear && (
+                                    <Typography.Text>
+                                        {monthYear}
+                                    </Typography.Text>
+                                )}
+                                {feedBox(data)}
+                            </div>
+                        );
+                    } else {
+                        // For the first item, render the header unconditionally
+                        return (
+                            <div key={index}>
                                 <Typography.Text>{monthYear}</Typography.Text>
-                            )}
-                            {data.type === "note" ? (
-                                <NoteBox data={data} />
-                            ) : null}
-                            {data.type === "text" ? (
-                                <TextBox data={data} />
-                            ) : null}
-                        </div>
-                    );
-                } else {
-                    // For the first item, render the header unconditionally
-                    return (
-                        <div key={index}>
-                            <Typography.Text>{monthYear}</Typography.Text>
-                            {data.type === "note" ? (
-                                <NoteBox data={data} />
-                            ) : null}
-                            {data.type === "text" ? (
-                                <TextBox data={data} />
-                            ) : null}
-                        </div>
-                    );
-                }
-            })}
-            <CallBox />
+                                {feedBox(data)}
+                            </div>
+                        );
+                    }
+                })
+            ) : (
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+            )}
+            {/* <CallBox /> */}
         </Space>
     );
 };
@@ -213,6 +227,31 @@ const TextBox = ({ data }: { data: TWallData }) => {
                 </Space>
                 <Typography.Text>{data.text?.message}</Typography.Text>
             </Space>
+        </Card>
+    );
+};
+
+const DealBox = ({ data }: { data: TWallData }) => {
+    return (
+        <Card
+            title={
+                <Typography.Text>
+                    <Avatar
+                        style={{
+                            backgroundColor: "#C0CA33",
+                            verticalAlign: "middle",
+                        }}
+                        size={20}
+                    >
+                        J
+                    </Avatar>{" "}
+                    {`Deal created - by you`}
+                </Typography.Text>
+            }
+            bordered={false}
+            extra={data.month.substring(0, 3) + " " + data.day}
+        >
+            <Button type="link">{data.deal?.title}</Button>
         </Card>
     );
 };

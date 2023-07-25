@@ -161,7 +161,7 @@ const ActionMenu = () => {
                 isModalOpenAdd={dealModalOpen}
                 handleOkAdd={() => {
                     setDealModalOpen(false);
-                    queryClient.invalidateQueries("useGetContact");
+                    queryClient.invalidateQueries("getContact");
                 }}
                 handleCancelAdd={() => setDealModalOpen(false)}
             />
