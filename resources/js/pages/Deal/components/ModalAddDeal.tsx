@@ -42,7 +42,7 @@ interface Props {
     isModalOpenAdd: boolean;
     handleOkAdd: () => void;
     handleCancelAdd: () => void;
-    showModalAddDealValue: string;
+    showModalAddDealValue?: string;
 }
 
 const ModalAddDeal = ({

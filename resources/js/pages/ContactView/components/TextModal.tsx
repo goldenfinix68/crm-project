@@ -21,6 +21,7 @@ import { CloseOutlined } from "@ant-design/icons";
 import { useMutation } from "react-query";
 import { sendTextMutation } from "../../../api/mutation/useTextMutation";
 import ContactContext from "../context";
+import queryClient from "../../../queryClient";
 interface Props {
     isModalOpen: boolean;
     closeModal: () => void;
@@ -36,7 +37,7 @@ const TextModal = ({ isModalOpen, closeModal }: Props) => {
 
     const sendText = useMutation(sendTextMutation, {
         onSuccess: () => {
-            // queryClient.invalidateQueries("contactTypesAll");
+            queryClient.invalidateQueries("getContact");
             resetFields();
         },
     });
@@ -148,6 +149,7 @@ const TextModal = ({ isModalOpen, closeModal }: Props) => {
                                 form.submit();
                             })
                         }
+                        loading={sendText.isLoading}
                     >
                         Send
                     </Button>

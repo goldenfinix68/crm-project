@@ -10,6 +10,7 @@ class Note extends Model
 {
     use HasFactory, SoftDeletes;
     
+    
     protected $fillable = [
         'contactId',
         'notes',

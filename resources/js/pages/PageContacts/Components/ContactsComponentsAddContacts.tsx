@@ -521,13 +521,12 @@ const ContactsComponentsAddContacts = ({
                             <Col md={12} xs={12}>
                                 <Form.Item name="floodzone" label="Flood Zone">
                                     <Select
-                                        defaultValue="Yes"
                                         style={{ width: "100%" }}
                                         onChange={handleChangeType}
                                         options={[
-                                            { value: "Yes", label: "Yes" },
+                                            { value: 1, label: "Yes" },
                                             {
-                                                value: "No",
+                                                value: 0,
                                                 label: "No",
                                             },
                                         ]}

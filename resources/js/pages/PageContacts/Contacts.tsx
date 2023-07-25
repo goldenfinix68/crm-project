@@ -51,8 +51,10 @@ import ContactsComponentsAddContacts from "./Components/ContactsComponentsAddCon
 import ContactsComponentsFilter from "./Components/ContactsComponentsFilter";
 import ContactsComponentsManageColumn from "./Components/ContactsComponentsManageColumn";
 import { useContactsAll } from "../../api/query/contactsQuery";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { TContact } from "../../entities";
+import { deleteContactMutation } from "../../api/mutation/useContactMutation";
+import queryClient from "../../queryClient";
 
 interface DataType {
     key: React.Key;
@@ -300,7 +302,7 @@ const Contacts = () => {
         selectedRowKeys: React.Key[],
         selectedRows: TContact[]
     ) => {
-        console.log(selectedRows);
+        console.log(selectedRowKeys);
         setSelectedRows(selectedRowKeys);
 
         // setSelectionType(selectedRows);
@@ -317,6 +319,18 @@ const Contacts = () => {
         onChange: onSelectChange,
 
         // setSelectionType(selectedRows);
+    };
+
+    const deleteContact = useMutation(deleteContactMutation, {
+        onSuccess: () => {
+            console.log("success");
+            queryClient.invalidateQueries("contacts");
+            setShowDeleteButton(false);
+        },
+    });
+
+    const handleDelete = () => {
+        deleteContact.mutate({ contactId: selectedRowsData });
     };
 
     // getCheckboxProps: (record: TContact) => ({
@@ -344,9 +358,17 @@ const Contacts = () => {
                     <Typography.Text className="m-r-md">
                         {selectedRowsData?.length + " Selected"}
                     </Typography.Text>
-                    <Button type="primary" danger className="m-r-sm">
-                        Delete
-                    </Button>
+                    <Popconfirm
+                        title="Delete Contact"
+                        description="Are you sure to delete this contact?"
+                        onConfirm={() => {
+                            handleDelete();
+                        }}
+                    >
+                        <Button type="primary" danger className="m-r-sm">
+                            Delete
+                        </Button>
+                    </Popconfirm>
 
                     <Button icon={<SaveOutlined />} className="m-r-sm">
                         Update
