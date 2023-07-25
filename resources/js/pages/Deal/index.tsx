@@ -317,9 +317,7 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">
                             Comp & Qualify
-                            <div className="total-dollar">
-                                {byTotalDeals.comp_qualify}
-                            </div>
+                            <div className="total-dollar">${deals.sum.cq}</div>
                         </div>
                         <div className="arrow bottom"></div>
 
@@ -346,9 +344,7 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">
                             First Offer Given{" "}
-                            <div className="total-dollar">
-                                ${byTotalDeals.first_given}
-                            </div>
+                            <div className="total-dollar">${deals.sum.fg}</div>
                         </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
@@ -373,9 +369,7 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">
                             In Negotiation{" "}
-                            <div className="total-dollar">
-                                ${byTotalDeals.in_negoation}
-                            </div>
+                            <div className="total-dollar">${deals.sum.in}</div>
                         </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
@@ -400,9 +394,7 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">
                             Verbal Offer Accepted{" "}
-                            <div className="total-dollar">
-                                ${byTotalDeals.verbal_offer_accepted}
-                            </div>
+                            <div className="total-dollar">${deals.sum.voa}</div>
                         </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
@@ -427,9 +419,7 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">
                             Under Contract{" "}
-                            <div className="total-dollar">
-                                ${byTotalDeals.under_contract}
-                            </div>
+                            <div className="total-dollar">${deals.sum.uc}</div>
                         </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
