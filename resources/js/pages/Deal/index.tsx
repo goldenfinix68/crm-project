@@ -136,6 +136,13 @@ const Deal = () => {
         refetch();
     }, [filterPage]);
 
+    function toCurrency(number: any) {
+        return new Intl.NumberFormat("en-US", {
+            style: "decimal",
+            minimumFractionDigits: 2,
+        }).format(number);
+    }
+
     const [openFilter, setOpenFilter] = useState(false);
 
     const action: MenuProps["items"] = [
@@ -318,7 +325,9 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">
                             Comp & Qualify
-                            <div className="total-dollar">${deals.sum.cq}</div>
+                            <div className="total-dollar">
+                                ${deals && toCurrency(deals.sum.cq)}
+                            </div>
                         </div>
                         <div className="arrow bottom"></div>
 
@@ -345,7 +354,9 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">
                             First Offer Given{" "}
-                            <div className="total-dollar">${deals.sum.fg}</div>
+                            <div className="total-dollar">
+                                ${deals && toCurrency(deals.sum.fg)}
+                            </div>
                         </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
@@ -370,7 +381,9 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">
                             In Negotiation{" "}
-                            <div className="total-dollar">${deals.sum.in}</div>
+                            <div className="total-dollar">
+                                ${deals && toCurrency(deals.sum.in)}
+                            </div>
                         </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
@@ -395,7 +408,9 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">
                             Verbal Offer Accepted{" "}
-                            <div className="total-dollar">${deals.sum.voa}</div>
+                            <div className="total-dollar">
+                                ${deals && toCurrency(deals.sum.voa)}
+                            </div>
                         </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
@@ -420,7 +435,9 @@ const Deal = () => {
                         <div className="arrow top"></div>
                         <div className="content">
                             Under Contract{" "}
-                            <div className="total-dollar">${deals.sum.uc}</div>
+                            <div className="total-dollar">
+                                ${deals && toCurrency(deals.sum.uc)}
+                            </div>
                         </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
@@ -445,6 +462,7 @@ const Deal = () => {
     const [listData, setListData] = useState<TDeals[]>([]);
     useEffect(() => {
         if (deals) {
+            console.log("deals", deals.sum);
             if (listBoard != "List") {
                 const data: { lanes: Lane[] } = { ...initialBoardData }; // Clone the initial data
 
@@ -504,7 +522,7 @@ const Deal = () => {
                             color: "#9b9999",
                         }}
                     >
-                        {x.owner} - ${x.value}{" "}
+                        {x.owner} - ${toCurrency(x.value)}{" "}
                     </div>
                     <div
                         style={{
