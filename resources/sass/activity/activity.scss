@@ -162,13 +162,6 @@
             }
         }
 
-        // label,
-        // .ant-input,
-        // .ant-typography,
-        // .ant-select-selection-search-input {
-        //     color: #505f79 !important;
-        // }
-
         .col-label {
             height: 32px;
             display: flex;
@@ -193,9 +186,53 @@
             border-color: transparent !important;
             color: #000;
         }
+
+        .ant-modal-body {
+            max-height: 100vh !important;
+            overflow: hidden;
+
+            .form-left {
+                overflow-y: auto;
+                height: 100vh !important;
+            }
+        }
     }
 
     .ant-modal-footer {
         padding: 15px 13px;
+    }
+}
+
+.FullCalendarActivity {
+    .fc-scroller-liquid-absolute {
+        overflow: hidden scroll !important;
+    }
+
+    .fc-timegrid-body {
+        width: 276px !important;
+    }
+
+    table {
+        width: 276px !important;
+
+        col {
+            width: 54px !important;
+        }
+    }
+
+    .fc-scroller {
+        overflow: hidden scroll !important;
+    }
+
+    .fc-daygrid-body-unbalanced {
+        width: 276px !important;
+    }
+
+    .fc-scrollgrid-sync-table {
+        width: 276px !important;
+    }
+
+    .fc .fc-view-harness-active > .fc-view {
+        padding-bottom: 75px !important;
     }
 }

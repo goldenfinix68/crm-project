@@ -89,13 +89,26 @@ class ActivityController extends Controller
         ]);
 
         if(isset($request->tags) && count($request->tags) > 0) {
-            \App\Models\ActivityTag::where('activity_id', $data->id)->dalete();
+            \App\Models\ActivityTag::where('activity_id', $data->id)->delete();
 
             $tags = $request->tags;
             foreach ($tags as $key => $tag) {
                 \App\Models\ActivityTag::create([
                     'activity_id' => $data->id,
                     'tag' => $tag,
+                ]);
+            }
+        }
+
+        if(isset($request->invitees) && count($request->invitees) > 0) {
+            \App\Models\ActivityInvitee::where('activity_id', $data->id)->delete();
+
+            $invitees = $request->invitees;
+            foreach ($invitees as $key => $invitee) {
+                \App\Models\ActivityInvitee::create([
+                    'activity_id' => $data->id,
+                    'full_name' => $invitee,
+                    'from_id' => 0
                 ]);
             }
         }

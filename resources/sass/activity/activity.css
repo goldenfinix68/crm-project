@@ -166,6 +166,39 @@
   border-color: transparent !important;
   color: #000;
 }
+.modal-activity .ant-modal-content .ant-modal-body {
+  max-height: 100vh !important;
+  overflow: hidden;
+}
+.modal-activity .ant-modal-content .ant-modal-body .form-left {
+  overflow-y: auto;
+  height: 100vh !important;
+}
 .modal-activity .ant-modal-footer {
   padding: 15px 13px;
+}
+
+.FullCalendarActivity .fc-scroller-liquid-absolute {
+  overflow: hidden scroll !important;
+}
+.FullCalendarActivity .fc-timegrid-body {
+  width: 276px !important;
+}
+.FullCalendarActivity table {
+  width: 276px !important;
+}
+.FullCalendarActivity table col {
+  width: 54px !important;
+}
+.FullCalendarActivity .fc-scroller {
+  overflow: hidden scroll !important;
+}
+.FullCalendarActivity .fc-daygrid-body-unbalanced {
+  width: 276px !important;
+}
+.FullCalendarActivity .fc-scrollgrid-sync-table {
+  width: 276px !important;
+}
+.FullCalendarActivity .fc .fc-view-harness-active > .fc-view {
+  padding-bottom: 75px !important;
 }/*# sourceMappingURL=activity.css.map */

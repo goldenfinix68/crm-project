@@ -122,6 +122,8 @@ const ModalAddActivity = ({
         console.log("onFinish", values);
 
         addActivity.mutate(values);
+
+        handleCancelAdd();
     };
 
     const addActivity = useMutation(addActivityMutation, {
@@ -135,9 +137,13 @@ const ModalAddActivity = ({
 
     const { dataUsers, isLoadingUsers } = useUsersList();
 
-    useEffect(() => {
-        console.log("dataUsers", dataUsers);
-    }, [dataUsers]);
+    // useEffect(() => {
+    //     console.log("dataUsers", dataUsers);
+    // }, [dataUsers]);
+
+    const halderAfterClose = () => {
+        setCalendarOptions(false);
+    };
 
     return (
         <Modal
@@ -146,6 +152,7 @@ const ModalAddActivity = ({
             onOk={handleOkAdd}
             onCancel={handleCancelAdd}
             width={980}
+            afterClose={halderAfterClose}
             title={
                 <>
                     <Typography.Text> Add New Activity</Typography.Text>
@@ -154,7 +161,7 @@ const ModalAddActivity = ({
             footer={
                 <>
                     <Row gutter={12}>
-                        <Col span={12}>
+                        <Col span={12} className="text-left">
                             <Checkbox> Mark as Complete </Checkbox>
                         </Col>
                         <Col span={12}>
@@ -206,8 +213,8 @@ const ModalAddActivity = ({
                         : null,
                 }}
             >
-                <Row gutter={12}>
-                    <Col span={17} className="p-md p-t-sm">
+                <Row gutter={12} className="p-t-md">
+                    <Col span={17} className="p-md p-t-sm form-left">
                         <Form.Item
                             name={"title"}
                             rules={[validateRules.required]}
@@ -275,6 +282,7 @@ const ModalAddActivity = ({
                                     <Col span={5}>
                                         <Form.Item name="start_time">
                                             <TimePicker
+                                                minuteStep={30}
                                                 format="HH:mm A"
                                                 placeholder="Start Time"
                                             />
@@ -283,6 +291,7 @@ const ModalAddActivity = ({
                                     <Col span={5}>
                                         <Form.Item name="end_time">
                                             <TimePicker
+                                                minuteStep={30}
                                                 format="HH:mm A"
                                                 placeholder="End Time"
                                             />
@@ -366,14 +375,13 @@ const ModalAddActivity = ({
                                     <Form.Item name={"video_conferencing"}>
                                         <Select
                                             placeholder="Available video call integrations"
-                                            mode="tags"
                                             showSearch
                                         >
                                             <Select.Option
-                                                value="Call"
-                                                search="Call"
+                                                value="Zoom Meeting"
+                                                search="Zoom Meeting"
                                             >
-                                                Call
+                                                Zoom Meeting
                                             </Select.Option>
                                         </Select>
                                     </Form.Item>
@@ -614,7 +622,7 @@ const ModalAddActivity = ({
                         </Row>
                     </Col>
 
-                    <Col span={7}>
+                    <Col span={7} className="p-r-none">
                         <div className={"FullCalendarActivity"}>
                             <FullCalendar
                                 plugins={[dayGridPlugin, timeGridPlugin]}
@@ -627,6 +635,7 @@ const ModalAddActivity = ({
                                 weekends={false}
                                 events={[]}
                                 eventContent={<></>}
+                                slotDuration={"00:30:00"}
                             />
                         </div>
                     </Col>
