@@ -148,8 +148,18 @@ class ContactsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function delete_contacts(Request $request)
     {
         //
+
+        foreach($request->contactId as $id) {
+
+            $data = Contact::find($id)->delete();
+         
+        }
+            return response()->json([
+                'success' => true,
+                'data' => $data
+            ]);
     }
 }

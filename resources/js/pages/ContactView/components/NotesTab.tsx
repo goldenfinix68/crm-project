@@ -22,7 +22,7 @@ const Notestab = () => {
 
     const addNote = useMutation(addNoteMutation, {
         onSuccess: () => {
-            // queryClient.invalidateQueries("contactTypesAll");
+            queryClient.invalidateQueries("getContact");
             resetFields();
         },
     });

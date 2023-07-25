@@ -64,22 +64,43 @@ const ContactsWall = () => {
     return (
         <Space direction="vertical" style={{ width: "100%" }} size={"large"}>
             <Breadcrumb separator={<span>&nbsp;</span>} items={items} />
-            {contact?.wall?.map((data) => {
+            {contact?.wall?.map((data, index) => {
                 const monthYear = data.month + " " + data.year;
-                if (currentMonthYear != monthYear) {
-                    setCurrentMonthYear(monthYear);
-                }
-                return (
-                    <div>
-                        {currentMonthYear != monthYear ? (
-                            <Typography.Text>{monthYear}</Typography.Text>
-                        ) : null}
 
-                        {data.type == "note" ? <NoteBox data={data} /> : null}
-                    </div>
-                );
+                // Check if it's the first item or the monthYear has changed
+                if (index !== 0) {
+                    const prevData = contact.wall![index - 1];
+                    const prevMonthYear = prevData.month + " " + prevData.year;
+
+                    // Use a ternary operator directly in the JSX to conditionally render the header
+                    return (
+                        <div key={index}>
+                            {monthYear !== prevMonthYear && (
+                                <Typography.Text>{monthYear}</Typography.Text>
+                            )}
+                            {data.type === "note" ? (
+                                <NoteBox data={data} />
+                            ) : null}
+                            {data.type === "text" ? (
+                                <TextBox data={data} />
+                            ) : null}
+                        </div>
+                    );
+                } else {
+                    // For the first item, render the header unconditionally
+                    return (
+                        <div key={index}>
+                            <Typography.Text>{monthYear}</Typography.Text>
+                            {data.type === "note" ? (
+                                <NoteBox data={data} />
+                            ) : null}
+                            {data.type === "text" ? (
+                                <TextBox data={data} />
+                            ) : null}
+                        </div>
+                    );
+                }
             })}
-            <TextBox />
             <CallBox />
         </Space>
     );
@@ -163,7 +184,8 @@ const NoteBox = ({ data }: { data: TWallData }) => {
     );
 };
 
-const TextBox = () => {
+const TextBox = ({ data }: { data: TWallData }) => {
+    const isSent = data.text?.type == "sent";
     return (
         <Card
             title={
@@ -177,22 +199,20 @@ const TextBox = () => {
                     >
                         J
                     </Avatar>{" "}
-                    Text Sent by Jesse Ashley
+                    {`Text ${data.text?.type} ${isSent ? "by" : "from"} ${
+                        data.text?.sender
+                    }`}
                 </Typography.Text>
             }
             bordered={false}
-            extra="Jul 4"
+            extra={data.month.substring(0, 3) + " " + data.day}
         >
             <Space direction="vertical" size={"middle"}>
                 <Space size={"large"}>
-                    <Typography.Text>To: +1 303-952-1461</Typography.Text>
-                    <Typography.Text>From: +1 440-781-6916</Typography.Text>
+                    <Typography.Text>To: {data.text?.to}</Typography.Text>
+                    <Typography.Text>From: {data.text?.from}</Typography.Text>
                 </Space>
-                <Typography.Text>
-                    Hi Jesse. Sorry didn't get back sooner. I'm out of town
-                    until tomorrow. I would love to help you out. I will reach
-                    out tomorrow. Thanks Anita
-                </Typography.Text>
+                <Typography.Text>{data.text?.message}</Typography.Text>
             </Space>
         </Card>
     );
