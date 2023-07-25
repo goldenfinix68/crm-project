@@ -25,6 +25,7 @@ import "../sass/activity/activity.css";
 import "/node_modules/react-grid-layout/css/styles.css";
 import "/node_modules/react-resizable/css/styles.css";
 import "../sass/contacts/contacts.css";
+import "../sass/deals/deals.css";
 
 // Pages
 import Welcome from "./pages/Welcome";

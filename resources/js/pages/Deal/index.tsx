@@ -73,6 +73,13 @@ interface TDeals {
     status: string;
     owner: string;
 }
+interface Bytotal {
+    comp_qualify: number;
+    first_given: number;
+    in_negoation: number;
+    verbal_offer_accepted: number;
+    under_contract: number;
+}
 const Deal = () => {
     const queryClient = useQueryClient();
     const [filterPage, setFilterPage] = useState({
@@ -85,6 +92,13 @@ const Deal = () => {
 
     const { deals, isLoading, refetch } = useDealsAll(filterPage);
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
+    const [byTotalDeals, setByTotalDeals] = useState<Bytotal>({
+        comp_qualify: 0,
+        first_given: 0,
+        in_negoation: 0,
+        verbal_offer_accepted: 0,
+        under_contract: 0,
+    });
     const showModalAdd = () => {
         setIsModalOpenAdd(true);
     };
@@ -190,6 +204,21 @@ const Deal = () => {
         },
     ];
 
+    const phone: MenuProps["items"] = [
+        {
+            key: "1",
+            label: <div>Call Via Browser</div>,
+        },
+        {
+            key: "2",
+            label: <div>Call Via Phone</div>,
+        },
+        {
+            key: "3",
+            label: <div>Send Text</div>,
+        },
+    ];
+
     const activities_type = (
         <Card>
             <Search
@@ -286,8 +315,14 @@ const Deal = () => {
                 title: (
                     <div className="item-deals-header">
                         <div className="arrow top"></div>
-                        <div className="content">Comp & Qualify</div>
+                        <div className="content">
+                            Comp & Qualify
+                            <div className="total-dollar">
+                                {byTotalDeals.comp_qualify}
+                            </div>
+                        </div>
                         <div className="arrow bottom"></div>
+
                         <span className="add-deals">
                             <PlusSquareOutlined
                                 onClick={() =>
@@ -309,7 +344,12 @@ const Deal = () => {
                 title: (
                     <div className="item-deals-header">
                         <div className="arrow top"></div>
-                        <div className="content">First Offer Given</div>
+                        <div className="content">
+                            First Offer Given{" "}
+                            <div className="total-dollar">
+                                ${byTotalDeals.first_given}
+                            </div>
+                        </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
                             <PlusSquareOutlined
@@ -331,7 +371,12 @@ const Deal = () => {
                 title: (
                     <div className="item-deals-header">
                         <div className="arrow top"></div>
-                        <div className="content">In Negotiation</div>
+                        <div className="content">
+                            In Negotiation{" "}
+                            <div className="total-dollar">
+                                ${byTotalDeals.in_negoation}
+                            </div>
+                        </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
                             <PlusSquareOutlined
@@ -353,7 +398,12 @@ const Deal = () => {
                 title: (
                     <div className="item-deals-header">
                         <div className="arrow top"></div>
-                        <div className="content">Verbal Offer Accepted</div>
+                        <div className="content">
+                            Verbal Offer Accepted{" "}
+                            <div className="total-dollar">
+                                ${byTotalDeals.verbal_offer_accepted}
+                            </div>
+                        </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
                             <PlusSquareOutlined
@@ -375,7 +425,12 @@ const Deal = () => {
                 title: (
                     <div className="item-deals-header">
                         <div className="arrow top"></div>
-                        <div className="content">Under Contract</div>
+                        <div className="content">
+                            Under Contract{" "}
+                            <div className="total-dollar">
+                                ${byTotalDeals.under_contract}
+                            </div>
+                        </div>
                         <div className="arrow bottom"></div>
                         <span className="add-deals">
                             <PlusSquareOutlined
@@ -401,6 +456,7 @@ const Deal = () => {
         if (deals) {
             if (listBoard != "List") {
                 const data: { lanes: Lane[] } = { ...initialBoardData }; // Clone the initial data
+
                 deals.data.forEach((x: any, key: any) => {
                     if (x.stage == "Comp & Qualify") {
                         data.lanes[0].cards.push({
@@ -472,6 +528,7 @@ const Deal = () => {
                         style={{
                             marginTop: 10,
                             float: "right",
+                            cursor: "pointer",
                         }}
                     >
                         <span
@@ -481,8 +538,15 @@ const Deal = () => {
                                 border: " 1px solid #e5e5e5",
                                 borderRadius: "53%",
                             }}
+                            title="click to call"
                         >
-                            <PhoneOutlined />
+                            <Dropdown
+                                menu={{ items: phone }}
+                                placement="bottomLeft"
+                                trigger={["click"]}
+                            >
+                                <PhoneOutlined />
+                            </Dropdown>
                         </span>
                         <span
                             style={{
@@ -491,6 +555,7 @@ const Deal = () => {
                                 border: " 1px solid #e5e5e5",
                                 borderRadius: "53%",
                             }}
+                            title="send email"
                         >
                             <MailOutlined />
                         </span>
@@ -512,12 +577,22 @@ const Deal = () => {
 
     const mutation = useMutation(useDealUpdateBoardMutation, {
         onSuccess: (res) => {
-            console.log(res);
+            console.log("wew", res);
         },
     });
 
     const onDataChangeBoard = (newData: any) => {
-        mutation.mutate(newData);
+        const new_data: { id: number; laneId: string }[] = [];
+        newData.lanes.forEach((element: any) => {
+            element.cards.forEach((cards: any) => {
+                new_data.push({
+                    id: cards.id,
+                    laneId: cards.laneId,
+                });
+            });
+        });
+
+        mutation.mutate({ lanes: new_data });
     };
 
     const onChangeListBoard = (e: any) => {
