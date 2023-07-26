@@ -110,6 +110,7 @@ const Deal = () => {
 
     const handleOkAdd = () => {
         setIsModalOpenAdd(false);
+        queryClient.invalidateQueries("deals");
     };
 
     const handleCancelAdd = () => {
@@ -134,6 +135,13 @@ const Deal = () => {
     useEffect(() => {
         refetch();
     }, [filterPage]);
+
+    function toCurrency(number: any) {
+        return new Intl.NumberFormat("en-US", {
+            style: "decimal",
+            minimumFractionDigits: 2,
+        }).format(number);
+    }
 
     const [openFilter, setOpenFilter] = useState(false);
 
@@ -318,7 +326,7 @@ const Deal = () => {
                         <div className="content">
                             Comp & Qualify
                             <div className="total-dollar">
-                                {byTotalDeals.comp_qualify}
+                                ${deals && toCurrency(deals.sum.cq)}
                             </div>
                         </div>
                         <div className="arrow bottom"></div>
@@ -347,7 +355,7 @@ const Deal = () => {
                         <div className="content">
                             First Offer Given{" "}
                             <div className="total-dollar">
-                                ${byTotalDeals.first_given}
+                                ${deals && toCurrency(deals.sum.fg)}
                             </div>
                         </div>
                         <div className="arrow bottom"></div>
@@ -374,7 +382,7 @@ const Deal = () => {
                         <div className="content">
                             In Negotiation{" "}
                             <div className="total-dollar">
-                                ${byTotalDeals.in_negoation}
+                                ${deals && toCurrency(deals.sum.in)}
                             </div>
                         </div>
                         <div className="arrow bottom"></div>
@@ -401,7 +409,7 @@ const Deal = () => {
                         <div className="content">
                             Verbal Offer Accepted{" "}
                             <div className="total-dollar">
-                                ${byTotalDeals.verbal_offer_accepted}
+                                ${deals && toCurrency(deals.sum.voa)}
                             </div>
                         </div>
                         <div className="arrow bottom"></div>
@@ -428,7 +436,7 @@ const Deal = () => {
                         <div className="content">
                             Under Contract{" "}
                             <div className="total-dollar">
-                                ${byTotalDeals.under_contract}
+                                ${deals && toCurrency(deals.sum.uc)}
                             </div>
                         </div>
                         <div className="arrow bottom"></div>
@@ -454,6 +462,7 @@ const Deal = () => {
     const [listData, setListData] = useState<TDeals[]>([]);
     useEffect(() => {
         if (deals) {
+            console.log("deals", deals.sum);
             if (listBoard != "List") {
                 const data: { lanes: Lane[] } = { ...initialBoardData }; // Clone the initial data
 
@@ -513,7 +522,7 @@ const Deal = () => {
                             color: "#9b9999",
                         }}
                     >
-                        {x.owner} - ${x.value}{" "}
+                        {x.owner} - ${toCurrency(x.value)}{" "}
                     </div>
                     <div
                         style={{
@@ -696,15 +705,23 @@ const Deal = () => {
                         <div>
                             <span style={{ marginRight: 15 }}>
                                 {" "}
-                                # of Deals: <b>$0</b>
+                                # of Deals: <b>{deals && deals.sum.count}</b>
                             </span>
                             <span style={{ marginRight: 15 }}>
                                 {" "}
-                                Pipeline Value: <b>$0</b>
+                                Pipeline Value:{" "}
+                                <b>
+                                    {deals &&
+                                        "$" + toCurrency(deals.sum.sum_upp)}
+                                </b>
                             </span>
                             <span>
                                 {" "}
-                                Forecase Value: <b>$0</b>
+                                Forecasted Value:{" "}
+                                <b>
+                                    {deals &&
+                                        "$" + toCurrency(deals.sum.sum_upp)}
+                                </b>
                             </span>
                         </div>
                     </div>

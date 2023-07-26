@@ -76,10 +76,19 @@ class DealsController extends Controller
         $cq = Deal::where('stage', 'Comp & Qualify')->sum('value');
         $fg = Deal::where('stage', 'First Offer Given')->sum('value');
         $in = Deal::where('stage', 'In Negotiation')->sum('value');
-        $in = Deal::where('stage', 'Verbal Offer Accepted')->sum('value');
-        $uc = Deal::where('stage', 'Verbal Offer Accepted')->sum('value');
-
-        return response()->json(['success' => true, 'data' => $data], 200);
+        $voa = Deal::where('stage', 'Verbal Offer Accepted')->sum('value');
+        $uc = Deal::where('stage', 'Under Contract')->sum('value');
+        $count = Deal::count();
+        $sum_upp = Deal::sum('value');
+        return response()->json(['success' => true, 'data' => $data, 'sum' => [
+            'cq' => $cq,
+            'fg' => $fg,
+            'in' => $in,
+            'voa' => $voa,
+            'uc' => $uc,
+            'count' => $count,
+            'sum_upp' => $sum_upp
+        ]], 200);
     }
 
     /**

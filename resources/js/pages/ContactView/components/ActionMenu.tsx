@@ -13,6 +13,7 @@ import DropdownComponent from "../../../components/DropdownComponent";
 import TextModal from "./TextModal";
 import ModalAddActivity from "../../Activity/components/ModalAddActivity";
 import ModalAddDeal from "../../Deal/components/ModalAddDeal";
+import queryClient from "../../../queryClient";
 
 const ActionMenu = () => {
     const [textModalOpen, setTextModalOpen] = React.useState(false);
@@ -158,7 +159,10 @@ const ActionMenu = () => {
             />
             <ModalAddDeal
                 isModalOpenAdd={dealModalOpen}
-                handleOkAdd={() => setDealModalOpen(false)}
+                handleOkAdd={() => {
+                    setDealModalOpen(false);
+                    queryClient.invalidateQueries("getContact");
+                }}
                 handleCancelAdd={() => setDealModalOpen(false)}
             />
         </Space>

@@ -98,6 +98,16 @@ class Contact extends Model
     {
         return $this->hasMany(\App\Models\Text::class, 'contactId', 'id');
     }
+
+    public function deals()
+    {
+        return $this->hasMany(\App\Models\Deal::class, 'contactId', 'id');
+    }
+
+    public function updates()
+    {
+        return $this->hasMany(\App\Models\ContactUpdate::class, 'contactId', 'id');
+    }
     
     public function getWallAttribute()
     {
@@ -127,7 +137,31 @@ class Contact extends Model
             ];
         });
     
-        $data = $data->merge($notes)->merge($texts);
+        $deals = $this->deals->map(function ($data) {
+            $createdAt = Carbon::parse($data->created_at);
+            return [
+                'type' => 'deal',
+                'date' => $data->created_at,
+                'day' => $createdAt->format('j'),
+                'month' => $createdAt->format('F'),
+                'year' => $createdAt->format('Y'),
+                'deal' => $data,
+            ];
+        });
+    
+        $updates = $this->updates->map(function ($data) {
+            $createdAt = Carbon::parse($data->created_at);
+            return [
+                'type' => 'update',
+                'date' => $data->created_at,
+                'day' => $createdAt->format('j'),
+                'month' => $createdAt->format('F'),
+                'year' => $createdAt->format('Y'),
+                'update' => $data,
+            ];
+        });
+    
+        $data = $data->merge($notes)->merge($texts)->merge($deals)->merge($updates);
     
         // Sort the combined data array based on the 'date' in ascending order
         $sortedData = $data->sortByDesc('date')->values()->all();

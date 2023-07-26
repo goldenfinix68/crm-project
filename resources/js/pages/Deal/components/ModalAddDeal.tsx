@@ -37,6 +37,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "antd/es/form/Form";
 import { useMutation, useQueryClient } from "react-query";
 import { useDealMutation } from "../../../api/mutation/useDealMutation";
+import { useContactsAll } from "../../../api/query/contactsQuery";
 
 interface Props {
     isModalOpenAdd: boolean;
@@ -53,6 +54,7 @@ const ModalAddDeal = ({
 }: Props) => {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
+    const { contacts, isLoading } = useContactsAll();
     const [form] = useForm();
     const onFinish = (values: any) => {
         mutation.mutate({
@@ -70,8 +72,7 @@ const ModalAddDeal = ({
                     message: "Deal",
                     description: "Successfully Added",
                 });
-                queryClient.invalidateQueries("deals");
-                handleCancelAdd();
+                handleOkAdd();
             }
         },
     });
@@ -90,7 +91,6 @@ const ModalAddDeal = ({
         <Modal
             className="modal-activity"
             open={isModalOpenAdd}
-            onOk={handleOkAdd}
             onCancel={handleCancelAdd}
             width={980}
             footer={null}
@@ -150,7 +150,7 @@ const ModalAddDeal = ({
                             <Col md={12}>
                                 <Form.Item
                                     label="Contact"
-                                    name="contact"
+                                    name="contactId"
                                     rules={[
                                         {
                                             required: true,
@@ -158,7 +158,20 @@ const ModalAddDeal = ({
                                         },
                                     ]}
                                 >
-                                    <Input placeholder="Contact" />
+                                    <Select style={{ width: "100%" }}>
+                                        {contacts?.map((contact) => {
+                                            return (
+                                                <Select.Option
+                                                    value={contact.id}
+                                                    key={contact.id}
+                                                >
+                                                    {contact.firstName +
+                                                        " " +
+                                                        contact.lastName}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                    </Select>
                                 </Form.Item>
                             </Col>
                             <Col md={12}>
@@ -213,7 +226,10 @@ const ModalAddDeal = ({
                             </Col>
                             <Col md={12}>
                                 <Form.Item label="Value" name="value">
-                                    <InputNumber placeholder="Value" />
+                                    <InputNumber
+                                        placeholder="Value"
+                                        style={{ width: "100%" }}
+                                    />
                                 </Form.Item>
                             </Col>
                             <Col md={12}>

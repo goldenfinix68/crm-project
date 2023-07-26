@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Contact;
+use App\Models\ContactUpdate;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Auth;
 
 class ContactsController extends Controller
 {
@@ -134,10 +137,23 @@ class ContactsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $from = Contact::find($id);
         $contact = Contact::updateOrCreate(
             ['id' => $id],
             $request->all()
         );
+
+        foreach($request->all() as $key => $value){
+            if($key != "id" && $key != "typeId" && $from->{$key} != $contact->{$key}){
+                $update = new ContactUpdate();
+                $update->userId = Auth::id();
+                $update->contactId = $id;
+                $update->title = Str::title(Str::camel($key)) . " Updated";
+                $update->from = $from->{$key};
+                $update->to = $contact->{$key};
+                $update->save();
+            }
+        }
 
         return response()->json($contact, 200);
     }
