@@ -56,6 +56,8 @@ import { TContact } from "../../entities";
 import { deleteContactMutation } from "../../api/mutation/useContactMutation";
 import queryClient from "../../queryClient";
 import { useNavigate } from "react-router";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPen } from "@fortawesome/free-solid-svg-icons";
 
 interface DataType {
     key: React.Key;
@@ -187,6 +189,9 @@ const Contacts = () => {
     const [isTitle, setTitle] = useState("");
 
     const [showDeleteButton, setShowDeleteButton] = useState(false);
+    const [currentActiveCell, setCurrentActiveCell] = useState("");
+    const [currentBtnActive, setCurrentBtnActive] = useState("");
+
     const [hideHeader, setHideHeader] = useState(true);
 
     const handleEdit = (record: TContact) => {
@@ -245,6 +250,119 @@ const Contacts = () => {
             title: "Email",
             dataIndex: "email",
             width: 250,
+            render: (text: string, record: TContact) => (
+                <>
+                    {record.email ? (
+                        // currentActiveCell == "email: " + record.id ? (
+                        //     <Input
+                        //         value={record.email}
+                        //         onBlur={() => {
+                        //             setCurrentActiveCell("");
+                        //             setCurrentBtnActive("");
+                        //         }}
+                        //         addonAfter={
+                        //             <div>
+                        //                 <Button>X</Button>
+                        //                 <Button>SAVE</Button>
+                        //             </div>
+                        //         }
+                        //     >
+                        //         {/* <Button type="text">cancel</Button>
+                        //         <Button type="primary">save</Button> */}
+                        //     </Input>
+                        // ) : (
+                        <div
+                            onMouseOver={() => {
+                                setCurrentBtnActive(record.id);
+                            }}
+                            onMouseLeave={() => {
+                                setCurrentBtnActive("");
+                            }}
+                        >
+                            {record.email}
+
+                            {(currentBtnActive == record.id ||
+                                currentActiveCell == "email: " + record.id) && (
+                                <Popconfirm
+                                    title=""
+                                    icon={null}
+                                    description={
+                                        <Input
+                                            value={record.email}
+                                            onBlur={() => {
+                                                setCurrentActiveCell("");
+                                                setCurrentBtnActive("");
+                                            }}
+                                        />
+                                    }
+                                    onConfirm={() => {}}
+                                    onCancel={() => {
+                                        setCurrentActiveCell("");
+                                    }}
+                                    okText="Save"
+                                    cancelText="No"
+                                >
+                                    <Button
+                                        type="text"
+                                        onClick={() => {
+                                            setCurrentActiveCell(
+                                                "email: " + record.id
+                                            );
+                                        }}
+                                    >
+                                        {<FontAwesomeIcon icon={faPen} />}
+                                    </Button>
+                                </Popconfirm>
+                            )}
+                        </div>
+                    ) : (
+                        // )
+                        (currentActiveCell != "email: " + record.id ||
+                            currentActiveCell == "email: " + record.id) && (
+                            <Popconfirm
+                                title=""
+                                icon={null}
+                                description={
+                                    <Input
+                                        value={record.email}
+                                        onBlur={() => {
+                                            setCurrentActiveCell("");
+                                            setCurrentBtnActive("");
+                                        }}
+                                    />
+                                }
+                                onConfirm={() => {}}
+                                onCancel={() => {
+                                    setCurrentActiveCell("");
+                                }}
+                                okText="Save"
+                                cancelText="No"
+                            >
+                                <Button
+                                    onMouseOver={() => {
+                                        setCurrentBtnActive(record.id);
+                                    }}
+                                    onMouseLeave={() => {
+                                        setCurrentBtnActive("");
+                                    }}
+                                    type="text"
+                                    onClick={() => {
+                                        setCurrentActiveCell(
+                                            "email: " + record.id
+                                        );
+                                    }}
+                                >
+                                    {(currentBtnActive == record.id ||
+                                        currentActiveCell ==
+                                            "email: " + record.id) && (
+                                        <FontAwesomeIcon icon={faPen} />
+                                    )}
+                                </Button>
+                            </Popconfirm>
+                        )
+                    )}
+                </>
+            ),
         },
         {
             key: "mobile",
