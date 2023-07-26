@@ -253,24 +253,6 @@ const Contacts = () => {
             render: (text: string, record: TContact) => (
                 <>
                     {record.email ? (
-                        // currentActiveCell == "email: " + record.id ? (
-                        //     <Input
-                        //         value={record.email}
-                        //         onBlur={() => {
-                        //             setCurrentActiveCell("");
-                        //             setCurrentBtnActive("");
-                        //         }}
-                        //         addonAfter={
-                        //             <div>
-                        //                 <Button>X</Button>
-                        //                 <Button>SAVE</Button>
-                        //             </div>
-                        //         }
-                        //     >
-                        //         {/* <Button type="text">cancel</Button>
-                        //         <Button type="primary">save</Button> */}
-                        //     </Input>
-                        // ) : (
                         <div
                             onMouseOver={() => {
                                 setCurrentBtnActive(record.id);
@@ -316,7 +298,6 @@ const Contacts = () => {
                             )}
                         </div>
                     ) : (
-                        // )
                         (currentActiveCell != "email: " + record.id ||
                             currentActiveCell == "email: " + record.id) && (
                             <Popconfirm
