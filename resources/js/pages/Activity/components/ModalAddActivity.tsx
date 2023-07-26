@@ -44,6 +44,7 @@ import validateRules from "../../../providers/validateRules";
 import { useMutation, useQueryClient } from "react-query";
 import { addActivityMutation } from "../../../api/mutation/useActivityMutation";
 import { useUsersList } from "../../../api/query/activityQuery";
+import { an } from "@fullcalendar/core/internal-common";
 
 dayjs.extend(customParseFormat);
 
@@ -102,7 +103,7 @@ const ModalAddActivity = ({
 
     const calendar = useRef();
 
-    const onFinish = (values: any) => {
+    const onFinish = (values: any, type: string) => {
         values = {
             ...values,
             start_date: values.start_date
@@ -112,18 +113,39 @@ const ModalAddActivity = ({
                 ? dayjs(values.end_date).format("YYYY/MM/DD")
                 : undefined,
             start_time: values.start_time
-                ? dayjs(values.start_time).format("HH:mm A")
+                ? dayjs(values.start_time).format("HH:mm")
                 : undefined,
             end_time: values.end_time
-                ? dayjs(values.end_time).format("HH:mm A")
+                ? dayjs(values.end_time).format("HH:mm")
                 : undefined,
         };
 
         console.log("onFinish", values);
 
-        addActivity.mutate(values);
+        if (type === "Save-Close") {
+            addActivity.mutate(values);
+            handleCancelAdd();
+            handleReset();
+        } else if (type === "Save-New") {
+            addActivity.mutate(values);
+            handleReset();
+        } else if (type === "Cancel") {
+            handleCancelAdd();
+            handleReset();
+        }
+    };
 
-        handleCancelAdd();
+    const handleReset = () => {
+        form.resetFields();
+        setEventCalendarData([
+            {
+                title: "",
+                start: dayjs(moment().format("YYYY/MM/DD")).format(
+                    "YYYY-MM-DD"
+                ),
+                end: dayjs(moment().format("YYYY/MM/DD")).format("YYYY-MM-DD"),
+            },
+        ]);
     };
 
     const addActivity = useMutation(addActivityMutation, {
@@ -144,6 +166,94 @@ const ModalAddActivity = ({
     const halderAfterClose = () => {
         setCalendarOptions(false);
     };
+
+    const [eventCalendarData, setEventCalendarData] = useState([
+        {
+            title: "",
+            start: dayjs(moment().format("YYYY/MM/DD")).format("YYYY-MM-DD"),
+            end: dayjs(moment().format("YYYY/MM/DD")).format("YYYY-MM-DD"),
+        },
+    ]);
+
+    const handleFieldsChange = (changedFields: any, allFields: any) => {
+        console.log("Fields", changedFields);
+        let titleString: string = "";
+
+        let data: any = [...eventCalendarData];
+
+        if (changedFields[0]?.name[0] === "title") {
+            titleString = changedFields[0]?.value;
+
+            data[0] = {
+                ...data[0],
+                title: titleString,
+            };
+        }
+
+        if (
+            changedFields[0]?.name[0] === "start_date" ||
+            changedFields[0]?.name[0] === "start_time"
+        ) {
+            let formTime: any = form.getFieldsValue().start_time
+                ? ` ${dayjs(form.getFieldsValue().start_time).format("HH:mm")}`
+                : "";
+            let dataTime: any =
+                changedFields[0]?.value &&
+                changedFields[0]?.name[0] === "start_time"
+                    ? ` ${dayjs(changedFields[0]?.value).format("HH:mm")}`
+                    : formTime;
+
+            let formDate: any = form.getFieldsValue().start_date
+                ? dayjs(form.getFieldsValue().start_date).format("YYYY-MM-DD")
+                : "";
+
+            let dataDate: any =
+                changedFields[0]?.value &&
+                changedFields[0]?.name[0] === "start_date"
+                    ? dayjs(changedFields[0]?.value).format("YYYY-MM-DD")
+                    : formDate;
+
+            data[0] = {
+                ...data[0],
+                start: `${formDate}${dataTime}`,
+            };
+        }
+
+        if (
+            changedFields[0]?.name[0] === "end_date" ||
+            changedFields[0]?.name[0] === "end_time"
+        ) {
+            let formTime: any = form.getFieldsValue().end_time
+                ? ` ${dayjs(form.getFieldsValue().end_time).format("HH:mm")}`
+                : "";
+            let dataTime: any =
+                changedFields[0]?.value &&
+                changedFields[0]?.name[0] === "end_time"
+                    ? ` ${dayjs(changedFields[0]?.value).format("HH:mm")}`
+                    : formTime;
+
+            let formDate: any = form.getFieldsValue().end_date
+                ? dayjs(form.getFieldsValue().end_date).format("YYYY-MM-DD")
+                : "";
+
+            let dataDate: any =
+                changedFields[0]?.value &&
+                changedFields[0]?.name[0] === "end_date"
+                    ? dayjs(changedFields[0]?.value).format("YYYY-MM-DD")
+                    : formDate;
+
+            data[0] = {
+                ...data[0],
+                end: formDate ? `${formDate}${dataTime}` : dataTime,
+            };
+        }
+
+        setEventCalendarData(data);
+    };
+
+    useEffect(() => {
+        console.log("eventCalendarData", eventCalendarData);
+    }, [eventCalendarData]);
 
     return (
         <Modal
@@ -171,7 +281,7 @@ const ModalAddActivity = ({
                                     onClick={() => {
                                         form.validateFields()
                                             .then((values) => {
-                                                onFinish(values);
+                                                onFinish(values, "Save-Close");
                                             })
                                             .catch((info) => {
                                                 notification.warning({
@@ -184,10 +294,32 @@ const ModalAddActivity = ({
                                 >
                                     Save
                                 </Button>
-                                <Button type="primary">
+                                <Button
+                                    type="primary"
+                                    onClick={() => {
+                                        form.validateFields()
+                                            .then((values) => {
+                                                onFinish(values, "Save-New");
+                                            })
+                                            .catch((info) => {
+                                                notification.warning({
+                                                    message: "Warning",
+                                                    description:
+                                                        "Please fill-up required fields!",
+                                                });
+                                            });
+                                    }}
+                                >
                                     Save and add other
                                 </Button>
-                                <Button>Cancel</Button>
+                                <Button
+                                    onClick={() => {
+                                        handleCancelAdd();
+                                        handleReset();
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
                             </Space>
                         </Col>
                     </Row>
@@ -212,9 +344,10 @@ const ModalAddActivity = ({
                         ? dataUsers?.user_data?.id
                         : null,
                 }}
+                onFieldsChange={handleFieldsChange}
             >
-                <Row gutter={12} className="p-t-md">
-                    <Col span={17} className="p-md p-t-sm form-left">
+                <Row gutter={12} className="">
+                    <Col span={17} className="p-md p-t-lg form-left">
                         <Form.Item
                             name={"title"}
                             rules={[validateRules.required]}
@@ -283,7 +416,7 @@ const ModalAddActivity = ({
                                         <Form.Item name="start_time">
                                             <TimePicker
                                                 minuteStep={30}
-                                                format="HH:mm A"
+                                                format="HH:mm"
                                                 placeholder="Start Time"
                                             />
                                         </Form.Item>
@@ -292,7 +425,7 @@ const ModalAddActivity = ({
                                         <Form.Item name="end_time">
                                             <TimePicker
                                                 minuteStep={30}
-                                                format="HH:mm A"
+                                                format="HH:mm"
                                                 placeholder="End Time"
                                             />
                                         </Form.Item>
@@ -572,7 +705,7 @@ const ModalAddActivity = ({
                                 <Typography.Text>Followers</Typography.Text>
                             </Col>
                             <Col span={19}>
-                                <Form.Item name={"follower_id"}>
+                                <Form.Item name={"followers"}>
                                     <Select
                                         placeholder="Add Followers"
                                         showSearch
@@ -622,7 +755,10 @@ const ModalAddActivity = ({
                         </Row>
                     </Col>
 
-                    <Col span={7} className="p-r-none">
+                    <Col
+                        span={7}
+                        className="p-l-none p-r-none p-t-lg form-right"
+                    >
                         <div className={"FullCalendarActivity"}>
                             <FullCalendar
                                 plugins={[dayGridPlugin, timeGridPlugin]}
@@ -633,9 +769,13 @@ const ModalAddActivity = ({
                                     right: "next",
                                 }}
                                 weekends={false}
-                                events={[]}
-                                eventContent={<></>}
-                                slotDuration={"00:30:00"}
+                                events={
+                                    eventCalendarData[0].title
+                                        ? eventCalendarData
+                                        : []
+                                }
+                                // eventContent={<></>}
+                                // slotDuration={"00:30:00"}
                             />
                         </div>
                     </Col>

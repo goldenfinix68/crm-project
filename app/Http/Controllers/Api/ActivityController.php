@@ -84,21 +84,10 @@ class ActivityController extends Controller
             'owner_id' => isset($request->owner_id) ? $request->owner_id : 0,
             'deal_id' => isset($request->deal_id) ? $request->deal_id : 0,
             'contact_id' => isset($request->contact_id) ? $request->contact_id : 0,
-            'follower_id' => isset($request->follower_id) ? $request->follower_id : 0,
+            // 'follower_id' => isset($request->follower_id) ? $request->follower_id : 0,
             'status' => 1,
         ]);
 
-        if(isset($request->tags) && count($request->tags) > 0) {
-            \App\Models\ActivityTag::where('activity_id', $data->id)->delete();
-
-            $tags = $request->tags;
-            foreach ($tags as $key => $tag) {
-                \App\Models\ActivityTag::create([
-                    'activity_id' => $data->id,
-                    'tag' => $tag,
-                ]);
-            }
-        }
 
         if(isset($request->invitees) && count($request->invitees) > 0) {
             \App\Models\ActivityInvitee::where('activity_id', $data->id)->delete();
@@ -113,6 +102,29 @@ class ActivityController extends Controller
             }
         }
 
+        if(isset($request->followers) && count($request->followers) > 0) {
+            \App\Models\ActivityTag::where('activity_id', $data->id)->delete();
+
+            $followers = $request->followers;
+            foreach ($followers as $key => $follower) {
+                \App\Models\ActivityFollower::create([
+                    'activity_id' => $data->id,
+                    'full_name' => $follower,
+                ]);
+            }
+        }
+
+        if(isset($request->tags) && count($request->tags) > 0) {
+            \App\Models\ActivityTag::where('activity_id', $data->id)->delete();
+
+            $tags = $request->tags;
+            foreach ($tags as $key => $tag) {
+                \App\Models\ActivityTag::create([
+                    'activity_id' => $data->id,
+                    'tag' => $tag,
+                ]);
+            }
+        }
 
 
         return response()->json([
