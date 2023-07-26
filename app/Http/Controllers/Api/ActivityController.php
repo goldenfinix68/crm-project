@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Laravel\Ui\Presets\React;
+use Illuminate\Support\Facades\DB;
 
 class ActivityController extends Controller
 {
@@ -18,6 +18,11 @@ class ActivityController extends Controller
     public function index(Request $request)
     {
         $data = new Activity();
+        $data = $data->select([
+            'activities.*',
+            DB::raw("(SELECT CONCAT(users.firstName, ' ', users.lastName)) as `name`"),
+        ]);
+        $data = $data->leftJoin('users', 'users.id', "=", "activities.owner_id");
 
         if ($request->search) {
             $data = $data->where(function ($q) use ($request) {

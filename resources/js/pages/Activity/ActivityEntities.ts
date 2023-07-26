@@ -1,3 +1,12 @@
+import React from "react";
+
 export type TActivities = {
-    id: number;
+    id: string;
+    title: string;
+    start_date: any;
+    duration: string;
+    owner: string;
+    title2: string;
+    name: string;
+    tags: any;
 };

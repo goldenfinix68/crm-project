@@ -34,6 +34,7 @@ import { DollarOutlined, UserOutlined } from "@ant-design/icons";
 import moment from "moment";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+dayjs.extend(customParseFormat);
 
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -45,8 +46,6 @@ import { useMutation, useQueryClient } from "react-query";
 import { addActivityMutation } from "../../../api/mutation/useActivityMutation";
 import { useUsersList } from "../../../api/query/activityQuery";
 import { an } from "@fullcalendar/core/internal-common";
-
-dayjs.extend(customParseFormat);
 
 interface Props {
     isModalOpenAdd: boolean;
