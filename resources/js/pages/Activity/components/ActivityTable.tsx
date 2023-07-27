@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Key, useEffect, useState } from "react";
 import {
     Button,
     Card,
@@ -11,6 +11,7 @@ import {
     Space,
     Table,
     Tabs,
+    Tag,
     Tooltip,
     Typography,
 } from "antd";
@@ -34,51 +35,13 @@ import Title from "antd/es/skeleton/Title";
 import ModalAddActivity from "./ModalAddActivity";
 import Search from "antd/es/input/Search";
 import ModalManageColumn from "./ModalManageColumn";
-interface TActivity {
-    key: React.Key;
-    title: string;
-    start_date: string;
-    duration: string;
-    owner: string;
-    title2: string;
-    name: string;
-    tags: any;
-}
 
-const columns: ColumnsType<TActivity> = [
-    {
-        title: "Title",
-        dataIndex: "title",
-        fixed: "left",
-        width: 300,
-    },
-    {
-        title: "Start Date",
-        dataIndex: "start_date",
-    },
-    {
-        title: "Duration",
-        dataIndex: "duration",
-    },
-    {
-        title: "Owner",
-        dataIndex: "owner",
-    },
-    {
-        title: "Title",
-        dataIndex: "title2",
-    },
-    {
-        title: "Name",
-        dataIndex: "name",
-    },
-    {
-        title: "Tags",
-        dataIndex: "tags",
-    },
-];
+import { TActivities } from "../ActivityEntities";
+import { activitiList } from "../../../api/query/activityQuery";
 
-const onChange: TableProps<TActivity>["onChange"] = (
+import moment from "moment";
+
+const onChange: TableProps<TActivities>["onChange"] = (
     pagination,
     filters,
     sorter,
@@ -87,7 +50,7 @@ const onChange: TableProps<TActivity>["onChange"] = (
     console.log("params", pagination, filters, sorter, extra);
 };
 
-const rowSelection: TableRowSelection<TActivity> = {
+const rowSelection: TableRowSelection<TActivities> = {
     onChange: (selectedRowKeys, selectedRows) => {
         console.log(
             `selectedRowKeys: ${selectedRowKeys}`,
@@ -166,7 +129,7 @@ const activities_type = (
     </Card>
 );
 
-const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
+const ActivityTable = () => {
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
     const showModalAdd = () => {
         setIsModalOpenAdd(true);
@@ -182,6 +145,73 @@ const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
 
     const [isModalManageColumnOpen, setIsModalManageColumnOpen] =
         useState(false);
+
+    const { dataSource, isLoadingUsers } = activitiList();
+
+    useEffect(() => {
+        console.log("dataSource", dataSource);
+    }, [dataSource]);
+
+    const columns: ColumnsType<TActivities> = [
+        {
+            title: "",
+            dataIndex: "status",
+            width: 50,
+        },
+        {
+            title: "Title",
+            dataIndex: "title",
+            width: 300,
+        },
+        {
+            title: "Start Date",
+            dataIndex: "start_date",
+            width: 300,
+            render: (text: string, record: any) => {
+                return (
+                    <>
+                        {moment(
+                            `${record.start_date}${
+                                record.start_time ? " " + record.start_time : ""
+                            }`
+                        ).format("MMM DD, YYYY hh:mm A")}
+                    </>
+                );
+            },
+        },
+        {
+            title: "Duration",
+            dataIndex: "duration",
+        },
+        {
+            title: "Owner",
+            dataIndex: "owner",
+        },
+        {
+            title: "Title",
+            dataIndex: "title2",
+        },
+        {
+            title: "Name",
+            dataIndex: "name",
+        },
+        {
+            title: "Tags",
+            dataIndex: "tags",
+            render: (text: string, record: any) => {
+                return (
+                    <>
+                        {record?.activity_tags &&
+                            record?.activity_tags.map(
+                                (item: any, key: React.Key) => {
+                                    return <Tag>{item.tag}</Tag>;
+                                }
+                            )}
+                    </>
+                );
+            },
+        },
+    ];
 
     return (
         <>
@@ -300,10 +330,11 @@ const ActivityTable = ({ activites }: { activites: Array<TActivity> }) => {
 
                     <Table
                         columns={columns}
-                        dataSource={activites}
+                        dataSource={dataSource}
                         onChange={onChange}
+                        rowKey={(record) => record.id}
                         rowSelection={{ ...rowSelection }}
-                        scroll={{ x: 1300 }}
+                        scroll={{ x: "max-content" }}
                     />
                 </Col>
             </Row>

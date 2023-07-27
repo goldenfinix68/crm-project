@@ -55,6 +55,10 @@ import { useMutation, useQuery } from "react-query";
 import { TContact } from "../../entities";
 import { deleteContactMutation } from "../../api/mutation/useContactMutation";
 import queryClient from "../../queryClient";
+import { useNavigate } from "react-router";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPen } from "@fortawesome/free-solid-svg-icons";
+import ContactsComponentsTableEditableCell from "./Components/ContactsComponentsTableEditableCell";
 
 interface DataType {
     key: React.Key;
@@ -176,6 +180,7 @@ const menu = (
 );
 
 const Contacts = () => {
+    const navigate = useNavigate();
     const [isTContact, setTContact] = useState<TContact | null>(null);
     const { contacts, isLoading } = useContactsAll();
     const [isModalOpen, setisModalOpen] = useState(false);
@@ -185,6 +190,10 @@ const Contacts = () => {
     const [isTitle, setTitle] = useState("");
 
     const [showDeleteButton, setShowDeleteButton] = useState(false);
+    const [currentActiveCell, setCurrentActiveCell] = useState("");
+    const [currentBtnActive, setCurrentBtnActive] = useState("");
+    const [currentActiveType, setCurrentActiveType] = useState("");
+
     const [hideHeader, setHideHeader] = useState(true);
 
     const handleEdit = (record: TContact) => {
@@ -221,7 +230,15 @@ const Contacts = () => {
                         {record.firstName.charAt(0)}
                     </Avatar>
                     <span style={{ marginLeft: "8px" }}>
-                        {record.firstName} {record.lastName}
+                        <Button
+                            type="link"
+                            style={{ padding: 0 }}
+                            onClick={() => {
+                                navigate(`/contacts/${record.id}`);
+                            }}
+                        >
+                            {record.firstName} {record.lastName}
+                        </Button>
                     </span>
                 </>
             ),
@@ -235,24 +252,76 @@ const Contacts = () => {
             title: "Email",
             dataIndex: "email",
             width: 250,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="email"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    recordType={record.email ?? null}
+                    setCurrentActiveType={setCurrentActiveType}
+                    currentActiveType={currentActiveType}
+                />
+            ),
         },
         {
             key: "mobile",
             title: "Mobile",
             dataIndex: "mobile",
             width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="mobile"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.mobile ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
         },
         {
             key: "countryLink",
             title: "Country Link",
             dataIndex: "countryLink",
             width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="countryLink"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.countryLink ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
         },
         {
             key: "acres",
             title: "Acres",
             dataIndex: "acres",
             width: 150,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="acres"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.acres ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
         },
         {
             title: "Tags",
@@ -284,12 +353,38 @@ const Contacts = () => {
             title: "First Name",
             dataIndex: "firstName",
             width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="firstName"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.firstName ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
         },
         {
             key: "lastName",
             title: "Last Name",
             dataIndex: "lastName",
             width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="lastName"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.lastName ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
         },
     ];
 
@@ -487,6 +582,7 @@ const Contacts = () => {
             <Row>
                 <Col md={24} lg={24}>
                     <Table
+                        className="tableCell"
                         rowSelection={{
                             type: selectionType,
                             ...rowSelection,

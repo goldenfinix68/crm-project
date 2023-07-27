@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laravel React App</title>
+    <title>Speed Lead</title>
     
 </head>
 <body style="margin: 0">

@@ -1,13 +1,3 @@
-.FullCalendarActivity .fc-view-harness {
-  height: 100vh !important;
-}
-.FullCalendarActivity .fc-toolbar-title {
-  font-size: 14px !important;
-}
-.FullCalendarActivity .fc-icon {
-  font-size: 14px !important;
-}
-
 .input-title-no-bottom-only {
   border: none;
   border-bottom: 1px solid #dfe1e5;
@@ -102,6 +92,7 @@
 
 .modal-activity {
   width: 980px;
+  top: 70px;
 }
 .modal-activity .ant-modal-close {
   margin-top: -3px;
@@ -167,12 +158,46 @@
   color: #000;
 }
 .modal-activity .ant-modal-content .ant-modal-body {
-  max-height: 100vh !important;
+  max-height: 729px !important;
   overflow: hidden;
 }
 .modal-activity .ant-modal-content .ant-modal-body .form-left {
+  height: auto !important;
+  max-height: 730px !important;
   overflow-y: auto;
-  height: 100vh !important;
+}
+.modal-activity .ant-modal-content .ant-modal-body .form-right {
+  border-left: 1px solid var(--fc-border-color);
+  background-color: #ffffff;
+}
+.modal-activity .ant-modal-content .ant-modal-body .form-right .fc .fc-timegrid-divider {
+  padding: 0px;
+  border: 0px;
+}
+.modal-activity .ant-modal-content .ant-modal-body .form-right .fc .fc-daygrid-day.fc-day-today {
+  background-color: white;
+}
+.modal-activity .ant-modal-content .ant-modal-body .form-right .fc td,
+.modal-activity .ant-modal-content .ant-modal-body .form-right .fc th {
+  background: white;
+}
+.modal-activity .ant-modal-content .fc-theme-standard .fc-scrollgrid {
+  border: 1px 1px 1px 0px solid var(--fc-border-color);
+}
+.modal-activity .ant-modal-content .fc-scrollgrid thead {
+  display: none;
+}
+.modal-activity .ant-modal-content .fc-view-harness {
+  border-top: 1px solid var(--fc-border-color);
+}
+.modal-activity .ant-modal-content .fc-view-harness .fc-timegrid-slot-label {
+  border-right: 0px;
+}
+.modal-activity .ant-modal-content .fc-view-harness .fc-timegrid-slot-lane {
+  border-left: 0px;
+}
+.modal-activity .ant-modal-content .fc .fc-toolbar.fc-header-toolbar {
+  margin-bottom: 0px;
 }
 .modal-activity .ant-modal-footer {
   padding: 15px 13px;
@@ -185,7 +210,7 @@
   width: 276px !important;
 }
 .FullCalendarActivity table {
-  width: 276px !important;
+  width: 286px !important;
 }
 .FullCalendarActivity table col {
   width: 54px !important;
@@ -199,6 +224,13 @@
 .FullCalendarActivity .fc-scrollgrid-sync-table {
   width: 276px !important;
 }
-.FullCalendarActivity .fc .fc-view-harness-active > .fc-view {
-  padding-bottom: 75px !important;
+.FullCalendarActivity .fc-view-harness {
+  max-height: 645px !important;
+  height: 100vh !important;
+}
+.FullCalendarActivity .fc-toolbar-title {
+  font-size: 14px !important;
+}
+.FullCalendarActivity .fc-icon {
+  font-size: 14px !important;
 }/*# sourceMappingURL=activity.css.map */
