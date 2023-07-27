@@ -32,6 +32,7 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('/activities', 'App\Http\Controllers\Api\ActivityController');
     Route::get('/activities_users', 'App\Http\Controllers\Api\ActivityController@get_user');
     Route::get('/activities_contacts', 'App\Http\Controllers\Api\ActivityController@get_contact');
+    Route::get('/activities_deals', 'App\Http\Controllers\Api\ActivityController@get_deal');
 
     Route::get('/user', function (Request $request) {
         return $request->user();
