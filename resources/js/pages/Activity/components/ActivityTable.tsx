@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Key, useEffect, useState } from "react";
 import {
     Button,
     Card,
@@ -11,6 +11,7 @@ import {
     Space,
     Table,
     Tabs,
+    Tag,
     Tooltip,
     Typography,
 } from "antd";
@@ -153,6 +154,11 @@ const ActivityTable = () => {
 
     const columns: ColumnsType<TActivities> = [
         {
+            title: "",
+            dataIndex: "status",
+            width: 50,
+        },
+        {
             title: "Title",
             dataIndex: "title",
             width: 300,
@@ -192,6 +198,18 @@ const ActivityTable = () => {
         {
             title: "Tags",
             dataIndex: "tags",
+            render: (text: string, record: any) => {
+                return (
+                    <>
+                        {record?.activity_tags &&
+                            record?.activity_tags.map(
+                                (item: any, key: React.Key) => {
+                                    return <Tag>{item.tag}</Tag>;
+                                }
+                            )}
+                    </>
+                );
+            },
         },
     ];
 
