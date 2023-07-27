@@ -1,15 +1,4 @@
 @import "../variables/variables";
-.FullCalendarActivity {
-    .fc-view-harness {
-        height: 100vh !important;
-    }
-    .fc-toolbar-title {
-        font-size: 14px !important;
-    }
-    .fc-icon {
-        font-size: 14px !important;
-    }
-}
 
 .input-title-no-bottom-only {
     border: none;
@@ -112,6 +101,7 @@
 
 .modal-activity {
     width: 980px;
+    top: 70px;
 
     .ant-modal-close {
         margin-top: -3px;
@@ -188,13 +178,59 @@
         }
 
         .ant-modal-body {
-            max-height: 100vh !important;
+            max-height: 729px !important;
             overflow: hidden;
 
             .form-left {
+                height: auto !important;
+                max-height: 730px !important;
                 overflow-y: auto;
-                height: 100vh !important;
             }
+
+            .form-right {
+                border-left: 1px solid var(--fc-border-color);
+                background-color: #ffffff;
+
+                .fc .fc-timegrid-divider {
+                    padding: 0px;
+                    border: 0px;
+                }
+
+                .fc .fc-daygrid-day.fc-day-today {
+                    background-color: white;
+                }
+
+                .fc td,
+                .fc th {
+                    background: white;
+                }
+            }
+        }
+
+        .fc-theme-standard .fc-scrollgrid {
+            border: 1px 1px 1px 0px solid var(--fc-border-color);
+        }
+
+        .fc-scrollgrid {
+            thead {
+                display: none;
+            }
+        }
+
+        .fc-view-harness {
+            border-top: 1px solid var(--fc-border-color);
+
+            .fc-timegrid-slot-label {
+                border-right: 0px;
+            }
+
+            .fc-timegrid-slot-lane {
+                border-left: 0px;
+            }
+        }
+
+        .fc .fc-toolbar.fc-header-toolbar {
+            margin-bottom: 0px;
         }
     }
 
@@ -213,7 +249,7 @@
     }
 
     table {
-        width: 276px !important;
+        width: 286px !important;
 
         col {
             width: 54px !important;
@@ -232,7 +268,18 @@
         width: 276px !important;
     }
 
-    .fc .fc-view-harness-active > .fc-view {
-        padding-bottom: 75px !important;
+    // .fc .fc-view-harness-active > .fc-view {
+    //     padding-bottom: 80px !important;
+    // }
+
+    .fc-view-harness {
+        max-height: 645px !important;
+        height: 100vh !important;
+    }
+    .fc-toolbar-title {
+        font-size: 14px !important;
+    }
+    .fc-icon {
+        font-size: 14px !important;
     }
 }
