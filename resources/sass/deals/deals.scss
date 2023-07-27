@@ -183,7 +183,7 @@ $base: 15px;
     transform: translateY(-50%);
     // box-shadow: 0 1px 1px rgba(0, 0, 0, 1), 0 4px 14px rgba(0, 0, 0, 0.7);
     z-index: 1;
-    background-color: #ddd;
+    background-color: rgb(244, 245, 247);
     font-size: 14px;
 }
 
@@ -215,7 +215,7 @@ $base: 15px;
     height: $base * 1.5;
     top: 0;
     right: $base / 1.35 * -1;
-    background-color: #ddd;
+    background-color: rgb(244, 245, 247);
     border-top-right-radius: 5px;
     transform: scale(0.707) rotate(45deg);
     box-shadow: 1px -1px rgba(0, 0, 0, 0.25);
@@ -259,6 +259,18 @@ $base: 15px;
     }
 }
 
+.thumb-name-xs {
+    height: 24px;
+    font-size: 12px;
+    padding: 1px;
+    line-height: 22px;
+    font-weight: 700;
+    width: 24px;
+    border-radius: 24px;
+    background: #c0ca33;
+    color: white;
+    text-align: center;
+}
 // // 1000px
 // ///////////////////////
 // @media all and (max-width: 1000px) {

@@ -16,6 +16,7 @@ import {
     Collapse,
     theme,
     Input,
+    Divider,
 } from "antd";
 import type { CollapseProps } from "antd";
 import type { CSSProperties } from "react";
@@ -39,6 +40,9 @@ import {
     LikeOutlined,
     DislikeOutlined,
     CaretRightOutlined,
+    CheckCircleOutlined,
+    CalculatorOutlined,
+    CalendarOutlined,
 } from "@ant-design/icons";
 import Search from "antd/es/input/Search";
 import ModalAddDeal from "./components/ModalAddDeal";
@@ -108,7 +112,15 @@ const DealDetail = () => {
             label: "Contact",
             children: (
                 <div>
-                    <div>Bernard Sweeney</div>
+                    <div style={{ display: "flex" }}>
+                        <span className="thumb-name-xs " title="Jesse Ashley">
+                            B
+                        </span>
+                        <span style={{ fontSize: 14, marginLeft: 10 }}>
+                            {" "}
+                            Bernard Sweeney
+                        </span>
+                    </div>
                     <div>Mobile: +18044326971</div>
                     <div>Phone: +18044326971</div>
                 </div>
@@ -153,7 +165,21 @@ const DealDetail = () => {
             label: "Teamates",
             children: (
                 <div>
-                    <div>Jesse Ashley</div>
+                    <div style={{ display: "flex" }}>
+                        <span className="thumb-name-xs " title="Jesse Ashley">
+                            J
+                        </span>
+                        <span
+                            style={{
+                                fontSize: 14,
+                                marginLeft: 10,
+                                marginTop: 10,
+                            }}
+                        >
+                            {" "}
+                            Jesse Ashley
+                        </span>
+                    </div>
                     <div>
                         <Input placeholder="Search User" />
                     </div>
@@ -217,6 +243,169 @@ const DealDetail = () => {
         {
             key: "5",
             label: `File`,
+            children: `No Content`,
+        },
+    ];
+    const itemstab2: TabsProps["items"] = [
+        {
+            key: "1",
+            label: `All`,
+            children: (
+                <div>
+                    <div>Upcoming (4)</div>
+                    <Card style={{ marginTop: 20 }}>
+                        <div style={{ display: "flex" }}>
+                            <span
+                                className="thumb-name-xs "
+                                title="Jesse Ashley"
+                            >
+                                J
+                            </span>
+                            <span style={{ fontSize: 16, marginLeft: 10 }}>
+                                {" "}
+                                <b>Task</b> for Jesse Ashley
+                            </span>
+                        </div>
+                        <Divider></Divider>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                            <span>
+                                <CheckCircleOutlined style={{ fontSize: 24 }} />
+                            </span>
+                            <span style={{ fontSize: 16, marginLeft: 10 }}>
+                                {" "}
+                                assign to ACQ manager (jesse777ashley)
+                            </span>
+                        </div>
+                        <div
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                padding: 20,
+                                paddingTop: 0,
+                                paddingBottom: 0,
+                                marginTop: 10,
+                            }}
+                        >
+                            <span>
+                                <CalendarOutlined style={{ fontSize: 14 }} />
+                            </span>
+                            <span style={{ fontSize: 14, marginLeft: 10 }}>
+                                {" "}
+                                Jul 27, 2023 01:58 PM
+                            </span>
+                        </div>
+                        <div
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                padding: 20,
+                                paddingTop: 0,
+                                paddingBottom: 0,
+                            }}
+                        >
+                            <span>
+                                <UserOutlined style={{ fontSize: 14 }} />
+                            </span>
+                            <span style={{ fontSize: 14, marginLeft: 10 }}>
+                                {" "}
+                                Bernard Sweeney
+                            </span>
+                        </div>
+                        <Divider></Divider>
+                        <Input placeholder="Add your note for this activity"></Input>
+                    </Card>
+                    <Card style={{ marginTop: 20 }}>
+                        <div style={{ display: "flex" }}>
+                            <span
+                                className="thumb-name-xs "
+                                title="Jesse Ashley"
+                            >
+                                J
+                            </span>
+                            <span style={{ fontSize: 16, marginLeft: 10 }}>
+                                {" "}
+                                <b>Task</b> for Jesse Ashley
+                            </span>
+                        </div>
+                        <Divider></Divider>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                            <span>
+                                <CheckCircleOutlined style={{ fontSize: 24 }} />
+                            </span>
+                            <span style={{ fontSize: 16, marginLeft: 10 }}>
+                                {" "}
+                                assign to ACQ manager (jesse777ashley)
+                            </span>
+                        </div>
+                        <div
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                padding: 20,
+                                paddingTop: 0,
+                                paddingBottom: 0,
+                                marginTop: 10,
+                            }}
+                        >
+                            <span>
+                                <CalendarOutlined style={{ fontSize: 14 }} />
+                            </span>
+                            <span style={{ fontSize: 14, marginLeft: 10 }}>
+                                {" "}
+                                Jul 27, 2023 01:58 PM
+                            </span>
+                        </div>
+                        <div
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                padding: 20,
+                                paddingTop: 0,
+                                paddingBottom: 0,
+                            }}
+                        >
+                            <span>
+                                <UserOutlined style={{ fontSize: 14 }} />
+                            </span>
+                            <span style={{ fontSize: 14, marginLeft: 10 }}>
+                                {" "}
+                                Bernard Sweeney
+                            </span>
+                        </div>
+                        <Divider></Divider>
+                        <Input placeholder="Add your note for this activity"></Input>
+                    </Card>
+                </div>
+            ),
+        },
+        {
+            key: "2",
+            label: `Activites`,
+            children: `No Content`,
+        },
+        {
+            key: "3",
+            label: `Notes`,
+            children: `No Content`,
+        },
+        {
+            key: "4",
+            label: `Emails`,
+            children: `No Content`,
+        },
+        {
+            key: "5",
+            label: `File`,
+            children: `No Content`,
+        },
+        {
+            key: "6",
+            label: `Texts`,
+            children: `No Content`,
+        },
+        {
+            key: "7",
+            label: `Updates`,
             children: `No Content`,
         },
     ];
@@ -307,7 +496,7 @@ const DealDetail = () => {
                         <div></div>
                     </div>
 
-                    <div style={{ marginTop: 20 }}>
+                    <div style={{ marginTop: 30 }}>
                         <div className="breadcrumb">
                             <a href="#">
                                 <span className="breadcrumb__inner">
@@ -346,7 +535,7 @@ const DealDetail = () => {
                             </a>
                         </div>
                     </div>
-                    <div style={{ marginTop: 20 }}>
+                    <div style={{ marginTop: 30 }}>
                         <Row gutter={24}>
                             <Col md={6}>
                                 <div className="card-left-deal-details ">
@@ -376,10 +565,11 @@ const DealDetail = () => {
                                     />
                                 </Card>
 
-                                <div>
+                                <div style={{ marginTop: 20 }}>
                                     <Tabs
+                                        style={{ padding: 10 }}
                                         defaultActiveKey="1"
-                                        items={itemstab}
+                                        items={itemstab2}
                                         // onChange={onChange}
                                     />
                                 </div>
