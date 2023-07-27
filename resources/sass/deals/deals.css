@@ -63,16 +63,12 @@
   width: 300px !important;
 }
 
-.react-trello-board section header.jZFhJh {
+.react-trello-board section header:nth-child(1) {
   display: block;
-}
-
-.react-trello-board section .sc-gLfKCG.sc-ftDPCE {
-  position: relative;
   padding: 0;
 }
 
-.react-trello-board section div.sc-jqNall {
+.react-trello-board section div.sc-jqUWZQ {
   width: 300px !important;
   padding-right: 5px;
   padding-left: 5px;
@@ -88,11 +84,7 @@
   display: initial;
 }
 
-.react-trello-board section article header span.sc-ipUqZP {
-  display: none;
-}
-
-.react-trello-board section article header div.sc-ivuxny {
+.react-trello-board section article header span:nth-child(2) {
   display: none;
 }
 
