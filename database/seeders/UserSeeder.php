@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
                 'lastName' => 'Doe',
                 'username' => 'admin',
                 'email' => 'admin@test.com',
-                'password' => bcrypt('Admin123!'),
+                'password' => Hash::make('Admin123!'),
                 'role' => 'Super Admin',
                 'status' => 2
 
@@ -33,7 +33,7 @@ class UserSeeder extends Seeder
                     'firstName' => $row['firstName'],
                     'lastName' => $row['lastName'],
                     'email' => $row['email'],
-                    'password' => bcrypt($row['password']),
+                    'password' => Hash::make($row['password']),
                     // 'username' => $row['username'],
                     // 'role' => $row['role'],
                     // 'status' => $row['status'],
