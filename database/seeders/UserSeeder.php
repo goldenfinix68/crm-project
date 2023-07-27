@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
                 'lastName' => 'Doe',
                 'username' => 'admin',
                 'email' => 'admin@test.com',
-                'password' => 'Admin123!',
+                'password' => bcrypt('Admin123!'),
                 'role' => 'Super Admin',
                 'status' => 2
 
