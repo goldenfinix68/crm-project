@@ -10,4 +10,10 @@ class Activity extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+
+    public function activity_tags()
+    {
+        return $this->hasMany('\App\Models\ActivityTag', 'activity_id', 'id');
+    }
 }

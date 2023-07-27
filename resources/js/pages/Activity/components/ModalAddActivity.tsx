@@ -44,7 +44,10 @@ import validateRules from "../../../providers/validateRules";
 
 import { useMutation, useQueryClient } from "react-query";
 import { addActivityMutation } from "../../../api/mutation/useActivityMutation";
-import { useUsersList } from "../../../api/query/activityQuery";
+import {
+    useContactsList,
+    useUsersList,
+} from "../../../api/query/activityQuery";
 import { an } from "@fullcalendar/core/internal-common";
 
 interface Props {
@@ -157,10 +160,11 @@ const ModalAddActivity = ({
     });
 
     const { dataUsers, isLoadingUsers } = useUsersList();
+    const { dataContacts, isLoadingContacts } = useContactsList();
 
-    // useEffect(() => {
-    //     console.log("dataUsers", dataUsers);
-    // }, [dataUsers]);
+    useEffect(() => {
+        console.log("dataContacts", dataContacts);
+    }, [dataContacts]);
 
     const halderAfterClose = () => {
         setCalendarOptions(false);
@@ -674,24 +678,28 @@ const ModalAddActivity = ({
                                                 placeholder="Contact"
                                                 showSearch
                                                 suffixIcon={<UserOutlined />}
+                                                loading={isLoadingContacts}
                                             >
-                                                {optionAvailability.map(
-                                                    (item, key) => {
-                                                        return (
-                                                            <Select.Option
-                                                                key={key}
-                                                                value={
-                                                                    item.value
-                                                                }
-                                                                search={
-                                                                    item.label
-                                                                }
-                                                            >
-                                                                {item.label}
-                                                            </Select.Option>
-                                                        );
-                                                    }
-                                                )}
+                                                {dataContacts &&
+                                                    dataContacts?.data &&
+                                                    dataContacts?.data.map(
+                                                        (
+                                                            item: any,
+                                                            key: React.Key
+                                                        ) => {
+                                                            return (
+                                                                <Select.Option
+                                                                    key={key}
+                                                                    value={
+                                                                        item.id
+                                                                    }
+                                                                    search={`${item.firstName} ${item.lastName}`}
+                                                                >
+                                                                    {`${item.firstName} ${item.lastName}`}
+                                                                </Select.Option>
+                                                            );
+                                                        }
+                                                    )}
                                             </Select>
                                         </Form.Item>
                                     </Col>

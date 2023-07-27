@@ -1,7 +1,6 @@
-import React from "react";
-
 export type TActivities = {
     id: string;
+    status: any;
     title: string;
     start_date: any;
     duration: string;

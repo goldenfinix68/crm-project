@@ -18,9 +18,10 @@ class ActivityController extends Controller
     public function index(Request $request)
     {
         $data = new Activity();
+        $data = $data->with(['activity_tags']);
         $data = $data->select([
             'activities.*',
-            DB::raw("(SELECT CONCAT(users.firstName, ' ', users.lastName)) as `name`"),
+            DB::raw("(SELECT CONCAT(users.firstName, ' ', users.lastName)) as `owner`"),
         ]);
         $data = $data->leftJoin('users', 'users.id', "=", "activities.owner_id");
 
@@ -230,6 +231,15 @@ class ActivityController extends Controller
             'success' => true,
             'data' => $data,
             'user_data' => auth()->user()
+        ], 200);
+    }
+
+    public function get_contact(Request $request) {
+        $data = \App\Models\Contact::get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $data,
         ], 200);
     }
 }
