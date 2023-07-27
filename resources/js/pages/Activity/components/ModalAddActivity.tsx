@@ -39,6 +39,7 @@ dayjs.extend(customParseFormat);
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
 
 import validateRules from "../../../providers/validateRules";
 
@@ -775,7 +776,11 @@ const ModalAddActivity = ({
                     >
                         <div className={"FullCalendarActivity"}>
                             <FullCalendar
-                                plugins={[dayGridPlugin, timeGridPlugin]}
+                                plugins={[
+                                    dayGridPlugin,
+                                    timeGridPlugin,
+                                    interactionPlugin,
+                                ]}
                                 initialView="timeGridDay"
                                 headerToolbar={{
                                     left: "prev",
@@ -788,6 +793,22 @@ const ModalAddActivity = ({
                                         ? eventCalendarData
                                         : []
                                 }
+                                eventDrop={(info) => {
+                                    // Called when an event is dropped to a new date/time
+                                    console.log(
+                                        "Event dropped to:",
+                                        info.event.start
+                                    );
+                                }}
+                                eventResize={(info) => {
+                                    // Called when an event's end time is changed by resizing
+                                    console.log(
+                                        "Event resized to:",
+                                        info.event.start,
+                                        info.event.end
+                                    );
+                                }}
+
                                 // eventContent={<></>}
                                 // slotDuration={"00:30:00"}
                             />
