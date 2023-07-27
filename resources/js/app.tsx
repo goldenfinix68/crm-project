@@ -45,6 +45,7 @@ import { useLoggedInUser } from "./api/query/userQuery";
 import Dialer from "./pages/Dialer/Dialer";
 import ContactView from "./pages/ContactView";
 import LoadingComponent from "./components/LoadingComponent";
+import DealDetail from "./pages/Deal/DealDetail";
 import Texts from "./pages/Texts";
 
 const App: React.FC = () => {
@@ -128,6 +129,14 @@ const App: React.FC = () => {
                             element={
                                 <PrivateRoute>
                                     <Deal />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/deals/:id"
+                            element={
+                                <PrivateRoute>
+                                    <DealDetail />
                                 </PrivateRoute>
                             }
                         />
