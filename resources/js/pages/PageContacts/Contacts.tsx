@@ -58,6 +58,7 @@ import queryClient from "../../queryClient";
 import { useNavigate } from "react-router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
+import ContactsComponentsTableEditableCell from "./Components/ContactsComponentsTableEditableCell";
 
 interface DataType {
     key: React.Key;
@@ -191,6 +192,7 @@ const Contacts = () => {
     const [showDeleteButton, setShowDeleteButton] = useState(false);
     const [currentActiveCell, setCurrentActiveCell] = useState("");
     const [currentBtnActive, setCurrentBtnActive] = useState("");
+    const [currentActiveType, setCurrentActiveType] = useState("");
 
     const [hideHeader, setHideHeader] = useState(true);
 
@@ -251,98 +253,17 @@ const Contacts = () => {
             dataIndex: "email",
             width: 250,
             render: (text: string, record: TContact) => (
-                <>
-                    {record.email ? (
-                        <div
-                            onMouseOver={() => {
-                                setCurrentBtnActive(record.id);
-                            }}
-                            onMouseLeave={() => {
-                                setCurrentBtnActive("");
-                            }}
-                        >
-                            {record.email}
-
-                            {(currentBtnActive == record.id ||
-                                currentActiveCell == "email: " + record.id) && (
-                                <Popconfirm
-                                    title=""
-                                    icon={null}
-                                    description={
-                                        <Input
-                                            value={record.email}
-                                            onBlur={() => {
-                                                setCurrentActiveCell("");
-                                                setCurrentBtnActive("");
-                                            }}
-                                        />
-                                    }
-                                    onConfirm={() => {}}
-                                    onCancel={() => {
-                                        setCurrentActiveCell("");
-                                    }}
-                                    okText="Save"
-                                    cancelText="No"
-                                >
-                                    <Button
-                                        type="text"
-                                        onClick={() => {
-                                            setCurrentActiveCell(
-                                                "email: " + record.id
-                                            );
-                                        }}
-                                    >
-                                        {<FontAwesomeIcon icon={faPen} />}
-                                    </Button>
-                                </Popconfirm>
-                            )}
-                        </div>
-                    ) : (
-                        (currentActiveCell != "email: " + record.id ||
-                            currentActiveCell == "email: " + record.id) && (
-                            <Popconfirm
-                                title=""
-                                icon={null}
-                                description={
-                                    <Input
-                                        value={record.email}
-                                        onBlur={() => {
-                                            setCurrentActiveCell("");
-                                            setCurrentBtnActive("");
-                                        }}
-                                    />
-                                }
-                                onConfirm={() => {}}
-                                onCancel={() => {
-                                    setCurrentActiveCell("");
-                                }}
-                                okText="Save"
-                                cancelText="No"
-                            >
-                                <Button
-                                    onMouseOver={() => {
-                                        setCurrentBtnActive(record.id);
-                                    }}
-                                    onMouseLeave={() => {
-                                        setCurrentBtnActive("");
-                                    }}
-                                    type="text"
-                                    onClick={() => {
-                                        setCurrentActiveCell(
-                                            "email: " + record.id
-                                        );
-                                    }}
-                                >
-                                    {(currentBtnActive == record.id ||
-                                        currentActiveCell ==
-                                            "email: " + record.id) && (
-                                        <FontAwesomeIcon icon={faPen} />
-                                    )}
-                                </Button>
-                            </Popconfirm>
-                        )
-                    )}
-                </>
+                <ContactsComponentsTableEditableCell
+                    type="email"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    recordType={record.email ?? null}
+                    setCurrentActiveType={setCurrentActiveType}
+                    currentActiveType={currentActiveType}
+                />
             ),
         },
         {
@@ -350,18 +271,57 @@ const Contacts = () => {
             title: "Mobile",
             dataIndex: "mobile",
             width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="mobile"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.mobile ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
         },
         {
             key: "countryLink",
             title: "Country Link",
             dataIndex: "countryLink",
             width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="countryLink"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.countryLink ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
         },
         {
             key: "acres",
             title: "Acres",
             dataIndex: "acres",
             width: 150,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="acres"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.acres ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
         },
         {
             title: "Tags",
@@ -393,12 +353,38 @@ const Contacts = () => {
             title: "First Name",
             dataIndex: "firstName",
             width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="firstName"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.firstName ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
         },
         {
             key: "lastName",
             title: "Last Name",
             dataIndex: "lastName",
             width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="lastName"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.lastName ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
         },
     ];
 
@@ -596,6 +582,7 @@ const Contacts = () => {
             <Row>
                 <Col md={24} lg={24}>
                     <Table
+                        className="tableCell"
                         rowSelection={{
                             type: selectionType,
                             ...rowSelection,
