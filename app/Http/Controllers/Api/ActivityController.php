@@ -242,4 +242,13 @@ class ActivityController extends Controller
             'data' => $data,
         ], 200);
     }
+
+    public function get_deal(Request $request) {
+        $data = \App\Models\Deal::get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $data,
+        ], 200);
+    }
 }
