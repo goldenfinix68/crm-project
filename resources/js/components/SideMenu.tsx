@@ -1,13 +1,22 @@
 import React, { useState } from "react";
 import {
+    HomeOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     UploadOutlined,
     UserOutlined,
     VideoCameraOutlined,
+    CheckCircleOutlined,
+    PhoneOutlined,
+    DollarCircleOutlined,
+    MailOutlined,
+    MessageOutlined,
+    MobileOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Button, theme } from "antd";
 import { useNavigate } from "react-router-dom";
+import Deal from "../pages/Deal";
+import Navigation from "./Navigation";
 
 const { Header, Sider, Content } = Layout;
 
@@ -18,29 +27,61 @@ const SideMenu = ({ children }) => {
     } = theme.useToken();
 
     return (
-        <Layout style={{ height: "100vh" }}>
-            <Sider trigger={null} collapsible collapsed={true}>
+        <Layout style={{ minHeight: "100vh" }}>
+            <Sider
+                trigger={null}
+                collapsible
+                collapsed={true}
+                style={{
+                    backgroundColor: "#F4F5F7",
+                    borderInlineEnd: "1px solid rgba(5, 5, 5, 0.06)",
+                }}
+            >
                 <div className="demo-logo-vertical" />
                 <Menu
                     theme="light"
                     mode="inline"
                     defaultSelectedKeys={["1"]}
-                    style={{ height: "100vh", backgroundColor: "#F4F5F7" }}
+                    style={{
+                        minHeight: "100vh",
+                        backgroundColor: "#F4F5F7",
+                        border: 0,
+                    }}
                     items={[
+                        {
+                            key: "/dashboard",
+                            icon: <HomeOutlined />,
+                            label: "Dashboard",
+                        },
                         {
                             key: "/users",
                             icon: <UserOutlined />,
-                            label: "nav 1",
+                            label: "Users",
                         },
                         {
-                            key: "2",
-                            icon: <VideoCameraOutlined />,
-                            label: "nav 2",
+                            key: "/contacts",
+                            icon: <PhoneOutlined />,
+                            label: "Contacts",
                         },
                         {
-                            key: "3",
-                            icon: <UploadOutlined />,
-                            label: "nav 3",
+                            key: "/activities",
+                            icon: <CheckCircleOutlined />,
+                            label: "Activities",
+                        },
+                        {
+                            key: "/deals",
+                            icon: <DollarCircleOutlined />,
+                            label: "Deals",
+                        },
+                        {
+                            key: "/inbox",
+                            icon: <MailOutlined />,
+                            label: "Inbox",
+                        },
+                        {
+                            key: "/texts",
+                            icon: <MobileOutlined />,
+                            label: "Text",
                         },
                     ]}
                     onClick={(e) => {
@@ -49,12 +90,11 @@ const SideMenu = ({ children }) => {
                 />
             </Sider>
             <Layout>
-                <Header
-                    style={{ padding: 0, background: colorBgContainer }}
-                ></Header>
+                <Header style={{ padding: 0, background: colorBgContainer }}>
+                    <Navigation />
+                </Header>
                 <Content
                     style={{
-                        margin: "24px 16px",
                         padding: 24,
                         minHeight: 280,
                     }}

@@ -1,7 +1,21 @@
 {
+  "resources/js/app.css": {
+    "file": "assets/app-68026960.css",
+    "src": "resources/js/app.css"
+  },
   "resources/js/app.tsx": {
-    "file": "assets/app-0dc573cb.js",
+    "assets": [
+      "assets/deal-arrow-b5bb7f1a.png"
+    ],
+    "css": [
+      "assets/app-68026960.css"
+    ],
+    "file": "assets/app-81665007.js",
     "isEntry": true,
     "src": "resources/js/app.tsx"
+  },
+  "resources/js/assets/images/deal-arrow.png": {
+    "file": "assets/deal-arrow-b5bb7f1a.png",
+    "src": "resources/js/assets/images/deal-arrow.png"
   }
 }

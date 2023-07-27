@@ -1,0 +1,181 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Models\Contact;
+use App\Models\ContactUpdate;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Auth;
+
+class ContactsController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        // return Contact::with('owner')->get();
+
+        $data = Contact::select([
+            'contacts.*',
+            \DB::raw("(SELECT CONCAT(users.firstName, ' ', users.lastName)) as `owner`"),
+        ])
+        ->leftJoin('users', 'users.id', '=', 'contacts.ownerId');
+        
+        if (isset($request->search)) { 
+            $data = $data->where(function ($q) use ($request) {
+                $q->orWhere('id', 'LIKE', "%$search%");
+            });
+        }
+       
+        if ($request->sort_order != '') {
+            $data->orderBy($request->sort_field, $request->sort_order == 'ascend' ? 'asc' : 'desc');
+        } else {
+            $data->orderBy('id', 'desc');
+        }
+
+        if (isset($request->pageSize)) {
+            $data = $data->paginate($request->pageSize);
+        } else {
+            $data = $data->get();
+        }
+
+        $data = $data->map(function ($q){
+            if($q->tags){
+
+
+                $q->tags = json_decode($q->tags);
+            }
+            return $q;
+        });
+
+        // $data->data['tags'] = json_decode($data->tags);
+
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ], 200);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'firstName' => 'required',
+            'lastName' => 'required',
+        ]);
+
+        $data = $request->all();
+
+        error_log(json_encode($data));
+        if (isset($data['tags'])) {
+            $data['tags'] = json_encode($data['tags']);
+        }
+        
+
+        $contact = Contact::updateOrCreate(['id' => isset($data['id'])? $data['id'] : null],$data);
+
+        
+        return response()->json($contact, 200);
+      
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $contact = Contact::with(['type'])->find($id);
+
+        if(empty($contact)){
+            abort(404);
+        }
+
+        return response()->json($contact, 200);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $from = Contact::find($id);
+        $contact = Contact::updateOrCreate(
+            ['id' => $id],
+            $request->all()
+        );
+
+        foreach($request->all() as $key => $value){
+            if($key != "id" && $key != "typeId" && $from->{$key} != $contact->{$key}){
+                $update = new ContactUpdate();
+                $update->userId = Auth::id();
+                $update->contactId = $id;
+                $update->title = Str::title(Str::camel($key)) . " Updated";
+                $update->from = $from->{$key};
+                $update->to = $contact->{$key};
+                $update->save();
+            }
+        }
+
+        return response()->json($contact, 200);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function delete_contacts(Request $request)
+    {
+        //
+
+        foreach($request->contactId as $id) {
+
+            $data = Contact::find($id)->delete();
+         
+        }
+            return response()->json([
+                'success' => true,
+                'data' => $data
+            ]);
+    }
+}
