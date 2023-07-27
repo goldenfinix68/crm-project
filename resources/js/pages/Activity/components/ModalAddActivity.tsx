@@ -46,6 +46,7 @@ import { useMutation, useQueryClient } from "react-query";
 import { addActivityMutation } from "../../../api/mutation/useActivityMutation";
 import {
     useContactsList,
+    useDealsList,
     useUsersList,
 } from "../../../api/query/activityQuery";
 import { an } from "@fullcalendar/core/internal-common";
@@ -161,10 +162,11 @@ const ModalAddActivity = ({
 
     const { dataUsers, isLoadingUsers } = useUsersList();
     const { dataContacts, isLoadingContacts } = useContactsList();
+    const { dataDeals, isLoadingDeals } = useDealsList();
 
     useEffect(() => {
-        console.log("dataContacts", dataContacts);
-    }, [dataContacts]);
+        console.log("dataDeals", dataDeals);
+    }, [dataDeals]);
 
     const halderAfterClose = () => {
         setCalendarOptions(false);
@@ -651,24 +653,29 @@ const ModalAddActivity = ({
                                                 placeholder="Deal"
                                                 showSearch
                                                 suffixIcon={<DollarOutlined />}
+                                                loading={isLoadingDeals}
                                             >
-                                                {optionAvailability.map(
-                                                    (item, key) => {
-                                                        return (
-                                                            <Select.Option
-                                                                key={key}
-                                                                value={
-                                                                    item.value
-                                                                }
-                                                                search={
-                                                                    item.label
-                                                                }
-                                                            >
-                                                                {item.label}
-                                                            </Select.Option>
-                                                        );
-                                                    }
-                                                )}
+                                                {dataDeals &&
+                                                    dataDeals?.data.map(
+                                                        (
+                                                            item: any,
+                                                            key: React.Key
+                                                        ) => {
+                                                            return (
+                                                                <Select.Option
+                                                                    key={key}
+                                                                    value={
+                                                                        item.id
+                                                                    }
+                                                                    search={
+                                                                        item.title
+                                                                    }
+                                                                >
+                                                                    {item.title}
+                                                                </Select.Option>
+                                                            );
+                                                        }
+                                                    )}
                                             </Select>
                                         </Form.Item>
                                     </Col>

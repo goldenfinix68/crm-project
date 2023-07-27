@@ -70,3 +70,26 @@ export const useContactsList = () => {
         refetchContacts: refetch,
     };
 };
+
+export const useDealsList = () => {
+    const { data, isLoading, isError, refetch } = useQuery(
+        "dealLists",
+        async () => {
+            const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+            const response = await axios.get(`/api/activities_deals`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+
+            return response.data;
+        }
+    );
+
+    return {
+        dataDeals: data,
+        isLoadingDeals: isLoading,
+        isErrorDeals: isError,
+        refetchDeals: refetch,
+    };
+};
