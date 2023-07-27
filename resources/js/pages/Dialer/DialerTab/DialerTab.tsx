@@ -278,7 +278,7 @@ const DialerTab = () => {
                             >
                                 Call <PhoneOutlined />
                             </Button>
-                            {callNotification &&
+                            {/* {callNotification &&
                                 callNotification.type == "callUpdate" &&
                                 callNotification?.clientState == "early" && (
                                     <Button
@@ -290,7 +290,7 @@ const DialerTab = () => {
                                     >
                                         End Call <CloseOutlined />
                                     </Button>
-                                )}
+                                )} */}
                         </div>
                     </div>
                 </div>
