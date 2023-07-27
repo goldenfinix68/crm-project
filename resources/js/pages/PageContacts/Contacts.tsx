@@ -309,6 +309,19 @@ const Contacts = () => {
             title: "Acres",
             dataIndex: "acres",
             width: 150,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="acres"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.acres ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
         },
         {
             title: "Tags",
@@ -340,12 +353,38 @@ const Contacts = () => {
             title: "First Name",
             dataIndex: "firstName",
             width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="firstName"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.firstName ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
         },
         {
             key: "lastName",
             title: "Last Name",
             dataIndex: "lastName",
             width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="lastName"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.lastName ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
         },
     ];
 
@@ -543,6 +582,7 @@ const Contacts = () => {
             <Row>
                 <Col md={24} lg={24}>
                     <Table
+                        className="tableCell"
                         rowSelection={{
                             type: selectionType,
                             ...rowSelection,

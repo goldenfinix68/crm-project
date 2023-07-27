@@ -33,7 +33,7 @@ interface ContactsComponentsTableEditableCell {
     setCurrentBtnActive: any;
     currentBtnActive: string;
     currentActiveCell: string;
-    recordType: string | null;
+    recordType: any | null;
     setCurrentActiveType: any;
     currentActiveType: string;
 }
@@ -49,10 +49,44 @@ const ContactsComponentsTableEditableCell = ({
     setCurrentActiveType,
     currentActiveType,
 }: ContactsComponentsTableEditableCell) => {
+    const addContact = useMutation(addContactMutation, {
+        onSuccess: () => {
+            console.log("success");
+            queryClient.invalidateQueries("contacts");
+            setCurrentBtnActive("");
+            setCurrentActiveType("");
+            setCurrentActiveCell("");
+        },
+    });
+
+    const [updateVal, setUpdateValue] = useState(recordType);
+
+    const handleFinish = (values: TContact, updateVal: any) => {
+        // let data = {
+        //     ...values,
+        //     id: record.id,
+        //     [type]: updateVal,
+        // };
+
+        // console.log(data);
+
+        if (record) {
+            addContact.mutate({
+                ...values,
+                id: record.id,
+                [type]: updateVal,
+            });
+        }
+    };
     return (
         <>
             {record.email ? (
                 <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                    }}
                     onMouseOver={() => {
                         setCurrentBtnActive(record.id);
                         setCurrentActiveType(type);
@@ -72,14 +106,20 @@ const ContactsComponentsTableEditableCell = ({
                             icon={null}
                             description={
                                 <Input
-                                    value={recordType ?? ""}
-                                    onBlur={() => {
-                                        setCurrentActiveCell("");
+                                    value={updateVal ?? ""}
+                                    onBlur={(value) => {
+                                        //   setCurrentActiveCell("");
                                         setCurrentBtnActive("");
+                                    }}
+                                    onChange={(e) => {
+                                        console.log("value", e.target.value);
+                                        setUpdateValue(e.target.value);
                                     }}
                                 />
                             }
-                            onConfirm={() => {}}
+                            onConfirm={() => {
+                                handleFinish(record, updateVal);
+                            }}
                             onCancel={() => {
                                 setCurrentActiveCell("");
                             }}
@@ -87,6 +127,7 @@ const ContactsComponentsTableEditableCell = ({
                             cancelText="No"
                         >
                             <Button
+                                style={{}}
                                 type="text"
                                 onClick={() => {
                                     setCurrentActiveCell(
@@ -94,7 +135,7 @@ const ContactsComponentsTableEditableCell = ({
                                     );
                                 }}
                                 onBlur={() => {
-                                    setCurrentActiveCell("");
+                                    // setCurrentActiveCell("");
                                     setCurrentBtnActive("");
                                 }}
                             >
@@ -111,16 +152,22 @@ const ContactsComponentsTableEditableCell = ({
                         icon={null}
                         description={
                             <Input
-                                value={record.email}
+                                value={updateVal ?? ""}
                                 onBlur={() => {
-                                    setCurrentActiveCell("");
-                                    setCurrentBtnActive("");
+                                    // setCurrentActiveCell("");
+                                    // setCurrentBtnActive("");
+                                }}
+                                onChange={(e) => {
+                                    console.log("value", e.target.value);
+                                    setUpdateValue(e.target.value);
                                 }}
                             />
                         }
-                        onConfirm={() => {}}
+                        onConfirm={() => {
+                            handleFinish(record, updateVal);
+                        }}
                         onCancel={() => {
-                            setCurrentActiveCell("");
+                            // setCurrentActiveCell("");
                         }}
                         okText="Save"
                         cancelText="No"
@@ -131,8 +178,8 @@ const ContactsComponentsTableEditableCell = ({
                                 setCurrentActiveType(type);
                             }}
                             onMouseLeave={() => {
-                                setCurrentBtnActive("");
-                                setCurrentActiveType("");
+                                // setCurrentBtnActive("");
+                                // setCurrentActiveType("");
                             }}
                             type="text"
                             onClick={() => {
