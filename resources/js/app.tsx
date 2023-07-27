@@ -45,6 +45,7 @@ import { useLoggedInUser } from "./api/query/userQuery";
 import Dialer from "./pages/Dialer/Dialer";
 import ContactView from "./pages/ContactView";
 import LoadingComponent from "./components/LoadingComponent";
+import Texts from "./pages/Texts";
 
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
@@ -135,6 +136,14 @@ const App: React.FC = () => {
                             element={
                                 <PrivateRoute>
                                     <Inbox />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/texts"
+                            element={
+                                <PrivateRoute>
+                                    <Texts />
                                 </PrivateRoute>
                             }
                         />

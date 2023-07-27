@@ -436,7 +436,7 @@ const EditableText = ({
     form: any;
 }) => {
     const [editing, setEditing] = React.useState(false);
-    const [text, setText] = React.useState(value);
+    const [text, setText] = React.useState(value ?? "-");
     const [textBackgroundColor, setTextBackgroundColor] = React.useState("");
 
     const handleTextClick = () => {
@@ -452,6 +452,7 @@ const EditableText = ({
     };
 
     const handleInputBlur = () => {
+        setTextBackgroundColor("");
         setEditing(false);
         form.submit();
     };

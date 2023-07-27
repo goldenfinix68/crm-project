@@ -10,6 +10,8 @@ import {
     PhoneOutlined,
     DollarCircleOutlined,
     MailOutlined,
+    MessageOutlined,
+    MobileOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Button, theme } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -75,6 +77,11 @@ const SideMenu = ({ children }) => {
                             key: "/inbox",
                             icon: <MailOutlined />,
                             label: "Inbox",
+                        },
+                        {
+                            key: "/texts",
+                            icon: <MobileOutlined />,
+                            label: "Text",
                         },
                     ]}
                     onClick={(e) => {
