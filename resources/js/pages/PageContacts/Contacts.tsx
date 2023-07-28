@@ -59,6 +59,7 @@ import { useNavigate } from "react-router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import ContactsComponentsTableEditableCell from "./Components/ContactsComponentsTableEditableCell";
+import ContactsComponentsTableEditableCellTags from "./Components/ContactsComponentsTableEditableCellTags";
 
 interface DataType {
     key: React.Key;
@@ -330,17 +331,29 @@ const Contacts = () => {
             render: (text: string, record: TContact) => (
                 <>
                     {/* {record.firstName} */}
-                    {record &&
+                    {/* {record &&
                         record.tags &&
                         record.tags.length > 0 &&
                         record.tags.map((tag) => (
                             <Tag color="blue" key={tag}>
                                 {tag}
                             </Tag>
-                        ))}
+                        ))} */}
+
+                    <ContactsComponentsTableEditableCellTags
+                        type="tags"
+                        setCurrentActiveCell={setCurrentActiveCell}
+                        currentActiveCell={currentActiveCell}
+                        setCurrentBtnActive={setCurrentBtnActive}
+                        currentBtnActive={currentBtnActive}
+                        record={record}
+                        setCurrentActiveType={setCurrentActiveType}
+                        recordType={record.tags ?? null}
+                        currentActiveType={currentActiveType}
+                    />
                 </>
             ),
-            width: 150,
+            width: 250,
         },
         {
             key: "owner",

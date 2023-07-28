@@ -14,9 +14,10 @@ import {
     Divider,
     Form,
     Popconfirm,
+    Tag,
 } from "antd";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
 import { useMutation, useQueryClient } from "react-query";
@@ -26,7 +27,7 @@ import { TContact } from "../../../entities";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 
-interface ContactsComponentsTableEditableCell {
+interface ContactsComponentsTableEditableCellTags {
     record: any;
     type: string;
     setCurrentActiveCell: any;
@@ -38,7 +39,7 @@ interface ContactsComponentsTableEditableCell {
     currentActiveType: string;
 }
 
-const ContactsComponentsTableEditableCell = ({
+const ContactsComponentsTableEditableCellTags = ({
     record,
     type,
     setCurrentActiveCell,
@@ -48,7 +49,7 @@ const ContactsComponentsTableEditableCell = ({
     recordType,
     setCurrentActiveType,
     currentActiveType,
-}: ContactsComponentsTableEditableCell) => {
+}: ContactsComponentsTableEditableCellTags) => {
     const addContact = useMutation(addContactMutation, {
         onSuccess: () => {
             console.log("success");
@@ -60,6 +61,11 @@ const ContactsComponentsTableEditableCell = ({
     });
 
     const [updateVal, setUpdateValue] = useState(recordType);
+    const [clearSelect, setClearSelect] = useState<string[]>([]);
+
+    const handleModalClose = () => {
+        setClearSelect([]);
+    };
 
     const handleFinish = (values: TContact, updateVal: any) => {
         // let data = {
@@ -78,15 +84,15 @@ const ContactsComponentsTableEditableCell = ({
             });
         }
     };
-
     return (
         <>
             {recordType ? (
                 <div
                     style={{
                         display: "flex",
-                        justifyContent: "space-between",
+                        // justifyContent: "space-between",
                         alignItems: "center",
+                        // width: "250px",
                     }}
                     onMouseOver={() => {
                         setCurrentBtnActive(record.id);
@@ -97,7 +103,15 @@ const ContactsComponentsTableEditableCell = ({
                         setCurrentActiveType("");
                     }}
                 >
-                    {recordType}
+                    {/* {recordType} */}
+                    {recordType &&
+                        recordType &&
+                        recordType.length > 0 &&
+                        recordType.map((tag) => (
+                            <Tag color="blue" key={tag}>
+                                {tag}
+                            </Tag>
+                        ))}
 
                     {((currentBtnActive == record.id &&
                         currentActiveType == type) ||
@@ -106,33 +120,36 @@ const ContactsComponentsTableEditableCell = ({
                             title=""
                             icon={null}
                             description={
-                                <Input
-                                    autoFocus
-                                    value={updateVal ?? ""}
-                                    onBlur={(value) => {
-                                        setCurrentBtnActive("");
-                                    }}
-                                    onChange={(e) => {
-                                        console.log("value", e.target.value);
-                                        setUpdateValue(e.target.value);
-                                    }}
-                                />
+                                <Space style={{ width: "250px" }}>
+                                    <Select
+                                        value={clearSelect}
+                                        mode="tags"
+                                        style={{ width: "250px" }}
+                                        tokenSeparators={[","]}
+                                        onChange={(values) =>
+                                            setClearSelect(values)
+                                        }
+                                    />
+                                </Space>
                             }
                             onConfirm={() => {
                                 handleFinish(record, updateVal);
                             }}
                             onCancel={() => {
                                 setCurrentActiveCell("");
+                                setClearSelect([]);
                             }}
                             okText="Save"
                             cancelText="No"
                         >
                             <Button
+                                style={{}}
                                 type="text"
                                 onClick={() => {
                                     setCurrentActiveCell(
                                         type + ": " + record.id
                                     );
+                                    setClearSelect([]);
                                 }}
                                 onBlur={() => {
                                     setCurrentBtnActive("");
@@ -150,26 +167,25 @@ const ContactsComponentsTableEditableCell = ({
                         title=""
                         icon={null}
                         description={
-                            <Input
-                                autoFocus
-                                value={updateVal ?? ""}
-                                onBlur={() => {
-                                    setCurrentBtnActive("");
-                                }}
-                                onChange={(e) => {
-                                    console.log("value", e.target.value);
-                                    setUpdateValue(e.target.value);
-                                }}
-                                onClick={(value) => {
-                                    setCurrentBtnActive("");
-                                }}
-                            />
+                            <Space style={{ width: "250px" }}>
+                                <Select
+                                    value={clearSelect}
+                                    mode="tags"
+                                    style={{ width: "250px" }}
+                                    tokenSeparators={[","]}
+                                    onChange={(values) =>
+                                        setClearSelect(values)
+                                    }
+                                    // options={options}
+                                />
+                            </Space>
                         }
                         onConfirm={() => {
                             handleFinish(record, updateVal);
                         }}
                         onCancel={() => {
                             setCurrentActiveCell("");
+                            setClearSelect([]);
                         }}
                         okText="Save"
                         cancelText="No"
@@ -186,6 +202,7 @@ const ContactsComponentsTableEditableCell = ({
                             type="text"
                             onClick={() => {
                                 setCurrentActiveCell(type + ": " + record.id);
+                                setClearSelect([]);
                             }}
                         >
                             {((currentBtnActive == record.id &&
@@ -202,4 +219,4 @@ const ContactsComponentsTableEditableCell = ({
     );
 };
 
-export default ContactsComponentsTableEditableCell;
+export default ContactsComponentsTableEditableCellTags;
