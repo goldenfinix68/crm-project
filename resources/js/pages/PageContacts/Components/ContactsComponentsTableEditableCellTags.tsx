@@ -61,11 +61,15 @@ const ContactsComponentsTableEditableCellTags = ({
     });
 
     const [updateVal, setUpdateValue] = useState(recordType);
-    const [clearSelect, setClearSelect] = useState<string[]>([]);
+    const [clearSelect, setClearSelect] = useState<string[]>(recordType);
 
     const handleModalClose = () => {
         setClearSelect([]);
     };
+
+    useEffect(() => {
+        console.log("clearselect", clearSelect);
+    }, [clearSelect]);
 
     const handleFinish = (values: TContact, updateVal: any) => {
         // let data = {
@@ -80,7 +84,7 @@ const ContactsComponentsTableEditableCellTags = ({
             addContact.mutate({
                 ...values,
                 id: record.id,
-                [type]: updateVal,
+                [type]: clearSelect.length > 0 ? clearSelect : null,
             });
         }
     };
@@ -104,14 +108,20 @@ const ContactsComponentsTableEditableCellTags = ({
                     }}
                 >
                     {/* {recordType} */}
-                    {recordType &&
-                        recordType &&
-                        recordType.length > 0 &&
-                        recordType.map((tag) => (
-                            <Tag color="blue" key={tag}>
-                                {tag}
-                            </Tag>
-                        ))}
+                    <div className="tag-container">
+                        {recordType &&
+                            recordType &&
+                            recordType.length > 0 &&
+                            recordType.map((tag) => (
+                                <Tag
+                                    color="blue"
+                                    key={tag}
+                                    className="tag-item"
+                                >
+                                    {tag}
+                                </Tag>
+                            ))}
+                    </div>
 
                     {((currentBtnActive == record.id &&
                         currentActiveType == type) ||
@@ -120,15 +130,21 @@ const ContactsComponentsTableEditableCellTags = ({
                             title=""
                             icon={null}
                             description={
-                                <Space style={{ width: "250px" }}>
+                                <Space
+                                    style={{
+                                        width: "250px",
+                                    }}
+                                >
                                     <Select
                                         value={clearSelect}
+                                        // defaultValue={updateVal ?? []}
                                         mode="tags"
                                         style={{ width: "250px" }}
                                         tokenSeparators={[","]}
-                                        onChange={(values) =>
-                                            setClearSelect(values)
-                                        }
+                                        onChange={(values) => {
+                                            setClearSelect(values);
+                                            setUpdateValue(values);
+                                        }}
                                     />
                                 </Space>
                             }
@@ -137,7 +153,7 @@ const ContactsComponentsTableEditableCellTags = ({
                             }}
                             onCancel={() => {
                                 setCurrentActiveCell("");
-                                setClearSelect([]);
+                                setClearSelect(updateVal ?? []);
                             }}
                             okText="Save"
                             cancelText="No"
@@ -149,7 +165,7 @@ const ContactsComponentsTableEditableCellTags = ({
                                     setCurrentActiveCell(
                                         type + ": " + record.id
                                     );
-                                    setClearSelect([]);
+                                    setClearSelect(updateVal ?? []);
                                 }}
                                 onBlur={() => {
                                     setCurrentBtnActive("");
@@ -170,12 +186,14 @@ const ContactsComponentsTableEditableCellTags = ({
                             <Space style={{ width: "250px" }}>
                                 <Select
                                     value={clearSelect}
+                                    // defaultValue={updateVal ?? []}
                                     mode="tags"
                                     style={{ width: "250px" }}
                                     tokenSeparators={[","]}
-                                    onChange={(values) =>
-                                        setClearSelect(values)
-                                    }
+                                    onChange={(values) => {
+                                        setClearSelect(values);
+                                        setUpdateValue(values);
+                                    }}
                                     // options={options}
                                 />
                             </Space>
@@ -185,7 +203,7 @@ const ContactsComponentsTableEditableCellTags = ({
                         }}
                         onCancel={() => {
                             setCurrentActiveCell("");
-                            setClearSelect([]);
+                            setClearSelect(updateVal ?? []);
                         }}
                         okText="Save"
                         cancelText="No"
