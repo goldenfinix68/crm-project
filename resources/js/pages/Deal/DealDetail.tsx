@@ -308,11 +308,11 @@ const DealDetail = () => {
                                     <Col span={19}>
                                         {" "}
                                         <Form.Item
-                                            name={"title"}
+                                            name={"Title"}
                                             rules={[validateRules.required]}
                                         >
                                             <Input
-                                                placeholder=""
+                                                placeholder="title"
                                                 className=""
                                             />
                                         </Form.Item>
@@ -324,8 +324,11 @@ const DealDetail = () => {
                                         <Typography.Text>Type</Typography.Text>
                                     </Col>
                                     <Col span={19}>
-                                        <Form.Item name={"type"}>
-                                            <Select className="select-custom-width">
+                                        <Form.Item name={"Type"}>
+                                            <Select
+                                                className="select-custom-width"
+                                                placeholder="type"
+                                            >
                                                 <Select.Option value="Call">
                                                     <FontAwesomeIcon
                                                         icon={faPhoneVolume}
@@ -614,30 +617,8 @@ const DealDetail = () => {
                                         </Typography.Text>
                                     </Col>
                                     <Col span={19}>
-                                        <Form.Item name={"followers"}>
-                                            {/* <Select
-                                                placeholder="Add Followers"
-                                                showSearch
-                                                mode="multiple"
-                                            >
-                                                {optionAvailability.map(
-                                                    (item, key) => {
-                                                        return (
-                                                            <Select.Option
-                                                                key={key}
-                                                                value={
-                                                                    item.value
-                                                                }
-                                                                search={
-                                                                    item.label
-                                                                }
-                                                            >
-                                                                {item.label}
-                                                            </Select.Option>
-                                                        );
-                                                    }
-                                                )}
-                                            </Select> */}
+                                        <Form.Item name={"Followers"}>
+                                            <Input placeholder="followers"></Input>
                                         </Form.Item>
                                     </Col>
                                 </Row>
@@ -647,31 +628,9 @@ const DealDetail = () => {
                                         <Typography.Text>Tags</Typography.Text>
                                     </Col>
                                     <Col span={19}>
-                                        {/* <Form.Item name={"tags"}>
-                                            <Select
-                                                placeholder="Tags"
-                                                showSearch
-                                                mode="tags"
-                                            >
-                                                {optionAvailability.map(
-                                                    (item, key) => {
-                                                        return (
-                                                            <Select.Option
-                                                                key={key}
-                                                                value={
-                                                                    item.value
-                                                                }
-                                                                search={
-                                                                    item.label
-                                                                }
-                                                            >
-                                                                {item.label}
-                                                            </Select.Option>
-                                                        );
-                                                    }
-                                                )}
-                                            </Select>
-                                        </Form.Item> */}
+                                        <Form.Item name={"tags"}>
+                                            <Input placeholder="Tags"></Input>
+                                        </Form.Item>
                                     </Col>
                                 </Row>
                             </Col>
