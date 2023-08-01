@@ -85,7 +85,12 @@ interface Props {
 
 const DealDetail = () => {
     const { id } = useParams();
-
+    function toCurrency(number: any) {
+        return new Intl.NumberFormat("en-US", {
+            style: "decimal",
+            minimumFractionDigits: 2,
+        }).format(number);
+    }
     const { deals, isLoading, refetch } = useDealsByid(id ?? "");
     const { token } = theme.useToken();
     const getItems: (panelStyle: CSSProperties) => CollapseProps["items"] = (
@@ -461,7 +466,11 @@ const DealDetail = () => {
                             <span style={{ marginRight: 15 }}>
                                 <span>
                                     <div>Value</div>
-                                    <div>$0</div>
+                                    <div>
+                                        {" "}
+                                        {deals &&
+                                            "$" + toCurrency(deals.data.value)}
+                                    </div>
                                 </span>
                             </span>
                             <span style={{ marginRight: 15 }}>
