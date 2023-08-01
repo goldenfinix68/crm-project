@@ -39,7 +39,7 @@ class DealsController extends Controller
                     ->orWhere('last_name', 'LIKE', "%$search%")
                     ->orWhere(\DB::raw("(SELECT DATE_FORMAT(created_at, '%m/%d/%Y'))"), 'LIKE', "%$request->search%");
             }
-        });
+        })->with('owner');
 
         if ($request->pipeline) {
             $data->where('pipeline', $request->pipeline);

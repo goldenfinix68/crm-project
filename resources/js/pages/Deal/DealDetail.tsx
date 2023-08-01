@@ -17,10 +17,25 @@ import {
     theme,
     Input,
     Divider,
+    Form,
+    Select,
+    DatePicker,
+    TimePicker,
 } from "antd";
 import type { CollapseProps } from "antd";
 import type { CSSProperties } from "react";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import validateRules from "../../providers/validateRules";
+dayjs.extend(customParseFormat);
+import { faPaperPlane } from "@fortawesome/free-regular-svg-icons";
+import {
+    faList,
+    faPhoneVolume,
+    faUsers,
+    faVideo,
+} from "@fortawesome/free-solid-svg-icons";
 import type { TabsProps } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -56,6 +71,11 @@ import {
 } from "react-beautiful-dnd";
 import Board from "react-trello";
 import { useDealsAll, useDealsByid } from "../../api/query/dealQuery";
+import {
+    useContactsList,
+    useDealsList,
+    useUsersList,
+} from "../../api/query/activityQuery";
 import { useMutation, useQueryClient } from "react-query";
 import {
     useDealMutation,
@@ -63,6 +83,7 @@ import {
 } from "../../api/mutation/useDealMutation";
 import moment from "moment";
 import DealsTable from "./components/DealsTable";
+import type { SelectProps } from "antd";
 
 interface DealsById {
     title: string;
@@ -84,13 +105,26 @@ interface Props {
 }
 
 const DealDetail = () => {
+    const optionAvailability: SelectProps["options"] = [
+        {
+            label: "Busy",
+            value: "Busy",
+        },
+        {
+            label: "Free",
+            value: "Free",
+        },
+    ];
+    const [form] = Form.useForm();
     const { id } = useParams();
+
     function toCurrency(number: any) {
         return new Intl.NumberFormat("en-US", {
             style: "decimal",
             minimumFractionDigits: 2,
         }).format(number);
     }
+    const { dataUsers, isLoadingUsers } = useUsersList();
     const { deals, isLoading, refetch } = useDealsByid(id ?? "");
     const { token } = theme.useToken();
     const getItems: (panelStyle: CSSProperties) => CollapseProps["items"] = (
@@ -217,18 +251,434 @@ const DealDetail = () => {
     const itemstab: TabsProps["items"] = [
         {
             key: "1",
-            label: `Email`,
-            children: `No Content`,
-        },
-        {
-            key: "2",
             label: `Note`,
             children: `No Content`,
         },
         {
+            key: "2",
+            label: `Email`,
+            children: (
+                <div
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 20,
+                        padding: 20,
+                    }}
+                >
+                    <div>
+                        <FontAwesomeIcon
+                            icon={faPaperPlane}
+                            style={{ fontSize: 50 }}
+                        />
+                    </div>
+
+                    <div>
+                        <div style={{ fontSize: 20 }}>
+                            Configure your Email Account
+                        </div>
+                        <br></br>
+                        logging with Salesmate's two-way email sync
+                        functionality. Measure email engagement with email open
+                        and click tracking. Don't forget to use email templates
+                        for your canned responses and repetitive emails.
+                        <Button type="primary" style={{ marginTop: 20 }}>
+                            Configue email account
+                        </Button>
+                    </div>
+                </div>
+            ),
+        },
+        {
             key: "3",
             label: `Add Activity`,
-            children: `No Content`,
+            children: (
+                <div>
+                    <Form
+                        form={form}
+
+                        // onFieldsChange={handleFieldsChange}
+                    >
+                        <Row gutter={12} className="">
+                            <Col span={24} className="p-md p-t-lg form-left">
+                                <Row gutter={12}>
+                                    <Col span={5} className="col-label">
+                                        <Typography.Text>Title</Typography.Text>
+                                    </Col>
+                                    <Col span={19}>
+                                        {" "}
+                                        <Form.Item
+                                            name={"title"}
+                                            rules={[validateRules.required]}
+                                        >
+                                            <Input
+                                                placeholder=""
+                                                className=""
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+
+                                <Row gutter={12}>
+                                    <Col span={5} className="col-label">
+                                        <Typography.Text>Type</Typography.Text>
+                                    </Col>
+                                    <Col span={19}>
+                                        <Form.Item name={"type"}>
+                                            <Select className="select-custom-width">
+                                                <Select.Option value="Call">
+                                                    <FontAwesomeIcon
+                                                        icon={faPhoneVolume}
+                                                        className="font-12px m-r-xs"
+                                                    />
+                                                    Call
+                                                </Select.Option>
+                                                <Select.Option value="Task">
+                                                    <FontAwesomeIcon
+                                                        icon={faList}
+                                                        className="font-12px m-r-xs"
+                                                    />
+                                                    Task
+                                                </Select.Option>
+                                                <Select.Option value="Meeting">
+                                                    <FontAwesomeIcon
+                                                        icon={faUsers}
+                                                        className="font-12px m-r-xs"
+                                                    />
+                                                    Meeting
+                                                </Select.Option>
+                                                <Select.Option value="Demo">
+                                                    <FontAwesomeIcon
+                                                        icon={faVideo}
+                                                        className="font-12px m-r-xs"
+                                                    />
+                                                    Demo
+                                                </Select.Option>
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+
+                                <Row gutter={12}>
+                                    <Col span={5} className="col-label">
+                                        <Typography.Text>
+                                            Date & Time
+                                        </Typography.Text>
+                                    </Col>
+                                    <Col span={19}>
+                                        <Row gutter={12}>
+                                            <Col span={12}>
+                                                <Form.Item name="start_date">
+                                                    <DatePicker
+                                                        style={{
+                                                            width: "100%",
+                                                        }}
+                                                        placeholder="Start Date"
+                                                        format={"MMM, DD YYYY"}
+                                                    />
+                                                </Form.Item>
+                                            </Col>
+                                            <Col span={12}>
+                                                <Form.Item name="start_time">
+                                                    <TimePicker
+                                                        style={{
+                                                            width: "100%",
+                                                        }}
+                                                        minuteStep={30}
+                                                        format="HH:mm"
+                                                        placeholder="Start Time"
+                                                    />
+                                                </Form.Item>
+                                            </Col>
+                                            <Col span={12}>
+                                                <Form.Item name="end_time">
+                                                    <TimePicker
+                                                        style={{
+                                                            width: "100%",
+                                                        }}
+                                                        minuteStep={30}
+                                                        format="HH:mm"
+                                                        placeholder="End Time"
+                                                    />
+                                                </Form.Item>
+                                            </Col>
+                                            <Col span={12}>
+                                                <Form.Item name="end_date">
+                                                    <DatePicker
+                                                        style={{
+                                                            width: "100%",
+                                                        }}
+                                                        placeholder="End Date"
+                                                        format={"MMM, DD YYYY"}
+                                                    />
+                                                </Form.Item>
+                                            </Col>
+                                        </Row>
+                                    </Col>
+                                </Row>
+
+                                <Row gutter={12}>
+                                    <Col span={5} className="col-label">
+                                        <Typography.Text
+                                            style={{ color: "red" }}
+                                        >
+                                            *
+                                        </Typography.Text>
+                                        <Typography.Text>
+                                            Availability
+                                        </Typography.Text>
+                                    </Col>
+                                    <Col span={19}>
+                                        <Form.Item
+                                            name={"availability"}
+                                            rules={[validateRules.required]}
+                                        >
+                                            <Select
+                                                placeholder="Availability"
+                                                showSearch
+                                                className="select-custom-width"
+                                            >
+                                                {optionAvailability.map(
+                                                    (item, key) => {
+                                                        return (
+                                                            <Select.Option
+                                                                key={key}
+                                                                value={
+                                                                    item.value
+                                                                }
+                                                                search={
+                                                                    item.label
+                                                                }
+                                                            >
+                                                                {item.label}
+                                                            </Select.Option>
+                                                        );
+                                                    }
+                                                )}
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+
+                                <Row gutter={12}>
+                                    <Col
+                                        span={5}
+                                        className="col-label col-label-note"
+                                    >
+                                        <Typography.Text>
+                                            Internal Note
+                                        </Typography.Text>
+                                    </Col>
+                                    <Col span={19}>
+                                        <Form.Item name={"internal_note"}>
+                                            <Input.TextArea
+                                                rows={3}
+                                                placeholder="Add internal note"
+                                                className="no-resize"
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+
+                                <Row gutter={12}>
+                                    <Col span={5} className="col-label">
+                                        <Typography.Text>Owner</Typography.Text>
+                                    </Col>
+                                    <Col span={19}>
+                                        <Form.Item
+                                            name={"owner_id"}
+                                            rules={[validateRules.required]}
+                                        >
+                                            <Select
+                                                placeholder="Owner"
+                                                showSearch
+                                                className="select-custom-width"
+                                                loading={isLoadingUsers}
+                                            >
+                                                {dataUsers &&
+                                                    dataUsers?.data &&
+                                                    dataUsers?.data.map(
+                                                        (
+                                                            item: any,
+                                                            key: any
+                                                        ) => {
+                                                            return (
+                                                                <Select.Option
+                                                                    key={key}
+                                                                    value={
+                                                                        item.id
+                                                                    }
+                                                                    search={`${item.firstName} ${item.lastName}`}
+                                                                >
+                                                                    {`${item.firstName} ${item.lastName}`}
+                                                                </Select.Option>
+                                                            );
+                                                        }
+                                                    )}
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+
+                                {/* <Row gutter={12}>
+                                    <Col span={5} className="col-label">
+                                        <Typography.Text>
+                                            Link Records
+                                        </Typography.Text>
+                                    </Col>
+                                    <Col span={19}>
+                                        <Row gutter={12}>
+                                            <Col span={12}>
+                                                <Form.Item name={"deal_id"}>
+                                                    <Select
+                                                        placeholder="Deal"
+                                                        showSearch
+                                                        suffixIcon={
+                                                            <DollarOutlined />
+                                                        }
+                                                        loading={isLoadingDeals}
+                                                    >
+                                                        {dataDeals &&
+                                                            dataDeals?.data.map(
+                                                                (
+                                                                    item: any,
+                                                                    key: React.Key
+                                                                ) => {
+                                                                    return (
+                                                                        <Select.Option
+                                                                            key={
+                                                                                key
+                                                                            }
+                                                                            value={
+                                                                                item.id
+                                                                            }
+                                                                            search={
+                                                                                item.title
+                                                                            }
+                                                                        >
+                                                                            {
+                                                                                item.title
+                                                                            }
+                                                                        </Select.Option>
+                                                                    );
+                                                                }
+                                                            )}
+                                                    </Select>
+                                                </Form.Item>
+                                            </Col>
+                                            <Col span={12}>
+                                                <Form.Item name={"contact_id"}>
+                                                    <Select
+                                                        placeholder="Contact"
+                                                        showSearch
+                                                        suffixIcon={
+                                                            <UserOutlined />
+                                                        }
+                                                        loading={
+                                                            isLoadingContacts
+                                                        }
+                                                    >
+                                                        {dataContacts &&
+                                                            dataContacts?.data &&
+                                                            dataContacts?.data.map(
+                                                                (
+                                                                    item: any,
+                                                                    key: React.Key
+                                                                ) => {
+                                                                    return (
+                                                                        <Select.Option
+                                                                            key={
+                                                                                key
+                                                                            }
+                                                                            value={
+                                                                                item.id
+                                                                            }
+                                                                            search={`${item.firstName} ${item.lastName}`}
+                                                                        >
+                                                                            {`${item.firstName} ${item.lastName}`}
+                                                                        </Select.Option>
+                                                                    );
+                                                                }
+                                                            )}
+                                                    </Select>
+                                                </Form.Item>
+                                            </Col>
+                                        </Row>
+                                    </Col>
+                                </Row> */}
+
+                                <Row gutter={12}>
+                                    <Col span={5} className="col-label">
+                                        <Typography.Text>
+                                            Followers
+                                        </Typography.Text>
+                                    </Col>
+                                    <Col span={19}>
+                                        <Form.Item name={"followers"}>
+                                            {/* <Select
+                                                placeholder="Add Followers"
+                                                showSearch
+                                                mode="multiple"
+                                            >
+                                                {optionAvailability.map(
+                                                    (item, key) => {
+                                                        return (
+                                                            <Select.Option
+                                                                key={key}
+                                                                value={
+                                                                    item.value
+                                                                }
+                                                                search={
+                                                                    item.label
+                                                                }
+                                                            >
+                                                                {item.label}
+                                                            </Select.Option>
+                                                        );
+                                                    }
+                                                )}
+                                            </Select> */}
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+
+                                <Row gutter={12}>
+                                    <Col span={5} className="col-label">
+                                        <Typography.Text>Tags</Typography.Text>
+                                    </Col>
+                                    <Col span={19}>
+                                        {/* <Form.Item name={"tags"}>
+                                            <Select
+                                                placeholder="Tags"
+                                                showSearch
+                                                mode="tags"
+                                            >
+                                                {optionAvailability.map(
+                                                    (item, key) => {
+                                                        return (
+                                                            <Select.Option
+                                                                key={key}
+                                                                value={
+                                                                    item.value
+                                                                }
+                                                                search={
+                                                                    item.label
+                                                                }
+                                                            >
+                                                                {item.label}
+                                                            </Select.Option>
+                                                        );
+                                                    }
+                                                )}
+                                            </Select>
+                                        </Form.Item> */}
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                    </Form>
+                </div>
+            ),
         },
         {
             key: "4",

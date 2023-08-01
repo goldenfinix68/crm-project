@@ -72,7 +72,7 @@ interface TDeals {
     value: string;
     stage: string;
     status: string;
-    owner: string;
+    owner: any;
 }
 interface Bytotal {
     comp_qualify: number;
@@ -522,14 +522,15 @@ const Deal = () => {
                         navigate("/deals/" + x.id);
                     }}
                 >
-                    <div>{x.owner} </div>
+                    <div>{x.owner.firstName + " " + x.owner.lastName} </div>
                     <div
                         style={{
                             fontSize: 12,
                             color: "#9b9999",
                         }}
                     >
-                        {x.owner} - ${toCurrency(x.value)}{" "}
+                        {x.owner.firstName + " " + x.owner.lastName} - $
+                        {toCurrency(x.value)}{" "}
                     </div>
                     <div
                         style={{
