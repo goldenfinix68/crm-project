@@ -270,13 +270,13 @@
 
 .breadcrumb a.active,
 .breadcrumb a:hover {
-  background: #0049b0;
+  background: #1677ff;
   color: white;
 }
 
 .breadcrumb a.active:after,
 .breadcrumb a:hover:after {
-  background: #0049b0;
+  background: #1677ff;
   color: white;
 }
 

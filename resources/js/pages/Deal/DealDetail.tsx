@@ -476,14 +476,16 @@ const DealDetail = () => {
                             <span style={{ marginRight: 15 }}>
                                 <span>
                                     <div>Pipleline</div>
-                                    <div>ACQ</div>
+                                    <div>{deals && deals.data.pipeline}</div>
                                 </span>
                             </span>
                             <span style={{ marginRight: 15 }}>
                                 <div>
-                                    <div>Esitmated Close Date</div>
+                                    <div>Estimated Close Date</div>
                                     <div>
-                                        <CalendarOutlined />
+                                        <CalendarOutlined />{" "}
+                                        {deals &&
+                                            deals.data.estimated_close_date}
                                     </div>
                                 </div>
                             </span>
@@ -500,35 +502,75 @@ const DealDetail = () => {
 
                     <div style={{ marginTop: 30 }}>
                         <div className="breadcrumb">
-                            <a href="#">
+                            <a
+                                href="#"
+                                className={
+                                    deals &&
+                                    deals.data.stage == "Comp & Qualify"
+                                        ? "active"
+                                        : "none"
+                                }
+                            >
                                 <span className="breadcrumb__inner">
                                     <span className="breadcrumb__title">
                                         Comp & Qualify
                                     </span>
                                 </span>
                             </a>
-                            <a href="#">
+                            <a
+                                href="#"
+                                className={
+                                    deals &&
+                                    deals.data.stage == "First Offer Given"
+                                        ? "active"
+                                        : "none"
+                                }
+                            >
                                 <span className="breadcrumb__inner">
                                     <span className="breadcrumb__title">
                                         First Offer Given
                                     </span>
                                 </span>
                             </a>
-                            <a href="#">
+                            <a
+                                href="#"
+                                className={
+                                    deals &&
+                                    deals.data.stage == "In Negotiation"
+                                        ? "active"
+                                        : "none"
+                                }
+                            >
                                 <span className="breadcrumb__inner">
                                     <span className="breadcrumb__title">
-                                        In Negotation
+                                        In Negotiation
                                     </span>
                                 </span>
                             </a>
-                            <a href="#">
+                            <a
+                                href="#"
+                                className={
+                                    deals &&
+                                    deals.data.stage == "Verbal Offer Accepted"
+                                        ? "active"
+                                        : "none"
+                                }
+                            >
                                 <span className="breadcrumb__inner">
                                     <span className="breadcrumb__title">
                                         Verbal Offer Accepted
                                     </span>
                                 </span>
                             </a>
-                            <a href="#">
+                            <a
+                                href="#"
+                                className={
+                                    deals &&
+                                    deals.data.stage == "Under Contract"
+                                        ? "active"
+                                        : "none"
+                                }
+                            >
                                 <span className="breadcrumb__inner">
                                     <span className="breadcrumb__title">
                                         Under Contract
