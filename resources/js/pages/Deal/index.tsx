@@ -519,7 +519,7 @@ const Deal = () => {
                 <Card
                     style={{ width: "100%", cursor: "pointer" }}
                     onClick={() => {
-                        navigate("/deals/1");
+                        navigate("/deals/" + x.id);
                     }}
                 >
                     <div>{x.owner} </div>

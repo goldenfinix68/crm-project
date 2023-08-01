@@ -23,7 +23,7 @@ import type { CSSProperties } from "react";
 
 import type { TabsProps } from "antd";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
     UserAddOutlined,
     PlusCircleOutlined,
@@ -55,7 +55,7 @@ import {
     DraggableLocation,
 } from "react-beautiful-dnd";
 import Board from "react-trello";
-import { useDealsAll } from "../../api/query/dealQuery";
+import { useDealsAll, useDealsByid } from "../../api/query/dealQuery";
 import { useMutation, useQueryClient } from "react-query";
 import {
     useDealMutation,
@@ -64,39 +64,29 @@ import {
 import moment from "moment";
 import DealsTable from "./components/DealsTable";
 
-interface Card {
-    id: number;
-    title: React.ReactNode;
-    laneId: any;
-}
-
-interface Lane {
-    id: string;
-    title: React.ReactNode;
-    label: string;
-    style: {
-        width: number;
-    };
-    cards: Card[];
-}
-
-interface TDeals {
+interface DealsById {
     title: string;
-    name: string;
-    value: string;
-    stage: string;
-    status: string;
+    win_probabilty: string;
     owner: string;
+    estimated_close_date: string;
+    value: string;
+    currency: string;
+    pipeline: string;
+    source: string;
+    stage: string;
+    priority: string;
+    status: string;
+    details: string;
 }
-interface Bytotal {
-    comp_qualify: number;
-    first_given: number;
-    in_negoation: number;
-    verbal_offer_accepted: number;
-    under_contract: number;
+
+interface Props {
+    match: any;
 }
 
 const DealDetail = () => {
+    const { id } = useParams();
+
+    const { deals, isLoading, refetch } = useDealsByid(id ?? "");
     const { token } = theme.useToken();
     const getItems: (panelStyle: CSSProperties) => CollapseProps["items"] = (
         panelStyle
@@ -422,8 +412,7 @@ const DealDetail = () => {
                     >
                         <div>
                             <Typography.Title level={3}>
-                                0.95acres-Ashtabula City-smaller lots closer to{" "}
-                                the water and near <br></br>a decent sized town
+                                {deals && deals.data.title}
                             </Typography.Title>
                         </div>
 

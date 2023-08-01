@@ -49,3 +49,25 @@ export const usefindDeal = (id: string) => {
         isError,
     };
 };
+
+export const useDealsByid = (id: string) => {
+    const { data, isLoading, isError, refetch } = useQuery(
+        "deals_by_" + id,
+        async () => {
+            const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+            const response = await axios.get(`/api/deals/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            return response.data;
+        }
+    );
+
+    return {
+        deals: data,
+        isLoading,
+        isError,
+        refetch,
+    };
+};

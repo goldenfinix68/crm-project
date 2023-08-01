@@ -118,7 +118,8 @@ class DealsController extends Controller
      */
     public function show($id)
     {
-        //
+        $data = Deal::find($id);
+        return response()->json(['success' => true, 'data' => $data], 200);
     }
 
     /**
