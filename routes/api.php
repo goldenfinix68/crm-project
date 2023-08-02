@@ -26,6 +26,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::resource('/contact-types', 'App\Http\Controllers\Api\ContactTypesController');
     Route::resource('/deals', 'App\Http\Controllers\Api\DealsController');
+    Route::post('/deals/add_notes', 'App\Http\Controllers\Api\DealsController@add_notes');
     Route::resource('/notes', 'App\Http\Controllers\Api\NotesController');
     Route::resource('/texts', 'App\Http\Controllers\Api\TextsController');
     Route::post('/deals/useDealUpdateBoardMutation', 'App\Http\Controllers\Api\DealsController@useDealUpdateBoardMutation');

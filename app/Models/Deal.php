@@ -15,4 +15,12 @@ class Deal extends Model
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'owner');
     }
+    public function activities()
+    {
+        return $this->hasMany(\App\Models\Activity::class, 'deal_id', 'id');
+    }
+    public function notes()
+    {
+        return $this->hasMany(\App\Models\DealNote::class, 'deal_id', 'id');
+    }
 }

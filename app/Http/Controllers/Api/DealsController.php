@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Deal;
+use App\Models\DealNote;
 use Carbon\Carbon;
 
 class DealsController extends Controller
@@ -118,7 +119,7 @@ class DealsController extends Controller
      */
     public function show($id)
     {
-        $data = Deal::find($id);
+        $data = Deal::with(['owner', 'activities.owner', 'notes.user'])->find($id);
         return response()->json(['success' => true, 'data' => $data], 200);
     }
 
@@ -132,6 +133,21 @@ class DealsController extends Controller
     public function update(Request $request, $id)
     {
         //
+    }
+
+    public function add_notes(Request $request)
+    {
+
+        $data = DealNote::updateOrCreate(
+            ['id' => isset($request->id) ? $request->id : 0],
+            [
+                'notes' => $request->notes,
+                'deal_id' => $request->deal_id,
+                'user_id' => auth()->user()->id
+            ]
+        );
+
+        return response()->json(['success' => true, 'data' => $data], 200);
     }
 
     /**

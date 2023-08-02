@@ -63,17 +63,7 @@ import {
     CalendarOutlined,
     InboxOutlined,
 } from "@ant-design/icons";
-import Search from "antd/es/input/Search";
-import ModalAddDeal from "./components/ModalAddDeal";
-import Filter from "./components/Filter";
-import {
-    DragDropContext,
-    Draggable,
-    Droppable,
-    DropResult,
-    DraggableLocation,
-} from "react-beautiful-dnd";
-import Board from "react-trello";
+
 import { useDealsAll, useDealsByid } from "../../api/query/dealQuery";
 import {
     useContactsList,
@@ -81,16 +71,14 @@ import {
     useUsersList,
 } from "../../api/query/activityQuery";
 import { useMutation, useQueryClient } from "react-query";
-import {
-    useDealMutation,
-    useDealUpdateBoardMutation,
-} from "../../api/mutation/useDealMutation";
+import { useDealMutationAddNotes } from "../../api/mutation/useDealMutation";
 import moment from "moment";
 import DealsTable from "./components/DealsTable";
 import type { SelectProps } from "antd";
 
 import { addActivityMutation } from "../../api/mutation/useActivityMutation";
-
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 interface DealsById {
     title: string;
     win_probabilty: string;
@@ -117,6 +105,7 @@ const DealDetail = () => {
     const { deals, isLoading, refetch } = useDealsByid(dealId ?? "");
     const { token } = theme.useToken();
     const { Dragger } = Upload;
+    const quillRef = React.useRef(null);
     const optionAvailability: SelectProps["options"] = [
         {
             label: "Busy",
@@ -128,7 +117,7 @@ const DealDetail = () => {
         },
     ];
     const [form] = Form.useForm();
-
+    const [form_notes] = Form.useForm();
     function toCurrency(number: any) {
         return new Intl.NumberFormat("en-US", {
             style: "decimal",
@@ -142,7 +131,7 @@ const DealDetail = () => {
         {
             key: "1",
             label: "Deal Specific Email",
-            children: <p>Deal-E18@clinkup.salesmate.io</p>,
+            children: <p>{deals && deals.data.owner.email}</p>,
             style: panelStyle,
         },
         {
@@ -152,11 +141,13 @@ const DealDetail = () => {
                 <div>
                     <div style={{ display: "flex" }}>
                         <span className="thumb-name-xs " title="Jesse Ashley">
-                            B
+                            {deals && deals.data.owner.firstName.charAt(0)}
                         </span>
                         <span style={{ fontSize: 14, marginLeft: 10 }}>
-                            {" "}
-                            Bernard Sweeney
+                            {deals &&
+                                deals.data.owner.firstName +
+                                    " " +
+                                    deals.data.owner.lastName}
                         </span>
                     </div>
                     <div>Mobile: +18044326971</div>
@@ -170,9 +161,27 @@ const DealDetail = () => {
             label: "Deal Details",
             children: (
                 <div>
-                    <div>Source</div>
-                    <div>Priority</div>
-                    <div>Description</div>
+                    <div>
+                        <b>Source</b>
+                    </div>
+                    <div>{deals && deals.data.source}</div>
+                    <br></br>
+                    <div>
+                        <b>Priority</b>
+                    </div>
+                    <div>{deals && deals.data.priority}</div>
+                    <br></br>
+                    <div>
+                        {" "}
+                        <b>Description</b>
+                    </div>
+                    <div>{deals && deals.data.details}</div>
+                    <br></br>
+                    <div>
+                        <b>Tags</b>
+                    </div>
+                    <div>{deals && deals.data.tags}</div>
+                    <br></br>
                 </div>
             ),
             style: panelStyle,
@@ -212,10 +221,25 @@ const DealDetail = () => {
                 description: "Activity Successfully Added",
             });
 
-            queryClient.invalidateQueries("activities");
             form.resetFields();
+            refetch();
         },
     });
+
+    const addDealsNotes = useMutation(useDealMutationAddNotes, {
+        onSuccess: (res) => {
+            notification.success({
+                message: "Deals",
+                description: "Notes Successfully Added",
+            });
+            form_notes.resetFields();
+            refetch();
+        },
+    });
+
+    const onSaveChangeQuill = (value: any) => {
+        addDealsNotes.mutate({ deal_id: "" + dealId, notes: value.notes });
+    };
 
     const getItems2: (panelStyle: CSSProperties) => CollapseProps["items"] = (
         panelStyle
@@ -303,12 +327,15 @@ const DealDetail = () => {
                     <Col span={24} className="p-md p-t-lg form-left">
                         <Row gutter={12}>
                             <Col span={5} className="col-label">
+                                <Typography.Text style={{ color: "red" }}>
+                                    *
+                                </Typography.Text>
                                 <Typography.Text>Title</Typography.Text>
                             </Col>
                             <Col span={19}>
                                 {" "}
                                 <Form.Item
-                                    name={"Title"}
+                                    name={"title"}
                                     rules={[validateRules.required]}
                                 >
                                     <Input placeholder="Title" className="" />
@@ -318,10 +345,16 @@ const DealDetail = () => {
 
                         <Row gutter={12}>
                             <Col span={5} className="col-label">
+                                <Typography.Text style={{ color: "red" }}>
+                                    *
+                                </Typography.Text>
                                 <Typography.Text>Type</Typography.Text>
                             </Col>
                             <Col span={19}>
-                                <Form.Item name={"Type"}>
+                                <Form.Item
+                                    name={"type"}
+                                    rules={[validateRules.required]}
+                                >
                                     <Select
                                         className="select-custom-width"
                                         placeholder="Type"
@@ -361,12 +394,18 @@ const DealDetail = () => {
 
                         <Row gutter={12}>
                             <Col span={5} className="col-label">
+                                <Typography.Text style={{ color: "red" }}>
+                                    *
+                                </Typography.Text>
                                 <Typography.Text>Date & Time</Typography.Text>
                             </Col>
                             <Col span={19}>
                                 <Row gutter={12}>
                                     <Col span={12}>
-                                        <Form.Item name="start_date">
+                                        <Form.Item
+                                            name="start_date"
+                                            rules={[validateRules.required]}
+                                        >
                                             <DatePicker
                                                 style={{
                                                     width: "100%",
@@ -389,7 +428,10 @@ const DealDetail = () => {
                                         </Form.Item>
                                     </Col>
                                     <Col span={12}>
-                                        <Form.Item name="end_time">
+                                        <Form.Item
+                                            name="end_time"
+                                            rules={[validateRules.required]}
+                                        >
                                             <TimePicker
                                                 style={{
                                                     width: "100%",
@@ -465,6 +507,9 @@ const DealDetail = () => {
 
                         <Row gutter={12}>
                             <Col span={5} className="col-label">
+                                <Typography.Text style={{ color: "red" }}>
+                                    *
+                                </Typography.Text>
                                 <Typography.Text>Owner</Typography.Text>
                             </Col>
                             <Col span={19}>
@@ -576,7 +621,31 @@ const DealDetail = () => {
         {
             key: "1",
             label: `Note`,
-            children: `No Content`,
+            children: (
+                <div style={{ height: 240 }}>
+                    <Form
+                        form={form_notes}
+                        onFinish={(e) => onSaveChangeQuill(e)}
+                    >
+                        <Form.Item name="notes">
+                            <ReactQuill
+                                ref={quillRef}
+                                style={{ height: "150px" }}
+                            />
+                        </Form.Item>
+
+                        <div style={{ marginTop: 50 }}>
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                style={{ float: "right" }}
+                            >
+                                Save
+                            </Button>
+                        </div>
+                    </Form>
+                </div>
+            ),
         },
         {
             key: "2",
@@ -654,142 +723,184 @@ const DealDetail = () => {
             key: "1",
             label: `All`,
             children: (
-                <div>
-                    <div>Upcoming (4)</div>
-                    <Card style={{ marginTop: 20 }}>
-                        <div style={{ display: "flex" }}>
-                            <span
-                                className="thumb-name-xs "
-                                title="Jesse Ashley"
-                            >
-                                J
-                            </span>
-                            <span style={{ fontSize: 16, marginLeft: 10 }}>
-                                {" "}
-                                <b>Task</b> for Jesse Ashley
-                            </span>
-                        </div>
-                        <Divider></Divider>
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                            <span>
-                                <CheckCircleOutlined style={{ fontSize: 24 }} />
-                            </span>
-                            <span style={{ fontSize: 16, marginLeft: 10 }}>
-                                {" "}
-                                assign to ACQ manager (jesse777ashley)
-                            </span>
-                        </div>
-                        <div
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                padding: 20,
-                                paddingTop: 0,
-                                paddingBottom: 0,
-                                marginTop: 10,
-                            }}
-                        >
-                            <span>
-                                <CalendarOutlined style={{ fontSize: 14 }} />
-                            </span>
-                            <span style={{ fontSize: 14, marginLeft: 10 }}>
-                                {" "}
-                                Jul 27, 2023 01:58 PM
-                            </span>
-                        </div>
-                        <div
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                padding: 20,
-                                paddingTop: 0,
-                                paddingBottom: 0,
-                            }}
-                        >
-                            <span>
-                                <UserOutlined style={{ fontSize: 14 }} />
-                            </span>
-                            <span style={{ fontSize: 14, marginLeft: 10 }}>
-                                {" "}
-                                Bernard Sweeney
-                            </span>
-                        </div>
-                        <Divider></Divider>
-                        <Input placeholder="Add your note for this activity"></Input>
-                    </Card>
-                    <Card style={{ marginTop: 20 }}>
-                        <div style={{ display: "flex" }}>
-                            <span
-                                className="thumb-name-xs "
-                                title="Jesse Ashley"
-                            >
-                                J
-                            </span>
-                            <span style={{ fontSize: 16, marginLeft: 10 }}>
-                                {" "}
-                                <b>Task</b> for Jesse Ashley
-                            </span>
-                        </div>
-                        <Divider></Divider>
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                            <span>
-                                <CheckCircleOutlined style={{ fontSize: 24 }} />
-                            </span>
-                            <span style={{ fontSize: 16, marginLeft: 10 }}>
-                                {" "}
-                                assign to ACQ manager (jesse777ashley)
-                            </span>
-                        </div>
-                        <div
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                padding: 20,
-                                paddingTop: 0,
-                                paddingBottom: 0,
-                                marginTop: 10,
-                            }}
-                        >
-                            <span>
-                                <CalendarOutlined style={{ fontSize: 14 }} />
-                            </span>
-                            <span style={{ fontSize: 14, marginLeft: 10 }}>
-                                {" "}
-                                Jul 27, 2023 01:58 PM
-                            </span>
-                        </div>
-                        <div
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                padding: 20,
-                                paddingTop: 0,
-                                paddingBottom: 0,
-                            }}
-                        >
-                            <span>
-                                <UserOutlined style={{ fontSize: 14 }} />
-                            </span>
-                            <span style={{ fontSize: 14, marginLeft: 10 }}>
-                                {" "}
-                                Bernard Sweeney
-                            </span>
-                        </div>
-                        <Divider></Divider>
-                        <Input placeholder="Add your note for this activity"></Input>
-                    </Card>
-                </div>
+                <>
+                    <div>Upcoming (0)</div>
+                </>
             ),
         },
         {
             key: "2",
             label: `Activites`,
-            children: `No Content`,
+            children: (
+                <>
+                    {deals &&
+                        deals.data.activities.length > 0 &&
+                        deals.data.activities.map((item: any) => {
+                            return (
+                                <div>
+                                    <Card style={{ marginTop: 20 }}>
+                                        <div style={{ display: "flex" }}>
+                                            <span
+                                                className="thumb-name-xs "
+                                                title="Jesse Ashley"
+                                            >
+                                                {item.owner.firstName.charAt(0)}
+                                            </span>
+                                            <span
+                                                style={{
+                                                    fontSize: 16,
+                                                    marginLeft: 10,
+                                                }}
+                                            >
+                                                {" "}
+                                                <b>{item.type}</b> for{" "}
+                                                {item.owner.firstName +
+                                                    " " +
+                                                    item.owner.lastName}
+                                            </span>
+                                        </div>
+                                        <Divider></Divider>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <span>
+                                                <CheckCircleOutlined
+                                                    style={{ fontSize: 24 }}
+                                                />
+                                            </span>
+                                            <span
+                                                style={{
+                                                    fontSize: 16,
+                                                    marginLeft: 10,
+                                                }}
+                                            >
+                                                {item.title}
+                                            </span>
+                                        </div>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                padding: 20,
+                                                paddingTop: 0,
+                                                paddingBottom: 0,
+                                                marginTop: 10,
+                                            }}
+                                        >
+                                            <span>
+                                                <CalendarOutlined
+                                                    style={{ fontSize: 14 }}
+                                                />
+                                            </span>
+                                            <span
+                                                style={{
+                                                    fontSize: 14,
+                                                    marginLeft: 10,
+                                                }}
+                                            >
+                                                {" "}
+                                                {moment(item.start_date).format(
+                                                    "LLL"
+                                                )}
+                                            </span>
+                                        </div>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                padding: 20,
+                                                paddingTop: 0,
+                                                paddingBottom: 0,
+                                            }}
+                                        >
+                                            <span>
+                                                <UserOutlined
+                                                    style={{ fontSize: 14 }}
+                                                />
+                                            </span>
+                                            <span
+                                                style={{
+                                                    fontSize: 14,
+                                                    marginLeft: 10,
+                                                }}
+                                            >
+                                                {deals &&
+                                                    deals.data.owner.firstName +
+                                                        " " +
+                                                        deals.data.owner
+                                                            .lastName}
+                                            </span>
+                                        </div>
+                                        <Divider></Divider>
+                                        <Input placeholder="Add your note for this activity"></Input>
+                                    </Card>
+                                </div>
+                            );
+                        })}
+                </>
+            ),
         },
         {
             key: "3",
             label: `Notes`,
-            children: `No Content`,
+            children: (
+                <>
+                    {deals &&
+                        deals.data.notes.length > 0 &&
+                        deals.data.notes.map((item: any) => {
+                            return (
+                                <div>
+                                    <Card style={{ marginTop: 20 }}>
+                                        <div style={{ display: "flex" }}>
+                                            <span
+                                                className="thumb-name-xs "
+                                                title="Jesse Ashley"
+                                            >
+                                                {item.user.firstName.charAt(0)}
+                                            </span>
+                                            <span
+                                                style={{
+                                                    fontSize: 16,
+                                                    marginLeft: 10,
+                                                }}
+                                            >
+                                                {" "}
+                                                <b>{item.type}</b> for{" "}
+                                                {item.user.firstName +
+                                                    " " +
+                                                    item.user.lastName}
+                                            </span>
+                                        </div>
+                                        <Divider></Divider>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <span>
+                                                <CheckCircleOutlined
+                                                    style={{ fontSize: 24 }}
+                                                />
+                                            </span>
+                                            <span
+                                                style={{
+                                                    fontSize: 16,
+                                                    marginLeft: 10,
+                                                }}
+                                            >
+                                                {item.notes}
+                                            </span>
+                                        </div>
+                                    </Card>
+                                </div>
+                            );
+                        })}
+                </>
+            ),
         },
         {
             key: "4",
