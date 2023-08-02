@@ -105,10 +105,16 @@ const ContactsComponentsTableEditableCellName = ({
         <>
             {updateValFirst || updateValLast ? (
                 <div
+                    className="cell"
                     style={{
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
+                        paddingLeft: "10px",
+                        paddingRight: "1px",
+                        borderRadius: "5px",
+                        paddingTop: "0px",
+                        paddingBottom: "0px",
                     }}
                     onMouseOver={() => {
                         setCurrentBtnActive(record.id);
@@ -243,10 +249,12 @@ const ContactsComponentsTableEditableCellName = ({
                                 cancelText="No"
                             >
                                 <Button
+                                    className="m-r-xs"
                                     style={{
                                         padding: "8px",
                                         display: "flex",
                                         alignItems: "center",
+                                        backgroundColor: "white",
                                     }}
                                     type="text"
                                     onClick={() => {
@@ -266,6 +274,8 @@ const ContactsComponentsTableEditableCellName = ({
                                     padding: "8px",
                                     display: "flex",
                                     alignItems: "center",
+                                    backgroundColor: "white",
+                                    marginRight: "2px",
                                 }}
                                 type="text"
                                 onClick={() => {
