@@ -96,6 +96,7 @@ const Login = () => {
                             htmlType="submit"
                             size="large"
                             style={{ width: "100%" }}
+                            loading={loginMutation.isLoading}
                         >
                             Log in
                         </Button>

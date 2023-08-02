@@ -469,26 +469,30 @@ const DealDetail = () => {
                                 marginBottom: 15,
                             }}
                         >
-                            <span style={{ marginRight: 10 }}>
+                            <span style={{ marginRight: 15 }}>
                                 <span>
                                     <div>Value</div>
                                     <div>$0</div>
                                 </span>
                             </span>
-                            <span style={{ marginRight: 10 }}>
+                            <span style={{ marginRight: 15 }}>
                                 <span>
                                     <div>Pipleline</div>
                                     <div>ACQ</div>
                                 </span>
                             </span>
-                            <span style={{ marginRight: 10 }}>
+                            <span style={{ marginRight: 15 }}>
                                 <div>
-                                    <div>Esitmated</div>
+                                    <div>Esitmated Close Date</div>
+                                    <div>
+                                        <CalendarOutlined />
+                                    </div>
                                 </div>
                             </span>
-                            <span style={{ marginRight: 10 }}>
+                            <span style={{ marginRight: 15 }}>
                                 <div>
                                     <div>Win Probability</div>
+                                    <div>0</div>
                                 </div>
                             </span>
                         </div>
