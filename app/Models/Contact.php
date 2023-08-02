@@ -96,7 +96,7 @@ class Contact extends Model
 
     public function texts()
     {
-        return $this->hasMany(\App\Models\Text::class, 'contactId', 'id');
+        return $this->hasMany(\App\Models\Text::class, 'contactId', 'id')->orderByDesc('id');
     }
 
     public function deals()
@@ -133,6 +133,7 @@ class Contact extends Model
                 'day' => $createdAt->format('j'),
                 'month' => $createdAt->format('F'),
                 'year' => $createdAt->format('Y'),
+                'time' => $createdAt->format('h:i A'),
                 'text' => $data,
             ];
         });

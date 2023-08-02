@@ -133,7 +133,7 @@ const App: React.FC = () => {
                             }
                         />
                         <Route
-                            path="/deals/:id"
+                            path="/deals/:dealId"
                             element={
                                 <PrivateRoute>
                                     <DealDetail />

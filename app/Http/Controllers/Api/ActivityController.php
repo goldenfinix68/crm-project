@@ -95,7 +95,7 @@ class ActivityController extends Controller
         ]);
 
 
-        if(isset($request->invitees) && count($request->invitees) > 0) {
+        if (isset($request->invitees) && count($request->invitees) > 0) {
             \App\Models\ActivityInvitee::where('activity_id', $data->id)->delete();
 
             $invitees = $request->invitees;
@@ -108,7 +108,7 @@ class ActivityController extends Controller
             }
         }
 
-        if(isset($request->followers) && count($request->followers) > 0) {
+        if (isset($request->followers) && count($request->followers) > 0) {
             \App\Models\ActivityTag::where('activity_id', $data->id)->delete();
 
             $followers = $request->followers;
@@ -120,7 +120,7 @@ class ActivityController extends Controller
             }
         }
 
-        if(isset($request->tags) && count($request->tags) > 0) {
+        if (isset($request->tags) && count($request->tags) > 0) {
             \App\Models\ActivityTag::where('activity_id', $data->id)->delete();
 
             $tags = $request->tags;
@@ -224,7 +224,8 @@ class ActivityController extends Controller
     }
 
 
-    public function get_user(Request $request) {
+    public function get_user(Request $request)
+    {
         $data = \App\Models\User::get();
 
         return response()->json([
@@ -234,7 +235,8 @@ class ActivityController extends Controller
         ], 200);
     }
 
-    public function get_contact(Request $request) {
+    public function get_contact(Request $request)
+    {
         $data = \App\Models\Contact::get();
 
         return response()->json([
@@ -243,7 +245,8 @@ class ActivityController extends Controller
         ], 200);
     }
 
-    public function get_deal(Request $request) {
+    public function get_deal(Request $request)
+    {
         $data = \App\Models\Deal::get();
 
         return response()->json([

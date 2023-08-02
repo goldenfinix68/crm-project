@@ -32,6 +32,7 @@ import {
 import Search from "antd/es/input/Search";
 import ModalAddDeal from "./components/ModalAddDeal";
 import Filter from "./components/Filter";
+import { useNavigate } from "react-router-dom";
 import {
     DragDropContext,
     Draggable,
@@ -71,7 +72,7 @@ interface TDeals {
     value: string;
     stage: string;
     status: string;
-    owner: string;
+    owner: any;
 }
 interface Bytotal {
     comp_qualify: number;
@@ -81,6 +82,7 @@ interface Bytotal {
     under_contract: number;
 }
 const Deal = () => {
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [filterPage, setFilterPage] = useState({
         pipeline: "ACQ",
@@ -514,15 +516,21 @@ const Deal = () => {
     const cardDiv = (x: any) => {
         return (
             <div>
-                <Card style={{ width: "100%" }}>
-                    <div>{x.owner} </div>
+                <Card
+                    style={{ width: "100%", cursor: "pointer" }}
+                    onClick={() => {
+                        navigate("/deals/" + x.id);
+                    }}
+                >
+                    <div>{x.owner.firstName + " " + x.owner.lastName} </div>
                     <div
                         style={{
                             fontSize: 12,
                             color: "#9b9999",
                         }}
                     >
-                        {x.owner} - ${toCurrency(x.value)}{" "}
+                        {x.owner.firstName + " " + x.owner.lastName} - $
+                        {toCurrency(x.value)}{" "}
                     </div>
                     <div
                         style={{
