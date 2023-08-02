@@ -89,6 +89,8 @@ import moment from "moment";
 import DealsTable from "./components/DealsTable";
 import type { SelectProps } from "antd";
 
+import { addActivityMutation } from "../../api/mutation/useActivityMutation";
+
 interface DealsById {
     title: string;
     win_probabilty: string;
@@ -109,9 +111,10 @@ interface Props {
 }
 
 const DealDetail = () => {
-    const { id } = useParams();
+    const queryClient = useQueryClient();
+    const { dealId } = useParams();
     const { dataUsers, isLoadingUsers } = useUsersList();
-    const { deals, isLoading, refetch } = useDealsByid(id ?? "");
+    const { deals, isLoading, refetch } = useDealsByid(dealId ?? "");
     const { token } = theme.useToken();
     const { Dragger } = Upload;
     const optionAvailability: SelectProps["options"] = [
@@ -175,6 +178,43 @@ const DealDetail = () => {
             style: panelStyle,
         },
     ];
+
+    const onFinish = (values: any) => {
+        values = {
+            ...values,
+            deal_id: dealId,
+            follower_id: 0,
+            contact_id: 0,
+            start_date: values.start_date
+                ? dayjs(values.start_date).format("YYYY/MM/DD")
+                : undefined,
+            end_date: values.end_date
+                ? dayjs(values.end_date).format("YYYY/MM/DD")
+                : undefined,
+            start_time: values.start_time
+                ? dayjs(values.start_time).format("HH:mm")
+                : undefined,
+            end_time: values.end_time
+                ? dayjs(values.end_time).format("HH:mm")
+                : undefined,
+        };
+
+        console.log("onFinish", values);
+
+        addActivity.mutate(values);
+    };
+
+    const addActivity = useMutation(addActivityMutation, {
+        onSuccess: (res) => {
+            console.log("success");
+            notification.success({
+                message: "Activity",
+                description: "Activity Successfully Added",
+            });
+            queryClient.invalidateQueries("activities");
+        },
+    });
+
     const getItems2: (panelStyle: CSSProperties) => CollapseProps["items"] = (
         panelStyle
     ) => [
@@ -256,11 +296,7 @@ const DealDetail = () => {
     };
     const cardForm = () => {
         return (
-            <Form
-                form={form}
-
-                // onFieldsChange={handleFieldsChange}
-            >
+            <Form form={form} onFinish={(e) => onFinish(e)}>
                 <Row gutter={12} className="">
                     <Col span={24} className="p-md p-t-lg form-left">
                         <Row gutter={12}>
@@ -465,8 +501,8 @@ const DealDetail = () => {
                                 <Typography.Text>Followers</Typography.Text>
                             </Col>
                             <Col span={19}>
-                                <Form.Item name={"Followers"}>
-                                    <Input placeholder="followers"></Input>
+                                <Form.Item name={"followers"}>
+                                    <Input placeholder="Followers"></Input>
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -481,6 +517,22 @@ const DealDetail = () => {
                                 </Form.Item>
                             </Col>
                         </Row>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={24}>
+                        <div>
+                            {" "}
+                            <Button
+                                style={{ float: "right" }}
+                                onClick={() => {
+                                    form.submit();
+                                }}
+                                type="primary"
+                            >
+                                Save
+                            </Button>
+                        </div>
                     </Col>
                 </Row>
             </Form>
