@@ -90,7 +90,7 @@ class ActivityController extends Controller
             'owner_id' => isset($request->owner_id) ? $request->owner_id : 0,
             'deal_id' => isset($request->deal_id) ? $request->deal_id : 0,
             'contact_id' => isset($request->contact_id) ? $request->contact_id : 0,
-            'follower_id' => isset($request->follower_id) ? $request->follower_id : 0,
+            // 'follower_id' => isset($request->follower_id) ? $request->follower_id : 0,
             'status' => 1,
         ]);
 

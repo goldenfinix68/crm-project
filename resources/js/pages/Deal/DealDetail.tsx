@@ -183,6 +183,7 @@ const DealDetail = () => {
         values = {
             ...values,
             deal_id: dealId,
+            invitees: [],
             follower_id: 0,
             contact_id: 0,
             start_date: values.start_date
