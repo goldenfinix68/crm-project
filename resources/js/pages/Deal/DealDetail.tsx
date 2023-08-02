@@ -207,12 +207,13 @@ const DealDetail = () => {
 
     const addActivity = useMutation(addActivityMutation, {
         onSuccess: (res) => {
-            console.log("success");
             notification.success({
                 message: "Activity",
                 description: "Activity Successfully Added",
             });
+
             queryClient.invalidateQueries("activities");
+            form.resetFields();
         },
     });
 
@@ -503,7 +504,23 @@ const DealDetail = () => {
                             </Col>
                             <Col span={19}>
                                 <Form.Item name={"followers"}>
-                                    <Input placeholder="Followers"></Input>
+                                    <Select
+                                        placeholder="Followers"
+                                        showSearch
+                                        mode="multiple"
+                                    >
+                                        {optionAvailability.map((item, key) => {
+                                            return (
+                                                <Select.Option
+                                                    key={key}
+                                                    value={item.value}
+                                                    search={item.label}
+                                                >
+                                                    {item.label}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                    </Select>
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -514,7 +531,23 @@ const DealDetail = () => {
                             </Col>
                             <Col span={19}>
                                 <Form.Item name={"tags"}>
-                                    <Input placeholder="Tags"></Input>
+                                    <Select
+                                        placeholder="Tags"
+                                        showSearch
+                                        mode="tags"
+                                    >
+                                        {optionAvailability.map((item, key) => {
+                                            return (
+                                                <Select.Option
+                                                    key={key}
+                                                    value={item.value}
+                                                    search={item.label}
+                                                >
+                                                    {item.label}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                    </Select>
                                 </Form.Item>
                             </Col>
                         </Row>
