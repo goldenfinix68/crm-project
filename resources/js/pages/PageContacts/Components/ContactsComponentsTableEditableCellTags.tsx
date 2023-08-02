@@ -159,7 +159,11 @@ const ContactsComponentsTableEditableCellTags = ({
                             cancelText="No"
                         >
                             <Button
-                                style={{}}
+                                style={{
+                                    padding: "8px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                }}
                                 type="text"
                                 onClick={() => {
                                     setCurrentActiveCell(
@@ -209,6 +213,11 @@ const ContactsComponentsTableEditableCellTags = ({
                         cancelText="No"
                     >
                         <Button
+                            style={{
+                                padding: "8px",
+                                display: "flex",
+                                alignItems: "center",
+                            }}
                             onMouseOver={() => {
                                 setCurrentBtnActive(record.id);
                                 setCurrentActiveType(type);

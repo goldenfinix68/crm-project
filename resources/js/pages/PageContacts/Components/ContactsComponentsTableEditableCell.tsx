@@ -83,10 +83,16 @@ const ContactsComponentsTableEditableCell = ({
         <>
             {recordType ? (
                 <div
+                    className="cell"
                     style={{
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
+                        paddingLeft: "10px",
+                        paddingRight: "1px",
+                        borderRadius: "5px",
+                        paddingTop: "0px",
+                        paddingBottom: "0px",
                     }}
                     onMouseOver={() => {
                         setCurrentBtnActive(record.id);
@@ -128,6 +134,13 @@ const ContactsComponentsTableEditableCell = ({
                             cancelText="No"
                         >
                             <Button
+                                style={{
+                                    margin: "2px",
+                                    padding: "8px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    backgroundColor: "white",
+                                }}
                                 type="text"
                                 onClick={() => {
                                     setCurrentActiveCell(
@@ -174,7 +187,13 @@ const ContactsComponentsTableEditableCell = ({
                         okText="Save"
                         cancelText="No"
                     >
-                        <Button
+                        <div
+                            className="cell"
+                            style={{
+                                display: "flex",
+                                justifyContent: "flex-end",
+                                borderRadius: "5px",
+                            }}
                             onMouseOver={() => {
                                 setCurrentBtnActive(record.id);
                                 setCurrentActiveType(type);
@@ -183,18 +202,41 @@ const ContactsComponentsTableEditableCell = ({
                                 setCurrentBtnActive("");
                                 setCurrentActiveType("");
                             }}
-                            type="text"
                             onClick={() => {
                                 setCurrentActiveCell(type + ": " + record.id);
                             }}
                         >
-                            {((currentBtnActive == record.id &&
-                                currentActiveType == type) ||
-                                currentActiveCell ==
-                                    type + ": " + record.id) && (
-                                <FontAwesomeIcon icon={faPen} />
-                            )}
-                        </Button>
+                            <Button
+                                style={{
+                                    padding: "8px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    margin: "2px",
+                                    backgroundColor: "white",
+                                }}
+                                onMouseOver={() => {
+                                    setCurrentBtnActive(record.id);
+                                    setCurrentActiveType(type);
+                                }}
+                                onMouseLeave={() => {
+                                    setCurrentBtnActive("");
+                                    setCurrentActiveType("");
+                                }}
+                                type="text"
+                                onClick={() => {
+                                    setCurrentActiveCell(
+                                        type + ": " + record.id
+                                    );
+                                }}
+                            >
+                                {((currentBtnActive == record.id &&
+                                    currentActiveType == type) ||
+                                    currentActiveCell ==
+                                        type + ": " + record.id) && (
+                                    <FontAwesomeIcon icon={faPen} />
+                                )}
+                            </Button>
+                        </div>
                     </Popconfirm>
                 )
             )}

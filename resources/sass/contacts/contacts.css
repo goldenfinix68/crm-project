@@ -12103,4 +12103,12 @@ textarea.form-control-lg {
 
 .tag-item {
   margin: 2px;
+}
+
+.cell:hover {
+  background-color: rgba(204, 224, 252, 0.537254902);
+}
+
+.custom-table-cell {
+  height: 69px;
 }/*# sourceMappingURL=contacts.css.map */

@@ -289,6 +289,7 @@ const Contacts = () => {
             defaultSortOrder: "descend",
             fixed: "left",
             width: 400,
+            className: "custom-table-cell",
         },
         {
             key: "email",

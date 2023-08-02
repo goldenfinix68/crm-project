@@ -144,7 +144,7 @@ const ContactsComponentsTableEditableCellName = ({
                                 {record.firstName.charAt(0)}
                             </Avatar>
                             <span style={{ marginLeft: "8px" }}>
-                                <Button
+                                {/* <Button
                                     type="link"
                                     style={{ padding: 0 }}
                                     onClick={() => {
@@ -152,7 +152,21 @@ const ContactsComponentsTableEditableCellName = ({
                                     }}
                                 >
                                     {record.firstName} {record.lastName}
-                                </Button>
+                                </Button> */}
+                                <Typography.Link
+                                    style={{
+                                        padding: 0,
+                                        // whiteSpace: "nowrap",
+                                        // overflow: "hidden",
+                                        // textOverflow: "ellipsis",
+                                        // width: "100%",
+                                    }}
+                                    onClick={() => {
+                                        navigate(`/contacts/${record.id}`);
+                                    }}
+                                >
+                                    {record.firstName} {record.lastName}
+                                </Typography.Link>
                             </span>
                         </span>
                     </div>
@@ -160,7 +174,7 @@ const ContactsComponentsTableEditableCellName = ({
                     {((currentBtnActive == record.id &&
                         currentActiveType == type) ||
                         currentActiveCell == type + ": " + record.id) && (
-                        <div>
+                        <div style={{ display: "flex" }}>
                             <Popconfirm
                                 title=""
                                 icon={null}
@@ -168,14 +182,14 @@ const ContactsComponentsTableEditableCellName = ({
                                     <Space
                                         style={{
                                             flexDirection: "column",
-                                            width: "200px !important",
+                                            width: "300px",
                                             alignItems: "flex-start",
                                         }}
                                     >
                                         <Typography>First Name</Typography>
                                         <Input
                                             style={{
-                                                width: "200px !important",
+                                                width: "300px",
                                             }}
                                             autoFocus
                                             value={updateValFirst ?? ""}
@@ -197,7 +211,7 @@ const ContactsComponentsTableEditableCellName = ({
                                         </Typography>
                                         <Input
                                             style={{
-                                                width: "200px !important",
+                                                width: "300px ",
                                             }}
                                             value={updateValLast ?? ""}
                                             onBlur={(value) => {
@@ -229,6 +243,11 @@ const ContactsComponentsTableEditableCellName = ({
                                 cancelText="No"
                             >
                                 <Button
+                                    style={{
+                                        padding: "8px",
+                                        display: "flex",
+                                        alignItems: "center",
+                                    }}
                                     type="text"
                                     onClick={() => {
                                         setCurrentActiveCell(
@@ -243,6 +262,11 @@ const ContactsComponentsTableEditableCellName = ({
                                 </Button>
                             </Popconfirm>
                             <Button
+                                style={{
+                                    padding: "8px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                }}
                                 type="text"
                                 onClick={() => {
                                     navigate(`/contacts/${record.id}`);
@@ -263,12 +287,12 @@ const ContactsComponentsTableEditableCellName = ({
                             <Space
                                 style={{
                                     flexDirection: "column",
-                                    width: "200px !important",
+                                    width: "300px ",
                                 }}
                             >
                                 <Typography>First Name</Typography>
                                 <Input
-                                    style={{ width: "200px !important" }}
+                                    style={{ width: "300px " }}
                                     autoFocus
                                     value={updateValFirst ?? ""}
                                     onBlur={(value) => {
@@ -284,7 +308,7 @@ const ContactsComponentsTableEditableCellName = ({
                                 ></Input>
                                 <Typography>Last Name</Typography>
                                 <Input
-                                    style={{ width: "200px !important" }}
+                                    style={{ width: "300px " }}
                                     value={updateValLast ?? ""}
                                     onBlur={(value) => {
                                         setCurrentBtnActive("");
@@ -309,6 +333,11 @@ const ContactsComponentsTableEditableCellName = ({
                         cancelText="No"
                     >
                         <Button
+                            style={{
+                                padding: "8px",
+                                display: "flex",
+                                alignItems: "center",
+                            }}
                             onMouseOver={() => {
                                 setCurrentBtnActive(record.id);
                                 setCurrentActiveType(type);
