@@ -55,3 +55,19 @@ export const useDealMutationAddNotes = async (items: Tnotes) => {
     }
     return data;
 };
+
+export const useDealMutationAddFile = async (items: any) => {
+    (data) => {
+        if (showLoading) {
+            $(".globalLoading").removeClass("hide");
+        }
+        return axios
+            .post(`${apiUrl}${url}`, data, {
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "multipart/form-data",
+                },
+            })
+            .then((res) => res.data);
+    };
+};

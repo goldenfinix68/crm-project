@@ -23,4 +23,8 @@ class Deal extends Model
     {
         return $this->hasMany(\App\Models\DealNote::class, 'deal_id', 'id');
     }
+    public function files()
+    {
+        return $this->hasMany(\App\Models\DealFile::class, 'deal_id', 'id');
+    }
 }

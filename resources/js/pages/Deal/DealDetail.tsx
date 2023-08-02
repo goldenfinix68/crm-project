@@ -24,6 +24,7 @@ import {
     message,
     Upload,
 } from "antd";
+import axios from "axios";
 import type { UploadProps } from "antd";
 import type { CollapseProps } from "antd";
 import type { CSSProperties } from "react";
@@ -31,6 +32,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import validateRules from "../../providers/validateRules";
+
 dayjs.extend(customParseFormat);
 import { faPaperPlane } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -41,7 +43,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import type { TabsProps } from "antd";
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import {
     UserAddOutlined,
     PlusCircleOutlined,
@@ -62,6 +64,8 @@ import {
     CalculatorOutlined,
     CalendarOutlined,
     InboxOutlined,
+    UploadOutlined,
+    PaperClipOutlined,
 } from "@ant-design/icons";
 
 import { useDealsAll, useDealsByid } from "../../api/query/dealQuery";
@@ -71,11 +75,14 @@ import {
     useUsersList,
 } from "../../api/query/activityQuery";
 import { useMutation, useQueryClient } from "react-query";
-import { useDealMutationAddNotes } from "../../api/mutation/useDealMutation";
+import {
+    useDealMutationAddNotes,
+    useDealMutationAddFile,
+} from "../../api/mutation/useDealMutation";
 import moment from "moment";
 import DealsTable from "./components/DealsTable";
 import type { SelectProps } from "antd";
-
+import Resizer from "react-image-file-resizer";
 import { addActivityMutation } from "../../api/mutation/useActivityMutation";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -98,7 +105,21 @@ interface Props {
     match: any;
 }
 
+function POST_FILE(url: any) {
+    const accessToken = localStorage.getItem("access_token");
+    return useMutation((data: any) => {
+        return axios
+            .post(`${window.location.origin}${url}`, data, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            })
+            .then((res) => res.data);
+    });
+}
+
 const DealDetail = () => {
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { dealId } = useParams();
     const { dataUsers, isLoadingUsers } = useUsersList();
@@ -106,6 +127,48 @@ const DealDetail = () => {
     const { token } = theme.useToken();
     const { Dragger } = Upload;
     const quillRef = React.useRef(null);
+    const [fileList, setFileList] = useState([]);
+    const handleChangeUpload = async ({ fileList: newFileList }) => {
+        try {
+            const modifiedFiles: any = await Promise.all(
+                newFileList.map(async (item) => {
+                    const compressedImage: any = await new Promise(
+                        (resolve) => {
+                            Resizer.imageFileResizer(
+                                item.originFileObj,
+                                1080, // maxWidth
+                                1080, // maxHeight
+                                "jpeg", // compressFormat
+                                70, // quality
+                                0, // rotation
+                                (compressedImage) => {
+                                    resolve(compressedImage);
+                                },
+                                "file", // outputType
+                                1000 // minWidth
+                            );
+                        }
+                    );
+
+                    return {
+                        originFileObj: compressedImage,
+                        is_delete: 0,
+                        lastModified: compressedImage.lastModified,
+                        lastModifiedDate: compressedImage.lastModifiedDate,
+                        name: compressedImage.name,
+                        size: compressedImage.size,
+                        type: compressedImage.type,
+                        uid: item.uid,
+                        status: "done",
+                    };
+                })
+            );
+
+            setFileList(modifiedFiles);
+        } catch (error) {
+            console.error("Error occurred:", error);
+        }
+    };
     const optionAvailability: SelectProps["options"] = [
         {
             label: "Busy",
@@ -236,6 +299,41 @@ const DealDetail = () => {
             refetch();
         },
     });
+
+    const { mutate: mutateUpload, isLoading: isLoadingUploadDeliveryRequest } =
+        POST_FILE("/api/deals/add_files");
+
+    const onSaveChangeFile = (value: any) => {
+        let data = new FormData();
+        data.append("deal_id", "" + dealId);
+        let count: number = 0;
+        for (let x = 0; x < fileList.length; x++) {
+            const elem: any = fileList[x];
+            data.append("files_" + x, elem.originFileObj, elem.name);
+            count++;
+        }
+        data.append("files_count", "" + count);
+        mutateUpload(data, {
+            onSuccess: (res) => {
+                if (res.success) {
+                    notification.success({
+                        message: "Deals",
+                        description: "File(s) Successfully Added",
+                    });
+                    refetch();
+                    setFileList([]);
+                }
+            },
+            onError: (err) => {},
+        });
+
+        // for (let x = 0; x < fileList.length; x++) {
+        //     const elem: any = fileList[x];
+        //     data.append("files_" + x, elem.originFileObj, elem.name);
+        // }
+
+        // addDealsFile.mutate({ id: fileList });
+    };
 
     const onSaveChangeQuill = (value: any) => {
         addDealsNotes.mutate({ deal_id: "" + dealId, notes: value.notes });
@@ -622,7 +720,7 @@ const DealDetail = () => {
             key: "1",
             label: `Note`,
             children: (
-                <div style={{ height: 240 }}>
+                <div style={{ height: 240, padding: 20 }}>
                     <Form
                         form={form_notes}
                         onFinish={(e) => onSaveChangeQuill(e)}
@@ -701,19 +799,31 @@ const DealDetail = () => {
                         padding: 20,
                     }}
                 >
-                    <Dragger>
+                    <Dragger
+                        multiple={true}
+                        name="avatar"
+                        action={""}
+                        fileList={fileList}
+                        onChange={handleChangeUpload}
+                        accept="image/png,image/jpg,image/jpeg,image/gif"
+                    >
                         <p className="ant-upload-drag-icon">
                             <InboxOutlined />
                         </p>
                         <p className="ant-upload-text">
-                            Click or drag file to this area to upload
-                        </p>
-                        <p className="ant-upload-hint">
-                            Support for a single or bulk upload. Strictly
-                            prohibited from uploading company data or other
-                            banned files.
+                            Drag and Drop files here or Click to upload
                         </p>
                     </Dragger>
+
+                    <div style={{ marginTop: 15 }}>
+                        <Button
+                            type="primary"
+                            onClick={onSaveChangeFile}
+                            style={{ float: "right" }}
+                        >
+                            Save
+                        </Button>
+                    </div>
                 </div>
             ),
         },
@@ -725,6 +835,154 @@ const DealDetail = () => {
             children: (
                 <>
                     <div>Upcoming (0)</div>
+
+                    {deals &&
+                        deals.data.activities.length > 0 &&
+                        deals.data.activities.map((item: any) => {
+                            return (
+                                <div>
+                                    <Card style={{ marginTop: 20 }}>
+                                        <div style={{ display: "flex" }}>
+                                            <span
+                                                className="thumb-name-xs "
+                                                title="Jesse Ashley"
+                                            >
+                                                {item.owner.firstName.charAt(0)}
+                                            </span>
+                                            <span
+                                                style={{
+                                                    fontSize: 16,
+                                                    marginLeft: 10,
+                                                }}
+                                            >
+                                                {" "}
+                                                <b>{item.type}</b> for{" "}
+                                                {item.owner.firstName +
+                                                    " " +
+                                                    item.owner.lastName}
+                                            </span>
+                                        </div>
+                                        <Divider></Divider>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <span>
+                                                <CheckCircleOutlined
+                                                    style={{ fontSize: 24 }}
+                                                />
+                                            </span>
+                                            <span
+                                                style={{
+                                                    fontSize: 16,
+                                                    marginLeft: 10,
+                                                }}
+                                            >
+                                                {item.title}
+                                            </span>
+                                        </div>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                padding: 20,
+                                                paddingTop: 0,
+                                                paddingBottom: 0,
+                                                marginTop: 10,
+                                            }}
+                                        >
+                                            <span>
+                                                <CalendarOutlined
+                                                    style={{ fontSize: 14 }}
+                                                />
+                                            </span>
+                                            <span
+                                                style={{
+                                                    fontSize: 14,
+                                                    marginLeft: 10,
+                                                }}
+                                            >
+                                                {" "}
+                                                {moment(item.start_date).format(
+                                                    "LLL"
+                                                )}
+                                            </span>
+                                        </div>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                padding: 20,
+                                                paddingTop: 0,
+                                                paddingBottom: 0,
+                                            }}
+                                        >
+                                            <span>
+                                                <UserOutlined
+                                                    style={{ fontSize: 14 }}
+                                                />
+                                            </span>
+                                            <span
+                                                style={{
+                                                    fontSize: 14,
+                                                    marginLeft: 10,
+                                                }}
+                                            >
+                                                {deals &&
+                                                    deals.data.owner.firstName +
+                                                        " " +
+                                                        deals.data.owner
+                                                            .lastName}
+                                            </span>
+                                        </div>
+                                        <Divider></Divider>
+                                        <Input placeholder="Add your note for this activity"></Input>
+                                    </Card>
+                                </div>
+                            );
+                        })}
+                    {deals &&
+                        deals.data.notes.length > 0 &&
+                        deals.data.notes.map((item: any) => {
+                            return (
+                                <div>
+                                    <Card style={{ marginTop: 20 }}>
+                                        <div style={{ display: "flex" }}>
+                                            <span
+                                                style={{
+                                                    fontSize: 16,
+                                                    marginLeft: 10,
+                                                }}
+                                            >
+                                                <b>{"Note Added"}</b> by{" "}
+                                                {item.user.firstName +
+                                                    " " +
+                                                    item.user.lastName}
+                                            </span>
+                                        </div>
+                                        <Divider></Divider>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <span
+                                                style={{
+                                                    fontSize: 16,
+                                                    marginLeft: 10,
+                                                }}
+                                                dangerouslySetInnerHTML={{
+                                                    __html: item.notes,
+                                                }}
+                                            ></span>
+                                        </div>
+                                    </Card>
+                                </div>
+                            );
+                        })}
                 </>
             ),
         },
@@ -856,19 +1114,12 @@ const DealDetail = () => {
                                     <Card style={{ marginTop: 20 }}>
                                         <div style={{ display: "flex" }}>
                                             <span
-                                                className="thumb-name-xs "
-                                                title="Jesse Ashley"
-                                            >
-                                                {item.user.firstName.charAt(0)}
-                                            </span>
-                                            <span
                                                 style={{
                                                     fontSize: 16,
                                                     marginLeft: 10,
                                                 }}
                                             >
-                                                {" "}
-                                                <b>{item.type}</b> for{" "}
+                                                <b>{"Note Added"}</b> by{" "}
                                                 {item.user.firstName +
                                                     " " +
                                                     item.user.lastName}
@@ -881,19 +1132,15 @@ const DealDetail = () => {
                                                 alignItems: "center",
                                             }}
                                         >
-                                            <span>
-                                                <CheckCircleOutlined
-                                                    style={{ fontSize: 24 }}
-                                                />
-                                            </span>
                                             <span
                                                 style={{
                                                     fontSize: 16,
                                                     marginLeft: 10,
                                                 }}
-                                            >
-                                                {item.notes}
-                                            </span>
+                                                dangerouslySetInnerHTML={{
+                                                    __html: item.notes,
+                                                }}
+                                            ></span>
                                         </div>
                                     </Card>
                                 </div>
@@ -910,7 +1157,74 @@ const DealDetail = () => {
         {
             key: "5",
             label: `File`,
-            children: `No Content`,
+            children: (
+                <>
+                    {deals &&
+                        deals.data.files.length > 0 &&
+                        deals.data.files.map((item: any) => {
+                            return (
+                                <div>
+                                    <Card style={{ marginTop: 20 }}>
+                                        <div style={{ display: "flex" }}>
+                                            <span
+                                                style={{
+                                                    fontSize: 16,
+                                                    marginLeft: 10,
+                                                }}
+                                            >
+                                                <b>{"File Added"}</b> by{" "}
+                                                {item.uploaded_by.firstName +
+                                                    " " +
+                                                    item.uploaded_by.lastName}
+                                            </span>
+                                        </div>
+                                        <Divider></Divider>
+
+                                        <div
+                                            style={{
+                                                background: "#F2F5FA",
+                                                borderRadius: 5,
+                                                padding: 10,
+                                                cursor: "pointer",
+                                            }}
+                                            onClick={() => {
+                                                window.open(
+                                                    window.location.origin +
+                                                        "/" +
+                                                        item.file_url
+                                                );
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                }}
+                                            >
+                                                <span>
+                                                    <PaperClipOutlined
+                                                        style={{ fontSize: 20 }}
+                                                    />
+                                                </span>
+                                                <span
+                                                    style={{ marginLeft: 10 }}
+                                                >
+                                                    {item.file_name}
+
+                                                    <div
+                                                        style={{ fontSize: 10 }}
+                                                    >
+                                                        {item.file_size}
+                                                    </div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </Card>
+                                </div>
+                            );
+                        })}
+                </>
+            ),
         },
         {
             key: "6",

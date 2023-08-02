@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Deal;
 use App\Models\DealNote;
+use App\Models\DealFile;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class DealsController extends Controller
 {
@@ -119,7 +121,7 @@ class DealsController extends Controller
      */
     public function show($id)
     {
-        $data = Deal::with(['owner', 'activities.owner', 'notes.user'])->find($id);
+        $data = Deal::with(['owner', 'activities.owner', 'notes.user', 'files.uploaded_by'])->find($id);
         return response()->json(['success' => true, 'data' => $data], 200);
     }
 
@@ -178,5 +180,52 @@ class DealsController extends Controller
         }
 
         return response()->json(['success' => true, 'data' => $data], 200);
+    }
+
+
+    public function add_files(Request $request)
+    {
+        $ret = [
+            "success" => false,
+            "message" => "File not saved",
+        ];
+
+        $category =  $request->category;
+
+        if ((int) $request->files_count !== 0) {
+            for ($i = 0; $i < $request->files_count; $i++) {
+                $file = $request->file('files_' . $i);
+
+                if ($file) {
+                    $file_name =  $file->getClientOriginalName();
+                    $file_size = $this->bytesToHuman($file->getSize());
+                    $fileFilePath = Str::random(10)  . '.' . $file->getClientOriginalExtension();
+                    $fileFilePathNew = $file->storeAs('uploads/delivery_requests', $fileFilePath, 'public');
+
+                    $file_url = $file->storeAs(
+                        'public/files',
+                        time() . '_' . $file_name
+                    );
+
+                    $file_url = str_replace('public/files/', '', $file_url);
+                    DealFile::create([
+                        'deal_id' => $request->deal_id,
+                        'file_size' => $file_size,
+                        'file_name' => $file_name,
+                        'file_url' => 'storage/' . $fileFilePathNew,
+                        'uploaded_by' => auth()->user()->id
+                    ]);
+                }
+            }
+
+
+
+            $ret = [
+                "success" => true,
+                "message" => "Files saved successfully"
+            ];
+        }
+
+        return response()->json($ret, 200);
     }
 }
