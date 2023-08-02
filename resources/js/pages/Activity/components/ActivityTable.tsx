@@ -346,8 +346,8 @@ const ActivityTable = () => {
             />
 
             <ModalManageColumn
-                isModalManageColumnOpen={isModalManageColumnOpen}
-                setIsModalManageColumnOpen={setIsModalManageColumnOpen}
+            // isModalManageColumnOpen={isModalManageColumnOpen}
+            // setIsModalManageColumnOpen={setIsModalManageColumnOpen}
             />
         </>
     );

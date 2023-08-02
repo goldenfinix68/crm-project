@@ -233,4 +233,72 @@
 }
 .FullCalendarActivity .fc-icon {
   font-size: 14px !important;
+}
+
+.modal-activity-manage-column {
+  width: 980px;
+  top: 70px;
+}
+.modal-activity-manage-column .ant-modal-close {
+  margin-top: -3px;
+  background: #0747a6;
+  border: 0;
+  width: 22px;
+  height: 22px;
+  font-size: 19px;
+}
+.modal-activity-manage-column .ant-modal-close .ant-modal-close-icon {
+  font-size: 10px;
+  line-height: 10px;
+  color: #fff;
+  right: 0;
+  width: 22px;
+  height: 22px;
+  top: 1px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal-activity-manage-column .ant-modal-close:hover {
+  background: #0747a6;
+}
+.modal-activity-manage-column .ant-modal-content {
+  border-radius: 0px;
+  padding: 0;
+}
+.modal-activity-manage-column .ant-modal-content .ant-modal-header {
+  background: #1f62ff;
+  border-radius: 0;
+  padding: 15px 17px;
+  border-bottom: 0;
+  height: 52px;
+}
+.modal-activity-manage-column .ant-modal-content .ant-modal-header .ant-modal-title {
+  margin-top: -2px;
+}
+.modal-activity-manage-column .ant-modal-content .ant-modal-header .ant-modal-title .ant-typography {
+  color: white;
+  font-weight: 400;
+  font-size: 16px;
+}
+.modal-activity-manage-column .ant-modal-content .ant-modal-body {
+  padding: 14px 20px 20px;
+}
+.modal-activity-manage-column .ant-modal-content .ant-modal-body .columns-list {
+  padding-right: 16px !important;
+}
+.modal-activity-manage-column .ant-modal-content .ant-modal-body .columns-list .custom-column-list {
+  height: calc(100vh - 331px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.modal-activity-manage-column .ant-modal-content .ant-modal-body .columns-list .custom-column-list .ant-row {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+.modal-activity-manage-column .ant-modal-content .ant-modal-body .columns-list .custom-column-list .custom-column-field {
+  display: flex;
+  justify-content: space-between;
+  padding-right: 16px !important;
 }/*# sourceMappingURL=activity.css.map */
