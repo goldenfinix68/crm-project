@@ -35,7 +35,8 @@ interface ContactsComponentsTableEditableCellName {
     setCurrentBtnActive: any;
     currentBtnActive: string;
     currentActiveCell: string;
-    recordType: any | null;
+    recordTypeFirst: any | null;
+    recordTypeLast: any | null;
     setCurrentActiveType: any;
     currentActiveType: string;
     setisModalOpen: any;
@@ -51,7 +52,8 @@ const ContactsComponentsTableEditableCellName = ({
     setCurrentBtnActive,
     currentBtnActive,
     currentActiveCell,
-    recordType,
+    recordTypeFirst,
+    recordTypeLast,
     setCurrentActiveType,
     currentActiveType,
     setisModalOpen,
@@ -73,9 +75,14 @@ const ContactsComponentsTableEditableCellName = ({
         setTContact(record);
     };
 
-    const [updateVal, setUpdateValue] = useState(recordType);
+    const [updateValFirst, setUpdateValueFirst] = useState(recordTypeFirst);
+    const [updateValLast, setUpdateValueLast] = useState(recordTypeLast);
 
-    const handleFinish = (values: TContact, updateVal: any) => {
+    const handleFinish = (
+        values: TContact,
+        updateValFirst: any,
+        updateValLast: any
+    ) => {
         // let data = {
         //     ...values,
         //     id: record.id,
@@ -88,14 +95,15 @@ const ContactsComponentsTableEditableCellName = ({
             addContact.mutate({
                 ...values,
                 id: record.id,
-                [type]: updateVal,
+                firstName: updateValFirst,
+                lastName: updateValLast,
             });
         }
     };
 
     return (
         <>
-            {recordType ? (
+            {updateValFirst || updateValLast ? (
                 <div
                     style={{
                         display: "flex",
@@ -152,73 +160,97 @@ const ContactsComponentsTableEditableCellName = ({
                     {((currentBtnActive == record.id &&
                         currentActiveType == type) ||
                         currentActiveCell == type + ": " + record.id) && (
-                        <Popconfirm
-                            title=""
-                            icon={null}
-                            description={
-                                <Space
-                                    style={{
-                                        flexDirection: "column",
-                                        width: "200px !important",
+                        <div>
+                            <Popconfirm
+                                title=""
+                                icon={null}
+                                description={
+                                    <Space
+                                        style={{
+                                            flexDirection: "column",
+                                            width: "200px !important",
+                                            alignItems: "flex-start",
+                                        }}
+                                    >
+                                        <Typography>First Name</Typography>
+                                        <Input
+                                            style={{
+                                                width: "200px !important",
+                                            }}
+                                            autoFocus
+                                            value={updateValFirst ?? ""}
+                                            onBlur={(value) => {
+                                                setCurrentBtnActive("");
+                                            }}
+                                            onChange={(e) => {
+                                                console.log(
+                                                    "value",
+                                                    e.target.value
+                                                );
+                                                setUpdateValueFirst(
+                                                    e.target.value
+                                                );
+                                            }}
+                                        ></Input>
+                                        <Typography className="m-t-sm">
+                                            Last Name
+                                        </Typography>
+                                        <Input
+                                            style={{
+                                                width: "200px !important",
+                                            }}
+                                            value={updateValLast ?? ""}
+                                            onBlur={(value) => {
+                                                setCurrentBtnActive("");
+                                            }}
+                                            onChange={(e) => {
+                                                console.log(
+                                                    "value",
+                                                    e.target.value
+                                                );
+                                                setUpdateValueLast(
+                                                    e.target.value
+                                                );
+                                            }}
+                                        ></Input>
+                                    </Space>
+                                }
+                                onConfirm={() => {
+                                    handleFinish(
+                                        record,
+                                        updateValFirst,
+                                        updateValLast
+                                    );
+                                }}
+                                onCancel={() => {
+                                    setCurrentActiveCell("");
+                                }}
+                                okText="Save"
+                                cancelText="No"
+                            >
+                                <Button
+                                    type="text"
+                                    onClick={() => {
+                                        setCurrentActiveCell(
+                                            type + ": " + record.id
+                                        );
+                                    }}
+                                    onBlur={() => {
+                                        setCurrentBtnActive("");
                                     }}
                                 >
-                                    <Input
-                                        style={{ width: "200px !important" }}
-                                        autoFocus
-                                        value={record.firstName ?? ""}
-                                        onBlur={(value) => {
-                                            setCurrentBtnActive("");
-                                        }}
-                                        onChange={(e) => {
-                                            console.log(
-                                                "value",
-                                                e.target.value
-                                            );
-                                            setUpdateValue(e.target.value);
-                                        }}
-                                    ></Input>
-                                    <Input
-                                        style={{ width: "200px !important" }}
-                                        value={record.lastName ?? ""}
-                                        onBlur={(value) => {
-                                            setCurrentBtnActive("");
-                                        }}
-                                        onChange={(e) => {
-                                            console.log(
-                                                "value",
-                                                e.target.value
-                                            );
-                                            setUpdateValue(e.target.value);
-                                        }}
-                                    ></Input>
-                                </Space>
-                            }
-                            onConfirm={() => {
-                                handleFinish(record, updateVal);
-                            }}
-                            onCancel={() => {
-                                setCurrentActiveCell("");
-                            }}
-                            okText="Save"
-                            cancelText="No"
-                        >
+                                    {<FontAwesomeIcon icon={faPen} />}
+                                </Button>
+                            </Popconfirm>
                             <Button
                                 type="text"
                                 onClick={() => {
-                                    setCurrentActiveCell(
-                                        type + ": " + record.id
-                                    );
-                                }}
-                                onBlur={() => {
-                                    setCurrentBtnActive("");
+                                    navigate(`/contacts/${record.id}`);
                                 }}
                             >
-                                {<FontAwesomeIcon icon={faPen} />}
-                            </Button>
-                            <Button type="text">
                                 <EyeOutlined />
                             </Button>
-                        </Popconfirm>
+                        </div>
                     )}
                 </div>
             ) : (
@@ -234,33 +266,41 @@ const ContactsComponentsTableEditableCellName = ({
                                     width: "200px !important",
                                 }}
                             >
+                                <Typography>First Name</Typography>
                                 <Input
                                     style={{ width: "200px !important" }}
                                     autoFocus
-                                    value={record.firstName ?? ""}
+                                    value={updateValFirst ?? ""}
                                     onBlur={(value) => {
                                         setCurrentBtnActive("");
                                     }}
                                     onChange={(e) => {
                                         console.log("value", e.target.value);
-                                        setUpdateValue(e.target.value);
+                                        setUpdateValueFirst(e.target.value);
+                                    }}
+                                    onClick={(value) => {
+                                        setCurrentBtnActive("");
                                     }}
                                 ></Input>
+                                <Typography>Last Name</Typography>
                                 <Input
                                     style={{ width: "200px !important" }}
-                                    value={record.lastName ?? ""}
+                                    value={updateValLast ?? ""}
                                     onBlur={(value) => {
                                         setCurrentBtnActive("");
                                     }}
                                     onChange={(e) => {
                                         console.log("value", e.target.value);
-                                        setUpdateValue(e.target.value);
+                                        setUpdateValueLast(e.target.value);
+                                    }}
+                                    onClick={(value) => {
+                                        setCurrentBtnActive("");
                                     }}
                                 ></Input>
                             </Space>
                         }
                         onConfirm={() => {
-                            handleFinish(record, updateVal);
+                            handleFinish(record, updateValFirst, updateValLast);
                         }}
                         onCancel={() => {
                             setCurrentActiveCell("");

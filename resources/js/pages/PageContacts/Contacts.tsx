@@ -216,7 +216,8 @@ const Contacts = () => {
                     setCurrentBtnActive={setCurrentBtnActive}
                     currentBtnActive={currentBtnActive}
                     record={record}
-                    recordType={(record.firstName && record.lastName) ?? null}
+                    recordTypeFirst={record.firstName ?? null}
+                    recordTypeLast={record.lastName ?? null}
                     setCurrentActiveType={setCurrentActiveType}
                     currentActiveType={currentActiveType}
                     setisModalOpen={setisModalOpen}
