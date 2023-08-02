@@ -27,7 +27,7 @@ export const useContactTypesAll = () => {
 };
 
 export const useGetContact = (id: string) => {
-    const { data, isLoading, isError } = useQuery<TContact>(
+    const { data, isLoading, isError, refetch } = useQuery<TContact>(
         "getContact",
         async () => {
             const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
@@ -44,6 +44,7 @@ export const useGetContact = (id: string) => {
         contact: data,
         isLoading,
         isError,
+        refetch,
     };
 };
 

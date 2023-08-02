@@ -26,6 +26,11 @@ export type TText = {
     message: string;
     type: "sent" | "received";
     sender: string;
+    day: string;
+    month: string;
+    year: string;
+    date: string;
+    time: string;
 };
 
 export type TDeal = {
@@ -126,4 +131,5 @@ export type TContact = {
     state?: string;
     owner?: string;
     wall?: TWallData[];
+    texts?: TText[];
 };
