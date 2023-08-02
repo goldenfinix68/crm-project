@@ -983,6 +983,70 @@ const DealDetail = () => {
                                 </div>
                             );
                         })}
+                    {deals &&
+                        deals.data.files.length > 0 &&
+                        deals.data.files.map((item: any) => {
+                            return (
+                                <div>
+                                    <Card style={{ marginTop: 20 }}>
+                                        <div style={{ display: "flex" }}>
+                                            <span
+                                                style={{
+                                                    fontSize: 16,
+                                                    marginLeft: 10,
+                                                }}
+                                            >
+                                                <b>{"File Added"}</b> by{" "}
+                                                {item.uploaded_by.firstName +
+                                                    " " +
+                                                    item.uploaded_by.lastName}
+                                            </span>
+                                        </div>
+                                        <Divider></Divider>
+
+                                        <div
+                                            style={{
+                                                background: "#F2F5FA",
+                                                borderRadius: 5,
+                                                padding: 10,
+                                                cursor: "pointer",
+                                            }}
+                                            onClick={() => {
+                                                window.open(
+                                                    window.location.origin +
+                                                        "/" +
+                                                        item.file_url
+                                                );
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                }}
+                                            >
+                                                <span>
+                                                    <PaperClipOutlined
+                                                        style={{ fontSize: 20 }}
+                                                    />
+                                                </span>
+                                                <span
+                                                    style={{ marginLeft: 10 }}
+                                                >
+                                                    {item.file_name}
+
+                                                    <div
+                                                        style={{ fontSize: 10 }}
+                                                    >
+                                                        {item.file_size}
+                                                    </div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </Card>
+                                </div>
+                            );
+                        })}
                 </>
             ),
         },
