@@ -166,7 +166,11 @@ const ModalWonDeal = ({
                     </Col>
                 </Row>
                 <div className="modal-footer">
-                    <Button className="m-r-xs" type="primary" htmlType="submit">
+                    <Button
+                        className="m-r-xs button-success-solid "
+                        type="primary"
+                        htmlType="submit"
+                    >
                         Save
                     </Button>
 
