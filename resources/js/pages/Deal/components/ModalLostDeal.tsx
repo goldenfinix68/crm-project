@@ -47,16 +47,16 @@ import {
     useUsersList,
 } from "../../../api/query/activityQuery";
 interface Props {
-    isModalOpenAdd: boolean;
-    handleOkAdd: () => void;
-    handleCancelAdd: () => void;
+    isModalOpenAdd1: boolean;
+    handleOkAdd1: () => void;
+    handleCancelAdd1: () => void;
     dealId: string;
 }
 
-const ModalWonDeal = ({
-    isModalOpenAdd,
-    handleOkAdd,
-    handleCancelAdd,
+const ModalLostDeal = ({
+    isModalOpenAdd1,
+    handleOkAdd1,
+    handleCancelAdd1,
     dealId,
 }: Props) => {
     const { dataUsers, isLoadingUsers } = useUsersList();
@@ -68,9 +68,9 @@ const ModalWonDeal = ({
         mutation.mutate({
             ...values,
             dealId: dealId,
-            isWon: 1,
-            isLost: 0,
-            action: "won",
+            isWon: 0,
+            isLost: 1,
+            action: "lost",
             estimated_close_date:
                 values.estimated_close_date.format("YYYY-MM-DD"),
         });
@@ -84,7 +84,7 @@ const ModalWonDeal = ({
                     message: "Deal",
                     description: "Updated Successfully",
                 });
-                handleOkAdd();
+                handleOkAdd1();
             }
         },
     });
@@ -92,8 +92,8 @@ const ModalWonDeal = ({
     return (
         <Modal
             className="modal-activity"
-            open={isModalOpenAdd}
-            onCancel={handleCancelAdd}
+            open={isModalOpenAdd1}
+            onCancel={handleCancelAdd1}
             width={600}
             footer={null}
             title={null}
@@ -119,7 +119,7 @@ const ModalWonDeal = ({
                     </Typography.Title>
 
                     <Button
-                        onClick={handleCancelAdd}
+                        onClick={handleCancelAdd1}
                         style={{
                             backgroundColor: "rgba(0, 0, 0, 0.5)",
                             border: "0px",
@@ -134,7 +134,36 @@ const ModalWonDeal = ({
                             following information as needed.
                         </div>
                         <Form.Item
-                            label="Won Description"
+                            label="Lost Reason"
+                            name="lost_reason"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <Select placeholder="Lost Reason">
+                                <Select.Option value="No Reason">
+                                    No Reason
+                                </Select.Option>
+                                <Select.Option value="Need">Need</Select.Option>
+                                <Select.Option value="Timing">
+                                    Timing
+                                </Select.Option>
+                                <Select.Option value="Competition">
+                                    Competition
+                                </Select.Option>
+                                <Select.Option value="Feature">
+                                    Feature
+                                </Select.Option>
+                                <Select.Option value="Poor Qualification">
+                                    Poor Qualification
+                                </Select.Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item
+                            label="Lost Description"
                             name="notes"
                             rules={[
                                 {
@@ -170,11 +199,11 @@ const ModalWonDeal = ({
                         Save
                     </Button>
 
-                    <Button onClick={handleCancelAdd}>Cancel</Button>
+                    <Button onClick={handleCancelAdd1}>Cancel</Button>
                 </div>
             </Form>
         </Modal>
     );
 };
 
-export default ModalWonDeal;
+export default ModalLostDeal;

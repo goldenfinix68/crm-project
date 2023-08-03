@@ -84,6 +84,7 @@ import { addActivityMutation } from "../../api/mutation/useActivityMutation";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import ModalWonDeal from "./components/ModalWonDeal";
+import ModalLostDeal from "./components/ModalLostDeal";
 
 interface DealsById {
     title: string;
@@ -179,6 +180,19 @@ const DealDetail = () => {
 
     const handleCancelAdd = () => {
         setIsModalOpenAdd(false);
+    };
+
+    const [isModalOpenAdd1, setIsModalOpenAdd1] = useState(false);
+    const showModalAdd1 = () => {
+        setIsModalOpenAdd1(true);
+    };
+    const handleOkAdd1 = () => {
+        setIsModalOpenAdd1(false);
+        queryClient.invalidateQueries("deals");
+    };
+
+    const handleCancelAdd1 = () => {
+        setIsModalOpenAdd1(false);
     };
     const optionAvailability: SelectProps["options"] = [
         {
@@ -1355,6 +1369,7 @@ const DealDetail = () => {
                                             ? "button-danger-outlined"
                                             : "button-danger-solid"
                                     }
+                                    onClick={() => showModalAdd1()}
                                 >
                                     <DislikeOutlined /> &nbsp; Lost
                                 </Button>
@@ -1565,6 +1580,12 @@ const DealDetail = () => {
                     isModalOpenAdd={isModalOpenAdd}
                     handleOkAdd={handleOkAdd}
                     handleCancelAdd={handleCancelAdd}
+                    dealId={"" + dealId}
+                />
+                <ModalLostDeal
+                    isModalOpenAdd1={isModalOpenAdd1}
+                    handleOkAdd1={handleOkAdd1}
+                    handleCancelAdd1={handleCancelAdd1}
                     dealId={"" + dealId}
                 />
             </Col>

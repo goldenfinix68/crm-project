@@ -16,6 +16,7 @@ class AddIsWon extends Migration
         Schema::table('deals', function (Blueprint $table) {
             $table->string('is_won')->nullable()->default("0");
             $table->string('is_lost')->nullable()->default("0");
+            $table->longText('lost_reason')->nullable();
         });
     }
 

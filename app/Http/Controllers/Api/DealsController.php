@@ -185,9 +185,17 @@ class DealsController extends Controller
     public function won(Request $request)
     {
         $find = Deal::find($request->dealId);
-        $find->is_won = $request->isWon;
-        $find->is_lost = $request->isLost;
-        $find->estimated_close_date = $request->estimated_close_date;
+        if ($request->action == "won") {
+            $find->is_won = $request->isWon;
+            $find->is_lost = $request->isLost;
+            $find->estimated_close_date = $request->estimated_close_date;
+        } else {
+            $find->is_won = $request->isWon;
+            $find->lost_reason = $request->lost_reason;
+            $find->is_lost = $request->isLost;
+            $find->estimated_close_date = $request->estimated_close_date;
+        }
+
         $find->save();
 
         $data = DealNote::updateOrCreate(
