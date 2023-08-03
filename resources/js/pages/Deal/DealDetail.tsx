@@ -1525,6 +1525,128 @@ const DealDetail = () => {
         },
     ];
 
+    const ActivityCard = () => {
+        {
+            deals &&
+                deals.data.activities.length > 0 &&
+                deals.data.activities.map((item: any) => {
+                    return (
+                        <div>
+                            <Card style={{ marginTop: 20 }}>
+                                <div className="delete-post-icon">
+                                    <Popconfirm
+                                        title="Delete"
+                                        description="Are you sure to delete this activity?"
+                                        onConfirm={() =>
+                                            confirmDeleteActivity(item.id)
+                                        }
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <DeleteOutlined />
+                                    </Popconfirm>
+                                </div>
+                                <div style={{ display: "flex" }}>
+                                    <span
+                                        className="thumb-name-xs "
+                                        title="Jesse Ashley"
+                                    >
+                                        {item.owner.firstName.charAt(0)}
+                                    </span>
+                                    <span
+                                        style={{
+                                            fontSize: 16,
+                                            marginLeft: 10,
+                                        }}
+                                    >
+                                        {" "}
+                                        <b>{item.type}</b> for{" "}
+                                        {item.owner.firstName +
+                                            " " +
+                                            item.owner.lastName}
+                                    </span>
+                                </div>
+                                <Divider></Divider>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <span>
+                                        <CheckCircleOutlined
+                                            style={{ fontSize: 24 }}
+                                        />
+                                    </span>
+                                    <span
+                                        style={{
+                                            fontSize: 16,
+                                            marginLeft: 10,
+                                        }}
+                                    >
+                                        {item.title}
+                                    </span>
+                                </div>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        padding: 20,
+                                        paddingTop: 0,
+                                        paddingBottom: 0,
+                                        marginTop: 10,
+                                    }}
+                                >
+                                    <span>
+                                        <CalendarOutlined
+                                            style={{ fontSize: 14 }}
+                                        />
+                                    </span>
+                                    <span
+                                        style={{
+                                            fontSize: 14,
+                                            marginLeft: 10,
+                                        }}
+                                    >
+                                        {" "}
+                                        {moment(item.start_date).format("LLL")}
+                                    </span>
+                                </div>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        padding: 20,
+                                        paddingTop: 0,
+                                        paddingBottom: 0,
+                                    }}
+                                >
+                                    <span>
+                                        <UserOutlined
+                                            style={{ fontSize: 14 }}
+                                        />
+                                    </span>
+                                    <span
+                                        style={{
+                                            fontSize: 14,
+                                            marginLeft: 10,
+                                        }}
+                                    >
+                                        {deals &&
+                                            deals.data.owner.firstName +
+                                                " " +
+                                                deals.data.owner.lastName}
+                                    </span>
+                                </div>
+                                <Divider></Divider>
+                                <Input placeholder="Add your note for this activity"></Input>
+                            </Card>
+                        </div>
+                    );
+                });
+        }
+    };
+
     return (
         <Row className="deal-group-row">
             <Col md={24}>
