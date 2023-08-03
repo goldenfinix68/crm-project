@@ -92,11 +92,17 @@ const ContactsComponentsTableEditableCellTags = ({
         <>
             {recordType ? (
                 <div
+                    className="cell"
                     style={{
                         display: "flex",
                         // justifyContent: "space-between",
                         alignItems: "center",
                         // width: "250px",
+                        paddingLeft: "10px",
+                        paddingRight: "1px",
+                        borderRadius: "5px",
+                        paddingTop: "0px",
+                        paddingBottom: "0px",
                     }}
                     onMouseOver={() => {
                         setCurrentBtnActive(record.id);
@@ -160,9 +166,11 @@ const ContactsComponentsTableEditableCellTags = ({
                         >
                             <Button
                                 style={{
+                                    margin: "2px",
                                     padding: "8px",
                                     display: "flex",
                                     alignItems: "center",
+                                    backgroundColor: "white",
                                 }}
                                 type="text"
                                 onClick={() => {
@@ -214,9 +222,11 @@ const ContactsComponentsTableEditableCellTags = ({
                     >
                         <Button
                             style={{
+                                margin: "2px",
                                 padding: "8px",
                                 display: "flex",
                                 alignItems: "center",
+                                backgroundColor: "white",
                             }}
                             onMouseOver={() => {
                                 setCurrentBtnActive(record.id);
