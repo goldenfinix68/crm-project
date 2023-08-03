@@ -859,6 +859,56 @@ const DealDetail = () => {
             label: `All`,
             children: (
                 <>
+                    {deals && deals.notes.length > 0 && (
+                        <div>Pinned Notes ({deals.notes.length})</div>
+                    )}
+                    {deals &&
+                        deals.notes.length > 0 &&
+                        deals.notes.map((item: any) => {
+                            return (
+                                <div>
+                                    <Card
+                                        style={{
+                                            marginTop: 20,
+                                            background: "#dfddca",
+                                            marginBottom: "20px",
+                                        }}
+                                    >
+                                        <div style={{ display: "flex" }}>
+                                            <span
+                                                style={{
+                                                    fontSize: 16,
+                                                    marginLeft: 10,
+                                                }}
+                                            >
+                                                <b>{"Note Added"}</b> by{" "}
+                                                {item.user.firstName +
+                                                    " " +
+                                                    item.user.lastName}
+                                            </span>
+                                        </div>
+                                        <Divider></Divider>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <span
+                                                style={{
+                                                    fontSize: 16,
+                                                    marginLeft: 10,
+                                                }}
+                                                dangerouslySetInnerHTML={{
+                                                    __html: item.notes,
+                                                }}
+                                            ></span>
+                                        </div>
+                                    </Card>
+                                </div>
+                            );
+                        })}
+
                     <div>Upcoming (0)</div>
 
                     {deals &&
