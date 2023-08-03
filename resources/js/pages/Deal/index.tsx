@@ -522,14 +522,14 @@ const Deal = () => {
                         navigate("/deals/" + x.id);
                     }}
                 >
-                    <div>{x.owner.firstName + " " + x.owner.lastName} </div>
+                    <div>{x?.owner.firstName + " " + x?.owner.lastName} </div>
                     <div
                         style={{
                             fontSize: 12,
                             color: "#9b9999",
                         }}
                     >
-                        {x.owner.firstName + " " + x.owner.lastName} - $
+                        {x?.owner?.firstName + " " + x?.owner?.lastName} - $
                         {toCurrency(x.value)}{" "}
                     </div>
                     <div
@@ -538,7 +538,7 @@ const Deal = () => {
                             color: "#9b9999",
                         }}
                     >
-                        {moment(x.estimated_close_date).format("LL")}
+                        {moment(x?.estimated_close_date).format("LL")}
                     </div>
 
                     <div

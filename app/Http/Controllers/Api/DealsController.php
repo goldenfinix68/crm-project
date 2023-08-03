@@ -182,6 +182,34 @@ class DealsController extends Controller
         return response()->json(['success' => true, 'data' => $data], 200);
     }
 
+    public function won(Request $request)
+    {
+        $find = Deal::find($request->dealId);
+        if ($request->action == "won") {
+            $find->is_won = $request->isWon;
+            $find->is_lost = $request->isLost;
+            $find->estimated_close_date = $request->estimated_close_date;
+        } else {
+            $find->is_won = $request->isWon;
+            $find->lost_reason = $request->lost_reason;
+            $find->is_lost = $request->isLost;
+            $find->estimated_close_date = $request->estimated_close_date;
+        }
+
+        $find->save();
+
+        $data = DealNote::updateOrCreate(
+            ['id' => isset($request->id) ? $request->id : 0],
+            [
+                'notes' => $request->notes,
+                'deal_id' => $request->dealId,
+                'user_id' => auth()->user()->id,
+                'is_pinned' => "1"
+            ]
+        );
+
+        return response()->json(['success' => true], 200);
+    }
 
     public function add_files(Request $request)
     {
