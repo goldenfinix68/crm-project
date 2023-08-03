@@ -109,7 +109,7 @@ const ContactsComponentsTableEditableCell = ({
                         currentActiveType == type) ||
                         currentActiveCell == type + ": " + record.id) && (
                         <Popconfirm
-                            title=""
+                            title={type.charAt(0).toUpperCase() + type.slice(1)}
                             icon={null}
                             description={
                                 <Input
