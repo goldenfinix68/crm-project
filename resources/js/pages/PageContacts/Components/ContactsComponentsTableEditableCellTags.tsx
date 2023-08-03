@@ -114,7 +114,7 @@ const ContactsComponentsTableEditableCellTags = ({
                     }}
                 >
                     {/* {recordType} */}
-                    <div className="tag-container">
+                    <div className="tag-container" style={{ width: "90%" }}>
                         {recordType &&
                             recordType &&
                             recordType.length > 0 &&
@@ -128,128 +128,157 @@ const ContactsComponentsTableEditableCellTags = ({
                                 </Tag>
                             ))}
                     </div>
-
-                    {((currentBtnActive == record.id &&
-                        currentActiveType == type) ||
-                        currentActiveCell == type + ": " + record.id) && (
-                        <Popconfirm
-                            title=""
-                            icon={null}
-                            description={
-                                <Space
-                                    style={{
-                                        width: "250px",
-                                    }}
-                                >
-                                    <Select
-                                        value={clearSelect}
-                                        // defaultValue={updateVal ?? []}
-                                        mode="tags"
-                                        style={{ width: "250px" }}
-                                        tokenSeparators={[","]}
-                                        onChange={(values) => {
-                                            setClearSelect(values);
-                                            setUpdateValue(values);
+                    <div style={{ width: "17%" }}>
+                        {((currentBtnActive == record.id &&
+                            currentActiveType == type) ||
+                            currentActiveCell == type + ": " + record.id) && (
+                            <Popconfirm
+                                title=""
+                                icon={null}
+                                description={
+                                    <Space
+                                        style={{
+                                            width: "250px",
                                         }}
-                                    />
-                                </Space>
-                            }
-                            onConfirm={() => {
-                                handleFinish(record, updateVal);
-                            }}
-                            onCancel={() => {
-                                setCurrentActiveCell("");
-                                setClearSelect(updateVal ?? []);
-                            }}
-                            okText="Save"
-                            cancelText="No"
-                        >
-                            <Button
-                                style={{
-                                    margin: "2px",
-                                    padding: "8px",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    backgroundColor: "white",
+                                    >
+                                        <Select
+                                            value={clearSelect}
+                                            // defaultValue={updateVal ?? []}
+                                            mode="tags"
+                                            style={{ width: "250px" }}
+                                            tokenSeparators={[","]}
+                                            onChange={(values) => {
+                                                setClearSelect(values);
+                                                setUpdateValue(values);
+                                            }}
+                                        />
+                                    </Space>
+                                }
+                                onConfirm={() => {
+                                    handleFinish(record, updateVal);
                                 }}
-                                type="text"
-                                onClick={() => {
-                                    setCurrentActiveCell(
-                                        type + ": " + record.id
-                                    );
+                                onCancel={() => {
+                                    setCurrentActiveCell("");
                                     setClearSelect(updateVal ?? []);
                                 }}
-                                onBlur={() => {
-                                    setCurrentBtnActive("");
-                                }}
+                                okText="Save"
+                                cancelText="No"
                             >
-                                {<FontAwesomeIcon icon={faPen} />}
-                            </Button>
-                        </Popconfirm>
-                    )}
+                                <Button
+                                    style={{
+                                        margin: "2px",
+                                        padding: "8px",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        backgroundColor: "white",
+                                    }}
+                                    type="text"
+                                    onClick={() => {
+                                        setCurrentActiveCell(
+                                            type + ": " + record.id
+                                        );
+                                        setClearSelect(updateVal ?? []);
+                                    }}
+                                    onBlur={() => {
+                                        setCurrentBtnActive("");
+                                    }}
+                                >
+                                    {<FontAwesomeIcon icon={faPen} />}
+                                </Button>
+                            </Popconfirm>
+                        )}
+                    </div>
                 </div>
             ) : (
                 (currentActiveCell != type + ": " + record.id ||
                     currentActiveCell == type + ": " + record.id) && (
-                    <Popconfirm
-                        title=""
-                        icon={null}
-                        description={
-                            <Space style={{ width: "250px" }}>
-                                <Select
-                                    value={clearSelect}
-                                    // defaultValue={updateVal ?? []}
-                                    mode="tags"
-                                    style={{ width: "250px" }}
-                                    tokenSeparators={[","]}
-                                    onChange={(values) => {
-                                        setClearSelect(values);
-                                        setUpdateValue(values);
-                                    }}
-                                    // options={options}
-                                />
-                            </Space>
-                        }
-                        onConfirm={() => {
-                            handleFinish(record, updateVal);
+                    <div
+                        className="cell"
+                        style={{
+                            display: "flex",
+                            // justifyContent: "space-between",
+                            alignItems: "center",
+                            // width: "250px",
+                            paddingLeft: "10px",
+                            paddingRight: "1px",
+                            borderRadius: "5px",
+                            paddingTop: "0px",
+                            paddingBottom: "0px",
                         }}
-                        onCancel={() => {
-                            setCurrentActiveCell("");
-                            setClearSelect(updateVal ?? []);
+                        onMouseOver={() => {
+                            setCurrentBtnActive(record.id);
+                            setCurrentActiveType(type);
                         }}
-                        okText="Save"
-                        cancelText="No"
+                        onMouseLeave={() => {
+                            setCurrentBtnActive("");
+                            setCurrentActiveType("");
+                        }}
                     >
-                        <Button
-                            style={{
-                                margin: "2px",
-                                padding: "8px",
-                                display: "flex",
-                                alignItems: "center",
-                                backgroundColor: "white",
-                            }}
-                            onMouseOver={() => {
-                                setCurrentBtnActive(record.id);
-                                setCurrentActiveType(type);
-                            }}
-                            onMouseLeave={() => {
-                                setCurrentBtnActive("");
-                                setCurrentActiveType("");
-                            }}
-                            type="text"
-                            onClick={() => {
-                                setCurrentActiveCell(type + ": " + record.id);
-                                setClearSelect([]);
-                            }}
-                        >
-                            {((currentBtnActive == record.id &&
-                                currentActiveType == type) ||
-                                currentActiveCell ==
-                                    type + ": " + record.id) && (
-                                <FontAwesomeIcon icon={faPen} />
-                            )}
-                        </Button>
-                    </Popconfirm>
+                        <div style={{ width: "90%" }}></div>
+                        <div>
+                            <Popconfirm
+                                title=""
+                                icon={null}
+                                description={
+                                    <Space style={{ width: "250px" }}>
+                                        <Select
+                                            value={clearSelect}
+                                            // defaultValue={updateVal ?? []}
+                                            mode="tags"
+                                            style={{ width: "250px" }}
+                                            tokenSeparators={[","]}
+                                            onChange={(values) => {
+                                                setClearSelect(values);
+                                                setUpdateValue(values);
+                                            }}
+                                            // options={options}
+                                        />
+                                    </Space>
+                                }
+                                onConfirm={() => {
+                                    handleFinish(record, updateVal);
+                                }}
+                                onCancel={() => {
+                                    setCurrentActiveCell("");
+                                    setClearSelect(updateVal ?? []);
+                                }}
+                                okText="Save"
+                                cancelText="No"
+                            >
+                                <Button
+                                    style={{
+                                        margin: "2px",
+                                        padding: "8px",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        backgroundColor: "white",
+                                    }}
+                                    onMouseOver={() => {
+                                        setCurrentBtnActive(record.id);
+                                        setCurrentActiveType(type);
+                                    }}
+                                    onMouseLeave={() => {
+                                        setCurrentBtnActive("");
+                                        setCurrentActiveType("");
+                                    }}
+                                    type="text"
+                                    onClick={() => {
+                                        setCurrentActiveCell(
+                                            type + ": " + record.id
+                                        );
+                                        setClearSelect([]);
+                                    }}
+                                >
+                                    {((currentBtnActive == record.id &&
+                                        currentActiveType == type) ||
+                                        currentActiveCell ==
+                                            type + ": " + record.id) && (
+                                        <FontAwesomeIcon icon={faPen} />
+                                    )}
+                                </Button>
+                            </Popconfirm>
+                        </div>
+                    </div>
                 )
             )}
         </>
