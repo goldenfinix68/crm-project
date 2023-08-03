@@ -12094,4 +12094,21 @@ textarea.form-control-lg {
   padding: 4px 11px;
   border: 1px solid #d9d9d9;
   border-radius: 2px;
+}
+
+.tag-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tag-item {
+  margin: 2px;
+}
+
+.cell:hover {
+  background-color: rgba(204, 224, 252, 0.537254902);
+}
+
+.custom-table-cell {
+  height: 69px;
 }/*# sourceMappingURL=contacts.css.map */

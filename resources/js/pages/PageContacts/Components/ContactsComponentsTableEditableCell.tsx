@@ -16,7 +16,7 @@ import {
     Popconfirm,
 } from "antd";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
 import { useMutation, useQueryClient } from "react-query";
@@ -78,14 +78,21 @@ const ContactsComponentsTableEditableCell = ({
             });
         }
     };
+
     return (
         <>
-            {record.email ? (
+            {recordType ? (
                 <div
+                    className="cell"
                     style={{
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
+                        paddingLeft: "10px",
+                        paddingRight: "1px",
+                        borderRadius: "5px",
+                        paddingTop: "0px",
+                        paddingBottom: "0px",
                     }}
                     onMouseOver={() => {
                         setCurrentBtnActive(record.id);
@@ -102,13 +109,13 @@ const ContactsComponentsTableEditableCell = ({
                         currentActiveType == type) ||
                         currentActiveCell == type + ": " + record.id) && (
                         <Popconfirm
-                            title=""
+                            title={type.charAt(0).toUpperCase() + type.slice(1)}
                             icon={null}
                             description={
                                 <Input
+                                    autoFocus
                                     value={updateVal ?? ""}
                                     onBlur={(value) => {
-                                        //   setCurrentActiveCell("");
                                         setCurrentBtnActive("");
                                     }}
                                     onChange={(e) => {
@@ -127,7 +134,13 @@ const ContactsComponentsTableEditableCell = ({
                             cancelText="No"
                         >
                             <Button
-                                style={{}}
+                                style={{
+                                    margin: "2px",
+                                    padding: "8px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    backgroundColor: "white",
+                                }}
                                 type="text"
                                 onClick={() => {
                                     setCurrentActiveCell(
@@ -135,7 +148,6 @@ const ContactsComponentsTableEditableCell = ({
                                     );
                                 }}
                                 onBlur={() => {
-                                    // setCurrentActiveCell("");
                                     setCurrentBtnActive("");
                                 }}
                             >
@@ -152,14 +164,17 @@ const ContactsComponentsTableEditableCell = ({
                         icon={null}
                         description={
                             <Input
+                                autoFocus
                                 value={updateVal ?? ""}
                                 onBlur={() => {
-                                    // setCurrentActiveCell("");
-                                    // setCurrentBtnActive("");
+                                    setCurrentBtnActive("");
                                 }}
                                 onChange={(e) => {
                                     console.log("value", e.target.value);
                                     setUpdateValue(e.target.value);
+                                }}
+                                onClick={(value) => {
+                                    setCurrentBtnActive("");
                                 }}
                             />
                         }
@@ -167,32 +182,61 @@ const ContactsComponentsTableEditableCell = ({
                             handleFinish(record, updateVal);
                         }}
                         onCancel={() => {
-                            // setCurrentActiveCell("");
+                            setCurrentActiveCell("");
                         }}
                         okText="Save"
                         cancelText="No"
                     >
-                        <Button
+                        <div
+                            className="cell"
+                            style={{
+                                display: "flex",
+                                justifyContent: "flex-end",
+                                borderRadius: "5px",
+                            }}
                             onMouseOver={() => {
                                 setCurrentBtnActive(record.id);
                                 setCurrentActiveType(type);
                             }}
                             onMouseLeave={() => {
-                                // setCurrentBtnActive("");
-                                // setCurrentActiveType("");
+                                setCurrentBtnActive("");
+                                setCurrentActiveType("");
                             }}
-                            type="text"
                             onClick={() => {
                                 setCurrentActiveCell(type + ": " + record.id);
                             }}
                         >
-                            {((currentBtnActive == record.id &&
-                                currentActiveType == type) ||
-                                currentActiveCell ==
-                                    type + ": " + record.id) && (
-                                <FontAwesomeIcon icon={faPen} />
-                            )}
-                        </Button>
+                            <Button
+                                style={{
+                                    padding: "8px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    margin: "2px",
+                                    backgroundColor: "white",
+                                }}
+                                onMouseOver={() => {
+                                    setCurrentBtnActive(record.id);
+                                    setCurrentActiveType(type);
+                                }}
+                                onMouseLeave={() => {
+                                    setCurrentBtnActive("");
+                                    setCurrentActiveType("");
+                                }}
+                                type="text"
+                                onClick={() => {
+                                    setCurrentActiveCell(
+                                        type + ": " + record.id
+                                    );
+                                }}
+                            >
+                                {((currentBtnActive == record.id &&
+                                    currentActiveType == type) ||
+                                    currentActiveCell ==
+                                        type + ": " + record.id) && (
+                                    <FontAwesomeIcon icon={faPen} />
+                                )}
+                            </Button>
+                        </div>
                     </Popconfirm>
                 )
             )}

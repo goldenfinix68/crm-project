@@ -72,7 +72,7 @@ interface TDeals {
     value: string;
     stage: string;
     status: string;
-    owner: string;
+    owner: any;
 }
 interface Bytotal {
     comp_qualify: number;
@@ -519,17 +519,18 @@ const Deal = () => {
                 <Card
                     style={{ width: "100%", cursor: "pointer" }}
                     onClick={() => {
-                        navigate("/deals/1");
+                        navigate("/deals/" + x.id);
                     }}
                 >
-                    <div>{x.owner} </div>
+                    <div>{x?.owner?.firstName + " " + x?.owner?.lastName} </div>
                     <div
                         style={{
                             fontSize: 12,
                             color: "#9b9999",
                         }}
                     >
-                        {x.owner} - ${toCurrency(x.value)}{" "}
+                        {x?.owner?.firstName + " " + x?.owner?.lastName} - $
+                        {toCurrency(x.value)}{" "}
                     </div>
                     <div
                         style={{
@@ -537,7 +538,7 @@ const Deal = () => {
                             color: "#9b9999",
                         }}
                     >
-                        {moment(x.estimated_close_date).format("LL")}
+                        {moment(x?.estimated_close_date).format("LL")}
                     </div>
 
                     <div

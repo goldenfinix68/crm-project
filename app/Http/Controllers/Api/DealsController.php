@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Deal;
+use App\Models\DealNote;
+use App\Models\DealFile;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class DealsController extends Controller
 {
@@ -39,7 +42,7 @@ class DealsController extends Controller
                     ->orWhere('last_name', 'LIKE', "%$search%")
                     ->orWhere(\DB::raw("(SELECT DATE_FORMAT(created_at, '%m/%d/%Y'))"), 'LIKE', "%$request->search%");
             }
-        });
+        })->with('owner');
 
         if ($request->pipeline) {
             $data->where('pipeline', $request->pipeline);
@@ -118,7 +121,8 @@ class DealsController extends Controller
      */
     public function show($id)
     {
-        //
+        $data = Deal::with(['owner', 'activities.owner', 'notes.user', 'files.uploaded_by'])->find($id);
+        return response()->json(['success' => true, 'data' => $data], 200);
     }
 
     /**
@@ -131,6 +135,21 @@ class DealsController extends Controller
     public function update(Request $request, $id)
     {
         //
+    }
+
+    public function add_notes(Request $request)
+    {
+
+        $data = DealNote::updateOrCreate(
+            ['id' => isset($request->id) ? $request->id : 0],
+            [
+                'notes' => $request->notes,
+                'deal_id' => $request->deal_id,
+                'user_id' => auth()->user()->id
+            ]
+        );
+
+        return response()->json(['success' => true, 'data' => $data], 200);
     }
 
     /**
@@ -161,5 +180,80 @@ class DealsController extends Controller
         }
 
         return response()->json(['success' => true, 'data' => $data], 200);
+    }
+
+    public function won(Request $request)
+    {
+        $find = Deal::find($request->dealId);
+        if ($request->action == "won") {
+            $find->is_won = $request->isWon;
+            $find->is_lost = $request->isLost;
+            $find->estimated_close_date = $request->estimated_close_date;
+        } else {
+            $find->is_won = $request->isWon;
+            $find->lost_reason = $request->lost_reason;
+            $find->is_lost = $request->isLost;
+            $find->estimated_close_date = $request->estimated_close_date;
+        }
+
+        $find->save();
+
+        $data = DealNote::updateOrCreate(
+            ['id' => isset($request->id) ? $request->id : 0],
+            [
+                'notes' => $request->notes,
+                'deal_id' => $request->dealId,
+                'user_id' => auth()->user()->id,
+                'is_pinned' => "1"
+            ]
+        );
+
+        return response()->json(['success' => true], 200);
+    }
+
+    public function add_files(Request $request)
+    {
+        $ret = [
+            "success" => false,
+            "message" => "File not saved",
+        ];
+
+        $category =  $request->category;
+
+        if ((int) $request->files_count !== 0) {
+            for ($i = 0; $i < $request->files_count; $i++) {
+                $file = $request->file('files_' . $i);
+
+                if ($file) {
+                    $file_name =  $file->getClientOriginalName();
+                    $file_size = $this->bytesToHuman($file->getSize());
+                    $fileFilePath = Str::random(10)  . '.' . $file->getClientOriginalExtension();
+                    $fileFilePathNew = $file->storeAs('uploads/delivery_requests', $fileFilePath, 'public');
+
+                    $file_url = $file->storeAs(
+                        'public/files',
+                        time() . '_' . $file_name
+                    );
+
+                    $file_url = str_replace('public/files/', '', $file_url);
+                    DealFile::create([
+                        'deal_id' => $request->deal_id,
+                        'file_size' => $file_size,
+                        'file_name' => $file_name,
+                        'file_url' => 'storage/' . $fileFilePathNew,
+                        'uploaded_by' => auth()->user()->id
+                    ]);
+                }
+            }
+
+
+
+            $ret = [
+                "success" => true,
+                "message" => "Files saved successfully"
+            ];
+        }
+
+        return response()->json($ret, 200);
     }
 }

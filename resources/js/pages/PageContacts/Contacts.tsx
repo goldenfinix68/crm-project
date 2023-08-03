@@ -45,6 +45,7 @@ import {
     MailOutlined,
     MobileOutlined,
     UnorderedListOutlined,
+    EyeOutlined,
 } from "@ant-design/icons";
 import type { ColumnsType, TableProps, ColumnGroupType } from "antd/es/table";
 import ContactsComponentsAddContacts from "./Components/ContactsComponentsAddContacts";
@@ -59,6 +60,8 @@ import { useNavigate } from "react-router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import ContactsComponentsTableEditableCell from "./Components/ContactsComponentsTableEditableCell";
+import ContactsComponentsTableEditableCellTags from "./Components/ContactsComponentsTableEditableCellTags";
+import ContactsComponentsTableEditableCellName from "./Components/ContactsComponentsTableEditableCellName";
 
 interface DataType {
     key: React.Key;
@@ -206,46 +209,87 @@ const Contacts = () => {
             title: "Name",
             dataIndex: "name",
             render: (text: string, record: TContact) => (
-                <>
-                    <Button
-                        type="text"
-                        className="m-r-sm"
-                        icon={<EditOutlined />}
-                        onClick={() => {
-                            setisModalOpen(true);
-                            handleEdit(record);
-                            console.log("data", record);
-                            setTitle("Edit Contact");
-                        }}
-                    />
-                    <Avatar
-                        className="avatarText m-r-sm"
-                        // src={record.avatar}
-                        size={32}
-                        style={{
-                            backgroundColor: "#1677FF",
-                            verticalAlign: "middle",
-                        }}
-                    >
-                        {record.firstName.charAt(0)}
-                    </Avatar>
-                    <span style={{ marginLeft: "8px" }}>
-                        <Button
-                            type="link"
-                            style={{ padding: 0 }}
-                            onClick={() => {
-                                navigate(`/contacts/${record.id}`);
-                            }}
-                        >
-                            {record.firstName} {record.lastName}
-                        </Button>
-                    </span>
-                </>
+                <ContactsComponentsTableEditableCellName
+                    type="name"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    recordTypeFirst={record.firstName ?? null}
+                    recordTypeLast={record.lastName ?? null}
+                    setCurrentActiveType={setCurrentActiveType}
+                    currentActiveType={currentActiveType}
+                    setisModalOpen={setisModalOpen}
+                    setTContact={setTContact}
+                    setTitle={setTitle}
+                    navigate={navigate}
+                />
+                // <>
+                //     <div>
+                //         <Button
+                //             type="text"
+                //             className="m-r-sm"
+                //             icon={<FontAwesomeIcon icon={faPen} />}
+                //             onClick={() => {
+                //                 setisModalOpen(true);
+                //                 handleEdit(record);
+                //                 console.log("data", record);
+                //                 setTitle("Edit Contact");
+                //             }}
+                //         />
+                //         <Avatar
+                //             className="avatarText m-r-sm"
+                //             // src={record.avatar}
+                //             size={32}
+                //             style={{
+                //                 backgroundColor: "#1677FF",
+                //                 verticalAlign: "middle",
+                //             }}
+                //         >
+                //             {record.firstName.charAt(0)}
+                //         </Avatar>
+                //         <span style={{ marginLeft: "8px" }}>
+                //             <Button
+                //                 type="link"
+                //                 style={{ padding: 0 }}
+                //                 onClick={() => {
+                //                     navigate(`/contacts/${record.id}`);
+                //                 }}
+                //             >
+                //                 {record.firstName} {record.lastName}
+                //             </Button>
+                //         </span>
+                //         <span>
+                //             <Button
+                //                 type="text"
+                //                 icon={<FontAwesomeIcon icon={faPen} />}
+                //                 onClick={() => {
+                //                     setisModalOpen(true);
+                //                     handleEdit(record);
+                //                     console.log("data", record);
+                //                     setTitle("Edit Contact");
+                //                 }}
+                //             />
+                //             <Button
+                //                 type="text"
+                //                 icon={<EyeOutlined />}
+                //                 onClick={() => {
+                //                     setisModalOpen(true);
+                //                     handleEdit(record);
+                //                     console.log("data", record);
+                //                     setTitle("Edit Contact");
+                //                 }}
+                //             />
+                //         </span>
+                //     </div>
+                // </>
             ),
             sorter: (a, b) => a.firstName.length - b.firstName.length,
             defaultSortOrder: "descend",
             fixed: "left",
-            width: 350,
+            width: 400,
+            className: "custom-table-cell",
         },
         {
             key: "email",
@@ -330,17 +374,29 @@ const Contacts = () => {
             render: (text: string, record: TContact) => (
                 <>
                     {/* {record.firstName} */}
-                    {record &&
+                    {/* {record &&
                         record.tags &&
                         record.tags.length > 0 &&
                         record.tags.map((tag) => (
                             <Tag color="blue" key={tag}>
                                 {tag}
                             </Tag>
-                        ))}
+                        ))} */}
+
+                    <ContactsComponentsTableEditableCellTags
+                        type="tags"
+                        setCurrentActiveCell={setCurrentActiveCell}
+                        currentActiveCell={currentActiveCell}
+                        setCurrentBtnActive={setCurrentBtnActive}
+                        currentBtnActive={currentBtnActive}
+                        record={record}
+                        setCurrentActiveType={setCurrentActiveType}
+                        recordType={record.tags ?? null}
+                        currentActiveType={currentActiveType}
+                    />
                 </>
             ),
-            width: 150,
+            width: 250,
         },
         {
             key: "owner",
