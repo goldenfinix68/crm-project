@@ -153,6 +153,29 @@ class DealsController extends Controller
         return response()->json(['success' => true, 'data' => $data], 200);
     }
 
+    public function delete_notes(Request $request)
+    {
+        $data = DealNote::find($request->id);
+        $data->delete();
+
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
+    public function delete_activity(Request $request)
+    {
+        $data = \App\Models\Activity::find($request->id);
+        $data->delete();
+
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
+
+    public function delete_file(Request $request)
+    {
+        $data = \App\Models\DealFile::find($request->id);
+        $data->delete();
+
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
+
     /**
      * Remove the specified resource from storage.
      *

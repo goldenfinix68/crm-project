@@ -23,6 +23,7 @@ import {
     TimePicker,
     message,
     Upload,
+    Popconfirm,
 } from "antd";
 import axios from "axios";
 import type { UploadProps } from "antd";
@@ -66,6 +67,7 @@ import {
     InboxOutlined,
     UploadOutlined,
     PaperClipOutlined,
+    DeleteOutlined,
 } from "@ant-design/icons";
 
 import { useDealsAll, useDealsByid } from "../../api/query/dealQuery";
@@ -75,7 +77,12 @@ import {
     useUsersList,
 } from "../../api/query/activityQuery";
 import { useMutation, useQueryClient } from "react-query";
-import { useDealMutationAddNotes } from "../../api/mutation/useDealMutation";
+import {
+    useDealMutationAddNotes,
+    useDealMutationDeleteNotes,
+    useDealMutationDeleteActivity,
+    useDealMutationDeleteFile,
+} from "../../api/mutation/useDealMutation";
 import moment from "moment";
 import DealsTable from "./components/DealsTable";
 import type { SelectProps } from "antd";
@@ -325,6 +332,51 @@ const DealDetail = () => {
         },
     });
 
+    const deleteDealsNotes = useMutation(useDealMutationDeleteNotes, {
+        onSuccess: (res) => {
+            notification.success({
+                message: "Deals",
+                description: "Notes Successfully Deleted",
+            });
+
+            refetch();
+        },
+    });
+
+    const confirmDeleteNotes = (id: string) => {
+        deleteDealsNotes.mutate({ id: id });
+    };
+
+    const deleteActivity = useMutation(useDealMutationDeleteActivity, {
+        onSuccess: (res) => {
+            notification.success({
+                message: "Deals",
+                description: "Activity Successfully Deleted",
+            });
+
+            refetch();
+        },
+    });
+
+    const confirmDeleteActivity = (id: string) => {
+        deleteActivity.mutate({ id: id });
+    };
+
+    const deleteFile = useMutation(useDealMutationDeleteFile, {
+        onSuccess: (res) => {
+            notification.success({
+                message: "Deals",
+                description: "File Successfully Deleted",
+            });
+
+            refetch();
+        },
+    });
+
+    const confirmDeleteFile = (id: string) => {
+        deleteFile.mutate({ id: id });
+    };
+
     const { mutate: mutateUpload, isLoading: isLoadingUploadDeliveryRequest } =
         POST_FILE("/api/deals/add_files");
 
@@ -397,14 +449,13 @@ const DealDetail = () => {
                             style={{
                                 fontSize: 14,
                                 marginLeft: 10,
-                                marginTop: 10,
                             }}
                         >
                             {" "}
                             Jesse Ashley
                         </span>
                     </div>
-                    <div>
+                    <div style={{ marginTop: 10 }}>
                         <Input placeholder="Search User" />
                     </div>
                 </div>
@@ -874,6 +925,19 @@ const DealDetail = () => {
                                             marginBottom: "20px",
                                         }}
                                     >
+                                        <div className="delete-post-icon">
+                                            <Popconfirm
+                                                title="Delete"
+                                                description="Are you sure to delete this notes?"
+                                                onConfirm={() =>
+                                                    confirmDeleteNotes(item.id)
+                                                }
+                                                okText="Yes"
+                                                cancelText="No"
+                                            >
+                                                <DeleteOutlined />
+                                            </Popconfirm>
+                                        </div>
                                         <div style={{ display: "flex" }}>
                                             <span
                                                 style={{

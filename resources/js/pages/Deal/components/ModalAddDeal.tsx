@@ -419,7 +419,7 @@ const ModalAddDeal = ({
                                         fontWeight: "bold",
                                     }}
                                 >
-                                    Teamm mates
+                                    Teammates
                                 </div>
                                 <Input placeholder="Search User" />
                             </Col>
