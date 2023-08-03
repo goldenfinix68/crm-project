@@ -522,7 +522,7 @@ const Deal = () => {
                         navigate("/deals/" + x.id);
                     }}
                 >
-                    <div>{x?.owner.firstName + " " + x?.owner.lastName} </div>
+                    <div>{x?.owner?.firstName + " " + x?.owner?.lastName} </div>
                     <div
                         style={{
                             fontSize: 12,
