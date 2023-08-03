@@ -1243,6 +1243,21 @@ const DealDetail = () => {
                             return (
                                 <div>
                                     <Card style={{ marginTop: 20 }}>
+                                        <div className="delete-post-icon">
+                                            <Popconfirm
+                                                title="Delete"
+                                                description="Are you sure to delete this activity?"
+                                                onConfirm={() =>
+                                                    confirmDeleteActivity(
+                                                        item.id
+                                                    )
+                                                }
+                                                okText="Yes"
+                                                cancelText="No"
+                                            >
+                                                <DeleteOutlined />
+                                            </Popconfirm>
+                                        </div>
                                         <div style={{ display: "flex" }}>
                                             <span
                                                 className="thumb-name-xs "
@@ -1358,6 +1373,19 @@ const DealDetail = () => {
                             return (
                                 <div>
                                     <Card style={{ marginTop: 20 }}>
+                                        <div className="delete-post-icon">
+                                            <Popconfirm
+                                                title="Delete"
+                                                description="Are you sure to delete this notes?"
+                                                onConfirm={() =>
+                                                    confirmDeleteNotes(item.id)
+                                                }
+                                                okText="Yes"
+                                                cancelText="No"
+                                            >
+                                                <DeleteOutlined />
+                                            </Popconfirm>
+                                        </div>
                                         <div style={{ display: "flex" }}>
                                             <span
                                                 style={{
@@ -1411,6 +1439,19 @@ const DealDetail = () => {
                             return (
                                 <div>
                                     <Card style={{ marginTop: 20 }}>
+                                        <div className="delete-post-icon">
+                                            <Popconfirm
+                                                title="Delete"
+                                                description="Are you sure to delete this file?"
+                                                onConfirm={() =>
+                                                    confirmDeleteFile(item.id)
+                                                }
+                                                okText="Yes"
+                                                cancelText="No"
+                                            >
+                                                <DeleteOutlined />
+                                            </Popconfirm>
+                                        </div>
                                         <div style={{ display: "flex" }}>
                                             <span
                                                 style={{
