@@ -151,9 +151,23 @@ const ActivityTable = () => {
 
     const { dataSource, isLoadingUsers } = activitiList();
 
-    useEffect(() => {
-        console.log("dataSource", dataSource);
-    }, [dataSource]);
+    // useEffect(() => {
+    //     console.log("dataSource", dataSource);
+    // }, [dataSource]);
+
+    //
+    const [activitiesSelectColumn, setActivitiesSelectColumn] = useState(
+        localStorage.activitiesSelectColumn
+            ? JSON.parse(localStorage.activitiesSelectColumn)
+            : [
+                  { title: "Title", id: "1" },
+                  { title: "Start Date", id: "2" },
+                  { title: "Duration", id: "3" },
+                  { title: "Owner", id: "4" },
+                  { title: "Name", id: "5" },
+                  { title: "Tags", id: "6" },
+              ]
+    );
 
     return (
         <>
@@ -395,6 +409,9 @@ const ActivityTable = () => {
             <ModalManageColumn
                 isModalManageColumnOpen={isModalManageColumnOpen}
                 setIsModalManageColumnOpen={setIsModalManageColumnOpen}
+                activitiesSelectColumn={activitiesSelectColumn}
+                setActivitiesSelectColumn={setActivitiesSelectColumn}
+                localStorageName="activitiesSelectColumn"
             />
         </>
     );

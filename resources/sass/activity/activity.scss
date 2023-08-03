@@ -232,6 +232,10 @@
         .fc .fc-toolbar.fc-header-toolbar {
             margin-bottom: 0px;
         }
+
+        .fc .fc-button-primary:focus {
+            box-shadow: none !important;
+        }
     }
 
     .ant-modal-footer {
@@ -393,4 +397,11 @@
 
 .col-status::before {
     background-color: transparent !important;
+}
+
+.checkbox-group {
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 6px;
+    row-gap: 10px;
 }

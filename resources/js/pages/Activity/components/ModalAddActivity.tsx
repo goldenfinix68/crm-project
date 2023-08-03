@@ -52,12 +52,6 @@ import {
 } from "../../../api/query/activityQuery";
 import { an } from "@fullcalendar/core/internal-common";
 
-interface Props {
-    isModalOpenAdd: boolean;
-    handleOkAdd: () => void;
-    handleCancelAdd: () => void;
-}
-
 const optionRecurrence: SelectProps["options"] = [
     {
         label: "Doesn’t repeat",
@@ -96,11 +90,17 @@ const optionAvailability: SelectProps["options"] = [
     },
 ];
 
+interface ModalActivityProps {
+    isModalOpenAdd: boolean;
+    handleOkAdd: () => void;
+    handleCancelAdd: () => void;
+}
+
 const ModalAddActivity = ({
     isModalOpenAdd,
     handleOkAdd,
     handleCancelAdd,
-}: Props) => {
+}: ModalActivityProps) => {
     const queryClient = useQueryClient();
     const [form] = Form.useForm();
     const [calendarOptions, setCalendarOptions] = useState(false);
@@ -256,10 +256,6 @@ const ModalAddActivity = ({
 
         setEventCalendarData(data);
     };
-
-    useEffect(() => {
-        console.log("eventCalendarData", eventCalendarData);
-    }, [eventCalendarData]);
 
     return (
         <Modal

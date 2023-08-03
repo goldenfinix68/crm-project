@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Button,
     Card,
@@ -13,6 +13,7 @@ import {
     Typography,
 } from "antd";
 import type { MenuProps } from "antd";
+import type { CheckboxValueType } from "antd/es/checkbox/Group";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
@@ -24,6 +25,8 @@ import {
     DraggableLocation,
 } from "react-beautiful-dnd";
 import { CloseOutlined, HolderOutlined } from "@ant-design/icons";
+import { json } from "react-router-dom";
+import { CheckboxChangeEvent } from "antd/es/checkbox";
 
 interface DragEndResult {
     source: DraggableLocation;
@@ -35,14 +38,20 @@ interface ListItem {
     title: string;
 }
 
-interface Props {
+interface ModalManageColumnProps {
     isModalManageColumnOpen: boolean;
     setIsModalManageColumnOpen: any;
+    activitiesSelectColumn: [];
+    setActivitiesSelectColumn: any;
+    localStorageName: string;
 }
 
-const ModalManageColumn: React.FC<Props> = ({
+const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
     isModalManageColumnOpen,
     setIsModalManageColumnOpen,
+    activitiesSelectColumn,
+    setActivitiesSelectColumn,
+    localStorageName,
 }) => {
     const [currentTabs, setCurrentTabs] = useState("active");
 
@@ -50,30 +59,63 @@ const ModalManageColumn: React.FC<Props> = ({
         if (!result.destination) {
             return;
         }
-
-        const items = Array.from(listData);
+        const items = Array.from(activitiesSelectColumn);
         const [reorderedItem] = items.splice(result.source.index, 1);
-
         if (result.destination.index !== undefined) {
             items.splice(result.destination.index, 0, reorderedItem);
         }
 
-        setListData(items);
+        onChangePageValues(items);
     };
-
-    const initialListData: ListItem[] = [
-        { id: "1", title: "Title" },
-        { id: "2", title: "Start Date" },
-        { id: "3", title: "Duration" },
-        { id: "4", title: "Owner" },
-        { id: "5", title: "Name" },
-        { id: "6", title: "Tags" },
-    ];
-
-    const [listData, setListData] = useState<ListItem[]>(initialListData);
 
     const handleCancel = () => {
         setIsModalManageColumnOpen(false);
+    };
+
+    useEffect(() => {
+        let filter = activitiesSelectColumn.map((item: any) => item.title);
+        console.log("activitiesSelectColumn", activitiesSelectColumn);
+    }, [activitiesSelectColumn]);
+
+    const [checkboxDefault, setCheckboxDefault] = useState([
+        { label: "Title", value: "Title" },
+        { label: "Duration", value: "Duration" },
+        { label: "Owner", value: "Owner" },
+        { label: "Availability", value: "Availability" },
+        { label: "Start Date", value: "Start Date" },
+        { label: "Location", value: "Location" },
+        { label: "Type", value: "Type" },
+        { label: "Video Conferencing", value: "Video Conferencing" },
+        { label: "Tags", value: "Tags" },
+        { label: "Name", value: "Name" },
+    ]);
+
+    const onChangeDefault = (checkedValues: CheckboxValueType[]) => {
+        // let array = checkedValues.map((item: any, key: Number) => {
+        //     let newID = Number(key) + 1;
+        //     return {
+        //         title: item,
+        //         id: newID.toFixed(),
+        //     };
+        // });
+        // onChangePageValues(array);
+
+        let defaultArray = activitiesSelectColumn.map(
+            (item: any) => item.title
+        );
+
+        let filterArray = defaultArray.filter(
+            (item) => !checkedValues.includes(item)
+        );
+
+        console.log("onChangeDefault", checkedValues);
+        console.log("onChangeDefault", defaultArray);
+        // console.log("onChangeDefault", filterArray);
+    };
+
+    const onChangePageValues = (items: any) => {
+        setActivitiesSelectColumn(items);
+        localStorage.setItem(localStorageName, JSON.stringify(items));
     };
 
     return (
@@ -146,47 +188,27 @@ const ModalManageColumn: React.FC<Props> = ({
                                     Default
                                 </Typography.Text>
                             </Col>
-                            <Col span={24}>
-                                <Checkbox value={"Title"}>Title</Checkbox>
-                            </Col>
-                            <Col span={24}>
-                                <Checkbox value={"Duration"}>Duration</Checkbox>
-                            </Col>
-                            <Col span={24}>
-                                <Checkbox value={"Owner"}>Owner</Checkbox>
-                            </Col>
-                            <Col span={24}>
-                                <Checkbox value={"Availability"}>
-                                    Availability
-                                </Checkbox>
-                            </Col>
-                            <Col span={24}>
-                                <Checkbox value={"Start Date"}>
-                                    Start Date
-                                </Checkbox>
-                            </Col>
-                            <Col span={24}>
-                                <Checkbox value={"Location"}>Location</Checkbox>
-                            </Col>
-                            <Col span={24}>
-                                <Checkbox value={"Type"}>Type</Checkbox>
-                            </Col>
-                            <Col span={24}>
-                                <Checkbox value={"Video Conferencing"}>
-                                    Video Conferencing
-                                </Checkbox>
-                            </Col>
-                            <Col span={24}>
-                                <Checkbox value={"Tags"}>Tags</Checkbox>
-                            </Col>
+
+                            <Checkbox.Group
+                                className="checkbox-group w-100"
+                                options={checkboxDefault}
+                                defaultValue={
+                                    activitiesSelectColumn.length > 0
+                                        ? activitiesSelectColumn.map(
+                                              (item: any) => item.title
+                                          )
+                                        : []
+                                }
+                                onChange={onChangeDefault}
+                            />
 
                             {/* custom fields start */}
-                            <Col span={24}>
+                            {/* <Col span={24}>
                                 <Space className="w-100 custom-column-field">
                                     <Checkbox value={"Owner"}>Owner</Checkbox>
                                     <FontAwesomeIcon icon={faTrashAlt} />
                                 </Space>
-                            </Col>
+                            </Col> */}
                         </Row>
 
                         <Row gutter={[12, 12]} className="m-t-md">
@@ -273,7 +295,7 @@ const ModalManageColumn: React.FC<Props> = ({
                     </Space>
 
                     <DragDropContext onDragEnd={handleDragEnd}>
-                        <DroppableList items={listData} />
+                        <DroppableList items={activitiesSelectColumn} />
                     </DragDropContext>
                 </Col>
             </Row>
@@ -335,7 +357,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ item, index }) => (
                                 {item.title}
                             </Col>
                             <Col md={2} xs={2}>
-                                <Button type="text">
+                                <Button type="link">
                                     <CloseOutlined />
                                 </Button>
                             </Col>

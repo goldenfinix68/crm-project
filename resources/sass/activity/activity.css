@@ -199,6 +199,9 @@
 .modal-activity .ant-modal-content .fc .fc-toolbar.fc-header-toolbar {
   margin-bottom: 0px;
 }
+.modal-activity .ant-modal-content .fc .fc-button-primary:focus {
+  box-shadow: none !important;
+}
 .modal-activity .ant-modal-footer {
   padding: 15px 13px;
 }
@@ -323,4 +326,11 @@
 
 .col-status::before {
   background-color: transparent !important;
+}
+
+.checkbox-group {
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 6px;
+  row-gap: 10px;
 }/*# sourceMappingURL=activity.css.map */
