@@ -289,7 +289,7 @@
   padding-right: 16px !important;
 }
 .modal-activity-manage-column .ant-modal-content .ant-modal-body .columns-list .custom-column-list {
-  height: calc(100vh - 331px);
+  height: 550px;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -301,4 +301,26 @@
   display: flex;
   justify-content: space-between;
   padding-right: 16px !important;
+}
+.modal-activity-manage-column .ant-modal-content .ant-modal-body .selected-fields {
+  border-left: 1px solid #dfe1e6;
+  padding-left: 15px !important;
+}
+.modal-activity-manage-column .ant-modal-content .ant-modal-body .selected-fields .card-fields .ant-card-body {
+  padding: 0px 5px !important;
+}
+.modal-activity-manage-column .ant-modal-content .ant-modal-body .selected-fields .ant-list .ant-list-item {
+  padding: 3px 0 !important;
+}
+.modal-activity-manage-column .ant-modal-content .ant-modal-footer {
+  border-top: 1px solid #dfe1e6;
+  padding: 15px;
+}
+.modal-activity-manage-column .ant-modal-content .ant-modal-footer .footer-space {
+  display: flex;
+  justify-content: space-between;
+}
+
+.col-status::before {
+  background-color: transparent !important;
 }/*# sourceMappingURL=activity.css.map */
