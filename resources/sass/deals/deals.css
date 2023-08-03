@@ -350,4 +350,12 @@
   color: #ff7875 !important;
   border: 1px solid #ff7875;
 }
+
+.success-bg-modal .modal-header {
+  background: #09b749;
+}
+
+.danger-bg-modal .modal-header {
+  background: #ff7875;
+}
 /*# sourceMappingURL=deals.css.map */

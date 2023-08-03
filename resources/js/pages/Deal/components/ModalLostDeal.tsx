@@ -91,7 +91,7 @@ const ModalLostDeal = ({
 
     return (
         <Modal
-            className="modal-activity"
+            className="modal-activity danger-bg-modal"
             open={isModalOpenAdd1}
             onCancel={handleCancelAdd1}
             width={600}
@@ -115,7 +115,7 @@ const ModalLostDeal = ({
             >
                 <div className="modal-header">
                     <Typography.Title level={5} style={{ color: "white" }}>
-                        Won Deal
+                        Lost Deal
                     </Typography.Title>
 
                     <Button

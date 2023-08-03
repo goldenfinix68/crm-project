@@ -318,6 +318,17 @@ $base: 15px;
     border: 1px solid #ff7875;
 }
 
+.success-bg-modal {
+    .modal-header {
+        background: #09b749;
+    }
+}
+.danger-bg-modal {
+    .modal-header {
+        background: #ff7875;
+    }
+}
+
 // // 1000px
 // ///////////////////////
 // @media all and (max-width: 1000px) {

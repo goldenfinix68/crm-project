@@ -91,7 +91,7 @@ const ModalWonDeal = ({
 
     return (
         <Modal
-            className="modal-activity"
+            className="modal-activity  success-bg-modal"
             open={isModalOpenAdd}
             onCancel={handleCancelAdd}
             width={600}
@@ -113,7 +113,7 @@ const ModalWonDeal = ({
                 onFinish={onFinish}
                 autoComplete="off"
             >
-                <div className="modal-header">
+                <div className="modal-header ">
                     <Typography.Title level={5} style={{ color: "white" }}>
                         Won Deal
                     </Typography.Title>
