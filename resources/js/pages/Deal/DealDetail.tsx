@@ -75,10 +75,7 @@ import {
     useUsersList,
 } from "../../api/query/activityQuery";
 import { useMutation, useQueryClient } from "react-query";
-import {
-    useDealMutationAddNotes,
-    useDealMutationAddFile,
-} from "../../api/mutation/useDealMutation";
+import { useDealMutationAddNotes } from "../../api/mutation/useDealMutation";
 import moment from "moment";
 import DealsTable from "./components/DealsTable";
 import type { SelectProps } from "antd";
@@ -86,6 +83,8 @@ import Resizer from "react-image-file-resizer";
 import { addActivityMutation } from "../../api/mutation/useActivityMutation";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import ModalWonDeal from "./components/ModalWonDeal";
+
 interface DealsById {
     title: string;
     win_probabilty: string;
@@ -168,6 +167,18 @@ const DealDetail = () => {
         } catch (error) {
             console.error("Error occurred:", error);
         }
+    };
+    const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
+    const showModalAdd = () => {
+        setIsModalOpenAdd(true);
+    };
+    const handleOkAdd = () => {
+        setIsModalOpenAdd(false);
+        queryClient.invalidateQueries("deals");
+    };
+
+    const handleCancelAdd = () => {
+        setIsModalOpenAdd(false);
     };
     const optionAvailability: SelectProps["options"] = [
         {
@@ -1322,13 +1333,29 @@ const DealDetail = () => {
                         <div>
                             <span style={{ marginRight: 10 }}></span>
                             <span style={{ marginRight: 10 }}>
-                                <Button type="primary">
+                                <Button
+                                    type="primary"
+                                    className={
+                                        deals && deals.data.is_won == "0"
+                                            ? "button-success-outlined"
+                                            : "button-success-solid"
+                                    }
+                                    onClick={() => showModalAdd()}
+                                >
                                     &nbsp; <LikeOutlined />
                                     Won
                                 </Button>
                             </span>
                             <span style={{ marginRight: 10 }}>
-                                <Button type="primary" danger>
+                                <Button
+                                    type="primary"
+                                    danger
+                                    className={
+                                        deals && deals.data.is_won == "1"
+                                            ? "button-danger-solid"
+                                            : "button-danger-solid"
+                                    }
+                                >
                                     <DislikeOutlined /> &nbsp; Lost
                                 </Button>
                             </span>
@@ -1533,6 +1560,13 @@ const DealDetail = () => {
                         </Row>
                     </div>
                 </Card>
+
+                <ModalWonDeal
+                    isModalOpenAdd={isModalOpenAdd}
+                    handleOkAdd={handleOkAdd}
+                    handleCancelAdd={handleCancelAdd}
+                    dealId={"" + dealId}
+                />
             </Col>
         </Row>
     );

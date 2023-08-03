@@ -56,18 +56,19 @@ export const useDealMutationAddNotes = async (items: Tnotes) => {
     return data;
 };
 
-export const useDealMutationAddFile = async (items: any) => {
-    (data) => {
-        if (showLoading) {
-            $(".globalLoading").removeClass("hide");
-        }
-        return axios
-            .post(`${apiUrl}${url}`, data, {
-                headers: {
-                    Authorization: token,
-                    "Content-Type": "multipart/form-data",
-                },
-            })
-            .then((res) => res.data);
-    };
+export const useDealMutationWon = async (items: any) => {
+    const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+    const response = await fetch("/api/deals/won", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(items),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to add deal");
+    }
+    return data;
 };
