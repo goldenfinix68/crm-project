@@ -186,6 +186,7 @@ class DealsController extends Controller
     {
         $find = Deal::find($request->dealId);
         $find->is_won = $request->isWon;
+        $find->is_lost = $request->isLost;
         $find->estimated_close_date = $request->estimated_close_date;
         $find->save();
 

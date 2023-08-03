@@ -1351,8 +1351,8 @@ const DealDetail = () => {
                                     type="primary"
                                     danger
                                     className={
-                                        deals && deals.data.is_won == "1"
-                                            ? "button-danger-solid"
+                                        deals && deals.data.is_lost == "0"
+                                            ? "button-danger-outlined"
                                             : "button-danger-solid"
                                     }
                                 >

@@ -69,6 +69,7 @@ const ModalWonDeal = ({
             ...values,
             dealId: dealId,
             isWon: 1,
+            isLost: 0,
             estimated_close_date:
                 values.estimated_close_date.format("YYYY-MM-DD"),
         });
