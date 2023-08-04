@@ -42,7 +42,7 @@ class DealsController extends Controller
                     ->orWhere('last_name', 'LIKE', "%$search%")
                     ->orWhere(\DB::raw("(SELECT DATE_FORMAT(created_at, '%m/%d/%Y'))"), 'LIKE', "%$request->search%");
             }
-        })->with('owner');
+        })->with(['owner', 'contact']);
 
         if ($request->pipeline) {
             $data->where('pipeline', $request->pipeline);
@@ -121,7 +121,7 @@ class DealsController extends Controller
      */
     public function show($id)
     {
-        $data = Deal::with(['owner', 'activities.owner', 'notes.user', 'files.uploaded_by', 'participant.user'])->find($id);
+        $data = Deal::with(['owner', 'activities.owner', 'notes.user', 'files.uploaded_by', 'participant.user', 'contact'])->find($id);
         $notes = \App\Models\DealNote::with('user')->where('deal_id', $id)->where('is_pinned', '1')->get();
         return response()->json(['success' => true, 'data' => $data, 'notes' => $notes], 200);
     }

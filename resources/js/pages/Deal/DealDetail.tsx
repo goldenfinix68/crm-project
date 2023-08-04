@@ -233,7 +233,7 @@ const DealDetail = () => {
         {
             key: "1",
             label: "Deal Specific Email",
-            children: <p>{deals && deals.data.owner.email}</p>,
+            children: <p>{deals && deals.data.contact.email}</p>,
             style: panelStyle,
         },
         {
@@ -243,17 +243,29 @@ const DealDetail = () => {
                 <div>
                     <div style={{ display: "flex" }}>
                         <span className="thumb-name-xs " title="Jesse Ashley">
-                            {deals && deals.data.owner.firstName.charAt(0)}
+                            {deals && deals.data.contact.firstName.charAt(0)}
                         </span>
                         <span style={{ fontSize: 14, marginLeft: 10 }}>
                             {deals &&
-                                deals.data.owner.firstName +
+                                deals.data.contact.firstName +
                                     " " +
-                                    deals.data.owner.lastName}
+                                    deals.data.contact.lastName}
                         </span>
                     </div>
-                    <div>Mobile: +18044326971</div>
-                    <div>Phone: +18044326971</div>
+                    <div>
+                        Mobile:
+                        {deals &&
+                            deals.data.contact.phone +
+                                " " +
+                                deals.data.contact.phone}
+                    </div>
+                    <div>
+                        Phone:{" "}
+                        {deals &&
+                            deals.data.contact.otherPhone +
+                                " " +
+                                deals.data.contact.otherPhone}
+                    </div>
                 </div>
             ),
             style: panelStyle,

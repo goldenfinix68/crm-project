@@ -163,7 +163,10 @@ const ModalAddDeal = ({
                                         },
                                     ]}
                                 >
-                                    <Select style={{ width: "100%" }}>
+                                    <Select
+                                        style={{ width: "100%" }}
+                                        placeholder="Contact"
+                                    >
                                         {contacts?.map((contact) => {
                                             return (
                                                 <Select.Option

@@ -15,6 +15,10 @@ class Deal extends Model
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'owner');
     }
+    public function contact()
+    {
+        return $this->hasOne(\App\Models\Contact::class, 'id', 'contactId');
+    }
     public function activities()
     {
         return $this->hasMany(\App\Models\Activity::class, 'deal_id', 'id');
