@@ -121,7 +121,7 @@ class DealsController extends Controller
      */
     public function show($id)
     {
-        $data = Deal::with(['owner', 'activities.owner', 'notes.user', 'files.uploaded_by'])->find($id);
+        $data = Deal::with(['owner', 'activities.owner', 'notes.user', 'files.uploaded_by', 'participant.user'])->find($id);
         $notes = \App\Models\DealNote::with('user')->where('deal_id', $id)->where('is_pinned', '1')->get();
         return response()->json(['success' => true, 'data' => $data, 'notes' => $notes], 200);
     }
@@ -176,6 +176,23 @@ class DealsController extends Controller
         return response()->json(['success' => true, 'data' => $data], 200);
     }
 
+    public function add_participant(Request $request)
+    {
+        $data = \App\Models\DealParticipant::updateOrCreate(
+            ['deal_id' => $request->deal_id, 'user_id' => $request->user_id],
+            ['deal_id' => $request->deal_id, 'user_id' => $request->user_id],
+        );
+
+
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
+    public function delete_participant(Request $request)
+    {
+        $data = \App\Models\DealParticipant::find($request->id);
+
+
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
     /**
      * Remove the specified resource from storage.
      *

@@ -24,6 +24,7 @@ import {
     message,
     Upload,
     Popconfirm,
+    Tag,
 } from "antd";
 import axios from "axios";
 import type { UploadProps } from "antd";
@@ -43,7 +44,7 @@ import {
     faVideo,
 } from "@fortawesome/free-solid-svg-icons";
 import type { TabsProps } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useSyncExternalStore } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import {
     UserAddOutlined,
@@ -82,6 +83,8 @@ import {
     useDealMutationDeleteNotes,
     useDealMutationDeleteActivity,
     useDealMutationDeleteFile,
+    useDealMutationAddParticipant,
+    useDealMutationDeleteParticipants,
 } from "../../api/mutation/useDealMutation";
 import moment from "moment";
 import DealsTable from "./components/DealsTable";
@@ -416,6 +419,37 @@ const DealDetail = () => {
         addDealsNotes.mutate({ deal_id: "" + dealId, notes: value.notes });
     };
 
+    const [selectedValue, setSelectedValue] = useState();
+    const onChangeSelectParticipant = (value: any) => {
+        addParticipant.mutate({ user_id: value, deal_id: "" + dealId });
+    };
+
+    const addParticipant = useMutation(useDealMutationAddParticipant, {
+        onSuccess: (res) => {
+            notification.success({
+                message: "Deals",
+                description: "Participant Successfully Added",
+            });
+
+            refetch();
+        },
+    });
+
+    const deleteParticipant = useMutation(useDealMutationDeleteParticipants, {
+        onSuccess: (res) => {
+            notification.success({
+                message: "Deals",
+                description: "Delete Successfully Added",
+            });
+
+            refetch();
+        },
+    });
+
+    const handleClose = (value: any) => {
+        deleteParticipant.mutate({ id: value });
+    };
+
     const getItems2: (panelStyle: CSSProperties) => CollapseProps["items"] = (
         panelStyle
     ) => [
@@ -467,8 +501,46 @@ const DealDetail = () => {
             label: "Participants",
             children: (
                 <div>
-                    <div>
-                        <Input placeholder="Search Participants" />
+                    {deals &&
+                        deals?.data.participant.map((item: any, key: any) => {
+                            return (
+                                <Tag
+                                    closable
+                                    color="#2db7f5"
+                                    onClose={(e) => {
+                                        handleClose(item.id);
+                                    }}
+                                >
+                                    {item.user.firstName +
+                                        " " +
+                                        item.user.lastName}
+                                </Tag>
+                            );
+                        })}
+
+                    <div style={{ marginTop: "10px" }}>
+                        <Select
+                            placeholder="Search"
+                            showSearch
+                            className="select-custom-width"
+                            loading={isLoadingUsers}
+                            style={{ width: "100%" }}
+                            onChange={onChangeSelectParticipant}
+                        >
+                            {dataUsers &&
+                                dataUsers?.data &&
+                                dataUsers?.data.map((item: any, key: any) => {
+                                    return (
+                                        <Select.Option
+                                            key={key}
+                                            value={item.id}
+                                            search={`${item.firstName} ${item.lastName}`}
+                                        >
+                                            {`${item.firstName} ${item.lastName}`}
+                                        </Select.Option>
+                                    );
+                                })}
+                        </Select>
                     </div>
                 </div>
             ),
@@ -1524,128 +1596,6 @@ const DealDetail = () => {
             children: `No Content`,
         },
     ];
-
-    const ActivityCard = () => {
-        {
-            deals &&
-                deals.data.activities.length > 0 &&
-                deals.data.activities.map((item: any) => {
-                    return (
-                        <div>
-                            <Card style={{ marginTop: 20 }}>
-                                <div className="delete-post-icon">
-                                    <Popconfirm
-                                        title="Delete"
-                                        description="Are you sure to delete this activity?"
-                                        onConfirm={() =>
-                                            confirmDeleteActivity(item.id)
-                                        }
-                                        okText="Yes"
-                                        cancelText="No"
-                                    >
-                                        <DeleteOutlined />
-                                    </Popconfirm>
-                                </div>
-                                <div style={{ display: "flex" }}>
-                                    <span
-                                        className="thumb-name-xs "
-                                        title="Jesse Ashley"
-                                    >
-                                        {item.owner.firstName.charAt(0)}
-                                    </span>
-                                    <span
-                                        style={{
-                                            fontSize: 16,
-                                            marginLeft: 10,
-                                        }}
-                                    >
-                                        {" "}
-                                        <b>{item.type}</b> for{" "}
-                                        {item.owner.firstName +
-                                            " " +
-                                            item.owner.lastName}
-                                    </span>
-                                </div>
-                                <Divider></Divider>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    <span>
-                                        <CheckCircleOutlined
-                                            style={{ fontSize: 24 }}
-                                        />
-                                    </span>
-                                    <span
-                                        style={{
-                                            fontSize: 16,
-                                            marginLeft: 10,
-                                        }}
-                                    >
-                                        {item.title}
-                                    </span>
-                                </div>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        padding: 20,
-                                        paddingTop: 0,
-                                        paddingBottom: 0,
-                                        marginTop: 10,
-                                    }}
-                                >
-                                    <span>
-                                        <CalendarOutlined
-                                            style={{ fontSize: 14 }}
-                                        />
-                                    </span>
-                                    <span
-                                        style={{
-                                            fontSize: 14,
-                                            marginLeft: 10,
-                                        }}
-                                    >
-                                        {" "}
-                                        {moment(item.start_date).format("LLL")}
-                                    </span>
-                                </div>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        padding: 20,
-                                        paddingTop: 0,
-                                        paddingBottom: 0,
-                                    }}
-                                >
-                                    <span>
-                                        <UserOutlined
-                                            style={{ fontSize: 14 }}
-                                        />
-                                    </span>
-                                    <span
-                                        style={{
-                                            fontSize: 14,
-                                            marginLeft: 10,
-                                        }}
-                                    >
-                                        {deals &&
-                                            deals.data.owner.firstName +
-                                                " " +
-                                                deals.data.owner.lastName}
-                                    </span>
-                                </div>
-                                <Divider></Divider>
-                                <Input placeholder="Add your note for this activity"></Input>
-                            </Card>
-                        </div>
-                    );
-                });
-        }
-    };
 
     return (
         <Row className="deal-group-row">
