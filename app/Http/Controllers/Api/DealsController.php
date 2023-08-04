@@ -189,6 +189,8 @@ class DealsController extends Controller
     public function delete_participant(Request $request)
     {
         $data = \App\Models\DealParticipant::find($request->id);
+        $data->delete();
+
 
 
         return response()->json(['success' => true, 'data' => $data], 200);

@@ -69,6 +69,7 @@ import {
     UploadOutlined,
     PaperClipOutlined,
     DeleteOutlined,
+    PlusOutlined,
 } from "@ant-design/icons";
 
 import { useDealsAll, useDealsByid } from "../../api/query/dealQuery";
@@ -95,6 +96,8 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import ModalWonDeal from "./components/ModalWonDeal";
 import ModalLostDeal from "./components/ModalLostDeal";
+import ModalAddQuitContact from "./components/ModalAddQuitContact";
+import { useContactsAll } from "../../api/query/contactsQuery";
 
 interface DealsById {
     title: string;
@@ -134,6 +137,7 @@ const DealDetail = () => {
     const { dealId } = useParams();
     const { dataUsers, isLoadingUsers } = useUsersList();
     const { deals, isLoading, refetch } = useDealsByid(dealId ?? "");
+    const { contacts } = useContactsAll();
     const { token } = theme.useToken();
     const { Dragger } = Upload;
     const quillRef = React.useRef(null);
@@ -450,6 +454,18 @@ const DealDetail = () => {
         deleteParticipant.mutate({ id: value });
     };
 
+    const [isModalOpenContact, setIsModalOpenContact] = useState(false);
+    const showModalContact = () => {
+        setIsModalOpenContact(true);
+    };
+    const handleOkContact = () => {
+        setIsModalOpenContact(false);
+        queryClient.invalidateQueries("deals");
+    };
+    const handleCancelContact = () => {
+        setIsModalOpenContact(false);
+    };
+
     const getItems2: (panelStyle: CSSProperties) => CollapseProps["items"] = (
         panelStyle
     ) => [
@@ -526,10 +542,29 @@ const DealDetail = () => {
                             loading={isLoadingUsers}
                             style={{ width: "100%" }}
                             onChange={onChangeSelectParticipant}
+                            dropdownRender={(menu) => (
+                                <>
+                                    {menu}
+                                    <Divider
+                                        style={{
+                                            marginBottom: "5px",
+                                            marginTop: "5px",
+                                        }}
+                                    ></Divider>
+                                    <Space style={{ padding: "0 8px 4px" }}>
+                                        <Button
+                                            type="text"
+                                            icon={<PlusOutlined />}
+                                            onClick={showModalContact}
+                                        >
+                                            Add Contact
+                                        </Button>
+                                    </Space>
+                                </>
+                            )}
                         >
-                            {dataUsers &&
-                                dataUsers?.data &&
-                                dataUsers?.data.map((item: any, key: any) => {
+                            {contacts &&
+                                contacts.map((item: any, key: any) => {
                                     return (
                                         <Select.Option
                                             key={key}
@@ -1856,6 +1891,12 @@ const DealDetail = () => {
                     isModalOpenAdd1={isModalOpenAdd1}
                     handleOkAdd1={handleOkAdd1}
                     handleCancelAdd1={handleCancelAdd1}
+                    dealId={"" + dealId}
+                />
+                <ModalAddQuitContact
+                    isModalOpenContact={isModalOpenContact}
+                    handleOkContact={handleOkContact}
+                    handleCancelContact={handleCancelContact}
                     dealId={"" + dealId}
                 />
             </Col>

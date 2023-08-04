@@ -13,6 +13,6 @@ class DealParticipant extends Model
 
     public function user()
     {
-        return $this->hasOne(\App\Models\User::class, 'id', 'user_id');
+        return $this->hasOne(\App\Models\Contact::class, 'id', 'user_id');
     }
 }
