@@ -253,7 +253,7 @@ const DealDetail = () => {
                         </span>
                     </div>
                     <div>
-                        Mobile:
+                        Mobile:{" "}
                         {deals &&
                             deals.data.contact.phone +
                                 " " +
