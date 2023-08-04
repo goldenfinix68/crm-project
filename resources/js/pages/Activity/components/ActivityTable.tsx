@@ -164,8 +164,9 @@ const ActivityTable = () => {
                   { title: "Start Date", id: "2" },
                   { title: "Duration", id: "3" },
                   { title: "Owner", id: "4" },
-                  { title: "Name", id: "5" },
-                  { title: "Tags", id: "6" },
+                  { title: "Title (Deal)", id: "5" },
+                  { title: "Name (Contact)", id: "6" },
+                  { title: "Tags", id: "7" },
               ]
     );
 

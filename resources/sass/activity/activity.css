@@ -333,4 +333,13 @@
   flex-direction: column !important;
   padding: 6px;
   row-gap: 10px;
+}
+
+.select-column-list {
+  max-height: 617px !important;
+  overflow-y: auto !important;
+}
+
+.hide {
+  display: none;
 }/*# sourceMappingURL=activity.css.map */
