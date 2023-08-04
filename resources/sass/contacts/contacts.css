@@ -12111,4 +12111,8 @@ textarea.form-control-lg {
 
 .custom-table-cell {
   height: 69px;
+}
+
+.disableHover .ant-btn:hover {
+  background-color: white !important;
 }/*# sourceMappingURL=contacts.css.map */

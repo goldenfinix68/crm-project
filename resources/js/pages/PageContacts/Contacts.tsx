@@ -46,6 +46,8 @@ import {
     MobileOutlined,
     UnorderedListOutlined,
     EyeOutlined,
+    StarFilled,
+    StarOutlined,
 } from "@ant-design/icons";
 import type { ColumnsType, TableProps, ColumnGroupType } from "antd/es/table";
 import ContactsComponentsAddContacts from "./Components/ContactsComponentsAddContacts";
@@ -347,6 +349,12 @@ const Contacts = () => {
     //     console.log("selectionType", selectionType);
     // }, [selectionType]);
 
+    const [isFavorite, setIsFavorite] = useState(false);
+
+    const handleFavoriteClick = () => {
+        setIsFavorite((prevIsFavorite) => !prevIsFavorite);
+    };
+
     return (
         <Card>
             {showDeleteButton ? (
@@ -476,6 +484,29 @@ const Contacts = () => {
                                                     }}
                                                 >
                                                     New last week
+                                                    {isFavorite ? (
+                                                        <Button
+                                                            className="disableHover"
+                                                            type="text"
+                                                            icon={
+                                                                <StarFilled />
+                                                            }
+                                                            onClick={
+                                                                handleFavoriteClick
+                                                            }
+                                                        ></Button>
+                                                    ) : (
+                                                        <Button
+                                                            className="disableHover"
+                                                            type="text"
+                                                            icon={
+                                                                <StarOutlined />
+                                                            }
+                                                            onClick={
+                                                                handleFavoriteClick
+                                                            }
+                                                        ></Button>
+                                                    )}
                                                 </Menu.Item>
                                                 <Menu.Item
                                                     key="4"
