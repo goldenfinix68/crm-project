@@ -526,6 +526,7 @@ const DealDetail = () => {
                                     onClose={(e) => {
                                         handleClose(item.id);
                                     }}
+                                    style={{ marginTop: "5px" }}
                                 >
                                     {item.user.firstName +
                                         " " +
