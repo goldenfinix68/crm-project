@@ -23,6 +23,8 @@ import {
     TimePicker,
     message,
     Upload,
+    Popconfirm,
+    Tag,
 } from "antd";
 import axios from "axios";
 import type { UploadProps } from "antd";
@@ -42,7 +44,7 @@ import {
     faVideo,
 } from "@fortawesome/free-solid-svg-icons";
 import type { TabsProps } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useSyncExternalStore } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import {
     UserAddOutlined,
@@ -66,6 +68,8 @@ import {
     InboxOutlined,
     UploadOutlined,
     PaperClipOutlined,
+    DeleteOutlined,
+    PlusOutlined,
 } from "@ant-design/icons";
 
 import { useDealsAll, useDealsByid } from "../../api/query/dealQuery";
@@ -75,7 +79,14 @@ import {
     useUsersList,
 } from "../../api/query/activityQuery";
 import { useMutation, useQueryClient } from "react-query";
-import { useDealMutationAddNotes } from "../../api/mutation/useDealMutation";
+import {
+    useDealMutationAddNotes,
+    useDealMutationDeleteNotes,
+    useDealMutationDeleteActivity,
+    useDealMutationDeleteFile,
+    useDealMutationAddParticipant,
+    useDealMutationDeleteParticipants,
+} from "../../api/mutation/useDealMutation";
 import moment from "moment";
 import DealsTable from "./components/DealsTable";
 import type { SelectProps } from "antd";
@@ -85,6 +96,8 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import ModalWonDeal from "./components/ModalWonDeal";
 import ModalLostDeal from "./components/ModalLostDeal";
+import ModalAddQuitContact from "./components/ModalAddQuitContact";
+import { useContactsAll } from "../../api/query/contactsQuery";
 
 interface DealsById {
     title: string;
@@ -124,6 +137,7 @@ const DealDetail = () => {
     const { dealId } = useParams();
     const { dataUsers, isLoadingUsers } = useUsersList();
     const { deals, isLoading, refetch } = useDealsByid(dealId ?? "");
+    const { contacts } = useContactsAll();
     const { token } = theme.useToken();
     const { Dragger } = Upload;
     const quillRef = React.useRef(null);
@@ -219,7 +233,7 @@ const DealDetail = () => {
         {
             key: "1",
             label: "Deal Specific Email",
-            children: <p>{deals && deals.data.owner.email}</p>,
+            children: <p>{deals && deals.data.contact.email}</p>,
             style: panelStyle,
         },
         {
@@ -229,17 +243,29 @@ const DealDetail = () => {
                 <div>
                     <div style={{ display: "flex" }}>
                         <span className="thumb-name-xs " title="Jesse Ashley">
-                            {deals && deals.data.owner.firstName.charAt(0)}
+                            {deals && deals.data.contact.firstName.charAt(0)}
                         </span>
                         <span style={{ fontSize: 14, marginLeft: 10 }}>
                             {deals &&
-                                deals.data.owner.firstName +
+                                deals.data.contact.firstName +
                                     " " +
-                                    deals.data.owner.lastName}
+                                    deals.data.contact.lastName}
                         </span>
                     </div>
-                    <div>Mobile: +18044326971</div>
-                    <div>Phone: +18044326971</div>
+                    <div>
+                        Mobile:{" "}
+                        {deals &&
+                            deals.data.contact.phone +
+                                " " +
+                                deals.data.contact.phone}
+                    </div>
+                    <div>
+                        Phone:{" "}
+                        {deals &&
+                            deals.data.contact.otherPhone +
+                                " " +
+                                deals.data.contact.otherPhone}
+                    </div>
                 </div>
             ),
             style: panelStyle,
@@ -325,6 +351,51 @@ const DealDetail = () => {
         },
     });
 
+    const deleteDealsNotes = useMutation(useDealMutationDeleteNotes, {
+        onSuccess: (res) => {
+            notification.success({
+                message: "Deals",
+                description: "Notes Successfully Deleted",
+            });
+
+            refetch();
+        },
+    });
+
+    const confirmDeleteNotes = (id: string) => {
+        deleteDealsNotes.mutate({ id: id });
+    };
+
+    const deleteActivity = useMutation(useDealMutationDeleteActivity, {
+        onSuccess: (res) => {
+            notification.success({
+                message: "Deals",
+                description: "Activity Successfully Deleted",
+            });
+
+            refetch();
+        },
+    });
+
+    const confirmDeleteActivity = (id: string) => {
+        deleteActivity.mutate({ id: id });
+    };
+
+    const deleteFile = useMutation(useDealMutationDeleteFile, {
+        onSuccess: (res) => {
+            notification.success({
+                message: "Deals",
+                description: "File Successfully Deleted",
+            });
+
+            refetch();
+        },
+    });
+
+    const confirmDeleteFile = (id: string) => {
+        deleteFile.mutate({ id: id });
+    };
+
     const { mutate: mutateUpload, isLoading: isLoadingUploadDeliveryRequest } =
         POST_FILE("/api/deals/add_files");
 
@@ -364,6 +435,49 @@ const DealDetail = () => {
         addDealsNotes.mutate({ deal_id: "" + dealId, notes: value.notes });
     };
 
+    const [selectedValue, setSelectedValue] = useState();
+    const onChangeSelectParticipant = (value: any) => {
+        addParticipant.mutate({ user_id: value, deal_id: "" + dealId });
+    };
+
+    const addParticipant = useMutation(useDealMutationAddParticipant, {
+        onSuccess: (res) => {
+            notification.success({
+                message: "Deals",
+                description: "Participant Successfully Added",
+            });
+
+            refetch();
+        },
+    });
+
+    const deleteParticipant = useMutation(useDealMutationDeleteParticipants, {
+        onSuccess: (res) => {
+            notification.success({
+                message: "Deals",
+                description: "Delete Successfully Added",
+            });
+
+            refetch();
+        },
+    });
+
+    const handleClose = (value: any) => {
+        deleteParticipant.mutate({ id: value });
+    };
+
+    const [isModalOpenContact, setIsModalOpenContact] = useState(false);
+    const showModalContact = () => {
+        setIsModalOpenContact(true);
+    };
+    const handleOkContact = () => {
+        setIsModalOpenContact(false);
+        queryClient.invalidateQueries("deals");
+    };
+    const handleCancelContact = () => {
+        setIsModalOpenContact(false);
+    };
+
     const getItems2: (panelStyle: CSSProperties) => CollapseProps["items"] = (
         panelStyle
     ) => [
@@ -397,14 +511,13 @@ const DealDetail = () => {
                             style={{
                                 fontSize: 14,
                                 marginLeft: 10,
-                                marginTop: 10,
                             }}
                         >
                             {" "}
                             Jesse Ashley
                         </span>
                     </div>
-                    <div>
+                    <div style={{ marginTop: 10 }}>
                         <Input placeholder="Search User" />
                     </div>
                 </div>
@@ -416,8 +529,66 @@ const DealDetail = () => {
             label: "Participants",
             children: (
                 <div>
-                    <div>
-                        <Input placeholder="Search Participants" />
+                    {deals &&
+                        deals?.data.participant.map((item: any, key: any) => {
+                            return (
+                                <Tag
+                                    closable
+                                    color="#2db7f5"
+                                    onClose={(e) => {
+                                        handleClose(item.id);
+                                    }}
+                                    style={{ marginTop: "5px" }}
+                                >
+                                    {item.user.firstName +
+                                        " " +
+                                        item.user.lastName}
+                                </Tag>
+                            );
+                        })}
+
+                    <div style={{ marginTop: "10px" }}>
+                        <Select
+                            placeholder="Search"
+                            showSearch
+                            className="select-custom-width"
+                            loading={isLoadingUsers}
+                            style={{ width: "100%" }}
+                            onChange={onChangeSelectParticipant}
+                            dropdownRender={(menu) => (
+                                <>
+                                    {menu}
+                                    <Divider
+                                        style={{
+                                            marginBottom: "5px",
+                                            marginTop: "5px",
+                                        }}
+                                    ></Divider>
+                                    <Space style={{ padding: "0 8px 4px" }}>
+                                        <Button
+                                            type="text"
+                                            icon={<PlusOutlined />}
+                                            onClick={showModalContact}
+                                        >
+                                            Add Contact
+                                        </Button>
+                                    </Space>
+                                </>
+                            )}
+                        >
+                            {contacts &&
+                                contacts.map((item: any, key: any) => {
+                                    return (
+                                        <Select.Option
+                                            key={key}
+                                            value={item.id}
+                                            search={`${item.firstName} ${item.lastName}`}
+                                        >
+                                            {`${item.firstName} ${item.lastName}`}
+                                        </Select.Option>
+                                    );
+                                })}
+                        </Select>
                     </div>
                 </div>
             ),
@@ -859,6 +1030,69 @@ const DealDetail = () => {
             label: `All`,
             children: (
                 <>
+                    {deals && deals.notes.length > 0 && (
+                        <div>Pinned Notes ({deals.notes.length})</div>
+                    )}
+                    {deals &&
+                        deals.notes.length > 0 &&
+                        deals.notes.map((item: any) => {
+                            return (
+                                <div>
+                                    <Card
+                                        style={{
+                                            marginTop: 20,
+                                            background: "#dfddca",
+                                            marginBottom: "20px",
+                                        }}
+                                    >
+                                        <div className="delete-post-icon">
+                                            <Popconfirm
+                                                title="Delete"
+                                                description="Are you sure to delete this notes?"
+                                                onConfirm={() =>
+                                                    confirmDeleteNotes(item.id)
+                                                }
+                                                okText="Yes"
+                                                cancelText="No"
+                                            >
+                                                <DeleteOutlined />
+                                            </Popconfirm>
+                                        </div>
+                                        <div style={{ display: "flex" }}>
+                                            <span
+                                                style={{
+                                                    fontSize: 16,
+                                                    marginLeft: 10,
+                                                }}
+                                            >
+                                                <b>{"Note Added"}</b> by{" "}
+                                                {item.user.firstName +
+                                                    " " +
+                                                    item.user.lastName}
+                                            </span>
+                                        </div>
+                                        <Divider></Divider>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <span
+                                                style={{
+                                                    fontSize: 16,
+                                                    marginLeft: 10,
+                                                }}
+                                                dangerouslySetInnerHTML={{
+                                                    __html: item.notes,
+                                                }}
+                                            ></span>
+                                        </div>
+                                    </Card>
+                                </div>
+                            );
+                        })}
+
                     <div>Upcoming (0)</div>
 
                     {deals &&
@@ -867,6 +1101,21 @@ const DealDetail = () => {
                             return (
                                 <div>
                                     <Card style={{ marginTop: 20 }}>
+                                        <div className="delete-post-icon">
+                                            <Popconfirm
+                                                title="Delete"
+                                                description="Are you sure to delete this activity?"
+                                                onConfirm={() =>
+                                                    confirmDeleteActivity(
+                                                        item.id
+                                                    )
+                                                }
+                                                okText="Yes"
+                                                cancelText="No"
+                                            >
+                                                <DeleteOutlined />
+                                            </Popconfirm>
+                                        </div>
                                         <div style={{ display: "flex" }}>
                                             <span
                                                 className="thumb-name-xs "
@@ -975,6 +1224,21 @@ const DealDetail = () => {
                                 <div>
                                     <Card style={{ marginTop: 20 }}>
                                         <div style={{ display: "flex" }}>
+                                            <div className="delete-post-icon">
+                                                <Popconfirm
+                                                    title="Delete"
+                                                    description="Are you sure to delete this notes?"
+                                                    onConfirm={() =>
+                                                        confirmDeleteNotes(
+                                                            item.id
+                                                        )
+                                                    }
+                                                    okText="Yes"
+                                                    cancelText="No"
+                                                >
+                                                    <DeleteOutlined />
+                                                </Popconfirm>
+                                            </div>
                                             <span
                                                 style={{
                                                     fontSize: 16,
@@ -1014,6 +1278,19 @@ const DealDetail = () => {
                             return (
                                 <div>
                                     <Card style={{ marginTop: 20 }}>
+                                        <div className="delete-post-icon">
+                                            <Popconfirm
+                                                title="Delete"
+                                                description="Are you sure to delete this file?"
+                                                onConfirm={() =>
+                                                    confirmDeleteFile(item.id)
+                                                }
+                                                okText="Yes"
+                                                cancelText="No"
+                                            >
+                                                <DeleteOutlined />
+                                            </Popconfirm>
+                                        </div>
                                         <div style={{ display: "flex" }}>
                                             <span
                                                 style={{
@@ -1086,6 +1363,21 @@ const DealDetail = () => {
                             return (
                                 <div>
                                     <Card style={{ marginTop: 20 }}>
+                                        <div className="delete-post-icon">
+                                            <Popconfirm
+                                                title="Delete"
+                                                description="Are you sure to delete this activity?"
+                                                onConfirm={() =>
+                                                    confirmDeleteActivity(
+                                                        item.id
+                                                    )
+                                                }
+                                                okText="Yes"
+                                                cancelText="No"
+                                            >
+                                                <DeleteOutlined />
+                                            </Popconfirm>
+                                        </div>
                                         <div style={{ display: "flex" }}>
                                             <span
                                                 className="thumb-name-xs "
@@ -1201,6 +1493,19 @@ const DealDetail = () => {
                             return (
                                 <div>
                                     <Card style={{ marginTop: 20 }}>
+                                        <div className="delete-post-icon">
+                                            <Popconfirm
+                                                title="Delete"
+                                                description="Are you sure to delete this notes?"
+                                                onConfirm={() =>
+                                                    confirmDeleteNotes(item.id)
+                                                }
+                                                okText="Yes"
+                                                cancelText="No"
+                                            >
+                                                <DeleteOutlined />
+                                            </Popconfirm>
+                                        </div>
                                         <div style={{ display: "flex" }}>
                                             <span
                                                 style={{
@@ -1254,6 +1559,19 @@ const DealDetail = () => {
                             return (
                                 <div>
                                     <Card style={{ marginTop: 20 }}>
+                                        <div className="delete-post-icon">
+                                            <Popconfirm
+                                                title="Delete"
+                                                description="Are you sure to delete this file?"
+                                                onConfirm={() =>
+                                                    confirmDeleteFile(item.id)
+                                                }
+                                                okText="Yes"
+                                                cancelText="No"
+                                            >
+                                                <DeleteOutlined />
+                                            </Popconfirm>
+                                        </div>
                                         <div style={{ display: "flex" }}>
                                             <span
                                                 style={{
@@ -1586,6 +1904,12 @@ const DealDetail = () => {
                     isModalOpenAdd1={isModalOpenAdd1}
                     handleOkAdd1={handleOkAdd1}
                     handleCancelAdd1={handleCancelAdd1}
+                    dealId={"" + dealId}
+                />
+                <ModalAddQuitContact
+                    isModalOpenContact={isModalOpenContact}
+                    handleOkContact={handleOkContact}
+                    handleCancelContact={handleCancelContact}
                     dealId={"" + dealId}
                 />
             </Col>

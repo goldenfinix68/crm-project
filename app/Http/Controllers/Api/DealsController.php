@@ -42,7 +42,7 @@ class DealsController extends Controller
                     ->orWhere('last_name', 'LIKE', "%$search%")
                     ->orWhere(\DB::raw("(SELECT DATE_FORMAT(created_at, '%m/%d/%Y'))"), 'LIKE', "%$request->search%");
             }
-        })->with('owner');
+        })->with(['owner', 'contact']);
 
         if ($request->pipeline) {
             $data->where('pipeline', $request->pipeline);
@@ -121,8 +121,9 @@ class DealsController extends Controller
      */
     public function show($id)
     {
-        $data = Deal::with(['owner', 'activities.owner', 'notes.user', 'files.uploaded_by'])->find($id);
-        return response()->json(['success' => true, 'data' => $data], 200);
+        $data = Deal::with(['owner', 'activities.owner', 'notes.user', 'files.uploaded_by', 'participant.user', 'contact'])->find($id);
+        $notes = \App\Models\DealNote::with('user')->where('deal_id', $id)->where('is_pinned', '1')->get();
+        return response()->json(['success' => true, 'data' => $data, 'notes' => $notes], 200);
     }
 
     /**
@@ -152,6 +153,48 @@ class DealsController extends Controller
         return response()->json(['success' => true, 'data' => $data], 200);
     }
 
+    public function delete_notes(Request $request)
+    {
+        $data = DealNote::find($request->id);
+        $data->delete();
+
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
+    public function delete_activity(Request $request)
+    {
+        $data = \App\Models\Activity::find($request->id);
+        $data->delete();
+
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
+
+    public function delete_file(Request $request)
+    {
+        $data = \App\Models\DealFile::find($request->id);
+        $data->delete();
+
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
+
+    public function add_participant(Request $request)
+    {
+        $data = \App\Models\DealParticipant::updateOrCreate(
+            ['deal_id' => $request->deal_id, 'user_id' => $request->user_id],
+            ['deal_id' => $request->deal_id, 'user_id' => $request->user_id],
+        );
+
+
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
+    public function delete_participant(Request $request)
+    {
+        $data = \App\Models\DealParticipant::find($request->id);
+        $data->delete();
+
+
+
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
     /**
      * Remove the specified resource from storage.
      *

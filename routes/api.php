@@ -29,6 +29,11 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/deals/add_notes', 'App\Http\Controllers\Api\DealsController@add_notes');
     Route::post('/deals/add_files', 'App\Http\Controllers\Api\DealsController@add_files');
     Route::post('/deals/won', 'App\Http\Controllers\Api\DealsController@won');
+    Route::post('/deals/delete_notes', 'App\Http\Controllers\Api\DealsController@delete_notes');
+    Route::post('/deals/delete_activity', 'App\Http\Controllers\Api\DealsController@delete_activity');
+    Route::post('/deals/delete_file', 'App\Http\Controllers\Api\DealsController@delete_file');
+    Route::post('/deals/add_participant', 'App\Http\Controllers\Api\DealsController@add_participant');
+    Route::post('/deals/delete_participant', 'App\Http\Controllers\Api\DealsController@delete_participant');
     Route::resource('/notes', 'App\Http\Controllers\Api\NotesController');
     Route::resource('/texts', 'App\Http\Controllers\Api\TextsController');
     Route::post('/deals/useDealUpdateBoardMutation', 'App\Http\Controllers\Api\DealsController@useDealUpdateBoardMutation');

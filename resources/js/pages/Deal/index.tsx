@@ -522,14 +522,14 @@ const Deal = () => {
                         navigate("/deals/" + x.id);
                     }}
                 >
-                    <div>{x?.owner?.firstName + " " + x?.owner?.lastName} </div>
+                    <div>{x.title}</div>
                     <div
                         style={{
                             fontSize: 12,
                             color: "#9b9999",
                         }}
                     >
-                        {x?.owner?.firstName + " " + x?.owner?.lastName} - $
+                        {x?.contact?.firstName + " " + x?.contact?.lastName} - $
                         {toCurrency(x.value)}{" "}
                     </div>
                     <div

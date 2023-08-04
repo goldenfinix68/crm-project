@@ -329,6 +329,15 @@ $base: 15px;
     }
 }
 
+.delete-post-icon {
+    position: absolute;
+    right: 0;
+    margin-right: 12px;
+    top: 7px;
+    font-size: 17px;
+    cursor: pointer;
+}
+
 // // 1000px
 // ///////////////////////
 // @media all and (max-width: 1000px) {
