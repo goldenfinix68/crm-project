@@ -410,7 +410,7 @@ const Contacts = () => {
                     <Col md={12} lg={12}>
                         <Dropdown
                             overlay={
-                                <Card>
+                                <Card style={{ width: "370px" }}>
                                     <Search
                                         placeholder="Search views"
                                         allowClear
@@ -455,6 +455,7 @@ const Contacts = () => {
                                                     SYSTEM
                                                 </Typography>
                                                 <Menu.Item
+                                                    className="menuList"
                                                     key="1"
                                                     icon={<LockOutlined />}
                                                     onClick={() => {
@@ -462,8 +463,32 @@ const Contacts = () => {
                                                     }}
                                                 >
                                                     All Contacts
+                                                    {isFavorite ? (
+                                                        <Button
+                                                            className="disableHover"
+                                                            type="text"
+                                                            icon={
+                                                                <StarFilled />
+                                                            }
+                                                            onClick={
+                                                                handleFavoriteClick
+                                                            }
+                                                        ></Button>
+                                                    ) : (
+                                                        <Button
+                                                            className="disableHover"
+                                                            type="text"
+                                                            icon={
+                                                                <StarOutlined />
+                                                            }
+                                                            onClick={
+                                                                handleFavoriteClick
+                                                            }
+                                                        ></Button>
+                                                    )}
                                                 </Menu.Item>
                                                 <Menu.Item
+                                                    className="menuList"
                                                     key="2"
                                                     icon={<LockOutlined />}
                                                     onClick={() => {
@@ -473,8 +498,32 @@ const Contacts = () => {
                                                     }}
                                                 >
                                                     My Contacts
+                                                    {isFavorite ? (
+                                                        <Button
+                                                            className="disableHover"
+                                                            type="text"
+                                                            icon={
+                                                                <StarFilled />
+                                                            }
+                                                            onClick={
+                                                                handleFavoriteClick
+                                                            }
+                                                        ></Button>
+                                                    ) : (
+                                                        <Button
+                                                            className="disableHover"
+                                                            type="text"
+                                                            icon={
+                                                                <StarOutlined />
+                                                            }
+                                                            onClick={
+                                                                handleFavoriteClick
+                                                            }
+                                                        ></Button>
+                                                    )}
                                                 </Menu.Item>
                                                 <Menu.Item
+                                                    className="menuList"
                                                     key="3"
                                                     icon={<LockOutlined />}
                                                     onClick={() => {
@@ -509,6 +558,7 @@ const Contacts = () => {
                                                     )}
                                                 </Menu.Item>
                                                 <Menu.Item
+                                                    className="menuList"
                                                     key="4"
                                                     icon={<LockOutlined />}
                                                     onClick={() => {
@@ -518,8 +568,32 @@ const Contacts = () => {
                                                     }}
                                                 >
                                                     New this week
+                                                    {isFavorite ? (
+                                                        <Button
+                                                            className="disableHover"
+                                                            type="text"
+                                                            icon={
+                                                                <StarFilled />
+                                                            }
+                                                            onClick={
+                                                                handleFavoriteClick
+                                                            }
+                                                        ></Button>
+                                                    ) : (
+                                                        <Button
+                                                            className="disableHover"
+                                                            type="text"
+                                                            icon={
+                                                                <StarOutlined />
+                                                            }
+                                                            onClick={
+                                                                handleFavoriteClick
+                                                            }
+                                                        ></Button>
+                                                    )}
                                                 </Menu.Item>
                                                 <Menu.Item
+                                                    className="menuList"
                                                     key="5"
                                                     icon={<LockOutlined />}
                                                     onClick={() => {
@@ -529,6 +603,29 @@ const Contacts = () => {
                                                     }}
                                                 >
                                                     Recently modified Contacts
+                                                    {isFavorite ? (
+                                                        <Button
+                                                            className="disableHover"
+                                                            type="text"
+                                                            icon={
+                                                                <StarFilled />
+                                                            }
+                                                            onClick={
+                                                                handleFavoriteClick
+                                                            }
+                                                        ></Button>
+                                                    ) : (
+                                                        <Button
+                                                            className="disableHover"
+                                                            type="text"
+                                                            icon={
+                                                                <StarOutlined />
+                                                            }
+                                                            onClick={
+                                                                handleFavoriteClick
+                                                            }
+                                                        ></Button>
+                                                    )}
                                                 </Menu.Item>
                                             </Menu>
                                         </TabPane>
