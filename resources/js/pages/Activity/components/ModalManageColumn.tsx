@@ -77,9 +77,9 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
 
     // after modal close
     const halderAfterClose = () => {
-        setActivitiesSelectColumn(
-            JSON.parse(localStorage.activitiesSelectColumn)
-        );
+        let storage = localStorage.getItem(localStorageName);
+        let array = storage ? JSON.parse(storage) : [];
+        setActivitiesSelectColumn(array);
     };
 
     // onChange checkbox
@@ -236,7 +236,7 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
                     </Button>
                     <Space>
                         <Popconfirm
-                            title="Warrning Alert"
+                            title="Confirmation"
                             description="Are you sure to save this changes?"
                             onConfirm={() => handleSaveSelectedColumn()}
                             // onCancel={cancel}
