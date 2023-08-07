@@ -36,4 +36,8 @@ class Deal extends Model
     {
         return $this->hasMany(\App\Models\DealParticipant::class, 'deal_id', 'id');
     }
+    public function teammate()
+    {
+        return $this->hasMany(\App\Models\DealTeammate::class, 'deal_id', 'id');
+    }
 }

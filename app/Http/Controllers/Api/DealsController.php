@@ -121,7 +121,7 @@ class DealsController extends Controller
      */
     public function show($id)
     {
-        $data = Deal::with(['owner', 'activities.owner', 'notes.user', 'files.uploaded_by', 'participant.user', 'contact'])->find($id);
+        $data = Deal::with(['owner', 'activities.owner', 'notes.user', 'files.uploaded_by', 'participant.user', 'contact', 'teammate.user'])->find($id);
         $notes = \App\Models\DealNote::with('user')->where('deal_id', $id)->where('is_pinned', '1')->get();
         return response()->json(['success' => true, 'data' => $data, 'notes' => $notes], 200);
     }
@@ -190,11 +190,31 @@ class DealsController extends Controller
     {
         $data = \App\Models\DealParticipant::find($request->id);
         $data->delete();
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
+
+
+
+    public function add_teammate(Request $request)
+    {
+        $data = \App\Models\DealTeammate::updateOrCreate(
+            ['deal_id' => $request->deal_id, 'user_id' => $request->user_id],
+            ['deal_id' => $request->deal_id, 'user_id' => $request->user_id],
+        );
+
+
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
+    public function delete_teammate(Request $request)
+    {
+        $data = \App\Models\DealTeammate::find($request->id);
+        $data->delete();
 
 
 
         return response()->json(['success' => true, 'data' => $data], 200);
     }
+
     /**
      * Remove the specified resource from storage.
      *
