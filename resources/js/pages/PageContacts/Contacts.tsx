@@ -349,11 +349,28 @@ const Contacts = () => {
     //     console.log("selectionType", selectionType);
     // }, [selectionType]);
 
-    const [isFavorite, setIsFavorite] = useState(false);
+    const [isFavorite, setIsFavorite] = useState<string[]>([]);
 
-    const handleFavoriteClick = () => {
-        setIsFavorite((prevIsFavorite) => !prevIsFavorite);
+    const handleFavoriteClick = (value) => {
+        console.log("val", value);
+        let isFavoriteVar = [...isFavorite];
+
+        if (!isFavoriteVar.includes(value)) {
+            isFavoriteVar.push(value);
+        } else {
+            let index = isFavoriteVar.findIndex((x) => x === value);
+            isFavoriteVar.splice(index, 1);
+        }
+        setIsFavorite(isFavoriteVar);
     };
+
+    const [isDropdownVisible, setDropdownVisible] = useState(false);
+
+    const handleItemClick = (item: string) => {
+        setDropdownVisible(false);
+    };
+
+    const [selectedKeys, setSelectedKeys] = useState[""];
 
     return (
         <Card>
@@ -409,6 +426,8 @@ const Contacts = () => {
                 <Row style={{ marginBottom: "20px" }}>
                     <Col md={12} lg={12}>
                         <Dropdown
+                            visible={isDropdownVisible}
+                            onVisibleChange={setDropdownVisible}
                             overlay={
                                 <Card style={{ width: "370px" }}>
                                     <Search
@@ -448,184 +467,254 @@ const Contacts = () => {
                                                     boxShadow: "none",
                                                 }}
                                                 mode="inline"
-                                                defaultSelectedKeys={["1"]}
-                                                defaultOpenKeys={["sub1"]}
+                                                defaultSelectedKeys={
+                                                    selectedKeys
+                                                }
+                                                // defaultOpenKeys={["sub1"]}
                                             >
                                                 <Typography className="m-b-sm">
                                                     SYSTEM
                                                 </Typography>
                                                 <Menu.Item
                                                     className="menuList"
-                                                    key="1"
+                                                    key="item1"
                                                     icon={<LockOutlined />}
-                                                    onClick={() => {
-                                                        setFilter("All");
-                                                    }}
                                                 >
-                                                    All Contacts
-                                                    {isFavorite ? (
+                                                    <Space>
+                                                        <Button
+                                                            className="disableHover"
+                                                            style={{
+                                                                paddingLeft:
+                                                                    "0px",
+                                                                width: "220px",
+                                                                display: "flex",
+                                                                alignItems:
+                                                                    "start",
+                                                            }}
+                                                            type="text"
+                                                            onClick={() => {
+                                                                setDropdownVisible(
+                                                                    false
+                                                                );
+                                                                setFilter(
+                                                                    "All Contacts"
+                                                                );
+                                                            }}
+                                                        >
+                                                            All Contacts
+                                                        </Button>
                                                         <Button
                                                             className="disableHover"
                                                             type="text"
-                                                            icon={
+                                                            onClick={() => {
+                                                                console.log(
+                                                                    "click"
+                                                                );
+
+                                                                handleFavoriteClick(
+                                                                    "All Contacts"
+                                                                );
+                                                            }}
+                                                        >
+                                                            {isFavorite.includes(
+                                                                "All Contacts"
+                                                            ) ? (
                                                                 <StarFilled />
-                                                            }
-                                                            onClick={
-                                                                handleFavoriteClick
-                                                            }
-                                                        ></Button>
-                                                    ) : (
-                                                        <Button
-                                                            className="disableHover"
-                                                            type="text"
-                                                            icon={
+                                                            ) : (
                                                                 <StarOutlined />
-                                                            }
-                                                            onClick={
-                                                                handleFavoriteClick
-                                                            }
-                                                        ></Button>
-                                                    )}
+                                                            )}
+                                                        </Button>
+                                                    </Space>
                                                 </Menu.Item>
                                                 <Menu.Item
                                                     className="menuList"
-                                                    key="2"
+                                                    key="item2"
                                                     icon={<LockOutlined />}
-                                                    onClick={() => {
-                                                        setFilter(
-                                                            "my-contacts"
-                                                        );
-                                                    }}
                                                 >
-                                                    My Contacts
-                                                    {isFavorite ? (
+                                                    <Space>
+                                                        <Button
+                                                            className="disableHover"
+                                                            style={{
+                                                                paddingLeft:
+                                                                    "0px",
+                                                                width: "220px",
+                                                                display: "flex",
+                                                                alignItems:
+                                                                    "start",
+                                                            }}
+                                                            type="text"
+                                                            onClick={() => {
+                                                                setDropdownVisible(
+                                                                    false
+                                                                );
+                                                                setFilter(
+                                                                    "my-contacts"
+                                                                );
+                                                            }}
+                                                        >
+                                                            My Contacts
+                                                        </Button>
                                                         <Button
                                                             className="disableHover"
                                                             type="text"
-                                                            icon={
+                                                            onClick={() => {
+                                                                handleFavoriteClick(
+                                                                    "my-contacts"
+                                                                );
+                                                            }}
+                                                        >
+                                                            {isFavorite.includes(
+                                                                "my-contacts"
+                                                            ) ? (
                                                                 <StarFilled />
-                                                            }
-                                                            onClick={
-                                                                handleFavoriteClick
-                                                            }
-                                                        ></Button>
-                                                    ) : (
-                                                        <Button
-                                                            className="disableHover"
-                                                            type="text"
-                                                            icon={
+                                                            ) : (
                                                                 <StarOutlined />
-                                                            }
-                                                            onClick={
-                                                                handleFavoriteClick
-                                                            }
-                                                        ></Button>
-                                                    )}
+                                                            )}
+                                                        </Button>
+                                                    </Space>
                                                 </Menu.Item>
                                                 <Menu.Item
                                                     className="menuList"
-                                                    key="3"
+                                                    key="item3"
                                                     icon={<LockOutlined />}
-                                                    onClick={() => {
-                                                        setFilter(
-                                                            "new-last-week"
-                                                        );
-                                                    }}
                                                 >
-                                                    New last week
-                                                    {isFavorite ? (
+                                                    <Space>
+                                                        <Button
+                                                            className="disableHover"
+                                                            style={{
+                                                                paddingLeft:
+                                                                    "0px",
+                                                                width: "220px",
+                                                                display: "flex",
+                                                                alignItems:
+                                                                    "start",
+                                                            }}
+                                                            type="text"
+                                                            onClick={() => {
+                                                                setDropdownVisible(
+                                                                    false
+                                                                );
+                                                                setFilter(
+                                                                    "new-last-week"
+                                                                );
+                                                            }}
+                                                        >
+                                                            New last week
+                                                        </Button>
+
                                                         <Button
                                                             className="disableHover"
                                                             type="text"
-                                                            icon={
+                                                            onClick={() => {
+                                                                handleFavoriteClick(
+                                                                    "new-last-week"
+                                                                );
+                                                            }}
+                                                        >
+                                                            {isFavorite.includes(
+                                                                "new-last-week"
+                                                            ) ? (
                                                                 <StarFilled />
-                                                            }
-                                                            onClick={
-                                                                handleFavoriteClick
-                                                            }
-                                                        ></Button>
-                                                    ) : (
-                                                        <Button
-                                                            className="disableHover"
-                                                            type="text"
-                                                            icon={
+                                                            ) : (
                                                                 <StarOutlined />
-                                                            }
-                                                            onClick={
-                                                                handleFavoriteClick
-                                                            }
-                                                        ></Button>
-                                                    )}
+                                                            )}
+                                                        </Button>
+                                                    </Space>
                                                 </Menu.Item>
                                                 <Menu.Item
                                                     className="menuList"
                                                     key="4"
                                                     icon={<LockOutlined />}
-                                                    onClick={() => {
-                                                        setFilter(
-                                                            "new-this-week"
-                                                        );
-                                                    }}
                                                 >
-                                                    New this week
-                                                    {isFavorite ? (
+                                                    <Space>
+                                                        <Button
+                                                            className="disableHover"
+                                                            style={{
+                                                                paddingLeft:
+                                                                    "0px",
+                                                                width: "220px",
+                                                                display: "flex",
+                                                                alignItems:
+                                                                    "start",
+                                                            }}
+                                                            type="text"
+                                                            onClick={() => {
+                                                                setDropdownVisible(
+                                                                    false
+                                                                );
+                                                                setFilter(
+                                                                    "new-this-week"
+                                                                );
+                                                            }}
+                                                        >
+                                                            New this week
+                                                        </Button>
                                                         <Button
                                                             className="disableHover"
                                                             type="text"
-                                                            icon={
+                                                            onClick={() => {
+                                                                handleFavoriteClick(
+                                                                    "new-this-week"
+                                                                );
+                                                            }}
+                                                        >
+                                                            {isFavorite.includes(
+                                                                "new-this-week"
+                                                            ) ? (
                                                                 <StarFilled />
-                                                            }
-                                                            onClick={
-                                                                handleFavoriteClick
-                                                            }
-                                                        ></Button>
-                                                    ) : (
-                                                        <Button
-                                                            className="disableHover"
-                                                            type="text"
-                                                            icon={
+                                                            ) : (
                                                                 <StarOutlined />
-                                                            }
-                                                            onClick={
-                                                                handleFavoriteClick
-                                                            }
-                                                        ></Button>
-                                                    )}
+                                                            )}
+                                                        </Button>
+                                                    </Space>
                                                 </Menu.Item>
                                                 <Menu.Item
                                                     className="menuList"
                                                     key="5"
                                                     icon={<LockOutlined />}
-                                                    onClick={() => {
-                                                        setFilter(
-                                                            "recent-modified-contact"
-                                                        );
-                                                    }}
                                                 >
-                                                    Recently modified Contacts
-                                                    {isFavorite ? (
+                                                    <Space>
+                                                        <Button
+                                                            className="disableHover"
+                                                            style={{
+                                                                paddingLeft:
+                                                                    "0px",
+                                                                width: "220px",
+                                                                display: "flex",
+                                                                alignItems:
+                                                                    "start",
+                                                            }}
+                                                            type="text"
+                                                            onClick={() => {
+                                                                setDropdownVisible(
+                                                                    false
+                                                                );
+                                                                setFilter(
+                                                                    "recent-modified-contact"
+                                                                );
+                                                            }}
+                                                        >
+                                                            Recently modified
+                                                            Contacts
+                                                        </Button>
                                                         <Button
                                                             className="disableHover"
                                                             type="text"
-                                                            icon={
+                                                            onClick={() => {
+                                                                handleFavoriteClick(
+                                                                    "recent-modified-contact"
+                                                                );
+                                                            }}
+                                                        >
+                                                            {isFavorite.includes(
+                                                                "recent-modified-contact"
+                                                            ) ? (
                                                                 <StarFilled />
-                                                            }
-                                                            onClick={
-                                                                handleFavoriteClick
-                                                            }
-                                                        ></Button>
-                                                    ) : (
-                                                        <Button
-                                                            className="disableHover"
-                                                            type="text"
-                                                            icon={
+                                                            ) : (
                                                                 <StarOutlined />
-                                                            }
-                                                            onClick={
-                                                                handleFavoriteClick
-                                                            }
-                                                        ></Button>
-                                                    )}
+                                                            )}
+                                                        </Button>
+                                                    </Space>
                                                 </Menu.Item>
                                             </Menu>
                                         </TabPane>

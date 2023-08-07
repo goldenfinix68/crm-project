@@ -40,6 +40,9 @@ public function index(Request $request)
         if ($request->filter == "new-this-week") {
             $data = $data->whereBetween('contacts.created_at', [$currentWeekStart, $currentWeekEnd]);
         }
+        if ($request->filter == "recent-modified-contact") {
+            $data = $data->whereBetween('contacts.updated_at', [$currentWeekStart, $currentWeekEnd]);
+        }
     }
 
     if (isset($request->search)) { 
