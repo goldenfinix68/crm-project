@@ -370,8 +370,6 @@ const Contacts = () => {
         setDropdownVisible(false);
     };
 
-    const [selectedKeys, setSelectedKeys] = useState[""];
-
     return (
         <Card>
             {showDeleteButton ? (
@@ -467,9 +465,9 @@ const Contacts = () => {
                                                     boxShadow: "none",
                                                 }}
                                                 mode="inline"
-                                                defaultSelectedKeys={
-                                                    selectedKeys
-                                                }
+                                                // defaultSelectedKeys={
+
+                                                // }
                                                 // defaultOpenKeys={["sub1"]}
                                             >
                                                 <Typography className="m-b-sm">
