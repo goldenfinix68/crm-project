@@ -15,6 +15,10 @@ class Deal extends Model
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'owner');
     }
+    public function contact()
+    {
+        return $this->hasOne(\App\Models\Contact::class, 'id', 'contactId');
+    }
     public function activities()
     {
         return $this->hasMany(\App\Models\Activity::class, 'deal_id', 'id');
@@ -26,5 +30,14 @@ class Deal extends Model
     public function files()
     {
         return $this->hasMany(\App\Models\DealFile::class, 'deal_id', 'id');
+    }
+
+    public function participant()
+    {
+        return $this->hasMany(\App\Models\DealParticipant::class, 'deal_id', 'id');
+    }
+    public function teammate()
+    {
+        return $this->hasMany(\App\Models\DealTeammate::class, 'deal_id', 'id');
     }
 }

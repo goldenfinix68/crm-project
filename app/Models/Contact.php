@@ -12,7 +12,7 @@ use App\Models\User;
 class Contact extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'firstName',
         'lastName',
@@ -74,13 +74,14 @@ class Contact extends Model
         'wetlandsStatus',
         'county'
     ];
-    
-    protected $appends = [
-        'wall', 
-    ];
-    
 
-    public function owner(){
+    protected $appends = [
+        'wall',
+    ];
+
+
+    public function owner()
+    {
         return $this->belongsTo(User::class, 'ownerId');
     }
 
@@ -108,11 +109,11 @@ class Contact extends Model
     {
         return $this->hasMany(\App\Models\ContactUpdate::class, 'contactId', 'id');
     }
-    
+
     public function getWallAttribute()
     {
         $data = new Collection();
-    
+
         $notes = $this->notes->map(function ($data) {
             $createdAt = Carbon::parse($data->created_at);
             return [
@@ -124,7 +125,7 @@ class Contact extends Model
                 'note' => $data,
             ];
         });
-    
+
         $texts = $this->texts->map(function ($data) {
             $createdAt = Carbon::parse($data->created_at);
             return [
@@ -137,7 +138,7 @@ class Contact extends Model
                 'text' => $data,
             ];
         });
-    
+
         $deals = $this->deals->map(function ($data) {
             $createdAt = Carbon::parse($data->created_at);
             return [
@@ -149,7 +150,7 @@ class Contact extends Model
                 'deal' => $data,
             ];
         });
-    
+
         $updates = $this->updates->map(function ($data) {
             $createdAt = Carbon::parse($data->created_at);
             return [
@@ -161,12 +162,12 @@ class Contact extends Model
                 'update' => $data,
             ];
         });
-    
+
         $data = $data->merge($notes)->merge($texts)->merge($deals)->merge($updates);
-    
+
         // Sort the combined data array based on the 'date' in ascending order
         $sortedData = $data->sortByDesc('date')->values()->all();
-    
+
         return $sortedData;
     }
 }
