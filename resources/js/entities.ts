@@ -24,12 +24,13 @@ export type TText = {
     from: string;
     to: string;
     message: string;
-    type: "sent" | "received";
+    type: "sent" | "received" | "scheduled";
     sender: string;
+    receiver: string;
     day: string;
     month: string;
     year: string;
-    date: string;
+    created_at: string;
     time: string;
 };
 

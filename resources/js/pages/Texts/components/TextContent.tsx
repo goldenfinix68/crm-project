@@ -79,7 +79,7 @@ const TextContent = ({
         return <LoadingComponent />;
     }
 
-    return ["all", "inbox", "schedule"].includes(menu) ? (
+    return ["all", "inbox", "scheduled"].includes(menu) ? (
         <Row key={contactId}>
             <Col
                 span={18}

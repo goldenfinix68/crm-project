@@ -124,7 +124,6 @@ class Contact extends Model
                 'note' => $data,
             ];
         });
-    
         $texts = $this->texts->map(function ($data) {
             $createdAt = Carbon::parse($data->created_at);
             return [
