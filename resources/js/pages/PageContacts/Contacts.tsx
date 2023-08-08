@@ -64,6 +64,7 @@ import { faPen } from "@fortawesome/free-solid-svg-icons";
 import ContactsComponentsTableEditableCell from "./Components/ContactsComponentsTableEditableCell";
 import ContactsComponentsTableEditableCellTags from "./Components/ContactsComponentsTableEditableCellTags";
 import ContactsComponentsTableEditableCellName from "./Components/ContactsComponentsTableEditableCellName";
+import ContactsComponentsUpdate from "./Components/ContactsComponentsUpdate";
 
 interface DataType {
     key: React.Key;
@@ -108,6 +109,8 @@ const Contacts = () => {
     const [currentActiveType, setCurrentActiveType] = useState("");
 
     const [hideHeader, setHideHeader] = useState(true);
+
+    const [isModalOpenUpdate, setisModalOpenUpdate] = useState(false);
 
     const handleEdit = (record: TContact) => {
         setTContact(record);
@@ -398,7 +401,13 @@ const Contacts = () => {
                         </Button>
                     </Popconfirm>
 
-                    <Button icon={<SaveOutlined />} className="m-r-sm">
+                    <Button
+                        onClick={() => {
+                            setisModalOpenUpdate(true);
+                        }}
+                        icon={<SaveOutlined />}
+                        className="m-r-sm"
+                    >
                         Update
                     </Button>
                     <Button icon={<ExportOutlined />} className="m-r-sm">
@@ -836,6 +845,14 @@ const Contacts = () => {
             <ContactsComponentsManageColumn
                 isModalManageColumnOpen={isModalManageColumnOpen}
                 setIsModalManageColumnOpen={setIsModalManageColumnOpen}
+            />
+
+            <ContactsComponentsUpdate
+                isModalOpenUpdate={isModalOpenUpdate}
+                setisModalOpenUpdate={setisModalOpenUpdate}
+                record={isTContact}
+                title={isTitle}
+                setTContact={setTContact}
             />
         </Card>
     );

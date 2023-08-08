@@ -26,6 +26,8 @@ public function index(Request $request)
     $currentWeekEnd = Carbon::now()->endOfWeek();
     $lastWeekStart = Carbon::now()->subWeek()->startOfWeek();
     $lastWeekEnd = Carbon::now()->subWeek()->endOfWeek();
+    $startOfDay = Carbon::now()->startOfDay();
+    $endOfDay = Carbon::now()->endOfDay();
 
     $data = Contact::select([
         'contacts.*',
@@ -41,7 +43,7 @@ public function index(Request $request)
             $data = $data->whereBetween('contacts.created_at', [$currentWeekStart, $currentWeekEnd]);
         }
         if ($request->filter == "recent-modified-contact") {
-            $data = $data->whereBetween('contacts.updated_at', [$currentWeekStart, $currentWeekEnd]);
+            $data = $data->whereBetween('contacts.updated_at', [$startOfDay, $endOfDay]);
         }
     }
 
