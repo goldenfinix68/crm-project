@@ -239,13 +239,13 @@ $base: 15px;
 
 .breadcrumb a.active,
 .breadcrumb a:hover {
-    background: darken(#1777ff, 20%);
+    background: #1677ff;
     color: white;
 }
 
 .breadcrumb a.active:after,
 .breadcrumb a:hover:after {
-    background: darken(#1777ff, 20%);
+    background: #1677ff;
     color: white;
 }
 
@@ -271,6 +271,73 @@ $base: 15px;
     color: white;
     text-align: center;
 }
+.button-success-outlined {
+    background: white;
+    color: #09b749;
+    border: 1px solid #09b749;
+}
+
+.button-success-outlined:hover {
+    background: #09b749 !important;
+    color: white;
+    border: 1px solid #09b749;
+}
+.button-danger-outlined {
+    background: white !important;
+    color: #ff7875;
+    border: 1px solid #ff7875;
+}
+
+.button-danger-outlined:hover {
+    background: #ff7875 !important;
+    color: white;
+    border: 1px solid #ff7875;
+}
+
+.button-success-solid {
+    background: #09b749;
+    color: white;
+    border: 1px solid #09b749;
+}
+
+.button-success-solid:hover {
+    background: white !important;
+    color: #09b749 !important;
+    border: 1px solid #09b749;
+}
+
+.button-danger-solid {
+    background: #ff7875;
+    color: white;
+    border: 1px solid #ff7875;
+}
+
+.button-danger-solid:hover {
+    background: white !important;
+    color: #ff7875 !important;
+    border: 1px solid #ff7875;
+}
+
+.success-bg-modal {
+    .modal-header {
+        background: #09b749;
+    }
+}
+.danger-bg-modal {
+    .modal-header {
+        background: #ff7875;
+    }
+}
+
+.delete-post-icon {
+    position: absolute;
+    right: 0;
+    margin-right: 12px;
+    top: 7px;
+    font-size: 17px;
+    cursor: pointer;
+}
+
 // // 1000px
 // ///////////////////////
 // @media all and (max-width: 1000px) {

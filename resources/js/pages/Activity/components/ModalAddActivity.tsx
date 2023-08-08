@@ -39,6 +39,7 @@ dayjs.extend(customParseFormat);
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
 
 import validateRules from "../../../providers/validateRules";
 
@@ -50,12 +51,6 @@ import {
     useUsersList,
 } from "../../../api/query/activityQuery";
 import { an } from "@fullcalendar/core/internal-common";
-
-interface Props {
-    isModalOpenAdd: boolean;
-    handleOkAdd: () => void;
-    handleCancelAdd: () => void;
-}
 
 const optionRecurrence: SelectProps["options"] = [
     {
@@ -95,11 +90,17 @@ const optionAvailability: SelectProps["options"] = [
     },
 ];
 
+interface ModalActivityProps {
+    isModalOpenAdd: boolean;
+    handleOkAdd: () => void;
+    handleCancelAdd: () => void;
+}
+
 const ModalAddActivity = ({
     isModalOpenAdd,
     handleOkAdd,
     handleCancelAdd,
-}: Props) => {
+}: ModalActivityProps) => {
     const queryClient = useQueryClient();
     const [form] = Form.useForm();
     const [calendarOptions, setCalendarOptions] = useState(false);
@@ -255,10 +256,6 @@ const ModalAddActivity = ({
 
         setEventCalendarData(data);
     };
-
-    useEffect(() => {
-        console.log("eventCalendarData", eventCalendarData);
-    }, [eventCalendarData]);
 
     return (
         <Modal
@@ -775,7 +772,11 @@ const ModalAddActivity = ({
                     >
                         <div className={"FullCalendarActivity"}>
                             <FullCalendar
-                                plugins={[dayGridPlugin, timeGridPlugin]}
+                                plugins={[
+                                    dayGridPlugin,
+                                    timeGridPlugin,
+                                    interactionPlugin,
+                                ]}
                                 initialView="timeGridDay"
                                 headerToolbar={{
                                     left: "prev",
@@ -788,6 +789,22 @@ const ModalAddActivity = ({
                                         ? eventCalendarData
                                         : []
                                 }
+                                eventDrop={(info) => {
+                                    // Called when an event is dropped to a new date/time
+                                    console.log(
+                                        "Event dropped to:",
+                                        info.event.start
+                                    );
+                                }}
+                                eventResize={(info) => {
+                                    // Called when an event's end time is changed by resizing
+                                    console.log(
+                                        "Event resized to:",
+                                        info.event.start,
+                                        info.event.end
+                                    );
+                                }}
+
                                 // eventContent={<></>}
                                 // slotDuration={"00:30:00"}
                             />

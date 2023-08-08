@@ -16,4 +16,9 @@ class Activity extends Model
     {
         return $this->hasMany('\App\Models\ActivityTag', 'activity_id', 'id');
     }
+
+    public function owner()
+    {
+        return $this->hasOne(\App\Models\User::class, 'id', 'owner_id');
+    }
 }

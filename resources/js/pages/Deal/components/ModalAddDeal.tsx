@@ -38,7 +38,11 @@ import { useForm } from "antd/es/form/Form";
 import { useMutation, useQueryClient } from "react-query";
 import { useDealMutation } from "../../../api/mutation/useDealMutation";
 import { useContactsAll } from "../../../api/query/contactsQuery";
-
+import {
+    useContactsList,
+    useDealsList,
+    useUsersList,
+} from "../../../api/query/activityQuery";
 interface Props {
     isModalOpenAdd: boolean;
     handleOkAdd: () => void;
@@ -52,6 +56,7 @@ const ModalAddDeal = ({
     handleCancelAdd,
     showModalAddDealValue,
 }: Props) => {
+    const { dataUsers, isLoadingUsers } = useUsersList();
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     const { contacts, isLoading } = useContactsAll();
@@ -158,7 +163,10 @@ const ModalAddDeal = ({
                                         },
                                     ]}
                                 >
-                                    <Select style={{ width: "100%" }}>
+                                    <Select
+                                        style={{ width: "100%" }}
+                                        placeholder="Contact"
+                                    >
                                         {contacts?.map((contact) => {
                                             return (
                                                 <Select.Option
@@ -196,13 +204,27 @@ const ModalAddDeal = ({
                                         },
                                     ]}
                                 >
-                                    <Select placeholder="Owner">
-                                        <Select.Option value="Jesse Admin">
-                                            Jesse Admin
-                                        </Select.Option>
-                                        <Select.Option value="Jesse Ashley">
-                                            Jesse Ashley
-                                        </Select.Option>
+                                    <Select
+                                        placeholder="Owner"
+                                        showSearch
+                                        loading={isLoadingUsers}
+                                        style={{ width: "100%" }}
+                                    >
+                                        {dataUsers &&
+                                            dataUsers?.data &&
+                                            dataUsers?.data.map(
+                                                (item: any, key: any) => {
+                                                    return (
+                                                        <Select.Option
+                                                            key={key}
+                                                            value={item.id}
+                                                            search={`${item.firstName} ${item.lastName}`}
+                                                        >
+                                                            {`${item.firstName} ${item.lastName}`}
+                                                        </Select.Option>
+                                                    );
+                                                }
+                                            )}
                                     </Select>
                                 </Form.Item>
                             </Col>
@@ -400,7 +422,7 @@ const ModalAddDeal = ({
                                         fontWeight: "bold",
                                     }}
                                 >
-                                    Teamm mates
+                                    Teammates
                                 </div>
                                 <Input placeholder="Search User" />
                             </Col>
