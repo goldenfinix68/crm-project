@@ -179,6 +179,7 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
         "Title (Deal)",
         "Name (Contact)",
         "Tags",
+        "End Date",
         "Created By",
         "Completed Date",
         "Last Modified By",
@@ -195,6 +196,8 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
 
     const handleCheckCheckboxList = (value: string) => {
         let checkList = checkboxList.filter((item) => item === value);
+        console.log("checkList", checkList);
+
         return checkList.length > 0 ? "" : "hide";
     };
 
@@ -511,6 +514,22 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
                                     }}
                                 >
                                     Tags
+                                </Checkbox>
+                            </Col>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList("End Date")}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue("End Date")}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "End Date",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
+                                    End Date
                                 </Checkbox>
                             </Col>
 

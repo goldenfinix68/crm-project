@@ -342,4 +342,12 @@
 
 .hide {
   display: none;
+}
+
+.show {
+  display: flex;
+}
+
+.table-link:hover {
+  text-decoration: underline !important;
 }/*# sourceMappingURL=activity.css.map */
