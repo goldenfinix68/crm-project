@@ -48,6 +48,8 @@ interface Props {
     handleOkAdd: () => void;
     handleCancelAdd: () => void;
     showModalAddDealValue?: string;
+    from: string;
+    modalValue: any;
 }
 
 const ModalAddDeal = ({
@@ -55,6 +57,8 @@ const ModalAddDeal = ({
     handleOkAdd,
     handleCancelAdd,
     showModalAddDealValue,
+    from,
+    modalValue,
 }: Props) => {
     const { dataUsers, isLoadingUsers } = useUsersList();
     const queryClient = useQueryClient();
