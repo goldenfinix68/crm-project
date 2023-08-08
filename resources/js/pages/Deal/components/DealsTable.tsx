@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { useDealsAll } from "../../../api/query/dealQuery";
 import ModalAddDeal from "./ModalAddDeal";
+import { useMutation, useQueryClient } from "react-query";
 interface TDeals {
     id: number;
     title: string;
@@ -19,6 +20,7 @@ interface TDeals {
 }
 
 const DealsTable = ({ deals }: { deals: Array<TDeals> }) => {
+    const queryClient = useQueryClient();
     const onChange: TableProps<TDeals>["onChange"] = (
         pagination,
         filters,
@@ -48,12 +50,13 @@ const DealsTable = ({ deals }: { deals: Array<TDeals> }) => {
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
     const [modalValue, setModalValue] = useState(false);
     const showModalAdd = (record: any) => {
-        setIsModalOpenAdd(true);
         setModalValue(record);
+        setIsModalOpenAdd(true);
     };
 
     const handleOkAdd = () => {
         setIsModalOpenAdd(false);
+        queryClient.invalidateQueries("deals");
     };
 
     const handleCancelAdd = () => {
@@ -65,7 +68,7 @@ const DealsTable = ({ deals }: { deals: Array<TDeals> }) => {
                 dataSource={deals}
                 onChange={onChange}
                 rowKey={(record) => record.id}
-                rowSelection={{ ...rowSelection }}
+                // rowSelection={{ ...rowSelection }}
                 scroll={{ x: "max-content" }}
             >
                 <Table.Column
@@ -104,6 +107,7 @@ const DealsTable = ({ deals }: { deals: Array<TDeals> }) => {
                 handleCancelAdd={handleCancelAdd}
                 showModalAddDealValue={showModalAddDealValue}
                 from={"update"}
+                modalValue={modalValue}
             />
         </>
     );

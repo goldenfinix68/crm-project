@@ -768,7 +768,7 @@ const Deal = () => {
                         handleCancelAdd={handleCancelAdd}
                         showModalAddDealValue={showModalAddDealValue}
                         from={"add"}
-                        modalValue={}
+                        modalValue={""}
                     />
                 </Card>
             </Col>

@@ -43,6 +43,7 @@ import {
     useDealsList,
     useUsersList,
 } from "../../../api/query/activityQuery";
+import moment from "moment";
 interface Props {
     isModalOpenAdd: boolean;
     handleOkAdd: () => void;
@@ -68,8 +69,10 @@ const ModalAddDeal = ({
     const onFinish = (values: any) => {
         mutation.mutate({
             ...values,
-            estimated_close_date:
-                values.estimated_close_date.format("YYYY-MM-DD"),
+            id: from == "update" ? modalValue.id : 0,
+            estimated_close_date: values.estimated_close_date.format(
+                "YYYY-MM-DD h:mm:ss "
+            ),
         });
     };
 
@@ -95,6 +98,17 @@ const ModalAddDeal = ({
             });
         }
     }, [showModalAddDealValue]);
+
+    useEffect(() => {
+        console.log("modalValue", modalValue);
+        if (from == "update") {
+            form.setFieldsValue({
+                ...modalValue,
+                estimated_close_date: moment(modalValue.estimated_close_date),
+                owner: modalValue?.owner?.id,
+            });
+        }
+    }, [isModalOpenAdd]);
 
     return (
         <Modal
@@ -122,7 +136,7 @@ const ModalAddDeal = ({
             >
                 <div className="modal-header">
                     <Typography.Title level={5} style={{ color: "white" }}>
-                        Add New Deal
+                        {from == "update" ? "Update New Deal" : "Add New Deal"}
                     </Typography.Title>
                     <Button
                         type="link"

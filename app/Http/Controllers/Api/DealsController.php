@@ -109,8 +109,7 @@ class DealsController extends Controller
     {
 
 
-
-        $data = Deal::create($request->all());
+        $data = Deal::updateOrCreate(['id' => $request->id], $request->all());
         $data->sort = $data->id;
         $data->save();
 
