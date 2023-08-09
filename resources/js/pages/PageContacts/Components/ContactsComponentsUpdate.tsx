@@ -46,6 +46,7 @@ interface ContactsComponentsUpdateProps {
     record: any;
     title: any;
     setTContact: any;
+    selectedData: TContact[];
 }
 
 const handleChange = (value: string) => {
@@ -66,6 +67,7 @@ const ContactsComponentsUpdate = ({
     record,
     title,
     setTContact,
+    selectedData,
 }: ContactsComponentsUpdateProps) => {
     const queryClient = useQueryClient();
     const [form] = Form.useForm<TContact>();
@@ -97,13 +99,12 @@ const ContactsComponentsUpdate = ({
         console.log("title", title);
     }, [title]);
 
-    const handleFinish = (values: TContact) => {
-        console.log(values.id);
-        if (record) {
-            addContact.mutate({ ...values, id: record.id });
-        } else {
-            addContact.mutate(values);
-        }
+    const handleFinish = (values: any) => {
+        console.log(values);
+
+        selectedData.forEach((item) => {
+            addContact.mutate({ ...item, ...values });
+        });
     };
 
     const [activeField, setActiveField] = useState<string>("");

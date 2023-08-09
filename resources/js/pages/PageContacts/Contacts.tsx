@@ -307,12 +307,15 @@ const Contacts = () => {
         "checkbox"
     );
     const [selectedRowsData, setSelectedRows] = useState<React.Key[]>([]);
+    const [selectedData, setSelectedData] = useState<TContact[]>([]);
 
     const onSelectChange = (
         selectedRowKeys: React.Key[],
         selectedRows: TContact[]
     ) => {
         console.log(selectedRowKeys);
+        console.log(selectedRows);
+        setSelectedData(selectedRows);
         setSelectedRows(selectedRowKeys);
 
         // setSelectionType(selectedRows);
@@ -852,6 +855,7 @@ const Contacts = () => {
                 setisModalOpenUpdate={setisModalOpenUpdate}
                 record={isTContact}
                 title={isTitle}
+                selectedData={selectedData}
                 setTContact={setTContact}
             />
         </Card>

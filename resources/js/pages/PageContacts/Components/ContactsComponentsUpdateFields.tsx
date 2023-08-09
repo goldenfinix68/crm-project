@@ -35,24 +35,30 @@ const ContactsComponentsUpdateFields = ({ activeField }) => {
     switch (activeField) {
         case "apn":
             return (
-                <Form.Item name="apn">
+                <>
                     <Typography className="m-b-md">
                         Enter a new value for the field
                     </Typography>
                     <Typography className="m-b-xs">APN</Typography>
-                    <Input />
-                </Form.Item>
+
+                    <Form.Item name="apn">
+                        <Input />
+                    </Form.Item>
+                </>
             );
             break;
         case "acres":
             return (
-                <Form.Item name="acres">
+                <>
                     <Typography className="m-b-md">
                         Enter a new value for the field
                     </Typography>
                     <Typography className="m-b-xs">Acres</Typography>
-                    <Input />
-                </Form.Item>
+
+                    <Form.Item name="acres">
+                        <Input />
+                    </Form.Item>
+                </>
             );
             break;
         case "addressLine1":
