@@ -1,6 +1,7 @@
 import { useQuery } from "react-query";
 import axios from "axios";
 import { TContact, TContactType } from "../../entities";
+import $ from "jquery";
 
 export const useContactTypesAll = () => {
     const { data, isLoading, isError } = useQuery<TContactType[]>(
@@ -25,8 +26,10 @@ export const useContactTypesAll = () => {
         isError,
     };
 };
-
-export const useGetContact = (id: string) => {
+export const useGetContact = (
+    id: string,
+    onSuccess?: (data: TContact) => void
+) => {
     const { data, isLoading, isError, refetch } = useQuery<TContact>(
         "getContact",
         async () => {
@@ -37,6 +40,13 @@ export const useGetContact = (id: string) => {
                 },
             });
             return response.data;
+        },
+        {
+            onSuccess: (data) => {
+                if (onSuccess) {
+                    onSuccess(data);
+                }
+            },
         }
     );
 
@@ -48,12 +58,12 @@ export const useGetContact = (id: string) => {
     };
 };
 
-export const useContactsAll = () => {
-    const { data, isLoading, isError } = useQuery<TContact[]>(
+export const useContactsAll = (filter: any) => {
+    const { data, isLoading, isError, refetch } = useQuery<TContact[]>(
         "contacts",
         async () => {
             const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
-            const response = await axios.get("/api/contacts", {
+            const response = await axios.get(`/api/contacts?filter=${filter}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -66,5 +76,6 @@ export const useContactsAll = () => {
         contacts: data,
         isLoading,
         isError,
+        refetch,
     };
 };

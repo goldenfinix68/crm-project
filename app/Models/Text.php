@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
+use App\Models\Contact;
 
 class Text extends Model
 {
@@ -22,6 +23,7 @@ class Text extends Model
 
     protected $appends = [
         'sender', 
+        'receiver', 
         'day', 
         'month', 
         'year', 
@@ -33,19 +35,16 @@ class Text extends Model
         return $this->hasOne(\App\Models\User::class, 'id', 'userId');
     }
 
-    public function contact()
-    {
-        return $this->hasOne(\App\Models\Contact::class, 'id', 'contactId');
-    }
-    
     public function getSenderAttribute()
     {
-        if($this->type == "sent"){
-            return $this->user->firstName . ' ' . $this->user->lastName;
-        }
-        if($this->type == "received"){
-            // $sender = (string) $this->contact->firstName . " " . $this->contact->lastName;
-            return "contact";
+        return $this->user->firstName . ' ' . $this->user->lastName;
+    }
+    
+    public function getReceiverAttribute()
+    {
+        $contact = Contact::find($this->contactId);
+        if(!empty($contact)){
+            return $contact->firstName . " " . $contact->lastName;
         }
         return 'Unknown';
     }

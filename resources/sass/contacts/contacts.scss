@@ -159,3 +159,15 @@
 .custom-table-cell {
     height: 69px;
 }
+
+.disableHover:hover {
+    background-color: transparent !important;
+}
+
+.menuList {
+    .ant-dropdown-menu-title-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
