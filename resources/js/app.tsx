@@ -35,6 +35,7 @@ import Home from "./pages/Home";
 import AddEditUser from "./pages/Users/AddEditUser";
 import PageDashboard from "./pages/PageDashboard/PageDashboard";
 import Contacts from "./pages/PageContacts/Contacts";
+
 import Activity from "./pages/Activity";
 import Deal from "./pages/Deal";
 import Inbox from "./pages/Inbox/Inbox";
@@ -47,7 +48,7 @@ import ContactView from "./pages/ContactView";
 import LoadingComponent from "./components/LoadingComponent";
 import DealDetail from "./pages/Deal/DealDetail";
 import Texts from "./pages/Texts/index";
-
+import MergeContacts from "./pages/PageContacts/MergeContacts";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isDialer = window.location.pathname === "/dialer";
@@ -115,6 +116,10 @@ const App: React.FC = () => {
                             }
                         />
                         <Route path="/contacts" element={<Contacts />} />
+                        <Route
+                            path="/contacts/mergeContacts"
+                            element={<MergeContacts />}
+                        />
 
                         <Route
                             path="/activities"
