@@ -47,6 +47,8 @@ dayjs.extend(customParseFormat);
 interface UpdateProps {
     drawerUpdateOpen: boolean;
     setDrawerUpdateOpen: any;
+    drawerUpdateData: any;
+    setDrawerUpdateData: any;
 }
 
 const optionRecurrence: SelectProps["options"] = [
