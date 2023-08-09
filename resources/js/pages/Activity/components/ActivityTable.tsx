@@ -167,7 +167,17 @@ const ActivityTable = () => {
               ]
     );
 
-    const localTableColumn = JSON.parse(localStorage.activitiesSelectColumn);
+    const localTableColumn = localStorage.activitiesSelectColumn
+        ? JSON.parse(localStorage.activitiesSelectColumn)
+        : [
+              { title: "Title", id: "1" },
+              { title: "Start Date", id: "2" },
+              { title: "Duration", id: "3" },
+              { title: "Owner", id: "4" },
+              { title: "Title (Deal)", id: "5" },
+              { title: "Name (Contact)", id: "6" },
+              { title: "Tags", id: "7" },
+          ];
     // const colums: ColumnsType<TActivities> = [
     const colums = [
         {
@@ -204,6 +214,7 @@ const ActivityTable = () => {
                                   className="table-link"
                                   onClick={() => {
                                       setDrawerUpdateOpen(true);
+                                      setDrawerUpdateData(record);
                                   }}
                               >
                                   {text}
@@ -386,6 +397,7 @@ const ActivityTable = () => {
     });
 
     const [drawerUpdateOpen, setDrawerUpdateOpen] = useState(false);
+    const [drawerUpdateData, setDrawerUpdateData] = useState([]);
 
     return (
         <>
@@ -532,6 +544,8 @@ const ActivityTable = () => {
             <DrawerUpdateActivity
                 drawerUpdateOpen={drawerUpdateOpen}
                 setDrawerUpdateOpen={setDrawerUpdateOpen}
+                drawerUpdateData={drawerUpdateData}
+                setDrawerUpdateData={setDrawerUpdateData}
             />
         </>
     );
