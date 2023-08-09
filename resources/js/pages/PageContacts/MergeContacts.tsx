@@ -123,11 +123,18 @@ const MergeContacts = () => {
 
     return (
         <>
-            <Col lg={5} md={5}></Col>
-            <Col lg={14} md={14}>
-                <Card>wew</Card>
-            </Col>
-            <Col lg={5} md={5}></Col>
+            <Row>
+                <Col lg={16} md={16} offset={4}>
+                    <Card>
+                        <Typography.Title level={4}>
+                            Merge Contacts
+                        </Typography.Title>
+                        <Typography.Title level={5}>
+                            Merge Details
+                        </Typography.Title>
+                    </Card>
+                </Col>
+            </Row>
         </>
     );
 };

@@ -155,7 +155,7 @@ const Contacts = () => {
             key: "email",
             title: "Email",
             dataIndex: "email",
-            width: 250,
+            width: 320,
             render: (text: string, record: TContact) => (
                 <ContactsComponentsTableEditableCell
                     type="email"
