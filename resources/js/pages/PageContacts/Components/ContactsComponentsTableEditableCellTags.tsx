@@ -133,7 +133,9 @@ const ContactsComponentsTableEditableCellTags = ({
                             currentActiveType == type) ||
                             currentActiveCell == type + ": " + record.id) && (
                             <Popconfirm
-                                title=""
+                                title={
+                                    type.charAt(0).toUpperCase() + type.slice(1)
+                                }
                                 icon={null}
                                 description={
                                     <Space
@@ -217,7 +219,9 @@ const ContactsComponentsTableEditableCellTags = ({
                         <div style={{ width: "90%" }}></div>
                         <div>
                             <Popconfirm
-                                title=""
+                                title={
+                                    type.charAt(0).toUpperCase() + type.slice(1)
+                                }
                                 icon={null}
                                 description={
                                     <Space style={{ width: "250px" }}>

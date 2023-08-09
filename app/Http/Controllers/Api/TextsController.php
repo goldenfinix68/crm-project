@@ -17,7 +17,7 @@ class TextsController extends Controller
      */
     public function index()
     {
-        //
+        return Text::orderBy('id', 'desc')->get();
     }
 
     /**

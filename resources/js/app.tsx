@@ -46,7 +46,7 @@ import Dialer from "./pages/Dialer/Dialer";
 import ContactView from "./pages/ContactView";
 import LoadingComponent from "./components/LoadingComponent";
 import DealDetail from "./pages/Deal/DealDetail";
-import Texts from "./pages/Texts";
+import Texts from "./pages/Texts/index";
 
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
@@ -150,6 +150,14 @@ const App: React.FC = () => {
                         />
                         <Route
                             path="/texts"
+                            element={
+                                <PrivateRoute>
+                                    <Texts />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/texts/:route"
                             element={
                                 <PrivateRoute>
                                     <Texts />
