@@ -150,15 +150,15 @@ const Deal = () => {
     const action: MenuProps["items"] = [
         {
             key: "1",
-            label: <div>Mass Transfer Activites</div>,
+            label: <div>Mass Transfer Deals</div>,
         },
         {
             key: "2",
-            label: <div>Mass Delete Activites</div>,
+            label: <div>Mass Delete Deals</div>,
         },
         {
             key: "3",
-            label: <div>Mass Update Activites</div>,
+            label: <div>Mass Update Deals</div>,
         },
         {
             key: "4",
@@ -166,7 +166,7 @@ const Deal = () => {
         },
         {
             key: "5",
-            label: <div>Export Activites</div>,
+            label: <div>Export Deals</div>,
         },
         {
             key: "6",
