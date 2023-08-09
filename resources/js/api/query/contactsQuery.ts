@@ -26,8 +26,10 @@ export const useContactTypesAll = () => {
         isError,
     };
 };
-
-export const useGetContact = (id: string) => {
+export const useGetContact = (
+    id: string,
+    onSuccess?: (data: TContact) => void
+) => {
     const { data, isLoading, isError, refetch } = useQuery<TContact>(
         "getContact",
         async () => {
@@ -38,6 +40,13 @@ export const useGetContact = (id: string) => {
                 },
             });
             return response.data;
+        },
+        {
+            onSuccess: (data) => {
+                if (onSuccess) {
+                    onSuccess(data);
+                }
+            },
         }
     );
 

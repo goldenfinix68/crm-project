@@ -47,9 +47,8 @@ import Dialer from "./pages/Dialer/Dialer";
 import ContactView from "./pages/ContactView";
 import LoadingComponent from "./components/LoadingComponent";
 import DealDetail from "./pages/Deal/DealDetail";
-import Texts from "./pages/Texts";
+import Texts from "./pages/Texts/index";
 import MergeContacts from "./pages/PageContacts/MergeContacts";
-
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isDialer = window.location.pathname === "/dialer";
@@ -156,6 +155,14 @@ const App: React.FC = () => {
                         />
                         <Route
                             path="/texts"
+                            element={
+                                <PrivateRoute>
+                                    <Texts />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/texts/:route"
                             element={
                                 <PrivateRoute>
                                     <Texts />
