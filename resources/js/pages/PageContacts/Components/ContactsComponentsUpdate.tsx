@@ -170,8 +170,176 @@ const ContactsComponentsUpdate = ({
                                         label: "Acres",
                                     },
                                     {
-                                        value: "address-line-1",
+                                        value: "addressLine1",
                                         label: "Address Line 1",
+                                    },
+                                    {
+                                        value: "addressLine2",
+                                        label: "Address Line 2",
+                                    },
+                                    {
+                                        value: "assessedValue",
+                                        label: "Assessed Value",
+                                    },
+                                    {
+                                        value: "assessedVsOpeningMargin",
+                                        label: "Assessed vs. Opening Bid Margin (manual)",
+                                    },
+                                    {
+                                        value: "assessedVsOpeningMultiple",
+                                        label: "Assessed vs. Opening Bid Multiple (manual)",
+                                    },
+                                    {
+                                        value: "city",
+                                        label: "City",
+                                    },
+                                    {
+                                        value: "country",
+                                        label: "Country",
+                                    },
+                                    {
+                                        value: "county",
+                                        label: "County",
+                                    },
+                                    {
+                                        value: "countyLink",
+                                        label: "County Link",
+                                    },
+                                    {
+                                        value: "description",
+                                        label: "Description",
+                                    },
+                                    {
+                                        value: "emailOptOut",
+                                        label: "Email Opt Out",
+                                    },
+                                    {
+                                        value: "emailOptOutReason",
+                                        label: "Email Opt Out Reason",
+                                    },
+                                    {
+                                        value: "facebook",
+                                        label: "Facebook",
+                                    },
+                                    {
+                                        value: "firstName",
+                                        label: "First Name",
+                                    },
+                                    {
+                                        value: "floodZone",
+                                        label: "Flood Zone",
+                                    },
+                                    {
+                                        value: "googleMapLink",
+                                        label: "Google Map Link",
+                                    },
+                                    {
+                                        value: "instagram",
+                                        label: "Instagram",
+                                    },
+                                    {
+                                        value: "jobTitle",
+                                        label: "Job Title",
+                                    },
+                                    {
+                                        value: "lastName",
+                                        label: "Last Name",
+                                    },
+                                    {
+                                        value: "legalDescription",
+                                        label: "Legal Description",
+                                    },
+                                    {
+                                        value: "detailsLegalDescription",
+                                        label: "Legal Description",
+                                    },
+                                    {
+                                        value: "linkedIn",
+                                        label: "LinkedIn",
+                                    },
+                                    {
+                                        value: "mailingCity",
+                                        label: "Mailing City",
+                                    },
+                                    {
+                                        value: "mailingCounty",
+                                        label: "Mailing County",
+                                    },
+                                    {
+                                        value: "mailingState",
+                                        label: "Mailing State",
+                                    },
+                                    {
+                                        value: "mailingStreetAddress",
+                                        label: "Mailing Steet Address",
+                                    },
+                                    {
+                                        value: "mailingZip",
+                                        label: "Mailing Zip",
+                                    },
+                                    {
+                                        value: "marketAreaName",
+                                        label: "MarketAreaName",
+                                    },
+                                    {
+                                        value: "openingBid",
+                                        label: "Opening Bid",
+                                    },
+                                    {
+                                        value: "owner",
+                                        label: "Owner",
+                                    },
+                                    {
+                                        value: "redfinQuickLink",
+                                        label: "Redfin Quick Link",
+                                    },
+                                    {
+                                        value: "roadFrontage",
+                                        label: "Road Frontage (ft)",
+                                    },
+                                    {
+                                        value: "smsOptOut",
+                                        label: "SMS Opt Out",
+                                    },
+                                    {
+                                        value: "skype",
+                                        label: "Skype",
+                                    },
+                                    {
+                                        value: "state",
+                                        label: "State",
+                                    },
+                                    {
+                                        value: "subdivision",
+                                        label: "Subdivision",
+                                    },
+                                    {
+                                        value: "tags",
+                                        label: "Tags",
+                                    },
+                                    {
+                                        value: "topogprahy",
+                                        label: "Topogprahy",
+                                    },
+                                    {
+                                        value: "twitter",
+                                        label: "Twitter",
+                                    },
+                                    {
+                                        value: "type",
+                                        label: "Type",
+                                    },
+                                    {
+                                        value: "website",
+                                        label: "Website",
+                                    },
+                                    {
+                                        value: "wetlandsStatus",
+                                        label: "Wetlands Status",
+                                    },
+                                    {
+                                        value: "zipCode",
+                                        label: "ZipCode",
                                     },
                                 ]}
                             />
