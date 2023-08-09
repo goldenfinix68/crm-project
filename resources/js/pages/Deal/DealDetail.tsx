@@ -86,6 +86,8 @@ import {
     useDealMutationDeleteFile,
     useDealMutationAddParticipant,
     useDealMutationDeleteParticipants,
+    useDealMutationAddTeammate,
+    useDealMutationDeleteTeammate,
 } from "../../api/mutation/useDealMutation";
 import moment from "moment";
 import DealsTable from "./components/DealsTable";
@@ -466,6 +468,36 @@ const DealDetail = () => {
         deleteParticipant.mutate({ id: value });
     };
 
+    const onChangeSelectTeammate = (value: any) => {
+        addTeammate.mutate({ user_id: value, deal_id: "" + dealId });
+    };
+
+    const addTeammate = useMutation(useDealMutationAddTeammate, {
+        onSuccess: (res) => {
+            notification.success({
+                message: "Deals",
+                description: "Teammate Successfully Added",
+            });
+
+            refetch();
+        },
+    });
+
+    const deleteTeammate = useMutation(useDealMutationDeleteTeammate, {
+        onSuccess: (res) => {
+            notification.success({
+                message: "Deals",
+                description: "Delete Successfully Added",
+            });
+
+            refetch();
+        },
+    });
+
+    const handleCloseTeammate = (value: any) => {
+        deleteTeammate.mutate({ id: value });
+    };
+
     const [isModalOpenContact, setIsModalOpenContact] = useState(false);
     const showModalContact = () => {
         setIsModalOpenContact(true);
@@ -503,22 +535,47 @@ const DealDetail = () => {
             label: "Teamates",
             children: (
                 <div>
-                    <div style={{ display: "flex" }}>
-                        <span className="thumb-name-xs " title="Jesse Ashley">
-                            J
-                        </span>
-                        <span
-                            style={{
-                                fontSize: 14,
-                                marginLeft: 10,
-                            }}
+                    {deals &&
+                        deals?.data.teammate.map((item: any, key: any) => {
+                            return (
+                                <Tag
+                                    closable
+                                    color="#2db7f5"
+                                    onClose={(e) => {
+                                        handleCloseTeammate(item.id);
+                                    }}
+                                    style={{ marginTop: "5px" }}
+                                >
+                                    {item.user.firstName +
+                                        " " +
+                                        item.user.lastName}
+                                </Tag>
+                            );
+                        })}
+
+                    <div style={{ marginTop: "10px" }}>
+                        <Select
+                            placeholder="Search"
+                            showSearch
+                            className="select-custom-width"
+                            loading={isLoadingUsers}
+                            style={{ width: "100%" }}
+                            onChange={onChangeSelectTeammate}
+                            dropdownRender={(menu) => <>{menu}</>}
                         >
-                            {" "}
-                            Jesse Ashley
-                        </span>
-                    </div>
-                    <div style={{ marginTop: 10 }}>
-                        <Input placeholder="Search User" />
+                            {contacts &&
+                                contacts.map((item: any, key: any) => {
+                                    return (
+                                        <Select.Option
+                                            key={key}
+                                            value={item.id}
+                                            search={`${item.firstName} ${item.lastName}`}
+                                        >
+                                            {`${item.firstName} ${item.lastName}`}
+                                        </Select.Option>
+                                    );
+                                })}
+                        </Select>
                     </div>
                 </div>
             ),

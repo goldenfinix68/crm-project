@@ -9,6 +9,7 @@ use App\Models\DealNote;
 use App\Models\DealFile;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class DealsController extends Controller
 {
@@ -29,7 +30,11 @@ class DealsController extends Controller
         $start_date_next = date('Y-m-d', strtotime($start_of_date_next));
         $end_date_next = date('Y-m-d', strtotime($end_of_date_next));
 
-        $data = Deal::where(function ($q) use ($request) {
+        $data = Deal::select([
+            'deals.*',
+            DB::raw('(SELECT CONCAT(firstName," ",lastName) FROM contacts WHERE contacts.id = deals.contactId) As contact_name'),
+            DB::raw('(SELECT CONCAT(firstName," ",lastName) FROM users WHERE users.id = deals.owner) As owner_name'),
+        ])->where(function ($q) use ($request) {
             if ($request->search) {
                 // $search = str_replace('%','[%]',$request->search);
                 $search = $request->search;
@@ -104,8 +109,7 @@ class DealsController extends Controller
     {
 
 
-
-        $data = Deal::create($request->all());
+        $data = Deal::updateOrCreate(['id' => $request->id], $request->all());
         $data->sort = $data->id;
         $data->save();
 
@@ -121,7 +125,7 @@ class DealsController extends Controller
      */
     public function show($id)
     {
-        $data = Deal::with(['owner', 'activities.owner', 'notes.user', 'files.uploaded_by', 'participant.user', 'contact'])->find($id);
+        $data = Deal::with(['owner', 'activities.owner', 'notes.user', 'files.uploaded_by', 'participant.user', 'contact', 'teammate.user'])->find($id);
         $notes = \App\Models\DealNote::with('user')->where('deal_id', $id)->where('is_pinned', '1')->get();
         return response()->json(['success' => true, 'data' => $data, 'notes' => $notes], 200);
     }
@@ -190,11 +194,31 @@ class DealsController extends Controller
     {
         $data = \App\Models\DealParticipant::find($request->id);
         $data->delete();
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
+
+
+
+    public function add_teammate(Request $request)
+    {
+        $data = \App\Models\DealTeammate::updateOrCreate(
+            ['deal_id' => $request->deal_id, 'user_id' => $request->user_id],
+            ['deal_id' => $request->deal_id, 'user_id' => $request->user_id],
+        );
+
+
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
+    public function delete_teammate(Request $request)
+    {
+        $data = \App\Models\DealTeammate::find($request->id);
+        $data->delete();
 
 
 
         return response()->json(['success' => true, 'data' => $data], 200);
     }
+
     /**
      * Remove the specified resource from storage.
      *

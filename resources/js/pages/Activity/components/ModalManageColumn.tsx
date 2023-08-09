@@ -4,13 +4,16 @@ import {
     Card,
     Checkbox,
     Col,
+    Collapse,
     Input,
     List,
     Modal,
+    Popconfirm,
     Radio,
     Row,
     Space,
     Typography,
+    notification,
 } from "antd";
 import type { MenuProps } from "antd";
 import type { CheckboxValueType } from "antd/es/checkbox/Group";
@@ -72,50 +75,141 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
         setIsModalManageColumnOpen(false);
     };
 
-    useEffect(() => {
-        let filter = activitiesSelectColumn.map((item: any) => item.title);
-        console.log("activitiesSelectColumn", activitiesSelectColumn);
-    }, [activitiesSelectColumn]);
+    // after modal close
+    const halderAfterClose = () => {
+        let storage = localStorage.getItem(localStorageName);
+        let array = storage ? JSON.parse(storage) : [];
+        setActivitiesSelectColumn(array);
+    };
 
-    const [checkboxDefault, setCheckboxDefault] = useState([
-        { label: "Title", value: "Title" },
-        { label: "Duration", value: "Duration" },
-        { label: "Owner", value: "Owner" },
-        { label: "Availability", value: "Availability" },
-        { label: "Start Date", value: "Start Date" },
-        { label: "Location", value: "Location" },
-        { label: "Type", value: "Type" },
-        { label: "Video Conferencing", value: "Video Conferencing" },
-        { label: "Tags", value: "Tags" },
-        { label: "Name", value: "Name" },
-    ]);
+    // onChange checkbox
+    const onChangeCheckbox = (value: any, type: boolean) => {
+        let resetID = selectResetID(activitiesSelectColumn);
+        if (type) {
+            let items = [
+                ...resetID,
+                {
+                    title: value,
+                    id: Number(Number(resetID.length) + 1).toFixed(),
+                },
+            ];
+            onChangePageValues(items);
+        } else {
+            let filterArray = activitiesSelectColumn.filter(
+                (item: any) => item.title !== value
+            );
+            onChangePageValues(filterArray);
+        }
+    };
 
-    const onChangeDefault = (checkedValues: CheckboxValueType[]) => {
-        // let array = checkedValues.map((item: any, key: Number) => {
-        //     let newID = Number(key) + 1;
-        //     return {
-        //         title: item,
-        //         id: newID.toFixed(),
-        //     };
-        // });
-        // onChangePageValues(array);
+    // reset id count
+    const selectResetID = (items: any) => {
+        let array = items.map((item: any, key: Number) => {
+            let dataKey = Number(key) + 1;
+            return {
+                title: item.title,
+                id: Number(dataKey).toFixed(),
+            };
+        });
 
-        let defaultArray = activitiesSelectColumn.map(
-            (item: any) => item.title
-        );
+        return array;
+    };
 
-        let filterArray = defaultArray.filter(
-            (item) => !checkedValues.includes(item)
-        );
-
-        console.log("onChangeDefault", checkedValues);
-        console.log("onChangeDefault", defaultArray);
-        // console.log("onChangeDefault", filterArray);
+    // check if checkbox is selected
+    const checkCheckBoxSetValue = (val: string) => {
+        let result = false;
+        if (activitiesSelectColumn.length > 0) {
+            activitiesSelectColumn.map((item: any) => {
+                if (item.title === val) {
+                    result = true;
+                }
+            });
+        }
+        return result;
     };
 
     const onChangePageValues = (items: any) => {
-        setActivitiesSelectColumn(items);
-        localStorage.setItem(localStorageName, JSON.stringify(items));
+        let resetID = selectResetID(items);
+        setActivitiesSelectColumn(resetID);
+        // localStorage.setItem(localStorageName, JSON.stringify(resetID));
+    };
+
+    // Resest selected column
+    const resetSelectColumns = (type: boolean) => {
+        let itmes = type
+            ? [
+                  { title: "Title", id: "1" },
+                  { title: "Start Date", id: "2" },
+                  { title: "Duration", id: "3" },
+                  { title: "Owner", id: "4" },
+                  { title: "Title (Deal)", id: "5" },
+                  { title: "Name (Contact)", id: "6" },
+                  { title: "Tags", id: "7" },
+              ]
+            : [];
+
+        setActivitiesSelectColumn(itmes);
+        // localStorage.setItem(localStorageName, JSON.stringify(itmes));
+    };
+
+    // Save all selected columns
+    const handleSaveSelectedColumn = () => {
+        localStorage.setItem(
+            localStorageName,
+            JSON.stringify(activitiesSelectColumn)
+        );
+        setIsModalManageColumnOpen(false);
+
+        notification.success({
+            message: "Activity",
+            description: "Successfully updated columns.",
+        });
+    };
+
+    const columnsList = [
+        "Id",
+        "Title",
+        "Duration",
+        "Owner",
+        "Availability",
+        "Start Date",
+        "Location",
+        "Type",
+        "Video Conferencing",
+        "Title (Deal)",
+        "Name (Contact)",
+        "Tags",
+        "End Date",
+        "Created By",
+        "Completed Date",
+        "Last Modified By",
+        "Created At",
+        "Last Note Added At",
+        "Last Modified Date",
+        "Last Note Added",
+        "Last Note Added By",
+        "Created Longitude",
+        "Created Latitude",
+        "Created Address",
+    ];
+    const [checkboxList, setCheckboxList] = useState(columnsList);
+
+    const handleCheckCheckboxList = (value: string) => {
+        let checkList = checkboxList.filter((item) => item === value);
+        console.log("checkList", checkList);
+
+        return checkList.length > 0 ? "" : "hide";
+    };
+
+    const onSeachColumns = (value: string) => {
+        if (value) {
+            let filteredColumns = checkboxList.filter((str) =>
+                str.toLowerCase().includes(value.toLowerCase())
+            );
+            setCheckboxList(filteredColumns);
+        } else {
+            setCheckboxList(columnsList);
+        }
     };
 
     return (
@@ -128,19 +222,32 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
                 handleCancel();
             }}
             width={980}
-            // afterClose={halderAfterClose}
+            afterClose={halderAfterClose}
             title={
                 <>
-                    <Typography.Text> Manage Columns</Typography.Text>
+                    <Typography.Text> Activity Manage Columns</Typography.Text>
                 </>
             }
             footer={
                 <Space key={"buttons"} className="w-100 footer-space">
-                    <Button type="link" className="p-l-none">
+                    <Button
+                        type="link"
+                        className="p-l-none"
+                        onClick={() => resetSelectColumns(true)}
+                    >
                         Reset to default columns
                     </Button>
                     <Space>
-                        <Button type="primary">Save</Button>
+                        <Popconfirm
+                            title="Confirmation"
+                            description="Are you sure to save this changes?"
+                            onConfirm={() => handleSaveSelectedColumn()}
+                            // onCancel={cancel}
+                            okText="Confirm"
+                            cancelText="Cancel"
+                        >
+                            <Button type="primary">Save</Button>
+                        </Popconfirm>
                         <Button
                             onClick={() => {
                                 handleCancel();
@@ -167,7 +274,18 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
                             </Radio.Button>
                         </Radio.Group>
 
-                        <Input placeholder="Search Fields" className="w-100" />
+                        <Input
+                            placeholder="Search Fields"
+                            className="w-100"
+                            onChange={(event: any) => {
+                                onSeachColumns(
+                                    event.target.value ? event.target.value : ""
+                                );
+                            }}
+                            // onSearch={(event: string) => {
+                            //     onSeachColumns(event);
+                            // }}
+                        />
                     </Space>
 
                     <div className="m-t-md custom-column-list">
@@ -177,8 +295,21 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
                                     System Fields
                                 </Typography.Text>
                             </Col>
-                            <Col span={24}>
-                                <Checkbox value={"Id"}>Id</Checkbox>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList("Id")}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue("Id")}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Id",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
+                                    Id
+                                </Checkbox>
                             </Col>
                         </Row>
 
@@ -189,18 +320,218 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
                                 </Typography.Text>
                             </Col>
 
-                            <Checkbox.Group
-                                className="checkbox-group w-100"
-                                options={checkboxDefault}
-                                defaultValue={
-                                    activitiesSelectColumn.length > 0
-                                        ? activitiesSelectColumn.map(
-                                              (item: any) => item.title
-                                          )
-                                        : []
-                                }
-                                onChange={onChangeDefault}
-                            />
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList("Title")}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue("Title")}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Title",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
+                                    Title
+                                </Checkbox>
+                            </Col>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList("Duration")}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue("Duration")}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Duration",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
+                                    Duration
+                                </Checkbox>
+                            </Col>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList("Owner")}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue("Owner")}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Owner",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
+                                    Owner
+                                </Checkbox>
+                            </Col>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList(
+                                    "Availability"
+                                )}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue(
+                                        "Availability"
+                                    )}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Availability",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
+                                    Availability
+                                </Checkbox>
+                            </Col>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList(
+                                    "Start Date"
+                                )}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue(
+                                        "Start Date"
+                                    )}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Start Date",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
+                                    Start Date
+                                </Checkbox>
+                            </Col>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList("Location")}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue("Location")}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Location",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
+                                    Location
+                                </Checkbox>
+                            </Col>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList("Type")}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue("Type")}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Type",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
+                                    Type
+                                </Checkbox>
+                            </Col>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList(
+                                    "Video Conferencing"
+                                )}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue(
+                                        "Video Conferencing"
+                                    )}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Video Conferencing",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
+                                    Video Conferencing
+                                </Checkbox>
+                            </Col>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList(
+                                    "Title (Deal)"
+                                )}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue(
+                                        "Title (Deal)"
+                                    )}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Title (Deal)",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
+                                    Title (Deal)
+                                </Checkbox>
+                            </Col>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList(
+                                    "Name (Contact)"
+                                )}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue(
+                                        "Name (Contact)"
+                                    )}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Name (Contact)",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
+                                    Name (Contact)
+                                </Checkbox>
+                            </Col>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList("Tags")}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue("Tags")}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Tags",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
+                                    Tags
+                                </Checkbox>
+                            </Col>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList("End Date")}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue("End Date")}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "End Date",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
+                                    End Date
+                                </Checkbox>
+                            </Col>
 
                             {/* custom fields start */}
                             {/* <Col span={24}>
@@ -217,58 +548,225 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
                                     Internal
                                 </Typography.Text>
                             </Col>
-                            <Col span={24}>
-                                <Checkbox value={"Created By"}>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList(
+                                    "Created By"
+                                )}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue(
+                                        "Created By"
+                                    )}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Created By",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
                                     Created By
                                 </Checkbox>
                             </Col>
-                            <Col span={24}>
-                                <Checkbox value={"Completed Date"}>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList(
+                                    "Completed Date"
+                                )}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue(
+                                        "Completed Date"
+                                    )}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Completed Date",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
                                     Completed Date
                                 </Checkbox>
                             </Col>
-                            <Col span={24}>
-                                <Checkbox value={"Last Modified By"}>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList(
+                                    "Last Modified By"
+                                )}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue(
+                                        "Last Modified By"
+                                    )}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Last Modified By",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
                                     Last Modified By
                                 </Checkbox>
                             </Col>
-                            <Col span={24}>
-                                <Checkbox value={"Created At"}>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList(
+                                    "Created At"
+                                )}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue(
+                                        "Created At"
+                                    )}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Created At",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
                                     Created At
                                 </Checkbox>
                             </Col>
-                            <Col span={24}>
-                                <Checkbox value={"Last Note Added At"}>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList(
+                                    "Last Note Added At"
+                                )}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue(
+                                        "Last Note Added At"
+                                    )}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Last Note Added At",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
                                     Last Note Added At
                                 </Checkbox>
                             </Col>
-                            <Col span={24}>
-                                <Checkbox value={"Last Modified Date"}>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList(
+                                    "Last Modified Date"
+                                )}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue(
+                                        "Last Modified Date"
+                                    )}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Last Modified Date",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
                                     Last Modified Date
                                 </Checkbox>
                             </Col>
-                            <Col span={24}>
-                                <Checkbox value={"Last Note Added"}>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList(
+                                    "Last Note Added"
+                                )}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue(
+                                        "Last Note Added"
+                                    )}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Last Note Added",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
                                     Last Note Added
                                 </Checkbox>
                             </Col>
-                            <Col span={24}>
-                                <Checkbox value={"Last Note Added By"}>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList(
+                                    "Last Note Added By"
+                                )}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue(
+                                        "Last Note Added By"
+                                    )}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Last Note Added By",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
                                     Last Note Added By
                                 </Checkbox>
                             </Col>
-                            <Col span={24}>
-                                <Checkbox value={"Created Longitude"}>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList(
+                                    "Created Longitude"
+                                )}
+                            >
+                                <Checkbox
+                                    value={"Created Longitude"}
+                                    checked={checkCheckBoxSetValue(
+                                        "Created Longitude"
+                                    )}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Created Longitude",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
                                     Created Longitude
                                 </Checkbox>
                             </Col>
-                            <Col span={24}>
-                                <Checkbox value={"Created Latitude"}>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList(
+                                    "Created Latitude"
+                                )}
+                            >
+                                <Checkbox
+                                    value={"Created Latitude"}
+                                    checked={checkCheckBoxSetValue(
+                                        "Created Latitude"
+                                    )}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Created Latitude",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
                                     Created Latitude
                                 </Checkbox>
                             </Col>
-                            <Col span={24}>
-                                <Checkbox value={"Created Address"}>
+                            <Col
+                                span={24}
+                                className={handleCheckCheckboxList(
+                                    "Created Address"
+                                )}
+                            >
+                                <Checkbox
+                                    checked={checkCheckBoxSetValue(
+                                        "Created Address"
+                                    )}
+                                    onChange={(e: any) => {
+                                        onChangeCheckbox(
+                                            "Created Address",
+                                            e.target.checked
+                                        );
+                                    }}
+                                >
                                     Created Address
                                 </Checkbox>
                             </Col>
@@ -289,13 +787,20 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
                             Selected fields
                         </Typography.Text>
 
-                        <Button type="link" className="p-r-none">
+                        <Button
+                            type="link"
+                            className="p-r-none"
+                            onClick={() => resetSelectColumns(false)}
+                        >
                             Clear All
                         </Button>
                     </Space>
 
                     <DragDropContext onDragEnd={handleDragEnd}>
-                        <DroppableList items={activitiesSelectColumn} />
+                        <DroppableList
+                            items={activitiesSelectColumn}
+                            onChangeCheckbox={onChangeCheckbox}
+                        />
                     </DragDropContext>
                 </Col>
             </Row>
@@ -307,14 +812,23 @@ export default ModalManageColumn;
 
 interface DroppableListProps {
     items: ListItem[];
+    onChangeCheckbox: any;
 }
-const DroppableList: React.FC<DroppableListProps> = ({ items }) => (
+const DroppableList: React.FC<DroppableListProps> = ({
+    items,
+    onChangeCheckbox,
+}) => (
     <Droppable droppableId="list">
         {(provided) => (
             <div ref={provided.innerRef} {...provided.droppableProps}>
-                <List>
+                <List className="select-column-list">
                     {items.map((item, index) => (
-                        <DraggableItem key={index} item={item} index={index} />
+                        <DraggableItem
+                            key={index}
+                            item={item}
+                            index={index}
+                            onChangeCheckbox={onChangeCheckbox}
+                        />
                     ))}
                     {provided.placeholder}
                 </List>
@@ -326,9 +840,14 @@ const DroppableList: React.FC<DroppableListProps> = ({ items }) => (
 interface DraggableItemProps {
     item: ListItem;
     index: number;
+    onChangeCheckbox: any;
 }
 
-const DraggableItem: React.FC<DraggableItemProps> = ({ item, index }) => (
+const DraggableItem: React.FC<DraggableItemProps> = ({
+    item,
+    index,
+    onChangeCheckbox,
+}) => (
     <Draggable draggableId={item.id} index={index}>
         {(provided) => (
             <div
@@ -357,7 +876,12 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ item, index }) => (
                                 {item.title}
                             </Col>
                             <Col md={2} xs={2}>
-                                <Button type="link">
+                                <Button
+                                    type="link"
+                                    onClick={() => {
+                                        onChangeCheckbox(item.title, false);
+                                    }}
+                                >
                                     <CloseOutlined />
                                 </Button>
                             </Col>
