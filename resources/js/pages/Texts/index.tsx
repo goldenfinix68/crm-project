@@ -147,25 +147,28 @@ const Texts = () => {
                                     />
                                     {filteredContacts()?.length ? (
                                         filteredContacts()?.map((contact) => {
-                                            return (
-                                                <div
-                                                    style={{
-                                                        cursor: "pointer",
-                                                    }}
-                                                    onClick={() =>
-                                                        setSelectedContact(
-                                                            contact
-                                                        )
-                                                    }
-                                                >
-                                                    <TextItem
-                                                        name={`${contact.firstName} ${contact.lastName}`}
-                                                        text={
-                                                            contact?.texts![0]
+                                            if (contact.texts?.length) {
+                                                return (
+                                                    <div
+                                                        style={{
+                                                            cursor: "pointer",
+                                                        }}
+                                                        onClick={() =>
+                                                            setSelectedContact(
+                                                                contact
+                                                            )
                                                         }
-                                                    />
-                                                </div>
-                                            );
+                                                    >
+                                                        <TextItem
+                                                            name={`${contact.firstName} ${contact.lastName}`}
+                                                            text={
+                                                                contact?.texts![0]
+                                                            }
+                                                        />
+                                                    </div>
+                                                );
+                                            }
+                                            return null;
                                         })
                                     ) : (
                                         <Typography.Text>
