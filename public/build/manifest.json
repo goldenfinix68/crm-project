@@ -1,6 +1,6 @@
 {
   "resources/js/app.css": {
-    "file": "assets/app-921cb394.css",
+    "file": "assets/app-3cb8a85b.css",
     "src": "resources/js/app.css"
   },
   "resources/js/app.tsx": {
@@ -8,9 +8,9 @@
       "assets/deal-arrow-b5bb7f1a.png"
     ],
     "css": [
-      "assets/app-921cb394.css"
+      "assets/app-3cb8a85b.css"
     ],
-    "file": "assets/app-1545e720.js",
+    "file": "assets/app-609c2b29.js",
     "isEntry": true,
     "src": "resources/js/app.tsx"
   },
