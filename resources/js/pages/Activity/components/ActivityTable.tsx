@@ -149,13 +149,9 @@ const ActivityTable = () => {
     const [isModalManageColumnOpen, setIsModalManageColumnOpen] =
         useState(false);
 
-    const { dataSource, isLoadingUsers } = activitiList();
+    const { dataSource, isLoadingUsers, refetchUsers, isFetchingUsers } =
+        activitiList();
 
-    // useEffect(() => {
-    //     console.log("dataSource", dataSource);
-    // }, [dataSource]);
-
-    //
     const [activitiesSelectColumn, setActivitiesSelectColumn] = useState(
         localStorage.activitiesSelectColumn
             ? JSON.parse(localStorage.activitiesSelectColumn)
@@ -164,10 +160,228 @@ const ActivityTable = () => {
                   { title: "Start Date", id: "2" },
                   { title: "Duration", id: "3" },
                   { title: "Owner", id: "4" },
-                  { title: "Name", id: "5" },
-                  { title: "Tags", id: "6" },
+                  { title: "Title (Deal)", id: "5" },
+                  { title: "Name (Contact)", id: "6" },
+                  { title: "Tags", id: "7" },
               ]
     );
+
+    const localTableColumn = JSON.parse(localStorage.activitiesSelectColumn);
+    // const colums: ColumnsType<TActivities> = [
+    const colums = [
+        {
+            title: "",
+            dataIndex: "status",
+            className: "col-status",
+            render: (text: string, record: any) => {
+                return record.status === 1 ? (
+                    <FontAwesomeIcon
+                        icon={faCircleCheck}
+                        className="cursor-pointer"
+                    />
+                ) : (
+                    <FontAwesomeIcon
+                        icon={faCircleCheck}
+                        className="cursor-pointer"
+                    />
+                );
+            },
+            fixed: true,
+            index: "0",
+            width: 50,
+        },
+        localTableColumn?.find((p: any) => p.title === "Title")?.title
+            ? {
+                  title: "Title",
+                  dataIndex: "title",
+                  fixed: true,
+                  render: (text: string, record: any) => {
+                      return (
+                          <Space className="w-100">
+                              <PhoneOutlined style={{ marginTop: 2 }} />
+                              <Typography.Link className="table-link">
+                                  {text}
+                              </Typography.Link>
+                          </Space>
+                      );
+                  },
+                  width: 350,
+                  index: localTableColumn?.find((p: any) => p.title === "Title")
+                      ?.id,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Start Date")?.title
+            ? {
+                  title: "Start Date",
+                  dataIndex: "start_date",
+                  width: 300,
+                  render: (text: string, record: any) => {
+                      return (
+                          <>
+                              {moment(
+                                  `${record.start_date}${
+                                      record.start_time
+                                          ? " " + record.start_time
+                                          : ""
+                                  }`
+                              ).format("MMM DD, YYYY hh:mm A")}
+                          </>
+                      );
+                  },
+                  index: localTableColumn?.find(
+                      (p: any) => p.title === "Start Date"
+                  )?.id,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Duration")?.title
+            ? {
+                  title: "Duration",
+                  dataIndex: "duration",
+                  index: localTableColumn?.find(
+                      (p: any) => p.title === "Duration"
+                  )?.id,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Owner")?.title
+            ? {
+                  title: "Owner",
+                  dataIndex: "owner",
+                  index: localTableColumn?.find((p: any) => p.title === "Owner")
+                      ?.id,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Title (Deal)")?.title
+            ? {
+                  title: "Title (Deal)",
+                  dataIndex: "title2",
+                  index: localTableColumn?.find(
+                      (p: any) => p.title === "Title (Deal)"
+                  )?.id,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Name (Contact)")?.title
+            ? {
+                  title: "Name (Contact)",
+                  dataIndex: "name",
+                  index: localTableColumn?.find(
+                      (p: any) => p.title === "Name (Contact)"
+                  )?.id,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Tags")?.title
+            ? {
+                  title: "Tags",
+                  dataIndex: "tags",
+                  render: (text: string, record: any) => {
+                      return (
+                          <>
+                              {record?.activity_tags &&
+                                  record?.activity_tags.map(
+                                      (item: any, key: React.Key) => {
+                                          return <Tag>{item.tag}</Tag>;
+                                      }
+                                  )}
+                          </>
+                      );
+                  },
+                  index: localTableColumn?.find((p: any) => p.title === "Tags")
+                      ?.id,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "End Date")?.title
+            ? {
+                  title: "End Date",
+                  dataIndex: "end_date",
+                  width: 300,
+                  render: (text: string, record: any) => {
+                      return (
+                          <>
+                              {record.end_date ? (
+                                  <>
+                                      {moment(
+                                          `${record.end_date}${
+                                              record.end_time
+                                                  ? " " + record.end_time
+                                                  : ""
+                                          }`
+                                      ).format("MMM DD, YYYY hh:mm A")}
+                                  </>
+                              ) : (
+                                  ""
+                              )}
+                          </>
+                      );
+                  },
+                  index: localTableColumn?.find(
+                      (p: any) => p.title === "End Date"
+                  )?.id,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Availability")?.title
+            ? {
+                  title: "Availability",
+                  dataIndex: "name",
+                  index: localTableColumn?.find(
+                      (p: any) => p.title === "Availability"
+                  )?.id,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Location")?.title
+            ? {
+                  title: "Location",
+                  dataIndex: "name",
+                  index: localTableColumn?.find(
+                      (p: any) => p.title === "Location"
+                  )?.id,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Video Conferencing")
+            ?.title
+            ? {
+                  title: "Video Conferencing",
+                  dataIndex: "name",
+                  index: localTableColumn?.find(
+                      (p: any) => p.title === "Video Conferencing"
+                  )?.id,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Outcome")?.title
+            ? {
+                  title: "Outcome",
+                  dataIndex: "name",
+                  index: localTableColumn?.find(
+                      (p: any) => p.title === "Outcome"
+                  )?.id,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Id")?.title
+            ? {
+                  title: "Id",
+                  dataIndex: "id",
+                  index: localTableColumn?.find((p: any) => p.title === "Id")
+                      ?.id,
+              }
+            : {},
+    ];
+    const filterColumns = colums.filter((item) => {
+        if (item?.index) {
+            let row = {
+                ...item,
+                index: Number(item.index),
+            };
+            return row;
+        }
+    });
+    const sortedColumns = [...filterColumns].sort(
+        (a, b) => Number(a.index) - Number(b.index)
+    );
+    sortedColumns.forEach(function (x) {
+        delete x.index;
+    });
+
+    useEffect(() => {
+        console.log("filterColumns", sortedColumns);
+    }, [localTableColumn]);
 
     return (
         <>
@@ -239,6 +453,7 @@ const ActivityTable = () => {
                             </span>
                         </div>
                     </div>
+
                     <div
                         style={{
                             display: "flex",
@@ -285,118 +500,14 @@ const ActivityTable = () => {
                     </div>
 
                     <Table
+                        loading={isLoadingUsers}
                         dataSource={dataSource}
+                        columns={sortedColumns}
                         onChange={onChange}
                         rowKey={(record) => record.id}
                         rowSelection={{ ...rowSelection }}
                         scroll={{ x: "max-content" }}
-                    >
-                        <Table.Column
-                            title=""
-                            dataIndex="status"
-                            className="col-status"
-                            width={50}
-                            render={(text: string, record: any) => {
-                                return record.status === 1 ? (
-                                    <FontAwesomeIcon
-                                        icon={faCircleCheck}
-                                        className="cursor-pointer"
-                                    />
-                                ) : (
-                                    <FontAwesomeIcon
-                                        icon={faCircleCheck}
-                                        className="cursor-pointer"
-                                    />
-                                );
-                            }}
-                            fixed
-                        />
-
-                        <Table.Column
-                            title="Title"
-                            dataIndex="title"
-                            width={300}
-                            fixed
-                        />
-
-                        <Table.Column
-                            title="Start Date"
-                            dataIndex="start_date"
-                            width={300}
-                            render={(text: string, record: any) => {
-                                return (
-                                    <>
-                                        {moment(
-                                            `${record.start_date}${
-                                                record.start_time
-                                                    ? " " + record.start_time
-                                                    : ""
-                                            }`
-                                        ).format("MMM DD, YYYY hh:mm A")}
-                                    </>
-                                );
-                            }}
-                        />
-                        <Table.Column
-                            title="End Date"
-                            dataIndex="end_date"
-                            width={300}
-                            render={(text: string, record: any) => {
-                                return (
-                                    <>
-                                        {record.end_date ? (
-                                            <>
-                                                {moment(
-                                                    `${record.end_date}${
-                                                        record.end_time
-                                                            ? " " +
-                                                              record.end_time
-                                                            : ""
-                                                    }`
-                                                ).format(
-                                                    "MMM DD, YYYY hh:mm A"
-                                                )}
-                                            </>
-                                        ) : (
-                                            ""
-                                        )}
-                                    </>
-                                );
-                            }}
-                        />
-
-                        <Table.Column title="Duration" dataIndex={"duration"} />
-                        <Table.Column title="Owner" dataIndex={"owner"} />
-                        <Table.Column title="Title" dataIndex={"title2"} />
-                        <Table.Column title="Name" dataIndex={"name"} />
-                        <Table.Column
-                            title="Tags"
-                            dataIndex={"tags"}
-                            render={(text: string, record: any) => {
-                                return (
-                                    <>
-                                        {record?.activity_tags &&
-                                            record?.activity_tags.map(
-                                                (item: any, key: React.Key) => {
-                                                    return (
-                                                        <Tag>{item.tag}</Tag>
-                                                    );
-                                                }
-                                            )}
-                                    </>
-                                );
-                            }}
-                        />
-
-                        <Table.Column title="Availability" dataIndex={"name"} />
-                        <Table.Column title="Location" dataIndex={"name"} />
-                        <Table.Column
-                            title="Video Conferencing"
-                            dataIndex={"name"}
-                        />
-                        <Table.Column title="Outcome" dataIndex={"name"} />
-                        <Table.Column title="ID" dataIndex={"id"} />
-                    </Table>
+                    />
                 </Col>
             </Row>
 
@@ -418,3 +529,7 @@ const ActivityTable = () => {
 };
 
 export default ActivityTable;
+
+const CustomEditableColumn: React.FC = () => {
+    return <></>;
+};

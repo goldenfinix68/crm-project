@@ -9,6 +9,7 @@ use App\Models\DealNote;
 use App\Models\DealFile;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class DealsController extends Controller
 {
@@ -29,7 +30,11 @@ class DealsController extends Controller
         $start_date_next = date('Y-m-d', strtotime($start_of_date_next));
         $end_date_next = date('Y-m-d', strtotime($end_of_date_next));
 
-        $data = Deal::where(function ($q) use ($request) {
+        $data = Deal::select([
+            'deals.*',
+            DB::raw('(SELECT CONCAT(firstName," ",lastName) FROM contacts WHERE contacts.id = deals.contactId) As contact_name'),
+            DB::raw('(SELECT CONCAT(firstName," ",lastName) FROM users WHERE users.id = deals.owner) As owner_name'),
+        ])->where(function ($q) use ($request) {
             if ($request->search) {
                 // $search = str_replace('%','[%]',$request->search);
                 $search = $request->search;
@@ -104,8 +109,7 @@ class DealsController extends Controller
     {
 
 
-
-        $data = Deal::create($request->all());
+        $data = Deal::updateOrCreate(['id' => $request->id], $request->all());
         $data->sort = $data->id;
         $data->save();
 
