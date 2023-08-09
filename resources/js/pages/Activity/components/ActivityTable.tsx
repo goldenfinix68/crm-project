@@ -43,6 +43,7 @@ import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
+import DrawerUpdateActivity from "./DrawerEditActivitty";
 
 const onChange: TableProps<TActivities>["onChange"] = (
     pagination,
@@ -199,7 +200,12 @@ const ActivityTable = () => {
                       return (
                           <Space className="w-100">
                               <PhoneOutlined style={{ marginTop: 2 }} />
-                              <Typography.Link className="table-link">
+                              <Typography.Link
+                                  className="table-link"
+                                  onClick={() => {
+                                      setDrawerUpdateOpen(true);
+                                  }}
+                              >
                                   {text}
                               </Typography.Link>
                           </Space>
@@ -379,9 +385,7 @@ const ActivityTable = () => {
         delete x.index;
     });
 
-    useEffect(() => {
-        console.log("filterColumns", sortedColumns);
-    }, [localTableColumn]);
+    const [drawerUpdateOpen, setDrawerUpdateOpen] = useState(false);
 
     return (
         <>
@@ -523,6 +527,11 @@ const ActivityTable = () => {
                 activitiesSelectColumn={activitiesSelectColumn}
                 setActivitiesSelectColumn={setActivitiesSelectColumn}
                 localStorageName="activitiesSelectColumn"
+            />
+
+            <DrawerUpdateActivity
+                drawerUpdateOpen={drawerUpdateOpen}
+                setDrawerUpdateOpen={setDrawerUpdateOpen}
             />
         </>
     );

@@ -196,8 +196,6 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
 
     const handleCheckCheckboxList = (value: string) => {
         let checkList = checkboxList.filter((item) => item === value);
-        console.log("checkList", checkList);
-
         return checkList.length > 0 ? "" : "hide";
     };
 
