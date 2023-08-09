@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { UploadOutlined } from "@ant-design/icons";
 import {
     Button,
@@ -416,7 +417,13 @@ const Contacts = () => {
                     <Button icon={<ExportOutlined />} className="m-r-sm">
                         Export
                     </Button>
-                    <Button icon={<CopyOutlined />} className="m-r-sm">
+                    <Button
+                        icon={<CopyOutlined />}
+                        className="m-r-sm"
+                        onClick={() => {
+                            navigate(`/contacts/mergeContacts`);
+                        }}
+                    >
                         Merge
                     </Button>
                     <Button icon={<MailOutlined />} className="m-r-sm">
