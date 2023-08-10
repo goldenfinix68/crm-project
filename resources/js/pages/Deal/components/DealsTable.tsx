@@ -60,6 +60,11 @@ const DealsTable = ({
             selectedRowsData && selectedRowsData.length > 0 ? true : false
         );
     }, [selectedRowsData]);
+    useEffect(() => {
+        if (showDeleteButton == false) {
+            setSelectedRows([]);
+        }
+    }, [showDeleteButton]);
 
     const [showModalAddDealValue, setshowModalAddDealValue] =
         useState<string>("");

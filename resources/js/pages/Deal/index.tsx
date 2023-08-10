@@ -643,10 +643,9 @@ const Deal = () => {
                                 icon={<CloseOutlined />}
                                 type="text"
                                 className="m-r-md"
-                                // onClick={() => {
-                                //     setSelectedRows([]);
-                                //     setShowDeleteButton(false);
-                                // }}
+                                onClick={() => {
+                                    setShowDeleteButton(false);
+                                }}
                             ></Button>
                             <Typography.Text className="m-r-md">
                                 {/* {selectedRowsData?.length + " Selected"} */}
