@@ -653,7 +653,7 @@ const Deal = () => {
                             </Typography.Text>
                             <Popconfirm
                                 title="Delete Contact"
-                                description="Are you sure to delete this contact?"
+                                description="Are you sure to delete this deal?"
                                 // onConfirm={() => {
                                 //     handleDelete();
                                 // }}
