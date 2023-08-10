@@ -303,9 +303,9 @@ const ContactsComponentsUpdateFields = ({ activeField }) => {
                 </Form.Item>
             );
             break;
-        case "legalDescription":
+        case "detailsLegalDescription":
             return (
-                <Form.Item name="legalDescription">
+                <Form.Item name="detailsLegalDescription">
                     <Typography className="m-b-md">
                         Enter a new value for the field
                     </Typography>
@@ -501,9 +501,9 @@ const ContactsComponentsUpdateFields = ({ activeField }) => {
                 </Form.Item>
             );
             break;
-        case "subdivision":
+        case "legalSubdivision":
             return (
-                <Form.Item name="subdivision">
+                <Form.Item name="legalSubdivision">
                     <Typography className="m-b-md">
                         Enter a new value for the field
                     </Typography>
