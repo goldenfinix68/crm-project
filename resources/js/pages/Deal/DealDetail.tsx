@@ -88,6 +88,7 @@ import {
     useDealMutationDeleteParticipants,
     useDealMutationAddTeammate,
     useDealMutationDeleteTeammate,
+    useDealMutationUpdateStage,
 } from "../../api/mutation/useDealMutation";
 import moment from "moment";
 import DealsTable from "./components/DealsTable";
@@ -99,7 +100,10 @@ import "react-quill/dist/quill.snow.css";
 import ModalWonDeal from "./components/ModalWonDeal";
 import ModalLostDeal from "./components/ModalLostDeal";
 import ModalAddQuitContact from "./components/ModalAddQuitContact";
-import { useContactsAll } from "../../api/query/contactsQuery";
+import {
+    useContactTypesAll,
+    useContactsAll,
+} from "../../api/query/contactsQuery";
 
 interface DealsById {
     title: string;
@@ -139,7 +143,7 @@ const DealDetail = () => {
     const { dealId } = useParams();
     const { dataUsers, isLoadingUsers } = useUsersList();
     const { deals, isLoading, refetch } = useDealsByid(dealId ?? "");
-    const { contacts } = useContactsAll();
+    const { contacts } = useContactsAll("All");
     const { token } = theme.useToken();
     const { Dragger } = Upload;
     const quillRef = React.useRef(null);
@@ -1702,6 +1706,21 @@ const DealDetail = () => {
         },
     ];
 
+    const updateStage = useMutation(useDealMutationUpdateStage, {
+        onSuccess: (res) => {
+            notification.success({
+                message: "Deals",
+                description: "Stage Successfully Updated",
+            });
+
+            refetch();
+        },
+    });
+
+    const onUpdateStage = (val: string) => {
+        updateStage.mutate({ stage: val, id: "" + dealId });
+    };
+
     return (
         <Row className="deal-group-row">
             <Col md={24}>
@@ -1825,6 +1844,9 @@ const DealDetail = () => {
                                         ? "active"
                                         : "none"
                                 }
+                                onClick={() => {
+                                    onUpdateStage("Comp & Qualify");
+                                }}
                             >
                                 <span className="breadcrumb__inner">
                                     <span className="breadcrumb__title">
@@ -1840,6 +1862,9 @@ const DealDetail = () => {
                                         ? "active"
                                         : "none"
                                 }
+                                onClick={() => {
+                                    onUpdateStage("First Offer Given");
+                                }}
                             >
                                 <span className="breadcrumb__inner">
                                     <span className="breadcrumb__title">
@@ -1855,6 +1880,9 @@ const DealDetail = () => {
                                         ? "active"
                                         : "none"
                                 }
+                                onClick={() => {
+                                    onUpdateStage("In Negotiation");
+                                }}
                             >
                                 <span className="breadcrumb__inner">
                                     <span className="breadcrumb__title">
@@ -1870,6 +1898,9 @@ const DealDetail = () => {
                                         ? "active"
                                         : "none"
                                 }
+                                onClick={() => {
+                                    onUpdateStage("Verbal Offer Accepted");
+                                }}
                             >
                                 <span className="breadcrumb__inner">
                                     <span className="breadcrumb__title">
@@ -1885,6 +1916,9 @@ const DealDetail = () => {
                                         ? "active"
                                         : "none"
                                 }
+                                onClick={() => {
+                                    onUpdateStage("Under Contract");
+                                }}
                             >
                                 <span className="breadcrumb__inner">
                                     <span className="breadcrumb__title">

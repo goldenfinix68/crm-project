@@ -350,4 +350,15 @@
 
 .table-link:hover {
   text-decoration: underline !important;
+}
+
+.update-activity-tab .ant-tabs-nav {
+  margin-bottom: 0px;
+}
+.update-activity-tab .ant-tabs-tabpane {
+  background: #f4f5f7 !important;
+  height: 100vh;
+}
+.update-activity-tab .ant-tabs-tabpane .ant-card {
+  background: #f4f5f7 !important;
 }/*# sourceMappingURL=activity.css.map */

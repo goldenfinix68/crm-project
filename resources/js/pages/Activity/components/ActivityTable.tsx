@@ -43,6 +43,7 @@ import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
+import DrawerUpdateActivity from "./DrawerEditActivitty";
 
 const onChange: TableProps<TActivities>["onChange"] = (
     pagination,
@@ -166,7 +167,17 @@ const ActivityTable = () => {
               ]
     );
 
-    const localTableColumn = JSON.parse(localStorage.activitiesSelectColumn);
+    const localTableColumn = localStorage.activitiesSelectColumn
+        ? JSON.parse(localStorage.activitiesSelectColumn)
+        : [
+              { title: "Title", id: "1" },
+              { title: "Start Date", id: "2" },
+              { title: "Duration", id: "3" },
+              { title: "Owner", id: "4" },
+              { title: "Title (Deal)", id: "5" },
+              { title: "Name (Contact)", id: "6" },
+              { title: "Tags", id: "7" },
+          ];
     // const colums: ColumnsType<TActivities> = [
     const colums = [
         {
@@ -199,7 +210,13 @@ const ActivityTable = () => {
                       return (
                           <Space className="w-100">
                               <PhoneOutlined style={{ marginTop: 2 }} />
-                              <Typography.Link className="table-link">
+                              <Typography.Link
+                                  className="table-link"
+                                  onClick={() => {
+                                      setDrawerUpdateOpen(true);
+                                      setDrawerUpdateData(record);
+                                  }}
+                              >
                                   {text}
                               </Typography.Link>
                           </Space>
@@ -379,9 +396,8 @@ const ActivityTable = () => {
         delete x.index;
     });
 
-    useEffect(() => {
-        console.log("filterColumns", sortedColumns);
-    }, [localTableColumn]);
+    const [drawerUpdateOpen, setDrawerUpdateOpen] = useState(false);
+    const [drawerUpdateData, setDrawerUpdateData] = useState([]);
 
     return (
         <>
@@ -523,6 +539,13 @@ const ActivityTable = () => {
                 activitiesSelectColumn={activitiesSelectColumn}
                 setActivitiesSelectColumn={setActivitiesSelectColumn}
                 localStorageName="activitiesSelectColumn"
+            />
+
+            <DrawerUpdateActivity
+                drawerUpdateOpen={drawerUpdateOpen}
+                setDrawerUpdateOpen={setDrawerUpdateOpen}
+                drawerUpdateData={drawerUpdateData}
+                setDrawerUpdateData={setDrawerUpdateData}
             />
         </>
     );
