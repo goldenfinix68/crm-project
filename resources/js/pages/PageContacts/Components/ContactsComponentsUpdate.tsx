@@ -315,6 +315,10 @@ const ContactsComponentsUpdate = ({
                                         label: "Subdivision",
                                     },
                                     {
+                                        value: "legalSubdivision",
+                                        label: "Subdivision",
+                                    },
+                                    {
                                         value: "tags",
                                         label: "Tags",
                                     },
