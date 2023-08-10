@@ -23,10 +23,18 @@ const DealsTable = ({
     deals,
     showDeleteButton,
     setShowDeleteButton,
+    selectedData,
+    setSelectedData,
+    selectedRowsData,
+    setSelectedRows,
 }: {
     deals: Array<TDeals>;
     showDeleteButton: any;
     setShowDeleteButton: any;
+    selectedData: any;
+    setSelectedData: any;
+    selectedRowsData: any;
+    setSelectedRows: any;
 }) => {
     const queryClient = useQueryClient();
     const onChange: TableProps<TDeals>["onChange"] = (
@@ -37,8 +45,7 @@ const DealsTable = ({
     ) => {
         console.log("params", pagination, filters, sorter, extra);
     };
-    const [selectedRowsData, setSelectedRows] = useState<React.Key[]>([]);
-    const [selectedData, setSelectedData] = useState<TDeals[]>([]);
+
     const onSelectChange = (
         selectedRowKeys: React.Key[],
         selectedRows: TDeals[]
@@ -83,6 +90,7 @@ const DealsTable = ({
     const handleCancelAdd = () => {
         setIsModalOpenAdd(false);
     };
+
     return (
         <>
             <Table

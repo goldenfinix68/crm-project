@@ -350,4 +350,12 @@ class DealsController extends Controller
 
         return response()->json(['success' => true, 'data' => $data], 200);
     }
+
+    public function multi_delete(Request $request)
+    {
+        $data = Deal::whereIn('id', $request->deals_id)->delete();
+
+
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
 }
