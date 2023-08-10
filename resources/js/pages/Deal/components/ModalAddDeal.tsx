@@ -64,7 +64,7 @@ const ModalAddDeal = ({
     const { dataUsers, isLoadingUsers } = useUsersList();
     const queryClient = useQueryClient();
     const navigate = useNavigate();
-    const { contacts, isLoading } = useContactsAll();
+    const { contacts, isLoading } = useContactsAll("All");
     const [form] = useForm();
     const onFinish = (values: any) => {
         mutation.mutate({

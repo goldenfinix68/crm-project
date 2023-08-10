@@ -36,6 +36,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/deals/delete_participant', 'App\Http\Controllers\Api\DealsController@delete_participant');
     Route::post('/deals/add_teammate', 'App\Http\Controllers\Api\DealsController@add_teammate');
     Route::post('/deals/delete_teammate', 'App\Http\Controllers\Api\DealsController@delete_teammate');
+    Route::post('/deals/update_stage', 'App\Http\Controllers\Api\DealsController@update_stage');
     Route::resource('/notes', 'App\Http\Controllers\Api\NotesController');
     Route::resource('/texts', 'App\Http\Controllers\Api\TextsController');
     Route::post('/deals/useDealUpdateBoardMutation', 'App\Http\Controllers\Api\DealsController@useDealUpdateBoardMutation');

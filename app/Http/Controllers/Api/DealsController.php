@@ -323,4 +323,13 @@ class DealsController extends Controller
 
         return response()->json($ret, 200);
     }
+
+    public function update_stage(Request $request)
+    {
+        $data = Deal::find($request->id);
+        $data->stage = $request->stage;
+        $data->save();
+
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
 }
