@@ -18,7 +18,7 @@ class ActivityController extends Controller
     public function index(Request $request)
     {
         $data = new Activity();
-        $data = $data->with(['activity_tags']);
+        $data = $data->with(['activity_tags', "activity_followers", "activity_invitees"]);
         $data = $data->select([
             'activities.*',
             DB::raw("(SELECT CONCAT(users.firstName, ' ', users.lastName)) as `owner`"),

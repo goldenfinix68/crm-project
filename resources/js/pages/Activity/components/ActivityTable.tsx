@@ -45,15 +45,6 @@ import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
 import DrawerUpdateActivity from "./DrawerEditActivitty";
 
-const onChange: TableProps<TActivities>["onChange"] = (
-    pagination,
-    filters,
-    sorter,
-    extra
-) => {
-    console.log("params", pagination, filters, sorter, extra);
-};
-
 const rowSelection: TableRowSelection<TActivities> = {
     onChange: (selectedRowKeys, selectedRows) => {
         console.log(
@@ -134,6 +125,42 @@ const activities_type = (
 );
 
 const ActivityTable = () => {
+    const [dataFilter, setDataFilter] = useState({
+        page: 1,
+        page_size: 50,
+        search: "",
+        sort_field: "id",
+        sort_order: "asc",
+    });
+
+    const { dataSource, isLoadingUsers, refetchUsers, isFetchingUsers } =
+        activitiList(dataFilter);
+
+    const onChange: TableProps<TActivities>["onChange"] = (
+        pagination: any,
+        sorter: any,
+        filters: any,
+        extra: any
+    ) => {
+        console.log("sorter", filters);
+
+        setDataFilter({
+            ...dataFilter,
+            sort_field: filters.field,
+            sort_order: filters.order ? filters.order.replace("end", "") : null,
+            page: pagination.current,
+            page_size: pagination.pageSize,
+        });
+    };
+
+    useEffect(() => {
+        refetchUsers();
+    }, [dataFilter]);
+
+    useEffect(() => {
+        console.log("dataSource", dataSource);
+    }, [dataSource]);
+
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
     const showModalAdd = () => {
         setIsModalOpenAdd(true);
@@ -149,9 +176,6 @@ const ActivityTable = () => {
 
     const [isModalManageColumnOpen, setIsModalManageColumnOpen] =
         useState(false);
-
-    const { dataSource, isLoadingUsers, refetchUsers, isFetchingUsers } =
-        activitiList();
 
     const [activitiesSelectColumn, setActivitiesSelectColumn] = useState(
         localStorage.activitiesSelectColumn
@@ -178,7 +202,7 @@ const ActivityTable = () => {
               { title: "Name (Contact)", id: "6" },
               { title: "Tags", id: "7" },
           ];
-    // const colums: ColumnsType<TActivities> = [
+
     const colums = [
         {
             title: "",
@@ -225,6 +249,7 @@ const ActivityTable = () => {
                   width: 350,
                   index: localTableColumn?.find((p: any) => p.title === "Title")
                       ?.id,
+                  sorter: true,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Start Date")?.title
@@ -248,6 +273,7 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Start Date"
                   )?.id,
+                  sorter: true,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Duration")?.title
@@ -257,6 +283,7 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Duration"
                   )?.id,
+                  sorter: true,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Owner")?.title
@@ -265,6 +292,7 @@ const ActivityTable = () => {
                   dataIndex: "owner",
                   index: localTableColumn?.find((p: any) => p.title === "Owner")
                       ?.id,
+                  sorter: true,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Title (Deal)")?.title
@@ -274,6 +302,7 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Title (Deal)"
                   )?.id,
+                  sorter: true,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Name (Contact)")?.title
@@ -283,6 +312,7 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Name (Contact)"
                   )?.id,
+                  sorter: true,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Tags")?.title
@@ -303,6 +333,7 @@ const ActivityTable = () => {
                   },
                   index: localTableColumn?.find((p: any) => p.title === "Tags")
                       ?.id,
+                  sorter: true,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "End Date")?.title
@@ -332,6 +363,7 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "End Date"
                   )?.id,
+                  sorter: true,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Availability")?.title
@@ -341,6 +373,7 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Availability"
                   )?.id,
+                  sorter: true,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Location")?.title
@@ -350,6 +383,7 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Location"
                   )?.id,
+                  sorter: true,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Video Conferencing")
@@ -360,6 +394,7 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Video Conferencing"
                   )?.id,
+                  sorter: true,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Outcome")?.title
@@ -369,6 +404,7 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Outcome"
                   )?.id,
+                  sorter: true,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Id")?.title
@@ -377,9 +413,11 @@ const ActivityTable = () => {
                   dataIndex: "id",
                   index: localTableColumn?.find((p: any) => p.title === "Id")
                       ?.id,
+                  sorter: true,
               }
             : {},
     ];
+
     const filterColumns = colums.filter((item) => {
         if (item?.index) {
             let row = {
@@ -389,9 +427,11 @@ const ActivityTable = () => {
             return row;
         }
     });
+
     const sortedColumns = [...filterColumns].sort(
         (a, b) => Number(a.index) - Number(b.index)
     );
+
     sortedColumns.forEach(function (x) {
         delete x.index;
     });
@@ -517,12 +557,21 @@ const ActivityTable = () => {
 
                     <Table
                         loading={isLoadingUsers}
-                        dataSource={dataSource}
+                        dataSource={dataSource?.data && dataSource?.data?.data}
                         columns={sortedColumns}
                         onChange={onChange}
                         rowKey={(record) => record.id}
                         rowSelection={{ ...rowSelection }}
                         scroll={{ x: "max-content" }}
+                        pagination={{
+                            total: dataSource?.data?.total,
+                            current: dataFilter.page,
+                            pageSize: dataFilter.page_size,
+                            showSizeChanger: true,
+                            pageSizeOptions: [10, 20, 50, 100, 200],
+                            showTotal: (total, range) =>
+                                `${range[0]}-${range[1]} of ${total} items`,
+                        }}
                     />
                 </Col>
             </Row>

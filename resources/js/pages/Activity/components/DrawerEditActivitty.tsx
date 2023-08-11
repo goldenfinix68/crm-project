@@ -110,6 +110,33 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
     useEffect(() => {
         if (drawerUpdateData) {
             console.log("drawerUpdateData", drawerUpdateData);
+            const invitees: string[] = [];
+            if (drawerUpdateData?.activity_invitees.length > 0) {
+                drawerUpdateData?.activity_invitees.map(
+                    (item: any, key: number) => {
+                        invitees.push(item.full_name);
+                    }
+                );
+            }
+
+            const followers: string[] = [];
+            if (drawerUpdateData?.activity_followers.length > 0) {
+                drawerUpdateData?.activity_followers.map(
+                    (item: any, key: number) => {
+                        followers.push(item.full_name);
+                    }
+                );
+            }
+
+            const tags: string[] = [];
+            if (drawerUpdateData?.activity_tags.length > 0) {
+                drawerUpdateData?.activity_tags.map(
+                    (item: any, key: number) => {
+                        tags.push(item.tag);
+                    }
+                );
+            }
+
             form.setFieldsValue({
                 title: drawerUpdateData?.title,
                 type: drawerUpdateData?.type,
@@ -137,13 +164,36 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
                           "YYYY/MM/DD HH:mm"
                       )
                     : undefined,
+                invitees: invitees,
                 location: drawerUpdateData?.location
                     ? drawerUpdateData?.location
                     : undefined,
                 video_conferencing: drawerUpdateData?.video_conferencing
                     ? drawerUpdateData?.video_conferencing
                     : undefined,
+                internal_note: drawerUpdateData?.internal_note
+                    ? drawerUpdateData?.internal_note
+                    : undefined,
+                owner_id: drawerUpdateData?.owner_id
+                    ? drawerUpdateData?.owner_id
+                    : undefined,
+                deal_id: drawerUpdateData?.deal_id
+                    ? drawerUpdateData?.deal_id
+                    : undefined,
+                contact_id: drawerUpdateData?.contact_id
+                    ? drawerUpdateData?.contact_id
+                    : undefined,
+                followers: followers,
+                tags: tags,
             });
+
+            if (
+                drawerUpdateData?.location ||
+                invitees.length > 0 ||
+                drawerUpdateData?.video_conferencing
+            ) {
+                setCalendarOptions(true);
+            }
         } else {
             setDrawerUpdateData(null);
         }
