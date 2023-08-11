@@ -124,4 +124,32 @@ class TextsController extends Controller
     {
         //
     }
+
+    public function textReceived(Request $request)
+    {
+        \Log::info('INCOMING TEXT SUCCESS');
+        $json = json_decode(file_get_contents("php://input"), true);
+        \Log::info($json);
+
+        $payload = $json['data']['payload'];
+
+        $recepients = array();
+        if(!empty($payload['to'])){
+            foreach($payload['to'] as $to){
+                $to[] = $to['phone_number'];
+            }
+        }
+
+        $text = new Text;
+        $text->telnyxId = $json['data']['id'];
+        $text->from = $payload['from']['phone_number'];
+        $text->to = '[' . implode (", ", $recepients) . ']';
+        $text->message = $payload['text'];
+        $text->telnyxResponse = json_encode($json);
+        $text->contactId = 1;
+        $text->userId = 1;
+        $text->type = $payload['type'];
+        $text->status = 'received';
+        $text->save();
+    }
 }
