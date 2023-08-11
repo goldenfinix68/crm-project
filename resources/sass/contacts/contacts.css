@@ -12121,4 +12121,8 @@ textarea.form-control-lg {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.cellColor .ant-table-cell {
+  background-color: #fafafa !important;
 }/*# sourceMappingURL=contacts.css.map */

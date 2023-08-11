@@ -47,7 +47,7 @@ class DealsController extends Controller
                     ->orWhere('last_name', 'LIKE', "%$search%")
                     ->orWhere(\DB::raw("(SELECT DATE_FORMAT(created_at, '%m/%d/%Y'))"), 'LIKE', "%$request->search%");
             }
-        })->with(['owner', 'contact']);
+        })->with(['owner', 'activities.owner', 'notes.user', 'files.uploaded_by', 'participant.user', 'contact', 'teammate.user']);
 
         if ($request->pipeline) {
             $data->where('pipeline', $request->pipeline);
@@ -109,9 +109,25 @@ class DealsController extends Controller
     {
 
 
-        $data = Deal::updateOrCreate(['id' => $request->id], $request->all());
+        $data = Deal::updateOrCreate(['id' => $request->id], $request->except('teamateLocal', 'particapantLocal'));
         $data->sort = $data->id;
         $data->save();
+
+        if ($request->id == 0) {
+            foreach ($request->teamateLocal as $key => $val) {
+                $team = \App\Models\DealTeammate::updateOrCreate(
+                    ['deal_id' => $data->id, 'user_id' => $val['id']],
+                    ['deal_id' => $data->id, 'user_id' => $val['id']],
+                );
+            }
+            foreach ($request->particapantLocal as $key => $val) {
+                $participant = \App\Models\DealParticipant::updateOrCreate(
+                    ['deal_id' => $data->id, 'user_id' => $val['id']],
+                    ['deal_id' => $data->id, 'user_id' => $val['id']],
+                );
+            }
+        }
+
 
 
         return response()->json(['success' => true, 'data' => $data], 200);
@@ -182,6 +198,8 @@ class DealsController extends Controller
 
     public function add_participant(Request $request)
     {
+
+
         $data = \App\Models\DealParticipant::updateOrCreate(
             ['deal_id' => $request->deal_id, 'user_id' => $request->user_id],
             ['deal_id' => $request->deal_id, 'user_id' => $request->user_id],
@@ -322,5 +340,14 @@ class DealsController extends Controller
         }
 
         return response()->json($ret, 200);
+    }
+
+    public function update_stage(Request $request)
+    {
+        $data = Deal::find($request->id);
+        $data->stage = $request->stage;
+        $data->save();
+
+        return response()->json(['success' => true, 'data' => $data], 200);
     }
 }

@@ -19,7 +19,15 @@ interface TDeals {
     owner: string;
 }
 
-const DealsTable = ({ deals }: { deals: Array<TDeals> }) => {
+const DealsTable = ({
+    deals,
+    showDeleteButton,
+    setShowDeleteButton,
+}: {
+    deals: Array<TDeals>;
+    showDeleteButton: any;
+    setShowDeleteButton: any;
+}) => {
     const queryClient = useQueryClient();
     const onChange: TableProps<TDeals>["onChange"] = (
         pagination,
@@ -29,22 +37,35 @@ const DealsTable = ({ deals }: { deals: Array<TDeals> }) => {
     ) => {
         console.log("params", pagination, filters, sorter, extra);
     };
+    const [selectedRowsData, setSelectedRows] = useState<React.Key[]>([]);
+    const [selectedData, setSelectedData] = useState<TDeals[]>([]);
+    const onSelectChange = (
+        selectedRowKeys: React.Key[],
+        selectedRows: TDeals[]
+    ) => {
+        console.log(selectedRowKeys);
+        console.log(selectedRows);
+        setSelectedData(selectedRows);
+        setSelectedRows(selectedRowKeys);
 
-    const rowSelection: TableRowSelection<TDeals> = {
-        onChange: (selectedRowKeys, selectedRows) => {
-            console.log(
-                `selectedRowKeys: ${selectedRowKeys}`,
-                "selectedRows: ",
-                selectedRows
-            );
-        },
-        onSelect: (record, selected, selectedRows) => {
-            console.log(record, selected, selectedRows);
-        },
-        onSelectAll: (selected, selectedRows, changeRows) => {
-            console.log(selected, selectedRows, changeRows);
-        },
+        // setSelectionType(selectedRows);
     };
+    const rowSelection: TableRowSelection<TDeals> = {
+        selectedRowKeys: selectedRowsData,
+        onChange: onSelectChange,
+    };
+
+    useEffect(() => {
+        setShowDeleteButton(
+            selectedRowsData && selectedRowsData.length > 0 ? true : false
+        );
+    }, [selectedRowsData]);
+    useEffect(() => {
+        if (showDeleteButton == false) {
+            setSelectedRows([]);
+        }
+    }, [showDeleteButton]);
+
     const [showModalAddDealValue, setshowModalAddDealValue] =
         useState<string>("");
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
@@ -68,7 +89,7 @@ const DealsTable = ({ deals }: { deals: Array<TDeals> }) => {
                 dataSource={deals}
                 onChange={onChange}
                 rowKey={(record) => record.id}
-                // rowSelection={{ ...rowSelection }}
+                rowSelection={{ ...rowSelection }}
                 scroll={{ x: "max-content" }}
             >
                 <Table.Column

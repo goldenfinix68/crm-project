@@ -16,6 +16,7 @@ import {
     DatePicker,
     notification,
     InputNumber,
+    Tag,
 } from "antd";
 
 import {
@@ -36,7 +37,13 @@ import TextArea from "antd/es/input/TextArea";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "antd/es/form/Form";
 import { useMutation, useQueryClient } from "react-query";
-import { useDealMutation } from "../../../api/mutation/useDealMutation";
+import {
+    useDealMutation,
+    useDealMutationAddParticipant,
+    useDealMutationAddTeammate,
+    useDealMutationDeleteParticipants,
+    useDealMutationDeleteTeammate,
+} from "../../../api/mutation/useDealMutation";
 import { useContactsAll } from "../../../api/query/contactsQuery";
 import {
     useContactsList,
@@ -44,6 +51,12 @@ import {
     useUsersList,
 } from "../../../api/query/activityQuery";
 import moment from "moment";
+import { TContact } from "../../../entities";
+interface Teamate {
+    id: number;
+    firstName: string;
+    lastName: string;
+}
 interface Props {
     isModalOpenAdd: boolean;
     handleOkAdd: () => void;
@@ -64,7 +77,7 @@ const ModalAddDeal = ({
     const { dataUsers, isLoadingUsers } = useUsersList();
     const queryClient = useQueryClient();
     const navigate = useNavigate();
-    const { contacts, isLoading } = useContactsAll();
+    const { contacts, isLoading } = useContactsAll("All");
     const [form] = useForm();
     const onFinish = (values: any) => {
         mutation.mutate({
@@ -73,6 +86,8 @@ const ModalAddDeal = ({
             estimated_close_date: values.estimated_close_date.format(
                 "YYYY-MM-DD h:mm:ss "
             ),
+            teamateLocal: teamateLocal,
+            particapantLocal: particapantLocal,
         });
     };
 
@@ -110,6 +125,96 @@ const ModalAddDeal = ({
         }
     }, [isModalOpenAdd]);
 
+    const onChangeSelectTeammate = (value: any) => {
+        addTeammate.mutate({ user_id: value, deal_id: "" + modalValue.id });
+    };
+
+    useEffect(() => {
+        if (modalValue) {
+            console.log("modalValue", modalValue);
+        }
+    }, [modalValue]);
+
+    const addTeammate = useMutation(useDealMutationAddTeammate, {
+        onSuccess: (res) => {
+            notification.success({
+                message: "Deals",
+                description: "Teammate Successfully Added",
+            });
+        },
+    });
+
+    const deleteTeammate = useMutation(useDealMutationDeleteTeammate, {
+        onSuccess: (res) => {
+            notification.success({
+                message: "Deals",
+                description: "Delete Successfully Added",
+            });
+        },
+    });
+
+    const handleCloseTeammate = (value: any) => {
+        deleteTeammate.mutate({ id: value });
+    };
+    const deleteParticipant = useMutation(useDealMutationDeleteParticipants, {
+        onSuccess: (res) => {
+            notification.success({
+                message: "Deals",
+                description: "Delete Successfully Added",
+            });
+        },
+    });
+
+    const handleClose = (value: any) => {
+        deleteParticipant.mutate({ id: modalValue.id });
+    };
+
+    const [teamateLocal, setTeamateLocal] = useState([]);
+    const onChangeSelectTeammateToAdd = (val: any) => {
+        if (contacts) {
+            let find = contacts.filter((x) => x.id == val);
+            var a = {
+                id: find[0].id,
+                label: find[0].firstName + " " + find[0].lastName,
+            };
+
+            setTeamateLocal([...teamateLocal, a]);
+
+            console.log(find);
+        }
+    };
+
+    const onChangeSelectParticipant = (value: any) => {
+        addParticipant.mutate({ user_id: value, deal_id: "" + modalValue.id });
+    };
+
+    const addParticipant = useMutation(useDealMutationAddParticipant, {
+        onSuccess: (res) => {
+            notification.success({
+                message: "Deals",
+                description: "Participant Successfully Added",
+            });
+        },
+    });
+
+    const [particapantLocal, setParticipantLocal] = useState([]);
+    const onChangeSelectParticipantToAdd = (val: any) => {
+        if (contacts) {
+            let find = contacts.filter((x) => x.id == val);
+            var a = {
+                id: find[0].id,
+                label: find[0].firstName + " " + find[0].lastName,
+            };
+
+            setParticipantLocal([...particapantLocal, a]);
+
+            console.log(find);
+        }
+    };
+
+    useEffect(() => {
+        console.log("teamateLocal", teamateLocal);
+    }, [teamateLocal]);
     return (
         <Modal
             className="modal-activity"
@@ -442,7 +547,104 @@ const ModalAddDeal = ({
                                 >
                                     Teammates
                                 </div>
-                                <Input placeholder="Search User" />
+
+                                {from == "update" &&
+                                    modalValue &&
+                                    modalValue.teammate.map(
+                                        (item: any, key: any) => {
+                                            return (
+                                                <Tag
+                                                    closable
+                                                    color="#2db7f5"
+                                                    onClose={(e) => {
+                                                        handleCloseTeammate(
+                                                            item.id
+                                                        );
+                                                    }}
+                                                    style={{ marginTop: "5px" }}
+                                                >
+                                                    {item.user.firstName +
+                                                        " " +
+                                                        item.user.lastName}
+                                                </Tag>
+                                            );
+                                        }
+                                    )}
+                                {from != "update" &&
+                                    teamateLocal.length > 0 &&
+                                    teamateLocal.map((item: any, key: any) => {
+                                        return (
+                                            <Tag
+                                                closable
+                                                color="#2db7f5"
+                                                // onClose={(e) => {
+                                                //     handleCloseTeammate(
+                                                //         item.id
+                                                //     );
+                                                // }}
+                                                style={{ marginTop: "5px" }}
+                                            >
+                                                {item.label}
+                                            </Tag>
+                                        );
+                                    })}
+                                <div style={{ marginTop: "10px" }}>
+                                    {from == "update" && (
+                                        <Select
+                                            placeholder="Search"
+                                            showSearch
+                                            className="select-custom-width"
+                                            loading={isLoadingUsers}
+                                            style={{ width: "100%" }}
+                                            onChange={onChangeSelectTeammate}
+                                            dropdownRender={(menu) => (
+                                                <>{menu}</>
+                                            )}
+                                        >
+                                            {contacts &&
+                                                contacts.map(
+                                                    (item: any, key: any) => {
+                                                        return (
+                                                            <Select.Option
+                                                                key={key}
+                                                                value={item.id}
+                                                                search={`${item.firstName} ${item.lastName}`}
+                                                            >
+                                                                {`${item.firstName} ${item.lastName}`}
+                                                            </Select.Option>
+                                                        );
+                                                    }
+                                                )}
+                                        </Select>
+                                    )}
+                                </div>
+
+                                {from != "update" && (
+                                    <Select
+                                        placeholder="Search"
+                                        showSearch
+                                        className="select-custom-width"
+                                        loading={isLoadingUsers}
+                                        style={{ width: "100%" }}
+                                        onChange={onChangeSelectTeammateToAdd}
+                                        dropdownRender={(menu) => <>{menu}</>}
+                                    >
+                                        {contacts &&
+                                            contacts.map(
+                                                (item: any, key: any) => {
+                                                    return (
+                                                        <Select.Option
+                                                            key={key}
+                                                            value={item.id}
+                                                            search={`${item.firstName} ${item.lastName}`}
+                                                        >
+                                                            {`${item.firstName} ${item.lastName}`}
+                                                        </Select.Option>
+                                                    );
+                                                }
+                                            )}
+                                    </Select>
+                                )}
                             </Col>
                             <Col md={24}>
                                 <div
@@ -453,7 +655,105 @@ const ModalAddDeal = ({
                                 >
                                     Participants
                                 </div>
-                                <Input placeholder="Search Contact" />
+                                {from == "update" &&
+                                    modalValue &&
+                                    modalValue.participant.map(
+                                        (item: any, key: any) => {
+                                            return (
+                                                <Tag
+                                                    closable
+                                                    color="#2db7f5"
+                                                    onClose={(e) => {
+                                                        handleClose(item.id);
+                                                    }}
+                                                    style={{ marginTop: "5px" }}
+                                                >
+                                                    {item.user.firstName +
+                                                        " " +
+                                                        item.user.lastName}
+                                                </Tag>
+                                            );
+                                        }
+                                    )}
+                                {from != "update" &&
+                                    particapantLocal.length > 0 &&
+                                    particapantLocal.map(
+                                        (item: any, key: any) => {
+                                            return (
+                                                <Tag
+                                                    closable
+                                                    color="#2db7f5"
+                                                    // onClose={(e) => {
+                                                    //     handleCloseTeammate(
+                                                    //         item.id
+                                                    //     );
+                                                    // }}
+                                                    style={{ marginTop: "5px" }}
+                                                >
+                                                    {item.label}
+                                                </Tag>
+                                            );
+                                        }
+                                    )}
+                                <div style={{ marginTop: "10px" }}>
+                                    {from == "update" && (
+                                        <Select
+                                            placeholder="Search"
+                                            showSearch
+                                            className="select-custom-width"
+                                            loading={isLoadingUsers}
+                                            style={{ width: "100%" }}
+                                            onChange={onChangeSelectParticipant}
+                                            dropdownRender={(menu) => (
+                                                <>{menu}</>
+                                            )}
+                                        >
+                                            {contacts &&
+                                                contacts.map(
+                                                    (item: any, key: any) => {
+                                                        return (
+                                                            <Select.Option
+                                                                key={key}
+                                                                value={item.id}
+                                                                search={`${item.firstName} ${item.lastName}`}
+                                                            >
+                                                                {`${item.firstName} ${item.lastName}`}
+                                                            </Select.Option>
+                                                        );
+                                                    }
+                                                )}
+                                        </Select>
+                                    )}
+                                </div>
+
+                                {from != "update" && (
+                                    <Select
+                                        placeholder="Search"
+                                        showSearch
+                                        className="select-custom-width"
+                                        loading={isLoadingUsers}
+                                        style={{ width: "100%" }}
+                                        onChange={
+                                            onChangeSelectParticipantToAdd
+                                        }
+                                        dropdownRender={(menu) => <>{menu}</>}
+                                    >
+                                        {contacts &&
+                                            contacts.map(
+                                                (item: any, key: any) => {
+                                                    return (
+                                                        <Select.Option
+                                                            key={key}
+                                                            value={item.id}
+                                                            search={`${item.firstName} ${item.lastName}`}
+                                                        >
+                                                            {`${item.firstName} ${item.lastName}`}
+                                                        </Select.Option>
+                                                    );
+                                                }
+                                            )}
+                                    </Select>
+                                )}
                             </Col>
                         </Row>
                     </Col>

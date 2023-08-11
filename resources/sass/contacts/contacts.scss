@@ -171,3 +171,9 @@
         align-items: center;
     }
 }
+
+.cellColor {
+    .ant-table-cell {
+        background-color: #fafafa !important;
+    }
+}

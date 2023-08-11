@@ -12,6 +12,8 @@ import {
     Col,
     List,
     notification,
+    Popconfirm,
+    Typography,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -28,6 +30,15 @@ import {
     CloseOutlined,
     PlusCircleFilled,
     PlusSquareOutlined,
+    SaveOutlined,
+    ExportOutlined,
+    CopyOutlined,
+    MobileOutlined,
+    UnorderedListOutlined,
+    EyeOutlined,
+    StarFilled,
+    StarOutlined,
+    CheckCircleOutlined,
 } from "@ant-design/icons";
 import Search from "antd/es/input/Search";
 import ModalAddDeal from "./components/ModalAddDeal";
@@ -91,7 +102,7 @@ const Deal = () => {
     });
     const [showModalAddDealValue, setshowModalAddDealValue] =
         useState<string>("");
-
+    const [showDeleteButton, setShowDeleteButton] = useState(false);
     const { deals, isLoading, refetch } = useDealsAll(filterPage);
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
     const [byTotalDeals, setByTotalDeals] = useState<Bytotal>({
@@ -621,118 +632,200 @@ const Deal = () => {
         <Row className="deal-group-row">
             <Col md={24}>
                 <Card title="Deals">
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            marginBottom: 15,
-                        }}
-                    >
-                        <div>
-                            <span style={{ marginRight: 10 }}>
-                                <Dropdown
-                                    menu={{ items: acq }}
-                                    placement="bottomLeft"
-                                >
-                                    <Button>
-                                        <Space>
-                                            {filterPage.pipeline}
-
-                                            <DownOutlined />
-                                        </Space>
-                                    </Button>
-                                </Dropdown>
-                            </span>
-                            <span style={{ marginRight: 10 }}>
-                                <Dropdown
-                                    overlay={activities_type}
-                                    placement="bottomLeft"
-                                >
-                                    <Button>
-                                        <Space>
-                                            {filterPage.status}
-                                            <DownOutlined />
-                                        </Space>
-                                    </Button>
-                                </Dropdown>
-                            </span>
-                        </div>
-
-                        <div>
-                            <span style={{ marginRight: 10 }}>
+                    {showDeleteButton ? (
+                        <Row
+                            style={{
+                                alignItems: "center",
+                                marginBottom: "20px",
+                            }}
+                        >
+                            <Button
+                                icon={<CloseOutlined />}
+                                type="text"
+                                className="m-r-md"
+                                onClick={() => {
+                                    setShowDeleteButton(false);
+                                }}
+                            ></Button>
+                            <Typography.Text className="m-r-md">
+                                {/* {selectedRowsData?.length + " Selected"} */}
+                            </Typography.Text>
+                            <Popconfirm
+                                title="Delete Contact"
+                                description="Are you sure to delete this deal?"
+                                // onConfirm={() => {
+                                //     handleDelete();
+                                // }}
+                            >
                                 <Button
-                                    icon={<FilterOutlined />}
-                                    onClick={() => {
-                                        setOpenFilter(true);
-                                    }}
-                                ></Button>
-                            </span>
-                            <span style={{ marginRight: 10 }}>
-                                <Radio.Group
-                                    value={listBoard}
-                                    buttonStyle="solid"
-                                    onChange={onChangeListBoard}
+                                    type="primary"
+                                    danger
+                                    className="m-r-sm"
                                 >
-                                    <Radio.Button value="List">
-                                        List
-                                    </Radio.Button>
-                                    <Radio.Button value="Board">
-                                        Board
-                                    </Radio.Button>
-                                </Radio.Group>
-                            </span>
-                            <span style={{ marginRight: 10 }}>
-                                <Button type="primary" onClick={showModalAdd}>
-                                    <PlusCircleOutlined /> &nbsp;Deal
+                                    Delete
                                 </Button>
-                            </span>
+                            </Popconfirm>
 
-                            <span style={{ marginRight: 10 }}>
-                                <Dropdown
-                                    menu={{ items: action }}
-                                    placement="bottomLeft"
-                                >
-                                    <Button>
-                                        <Space>
-                                            Action
-                                            <DownOutlined />
-                                        </Space>
-                                    </Button>
-                                </Dropdown>
-                            </span>
-                        </div>
-                    </div>
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            marginBottom: 15,
-                        }}
-                    >
-                        <div></div>
-                        <div>
-                            <span style={{ marginRight: 15 }}>
-                                {" "}
-                                # of Deals: <b>{deals && deals.sum.count}</b>
-                            </span>
-                            <span style={{ marginRight: 15 }}>
-                                {" "}
-                                Pipeline Value:{" "}
-                                <b>
-                                    {deals &&
-                                        "$" + toCurrency(deals.sum.sum_upp)}
-                                </b>
-                            </span>
-                            <span>
-                                {" "}
-                                Forecasted Value:{" "}
-                                <b>
-                                    {deals &&
-                                        "$" + toCurrency(deals.sum.sum_upp)}
-                                </b>
-                            </span>
-                        </div>
-                    </div>
+                            <Button
+                                // onClick={() => {
+                                //     setisModalOpenUpdate(true);
+                                // }}
+                                icon={<SaveOutlined />}
+                                className="m-r-sm"
+                            >
+                                Update
+                            </Button>
+                            <Button
+                                icon={<ExportOutlined />}
+                                className="m-r-sm"
+                            >
+                                Export
+                            </Button>
+
+                            <Button icon={<MailOutlined />} className="m-r-sm">
+                                Email
+                            </Button>
+
+                            <Button
+                                icon={<CheckCircleOutlined />}
+                                className="m-r-sm"
+                            >
+                                Create Activities
+                            </Button>
+                            <Button
+                                icon={<MobileOutlined />}
+                                className="m-r-sm"
+                            >
+                                Text
+                            </Button>
+                        </Row>
+                    ) : (
+                        <>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    marginBottom: 15,
+                                }}
+                            >
+                                <div>
+                                    <span style={{ marginRight: 10 }}>
+                                        <Dropdown
+                                            menu={{ items: acq }}
+                                            placement="bottomLeft"
+                                        >
+                                            <Button>
+                                                <Space>
+                                                    {filterPage.pipeline}
+
+                                                    <DownOutlined />
+                                                </Space>
+                                            </Button>
+                                        </Dropdown>
+                                    </span>
+                                    <span style={{ marginRight: 10 }}>
+                                        <Dropdown
+                                            overlay={activities_type}
+                                            placement="bottomLeft"
+                                        >
+                                            <Button>
+                                                <Space>
+                                                    {filterPage.status}
+                                                    <DownOutlined />
+                                                </Space>
+                                            </Button>
+                                        </Dropdown>
+                                    </span>
+                                </div>
+
+                                <div>
+                                    <span style={{ marginRight: 10 }}>
+                                        <Button
+                                            icon={<FilterOutlined />}
+                                            onClick={() => {
+                                                setOpenFilter(true);
+                                            }}
+                                        ></Button>
+                                    </span>
+                                    <span style={{ marginRight: 10 }}>
+                                        <Radio.Group
+                                            value={listBoard}
+                                            buttonStyle="solid"
+                                            onChange={onChangeListBoard}
+                                        >
+                                            <Radio.Button value="List">
+                                                List
+                                            </Radio.Button>
+                                            <Radio.Button value="Board">
+                                                Board
+                                            </Radio.Button>
+                                        </Radio.Group>
+                                    </span>
+                                    <span style={{ marginRight: 10 }}>
+                                        <Button
+                                            type="primary"
+                                            onClick={showModalAdd}
+                                        >
+                                            <PlusCircleOutlined /> &nbsp;Deal
+                                        </Button>
+                                    </span>
+
+                                    <span style={{ marginRight: 10 }}>
+                                        <Dropdown
+                                            menu={{ items: action }}
+                                            placement="bottomLeft"
+                                        >
+                                            <Button>
+                                                <Space>
+                                                    Action
+                                                    <DownOutlined />
+                                                </Space>
+                                            </Button>
+                                        </Dropdown>
+                                    </span>
+                                </div>
+                            </div>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    marginBottom: 15,
+                                }}
+                            >
+                                <div></div>
+                                <div>
+                                    <span style={{ marginRight: 15 }}>
+                                        {" "}
+                                        # of Deals:{" "}
+                                        <b>{deals && deals.sum.count}</b>
+                                    </span>
+                                    <span style={{ marginRight: 15 }}>
+                                        {" "}
+                                        Pipeline Value:{" "}
+                                        <b>
+                                            {deals &&
+                                                "$" +
+                                                    toCurrency(
+                                                        deals.sum.sum_upp
+                                                    )}
+                                        </b>
+                                    </span>
+                                    <span>
+                                        {" "}
+                                        Forecasted Value:{" "}
+                                        <b>
+                                            {deals &&
+                                                "$" +
+                                                    toCurrency(
+                                                        deals.sum.sum_upp
+                                                    )}
+                                        </b>
+                                    </span>
+                                </div>
+                            </div>
+                        </>
+                    )}
+
                     {listBoard != "List" ? (
                         <div>
                             <div className="mainDealArrow">
@@ -754,7 +847,11 @@ const Deal = () => {
                         </div>
                     ) : (
                         <div>
-                            <DealsTable deals={listData} />
+                            <DealsTable
+                                deals={listData}
+                                showDeleteButton={showDeleteButton}
+                                setShowDeleteButton={setShowDeleteButton}
+                            />
                         </div>
                     )}
 
