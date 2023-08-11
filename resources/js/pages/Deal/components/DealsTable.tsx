@@ -9,6 +9,7 @@ import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { useDealsAll } from "../../../api/query/dealQuery";
 import ModalAddDeal from "./ModalAddDeal";
 import { useMutation, useQueryClient } from "react-query";
+import ContactsComponentsUpdate from "./ContactsComponentsUpdate";
 interface TDeals {
     id: number;
     title: string;
@@ -27,14 +28,26 @@ const DealsTable = ({
     setSelectedData,
     selectedRowsData,
     setSelectedRows,
+    isModalOpenUpdate,
+    setisModalOpenUpdate,
+    isTContact,
+    setTContact,
+    isTitle,
+    setTitle,
 }: {
-    deals: Array<TDeals>;
+    deals: any;
     showDeleteButton: any;
     setShowDeleteButton: any;
     selectedData: any;
     setSelectedData: any;
     selectedRowsData: any;
     setSelectedRows: any;
+    isModalOpenUpdate: any;
+    setisModalOpenUpdate: any;
+    isTContact: any;
+    setTContact: any;
+    isTitle: any;
+    setTitle: any;
 }) => {
     const queryClient = useQueryClient();
     const onChange: TableProps<TDeals>["onChange"] = (
@@ -90,6 +103,9 @@ const DealsTable = ({
     const handleCancelAdd = () => {
         setIsModalOpenAdd(false);
     };
+    const handleEdit = (record: any) => {
+        setTContact(record);
+    };
 
     return (
         <>
@@ -137,6 +153,14 @@ const DealsTable = ({
                 showModalAddDealValue={showModalAddDealValue}
                 from={"update"}
                 modalValue={modalValue}
+            />
+            <ContactsComponentsUpdate
+                isModalOpenUpdate={isModalOpenUpdate}
+                setisModalOpenUpdate={setisModalOpenUpdate}
+                record={isTContact}
+                title={isTitle}
+                selectedData={selectedData}
+                setTContact={setTContact}
             />
         </>
     );

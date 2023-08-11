@@ -475,6 +475,7 @@ const Deal = () => {
     const [listBoard, setListBoard] = useState("Board");
     const [boardData, setBoardData] = useState(initialBoardData);
     const [listData, setListData] = useState<TDeals[]>([]);
+
     useEffect(() => {
         if (deals) {
             console.log("deals", deals.sum);
@@ -644,6 +645,10 @@ const Deal = () => {
         deleteContact.mutate({ deals_id: selectedRowsData });
     };
 
+    const [isModalOpenUpdate, setisModalOpenUpdate] = useState(false);
+    const [isTContact, setTContact] = useState<TDeals | null>(null);
+    const [isTitle, setTitle] = useState("");
+
     return (
         <Row className="deal-group-row">
             <Col md={24}>
@@ -683,9 +688,9 @@ const Deal = () => {
                             </Popconfirm>
 
                             <Button
-                                // onClick={() => {
-                                //     setisModalOpenUpdate(true);
-                                // }}
+                                onClick={() => {
+                                    setisModalOpenUpdate(true);
+                                }}
                                 icon={<SaveOutlined />}
                                 className="m-r-sm"
                             >
@@ -871,6 +876,12 @@ const Deal = () => {
                                 setSelectedData={setSelectedData}
                                 selectedRowsData={selectedRowsData}
                                 setSelectedRows={setSelectedRows}
+                                isModalOpenUpdate={isModalOpenUpdate}
+                                setisModalOpenUpdate={setisModalOpenUpdate}
+                                isTContact={isTContact}
+                                setTContact={setTContact}
+                                isTitle={isTitle}
+                                setTitle={setTitle}
                             />
                         </div>
                     )}
