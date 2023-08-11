@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     CheckCircleOutlined,
     CheckOutlined,
@@ -90,7 +90,12 @@ const optionAvailability: SelectProps["options"] = [
 ];
 
 const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
-    const { drawerUpdateOpen, setDrawerUpdateOpen } = props;
+    const {
+        drawerUpdateOpen,
+        setDrawerUpdateOpen,
+        drawerUpdateData,
+        setDrawerUpdateData,
+    } = props;
 
     const { dataUsers, isLoadingUsers } = useUsersList();
     const { dataContacts, isLoadingContacts } = useContactsList();
@@ -101,6 +106,98 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
     const onChange = (key: string) => {
         console.log(key);
     };
+
+    useEffect(() => {
+        if (drawerUpdateData) {
+            console.log("drawerUpdateData", drawerUpdateData);
+            const invitees: string[] = [];
+            if (drawerUpdateData?.activity_invitees.length > 0) {
+                drawerUpdateData?.activity_invitees.map(
+                    (item: any, key: number) => {
+                        invitees.push(item.full_name);
+                    }
+                );
+            }
+
+            const followers: string[] = [];
+            if (drawerUpdateData?.activity_followers.length > 0) {
+                drawerUpdateData?.activity_followers.map(
+                    (item: any, key: number) => {
+                        followers.push(item.full_name);
+                    }
+                );
+            }
+
+            const tags: string[] = [];
+            if (drawerUpdateData?.activity_tags.length > 0) {
+                drawerUpdateData?.activity_tags.map(
+                    (item: any, key: number) => {
+                        tags.push(item.tag);
+                    }
+                );
+            }
+
+            form.setFieldsValue({
+                title: drawerUpdateData?.title,
+                type: drawerUpdateData?.type,
+                recurrence: drawerUpdateData?.type
+                    ? drawerUpdateData?.type
+                    : undefined,
+                availability: drawerUpdateData?.availability
+                    ? drawerUpdateData?.availability
+                    : undefined,
+                start_date: drawerUpdateData?.start_date
+                    ? dayjs(drawerUpdateData?.start_date, "YYYY/MM/DD")
+                    : undefined,
+                end_date: drawerUpdateData?.end_date
+                    ? dayjs(drawerUpdateData?.end_date, "YYYY/MM/DD")
+                    : undefined,
+                start_time: drawerUpdateData?.start_time
+                    ? dayjs(
+                          `${drawerUpdateData?.start_date} ${drawerUpdateData?.start_time}`,
+                          "YYYY/MM/DD HH:mm"
+                      )
+                    : undefined,
+                end_time: drawerUpdateData?.end_time
+                    ? dayjs(
+                          `${drawerUpdateData?.end_date} ${drawerUpdateData?.end_time}`,
+                          "YYYY/MM/DD HH:mm"
+                      )
+                    : undefined,
+                invitees: invitees,
+                location: drawerUpdateData?.location
+                    ? drawerUpdateData?.location
+                    : undefined,
+                video_conferencing: drawerUpdateData?.video_conferencing
+                    ? drawerUpdateData?.video_conferencing
+                    : undefined,
+                internal_note: drawerUpdateData?.internal_note
+                    ? drawerUpdateData?.internal_note
+                    : undefined,
+                owner_id: drawerUpdateData?.owner_id
+                    ? drawerUpdateData?.owner_id
+                    : undefined,
+                deal_id: drawerUpdateData?.deal_id
+                    ? drawerUpdateData?.deal_id
+                    : undefined,
+                contact_id: drawerUpdateData?.contact_id
+                    ? drawerUpdateData?.contact_id
+                    : undefined,
+                followers: followers,
+                tags: tags,
+            });
+
+            if (
+                drawerUpdateData?.location ||
+                invitees.length > 0 ||
+                drawerUpdateData?.video_conferencing
+            ) {
+                setCalendarOptions(true);
+            }
+        } else {
+            setDrawerUpdateData(null);
+        }
+    }, [drawerUpdateData]);
 
     const items: TabsProps["items"] = [
         {
@@ -115,29 +212,29 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
                 >
                     <Form
                         form={form}
-                        initialValues={{
-                            type: "Call",
-                            recurrence: "Doesn’t repeat",
-                            availability: "Busy",
-                            start_date: dayjs(
-                                moment().format("YYYY/MM/DD"),
-                                "YYYY/MM/DD"
-                            ),
-                            end_date: dayjs(
-                                moment().format("YYYY/MM/DD"),
-                                "YYYY/MM/DD"
-                            ),
-                            // owner_id: dataUsers?.user_data?.id
-                            //     ? dataUsers?.user_data?.id
-                            //     : null,
-                        }}
+                        // initialValues={{
+                        //     type: "Call",
+                        //     location: "Doesn’t repeat",
+                        //     availability: "Busy",
+                        //     start_date: dayjs(
+                        //         moment().format("YYYY/MM/DD"),
+                        //         "YYYY/MM/DD"
+                        //     ),
+                        //     end_date: dayjs(
+                        //         moment().format("YYYY/MM/DD"),
+                        //         "YYYY/MM/DD"
+                        //     ),
+                        //     // owner_id: dataUsers?.user_data?.id
+                        //     //     ? dataUsers?.user_data?.id
+                        //     //     : null,
+                        // }}
                     >
                         <Row gutter={12}>
                             <Col span={5} className="col-label">
                                 <Typography.Text>Title</Typography.Text>
                             </Col>
                             <Col span={19}>
-                                <Form.Item name={"type"}>
+                                <Form.Item name={"title"}>
                                     <Input placeholder="Write activity title" />
                                 </Form.Item>
                             </Col>

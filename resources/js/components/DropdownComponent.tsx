@@ -13,13 +13,13 @@ const DropdownComponent = ({
 }: any) => {
     return (
         <Dropdown
-            overlay={
+            menu={[
                 <Menu>
                     {menuList.map((item) => (
                         <Menu.Item key={item.key}>{item.label}</Menu.Item>
                     ))}
-                </Menu>
-            }
+                </Menu>,
+            ]}
             trigger={["click"]}
             {...rest}
             handleButtonClick={(e) => console.log(e)}

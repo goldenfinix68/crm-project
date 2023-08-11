@@ -9,6 +9,7 @@ import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { useDealsAll } from "../../../api/query/dealQuery";
 import ModalAddDeal from "./ModalAddDeal";
 import { useMutation, useQueryClient } from "react-query";
+import ContactsComponentsUpdate from "./ContactsComponentsUpdate";
 interface TDeals {
     id: number;
     title: string;
@@ -19,7 +20,35 @@ interface TDeals {
     owner: string;
 }
 
-const DealsTable = ({ deals }: { deals: Array<TDeals> }) => {
+const DealsTable = ({
+    deals,
+    showDeleteButton,
+    setShowDeleteButton,
+    selectedData,
+    setSelectedData,
+    selectedRowsData,
+    setSelectedRows,
+    isModalOpenUpdate,
+    setisModalOpenUpdate,
+    isTContact,
+    setTContact,
+    isTitle,
+    setTitle,
+}: {
+    deals: any;
+    showDeleteButton: any;
+    setShowDeleteButton: any;
+    selectedData: any;
+    setSelectedData: any;
+    selectedRowsData: any;
+    setSelectedRows: any;
+    isModalOpenUpdate: any;
+    setisModalOpenUpdate: any;
+    isTContact: any;
+    setTContact: any;
+    isTitle: any;
+    setTitle: any;
+}) => {
     const queryClient = useQueryClient();
     const onChange: TableProps<TDeals>["onChange"] = (
         pagination,
@@ -30,21 +59,33 @@ const DealsTable = ({ deals }: { deals: Array<TDeals> }) => {
         console.log("params", pagination, filters, sorter, extra);
     };
 
-    const rowSelection: TableRowSelection<TDeals> = {
-        onChange: (selectedRowKeys, selectedRows) => {
-            console.log(
-                `selectedRowKeys: ${selectedRowKeys}`,
-                "selectedRows: ",
-                selectedRows
-            );
-        },
-        onSelect: (record, selected, selectedRows) => {
-            console.log(record, selected, selectedRows);
-        },
-        onSelectAll: (selected, selectedRows, changeRows) => {
-            console.log(selected, selectedRows, changeRows);
-        },
+    const onSelectChange = (
+        selectedRowKeys: React.Key[],
+        selectedRows: TDeals[]
+    ) => {
+        console.log(selectedRowKeys);
+        console.log(selectedRows);
+        setSelectedData(selectedRows);
+        setSelectedRows(selectedRowKeys);
+
+        // setSelectionType(selectedRows);
     };
+    const rowSelection: TableRowSelection<TDeals> = {
+        selectedRowKeys: selectedRowsData,
+        onChange: onSelectChange,
+    };
+
+    useEffect(() => {
+        setShowDeleteButton(
+            selectedRowsData && selectedRowsData.length > 0 ? true : false
+        );
+    }, [selectedRowsData]);
+    useEffect(() => {
+        if (showDeleteButton == false) {
+            setSelectedRows([]);
+        }
+    }, [showDeleteButton]);
+
     const [showModalAddDealValue, setshowModalAddDealValue] =
         useState<string>("");
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
@@ -62,13 +103,17 @@ const DealsTable = ({ deals }: { deals: Array<TDeals> }) => {
     const handleCancelAdd = () => {
         setIsModalOpenAdd(false);
     };
+    const handleEdit = (record: any) => {
+        setTContact(record);
+    };
+
     return (
         <>
             <Table
                 dataSource={deals}
                 onChange={onChange}
                 rowKey={(record) => record.id}
-                // rowSelection={{ ...rowSelection }}
+                rowSelection={{ ...rowSelection }}
                 scroll={{ x: "max-content" }}
             >
                 <Table.Column
@@ -108,6 +153,15 @@ const DealsTable = ({ deals }: { deals: Array<TDeals> }) => {
                 showModalAddDealValue={showModalAddDealValue}
                 from={"update"}
                 modalValue={modalValue}
+            />
+            <ContactsComponentsUpdate
+                isModalOpenUpdate={isModalOpenUpdate}
+                setisModalOpenUpdate={setisModalOpenUpdate}
+                record={isTContact}
+                title={isTitle}
+                selectedData={selectedData}
+                setTContact={setTContact}
+                selectedRowsData={selectedRowsData}
             />
         </>
     );
