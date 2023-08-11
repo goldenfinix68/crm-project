@@ -46,10 +46,38 @@ class TextsController extends Controller
         ]);
         
         $userId = Auth::id();
+
+        try {
+            \Telnyx\Telnyx::setApiKey(env('TELNYX_API_KEY'));
+
+            $response = \Telnyx\Message::Create([
+                "from" => env('TELNYX_DEFAULT_FROM'), // Your Telnyx number
+                "to" => $request->to,
+                "text" => "Hello, World!",
+                "messaging_profile_id" => env('TELNYX_PROFILE_ID'),
+            ]);
+            
+            $text = Text::create(array_merge($request->all(), [
+                'userId' => $userId, 
+                'type'=> 'SMS', 
+                'telnyxId' => $response->id,
+                'status' => 'queued',
+                'telnyxResponse' => json_encode($response),
+            ]));
+
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 400);
+            // Handle any errors here
+        }
         
-        $text = Text::create(array_merge($request->all(), ['userId' => $userId, 'type'=> 'sent']));
-        
-        return response()->json($text, 200);
+        return response()->json([
+            'success' => true,
+            'message' => "Text sent"
+        ], 200);
     }
 
     /**

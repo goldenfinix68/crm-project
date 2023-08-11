@@ -19,6 +19,9 @@ class Text extends Model
         'contactId',
         'message',
         'type',
+        'telnyxId',
+        'status',
+        'telnyxResponse',
     ];
 
     protected $appends = [
