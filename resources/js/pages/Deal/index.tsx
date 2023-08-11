@@ -56,10 +56,12 @@ import { useDealsAll } from "../../api/query/dealQuery";
 import { useMutation, useQueryClient } from "react-query";
 import {
     useDealMutation,
+    useDealMutationDeleteDeal,
     useDealUpdateBoardMutation,
 } from "../../api/mutation/useDealMutation";
 import moment from "moment";
 import DealsTable from "./components/DealsTable";
+import { deleteContactMutation } from "../../api/mutation/useContactMutation";
 
 interface Card {
     id: number;
@@ -473,6 +475,7 @@ const Deal = () => {
     const [listBoard, setListBoard] = useState("Board");
     const [boardData, setBoardData] = useState(initialBoardData);
     const [listData, setListData] = useState<TDeals[]>([]);
+
     useEffect(() => {
         if (deals) {
             console.log("deals", deals.sum);
@@ -628,6 +631,24 @@ const Deal = () => {
         refetch();
     };
 
+    const [selectedRowsData, setSelectedRows] = useState<React.Key[]>([]);
+    const [selectedData, setSelectedData] = useState<TDeals[]>([]);
+
+    const deleteContact = useMutation(useDealMutationDeleteDeal, {
+        onSuccess: () => {
+            console.log("success");
+            queryClient.invalidateQueries("deals");
+            setShowDeleteButton(false);
+        },
+    });
+    const handleDelete = () => {
+        deleteContact.mutate({ deals_id: selectedRowsData });
+    };
+
+    const [isModalOpenUpdate, setisModalOpenUpdate] = useState(false);
+    const [isTContact, setTContact] = useState<TDeals | null>(null);
+    const [isTitle, setTitle] = useState("");
+
     return (
         <Row className="deal-group-row">
             <Col md={24}>
@@ -653,9 +674,9 @@ const Deal = () => {
                             <Popconfirm
                                 title="Delete Contact"
                                 description="Are you sure to delete this deal?"
-                                // onConfirm={() => {
-                                //     handleDelete();
-                                // }}
+                                onConfirm={() => {
+                                    handleDelete();
+                                }}
                             >
                                 <Button
                                     type="primary"
@@ -667,9 +688,9 @@ const Deal = () => {
                             </Popconfirm>
 
                             <Button
-                                // onClick={() => {
-                                //     setisModalOpenUpdate(true);
-                                // }}
+                                onClick={() => {
+                                    setisModalOpenUpdate(true);
+                                }}
                                 icon={<SaveOutlined />}
                                 className="m-r-sm"
                             >
@@ -851,6 +872,16 @@ const Deal = () => {
                                 deals={listData}
                                 showDeleteButton={showDeleteButton}
                                 setShowDeleteButton={setShowDeleteButton}
+                                selectedData={selectedData}
+                                setSelectedData={setSelectedData}
+                                selectedRowsData={selectedRowsData}
+                                setSelectedRows={setSelectedRows}
+                                isModalOpenUpdate={isModalOpenUpdate}
+                                setisModalOpenUpdate={setisModalOpenUpdate}
+                                isTContact={isTContact}
+                                setTContact={setTContact}
+                                isTitle={isTitle}
+                                setTitle={setTitle}
                             />
                         </div>
                     )}

@@ -350,4 +350,22 @@ class DealsController extends Controller
 
         return response()->json(['success' => true, 'data' => $data], 200);
     }
+
+    public function multi_delete(Request $request)
+    {
+        $data = Deal::whereIn('id', $request->deals_id)->delete();
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
+
+    public function multi_update(Request $request)
+    {
+        $data = Deal::whereIn('id', $request->deals_id)->get();
+
+        foreach ($data as $key => $val) {
+            $val[$request->val['name']] = $request->val['value'];
+            $val->save();
+        }
+
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
 }

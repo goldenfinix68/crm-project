@@ -9,6 +9,7 @@ import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { useDealsAll } from "../../../api/query/dealQuery";
 import ModalAddDeal from "./ModalAddDeal";
 import { useMutation, useQueryClient } from "react-query";
+import ContactsComponentsUpdate from "./ContactsComponentsUpdate";
 interface TDeals {
     id: number;
     title: string;
@@ -23,10 +24,30 @@ const DealsTable = ({
     deals,
     showDeleteButton,
     setShowDeleteButton,
+    selectedData,
+    setSelectedData,
+    selectedRowsData,
+    setSelectedRows,
+    isModalOpenUpdate,
+    setisModalOpenUpdate,
+    isTContact,
+    setTContact,
+    isTitle,
+    setTitle,
 }: {
-    deals: Array<TDeals>;
+    deals: any;
     showDeleteButton: any;
     setShowDeleteButton: any;
+    selectedData: any;
+    setSelectedData: any;
+    selectedRowsData: any;
+    setSelectedRows: any;
+    isModalOpenUpdate: any;
+    setisModalOpenUpdate: any;
+    isTContact: any;
+    setTContact: any;
+    isTitle: any;
+    setTitle: any;
 }) => {
     const queryClient = useQueryClient();
     const onChange: TableProps<TDeals>["onChange"] = (
@@ -37,8 +58,7 @@ const DealsTable = ({
     ) => {
         console.log("params", pagination, filters, sorter, extra);
     };
-    const [selectedRowsData, setSelectedRows] = useState<React.Key[]>([]);
-    const [selectedData, setSelectedData] = useState<TDeals[]>([]);
+
     const onSelectChange = (
         selectedRowKeys: React.Key[],
         selectedRows: TDeals[]
@@ -83,6 +103,10 @@ const DealsTable = ({
     const handleCancelAdd = () => {
         setIsModalOpenAdd(false);
     };
+    const handleEdit = (record: any) => {
+        setTContact(record);
+    };
+
     return (
         <>
             <Table
@@ -129,6 +153,15 @@ const DealsTable = ({
                 showModalAddDealValue={showModalAddDealValue}
                 from={"update"}
                 modalValue={modalValue}
+            />
+            <ContactsComponentsUpdate
+                isModalOpenUpdate={isModalOpenUpdate}
+                setisModalOpenUpdate={setisModalOpenUpdate}
+                record={isTContact}
+                title={isTitle}
+                selectedData={selectedData}
+                setTContact={setTContact}
+                selectedRowsData={selectedRowsData}
             />
         </>
     );
