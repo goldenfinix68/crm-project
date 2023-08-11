@@ -397,7 +397,7 @@ const ActivityTable = () => {
     });
 
     const [drawerUpdateOpen, setDrawerUpdateOpen] = useState(false);
-    const [drawerUpdateData, setDrawerUpdateData] = useState([]);
+    const [drawerUpdateData, setDrawerUpdateData] = useState(null);
 
     return (
         <>

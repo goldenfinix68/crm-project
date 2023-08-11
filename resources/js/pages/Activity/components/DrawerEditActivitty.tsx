@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     CheckCircleOutlined,
     CheckOutlined,
@@ -90,7 +90,12 @@ const optionAvailability: SelectProps["options"] = [
 ];
 
 const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
-    const { drawerUpdateOpen, setDrawerUpdateOpen } = props;
+    const {
+        drawerUpdateOpen,
+        setDrawerUpdateOpen,
+        drawerUpdateData,
+        setDrawerUpdateData,
+    } = props;
 
     const { dataUsers, isLoadingUsers } = useUsersList();
     const { dataContacts, isLoadingContacts } = useContactsList();
@@ -101,6 +106,48 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
     const onChange = (key: string) => {
         console.log(key);
     };
+
+    useEffect(() => {
+        if (drawerUpdateData) {
+            console.log("drawerUpdateData", drawerUpdateData);
+            form.setFieldsValue({
+                title: drawerUpdateData?.title,
+                type: drawerUpdateData?.type,
+                recurrence: drawerUpdateData?.type
+                    ? drawerUpdateData?.type
+                    : undefined,
+                availability: drawerUpdateData?.availability
+                    ? drawerUpdateData?.availability
+                    : undefined,
+                start_date: drawerUpdateData?.start_date
+                    ? dayjs(drawerUpdateData?.start_date, "YYYY/MM/DD")
+                    : undefined,
+                end_date: drawerUpdateData?.end_date
+                    ? dayjs(drawerUpdateData?.end_date, "YYYY/MM/DD")
+                    : undefined,
+                start_time: drawerUpdateData?.start_time
+                    ? dayjs(
+                          `${drawerUpdateData?.start_date} ${drawerUpdateData?.start_time}`,
+                          "YYYY/MM/DD HH:mm"
+                      )
+                    : undefined,
+                end_time: drawerUpdateData?.end_time
+                    ? dayjs(
+                          `${drawerUpdateData?.end_date} ${drawerUpdateData?.end_time}`,
+                          "YYYY/MM/DD HH:mm"
+                      )
+                    : undefined,
+                location: drawerUpdateData?.location
+                    ? drawerUpdateData?.location
+                    : undefined,
+                video_conferencing: drawerUpdateData?.video_conferencing
+                    ? drawerUpdateData?.video_conferencing
+                    : undefined,
+            });
+        } else {
+            setDrawerUpdateData(null);
+        }
+    }, [drawerUpdateData]);
 
     const items: TabsProps["items"] = [
         {
@@ -115,29 +162,29 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
                 >
                     <Form
                         form={form}
-                        initialValues={{
-                            type: "Call",
-                            recurrence: "Doesn’t repeat",
-                            availability: "Busy",
-                            start_date: dayjs(
-                                moment().format("YYYY/MM/DD"),
-                                "YYYY/MM/DD"
-                            ),
-                            end_date: dayjs(
-                                moment().format("YYYY/MM/DD"),
-                                "YYYY/MM/DD"
-                            ),
-                            // owner_id: dataUsers?.user_data?.id
-                            //     ? dataUsers?.user_data?.id
-                            //     : null,
-                        }}
+                        // initialValues={{
+                        //     type: "Call",
+                        //     location: "Doesn’t repeat",
+                        //     availability: "Busy",
+                        //     start_date: dayjs(
+                        //         moment().format("YYYY/MM/DD"),
+                        //         "YYYY/MM/DD"
+                        //     ),
+                        //     end_date: dayjs(
+                        //         moment().format("YYYY/MM/DD"),
+                        //         "YYYY/MM/DD"
+                        //     ),
+                        //     // owner_id: dataUsers?.user_data?.id
+                        //     //     ? dataUsers?.user_data?.id
+                        //     //     : null,
+                        // }}
                     >
                         <Row gutter={12}>
                             <Col span={5} className="col-label">
                                 <Typography.Text>Title</Typography.Text>
                             </Col>
                             <Col span={19}>
-                                <Form.Item name={"type"}>
+                                <Form.Item name={"title"}>
                                     <Input placeholder="Write activity title" />
                                 </Form.Item>
                             </Col>
