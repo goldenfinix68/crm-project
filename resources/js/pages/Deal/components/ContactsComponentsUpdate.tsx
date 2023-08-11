@@ -40,6 +40,7 @@ import queryClient from "../../../queryClient";
 import { TContact } from "../../../entities";
 
 import ContactsComponentsUpdateFields from "./ContactsComponentsUpdateFields";
+import { useDealMutationUpdateMituli } from "../../../api/mutation/useDealMutation";
 
 interface ContactsComponentsUpdateProps {
     isModalOpenUpdate: boolean;
@@ -48,6 +49,7 @@ interface ContactsComponentsUpdateProps {
     title: any;
     setTContact: any;
     selectedData: TContact[];
+    selectedRowsData: any;
 }
 
 const handleChange = (value: string) => {
@@ -69,21 +71,20 @@ const ContactsComponentsUpdate = ({
     title,
     setTContact,
     selectedData,
+    selectedRowsData,
 }: ContactsComponentsUpdateProps) => {
     const queryClient = useQueryClient();
     const [form] = Form.useForm<TContact>();
     const [isAddNew, seIsAddNew] = useState(false);
     const [saveAndAdd, setSaveAndAdd] = useState(false);
 
-    const addContact = useMutation(addContactMutation, {
+    const updateDeals = useMutation(useDealMutationUpdateMituli, {
         onSuccess: () => {
             console.log("success");
-            queryClient.invalidateQueries("contacts");
+            queryClient.invalidateQueries("deals");
             //queryClient.invalidateQueries("contactTypesAll");
             form.resetFields();
-            if (!saveAndAdd) {
-                setisModalOpenUpdate(false);
-            }
+            setisModalOpenUpdate(false);
             // queryClient.invalidateQueries("contacts");
         },
     });
@@ -100,12 +101,12 @@ const ContactsComponentsUpdate = ({
         console.log("title", title);
     }, [title]);
 
+    const [valueSelected, setValueSelected] = useState({
+        values: "",
+        name: "",
+    });
     const handleFinish = (values: any) => {
-        console.log(values);
-
-        selectedData.forEach((item) => {
-            addContact.mutate({ ...item, ...values });
-        });
+        updateDeals.mutate({ deals_id: selectedRowsData, val: valueSelected });
     };
 
     const [activeField, setActiveField] = useState<string>("");
@@ -202,6 +203,7 @@ const ContactsComponentsUpdate = ({
                             <Col md={24} xs={24}>
                                 <ContactsComponentsUpdateFields
                                     activeField={activeField}
+                                    setValueSelected={setValueSelected}
                                 />
                             </Col>
                         </Row>

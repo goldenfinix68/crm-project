@@ -61,6 +61,7 @@ interface Props {
     isModalOpenAdd: boolean;
     handleOkAdd: () => void;
     handleCancelAdd: () => void;
+
     showModalAddDealValue?: string;
     from: string;
     modalValue: any;

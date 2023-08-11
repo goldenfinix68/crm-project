@@ -161,6 +161,7 @@ const DealsTable = ({
                 title={isTitle}
                 selectedData={selectedData}
                 setTContact={setTContact}
+                selectedRowsData={selectedRowsData}
             />
         </>
     );

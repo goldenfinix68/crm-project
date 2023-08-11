@@ -66,7 +66,6 @@ import ContactsComponentsTableEditableCell from "./Components/ContactsComponents
 import ContactsComponentsTableEditableCellTags from "./Components/ContactsComponentsTableEditableCellTags";
 import ContactsComponentsTableEditableCellName from "./Components/ContactsComponentsTableEditableCellName";
 import ContactsComponentsUpdate from "./Components/ContactsComponentsUpdate";
-import Papa from "papaparse";
 
 interface DataType {
     key: React.Key;
@@ -156,7 +155,7 @@ const Contacts = () => {
             key: "email",
             title: "Email",
             dataIndex: "email",
-            width: 320,
+            width: 250,
             render: (text: string, record: TContact) => (
                 <ContactsComponentsTableEditableCell
                     type="email"
@@ -378,39 +377,6 @@ const Contacts = () => {
         setDropdownVisible(false);
     };
 
-    const handleExportCSV = () => {
-        const tableData = selectedData.map((item) => ({
-            Name: item.firstName + " " + item.lastName,
-            Email: item.email,
-            Mobile: item.mobile,
-            CountryLink: item.countryLink,
-            Acres: item.acres,
-            Tags: item.tags,
-            Owner: item.owner,
-            FirstName: item.firstName,
-            LastName: item.lastName,
-        }));
-
-        const csvData = Papa.unparse(tableData, { header: true });
-        const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
-        const link = document.createElement("a");
-        const url = URL.createObjectURL(blob);
-        link.href = url;
-        link.setAttribute("download", "data.csv");
-        link.click();
-    };
-
-    //   const handleExportCSV = () => {
-    //     const selectedRows = contacts.filter(item => selectedRowsData.includes(item.key));
-    //     const csvData = Papa.unparse(selectedRows, { header: true });
-    //     const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
-    //     const link = document.createElement('a');
-    //     const url = URL.createObjectURL(blob);
-    //     link.href = url;
-    //     link.setAttribute('download', 'selected_data.csv');
-    //     link.click();
-    //   };
-
     return (
         <Card>
             {showDeleteButton ? (
@@ -448,13 +414,7 @@ const Contacts = () => {
                     >
                         Update
                     </Button>
-                    <Button
-                        icon={<ExportOutlined />}
-                        className="m-r-sm"
-                        onClick={() => {
-                            handleExportCSV();
-                        }}
-                    >
+                    <Button icon={<ExportOutlined />} className="m-r-sm">
                         Export
                     </Button>
                     <Button

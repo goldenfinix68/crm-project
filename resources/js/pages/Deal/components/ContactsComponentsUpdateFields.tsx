@@ -25,13 +25,14 @@ import { TContact } from "../../../entities";
 
 interface ContactsComponentsUpdateFields {
     activeField: string;
+    setValueSelected: any;
 }
 
-const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
-};
+const ContactsComponentsUpdateFields = ({ activeField, setValueSelected }) => {
+    const handleChange = (value: string, name: string) => {
+        setValueSelected({ name: name, value: value });
+    };
 
-const ContactsComponentsUpdateFields = ({ activeField }) => {
     switch (activeField) {
         case "title":
             return (
@@ -41,41 +42,52 @@ const ContactsComponentsUpdateFields = ({ activeField }) => {
                     </Typography>
                     <Typography className="m-b-xs">Title</Typography>
 
-                    <Form.Item name="apn">
-                        <Input />
+                    <Form.Item name="title">
+                        <Input
+                            onChange={(e) =>
+                                handleChange(e.target.value, "title")
+                            }
+                        />
                     </Form.Item>
                 </>
             );
             break;
-        // case "name":
-        //     return (
-        //         <>
-        //             <Typography className="m-b-md">
-        //                 Enter a new value for the field
-        //             </Typography>
-        //             <Typography className="m-b-xs">Name</Typography>
+        case "name":
+            return (
+                <>
+                    <Typography className="m-b-md">
+                        Enter a new value for the field
+                    </Typography>
+                    <Typography className="m-b-xs">Name</Typography>
 
-        //             <Form.Item name="acres">
-        //                 <Input />
-        //             </Form.Item>
-        //         </>
-        //     );
-        //     break;
+                    <Form.Item name="name">
+                        <Input
+                            onChange={(e) =>
+                                handleChange(e.target.value, "name")
+                            }
+                        />
+                    </Form.Item>
+                </>
+            );
+            break;
         case "value":
             return (
-                <Form.Item name="addressLine1">
+                <Form.Item name="value">
                     <Typography className="m-b-md">
                         Enter a new value for the field
                     </Typography>
                     <Typography className="m-b-xs">Value</Typography>
-                    <Input />
+                    <Input
+                        name="value"
+                        onChange={(e) => handleChange(e.target.value, "value")}
+                    />
                 </Form.Item>
             );
             break;
 
         case "stage":
             return (
-                <Form.Item name="type">
+                <Form.Item name="stage">
                     <Typography className="m-b-md">
                         Enter a new value for the field
                     </Typography>
@@ -83,7 +95,7 @@ const ContactsComponentsUpdateFields = ({ activeField }) => {
                     <Select
                         className="m-b-md"
                         defaultValue="Select"
-                        onChange={handleChange}
+                        onChange={(e) => handleChange(e, "stage")}
                     >
                         <Select.Option value="Comp & Qualify">
                             Comp & Qualify
@@ -117,7 +129,7 @@ const ContactsComponentsUpdateFields = ({ activeField }) => {
         //     break;
         case "status":
             return (
-                <Form.Item name="wetlandsStatus">
+                <Form.Item name="status">
                     <Typography className="m-b-md">
                         Enter a new value for the field
                     </Typography>
@@ -125,14 +137,11 @@ const ContactsComponentsUpdateFields = ({ activeField }) => {
                     <Select
                         className="m-b-md"
                         defaultValue="Select"
-                        onChange={handleChange}
+                        onChange={(e) => handleChange(e, "status")}
                     >
-                        {" "}
-                        <Select placeholder="Status">
-                            <Select.Option value="Open">Open</Select.Option>
-                            <Select.Option value="Won">Won</Select.Option>
-                            <Select.Option value="Lost">Lost</Select.Option>
-                        </Select>
+                        <Select.Option value="Open">Open</Select.Option>
+                        <Select.Option value="Won">Won</Select.Option>
+                        <Select.Option value="Lost">Lost</Select.Option>
                     </Select>
                 </Form.Item>
             );
