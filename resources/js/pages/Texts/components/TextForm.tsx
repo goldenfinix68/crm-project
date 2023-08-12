@@ -22,6 +22,7 @@ import { useMutation } from "react-query";
 import { sendTextMutation } from "../../../api/mutation/useTextMutation";
 import queryClient from "../../../queryClient";
 import ContactContext from "../../ContactView/context";
+import { useLoggedInUser } from "../../../api/query/userQuery";
 interface Props {
     handleSubmit: () => void;
     handleCancel: () => void;
@@ -30,6 +31,7 @@ const TextForm = ({ handleSubmit, handleCancel }: Props) => {
     const [form] = Form.useForm();
     const { contact } = useContext(ContactContext);
     const [error, setError] = useState("");
+    const { user, isLoading } = useLoggedInUser();
 
     const resetFields = () => {
         handleCancel();
@@ -59,7 +61,7 @@ const TextForm = ({ handleSubmit, handleCancel }: Props) => {
             labelWrap
             initialValues={{
                 to: contact.mobile,
-                from: "Outreach (+1 303-952-1461)",
+                from: user.numbers.length ? user.numbers[0] : null,
             }}
             onFinish={onFinish}
             autoComplete="off"
@@ -92,10 +94,11 @@ const TextForm = ({ handleSubmit, handleCancel }: Props) => {
                         ]}
                     >
                         <Select style={{ width: "100%" }}>
-                            <Select.Option value="Outreach (+1 303-952-1461)">
-                                Outreach (+1 303-952-1461)
-                            </Select.Option>
-                            <Select.Option value="task">Default</Select.Option>
+                            {user.numbers?.map((number, index) => (
+                                <Select.Option value={number} key={index}>
+                                    {number}
+                                </Select.Option>
+                            ))}
                         </Select>
                     </Form.Item>
                 </Col>

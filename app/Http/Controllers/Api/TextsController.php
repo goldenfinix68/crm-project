@@ -39,7 +39,6 @@ class TextsController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'contactId' => 'required',
             'from' => 'required',
             'to' => 'required',
             'message' => 'required',
@@ -146,8 +145,6 @@ class TextsController extends Controller
         $text->to = '[' . implode (", ", $recepients) . ']';
         $text->message = $payload['text'];
         $text->telnyxResponse = json_encode($json);
-        $text->contactId = 1;
-        $text->userId = 1;
         $text->type = $payload['type'];
         $text->status = 'received';
         $text->save();

@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use Carbon\Carbon;
 
 use App\Models\User;
+use App\Models\Text;
 
 class Contact extends Model
 {
@@ -97,7 +98,8 @@ class Contact extends Model
 
     public function texts()
     {
-        return $this->hasMany(\App\Models\Text::class, 'contactId', 'id')->orderByDesc('id');
+        $texts = Text::where('to', 'like', '%'.$this->mobile.'%')->orderBy('id', 'desc')->get();
+        return $texts;
     }
 
     public function deals()
@@ -126,7 +128,7 @@ class Contact extends Model
             ];
         });
 
-        $texts = $this->texts->map(function ($data) {
+        $texts = $this->texts()->map(function ($data) {
             $createdAt = Carbon::parse($data->created_at);
             return [
                 'type' => 'text',
