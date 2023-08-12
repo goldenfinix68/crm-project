@@ -14,7 +14,6 @@ class DropContactIdUserIdTexts extends Migration
     public function up()
     {
         Schema::table('texts', function (Blueprint $table) {
-            $table->dropColumn('contactId');
             $table->dropColumn('userId');
         });
     }
@@ -27,7 +26,6 @@ class DropContactIdUserIdTexts extends Migration
     public function down()
     {
         Schema::table('texts', function (Blueprint $table) {
-            $table->string('contactId');
             $table->string('userId');
         });
     }
