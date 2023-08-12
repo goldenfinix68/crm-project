@@ -1,4 +1,4 @@
-import { Card, Button, Form, Input, InputNumber } from "antd";
+import { Card, Button, Form, Input, InputNumber, Select } from "antd";
 import React from "react";
 import { useMutation, useQuery } from "react-query";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -102,6 +102,24 @@ const AddEditUser = () => {
                     ]}
                 >
                     <Input type="email" />
+                </Form.Item>
+                <Form.Item
+                    label="Mobile Numbers"
+                    name="numbers"
+                    rules={[
+                        {
+                            required: true,
+                            message: DEFAULT_REQUIRED_MESSAGE,
+                        },
+                    ]}
+                >
+                    <Select
+                        mode="tags"
+                        placeholder="Enter mobile numbers"
+                        defaultValue={[]}
+                        style={{ width: "100%" }}
+                        options={[]}
+                    />
                 </Form.Item>
 
                 <Form.Item

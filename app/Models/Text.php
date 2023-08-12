@@ -15,15 +15,15 @@ class Text extends Model
     protected $fillable = [
         'from',
         'to',
-        'userId',
-        'contactId',
         'message',
         'type',
+        'telnyxId',
+        'status',
+        'telnyxResponse',
     ];
 
     protected $appends = [
         'sender', 
-        'receiver', 
         'day', 
         'month', 
         'year', 
@@ -37,16 +37,12 @@ class Text extends Model
 
     public function getSenderAttribute()
     {
-        return $this->user->firstName . ' ' . $this->user->lastName;
-    }
-    
-    public function getReceiverAttribute()
-    {
-        $contact = Contact::find($this->contactId);
-        if(!empty($contact)){
-            return $contact->firstName . " " . $contact->lastName;
+        $sender = Contact::where('mobile', $this->from)->first();
+        if(!empty($sender)){
+            return $sender->firstName . ' ' . $sender->lastName;
         }
-        return 'Unknown';
+        
+        return $this->from;
     }
     
     public function getDayAttribute()

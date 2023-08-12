@@ -3,6 +3,7 @@ export type TUser = {
     firstName: string;
     lastName: string;
     email: string;
+    numbers?: string[];
 };
 
 export type TContactType = {
