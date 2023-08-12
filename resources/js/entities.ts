@@ -33,6 +33,7 @@ export type TText = {
     year: string;
     created_at: string;
     time: string;
+    isFromApp: boolean;
 };
 
 export type TDeal = {

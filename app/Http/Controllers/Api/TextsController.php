@@ -61,6 +61,7 @@ class TextsController extends Controller
                 'type'=> 'SMS', 
                 'telnyxId' => $response->id,
                 'status' => 'queued',
+                'isFromApp' => true,
                 'telnyxResponse' => json_encode($response),
             ]));
 

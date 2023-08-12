@@ -78,6 +78,7 @@ class Contact extends Model
 
     protected $appends = [
         'wall',
+        'texts',
     ];
 
 
@@ -110,6 +111,12 @@ class Contact extends Model
     public function updates()
     {
         return $this->hasMany(\App\Models\ContactUpdate::class, 'contactId', 'id');
+    }
+
+    
+    public function getTextsAttribute()
+    {
+        return $this->texts();
     }
 
     public function getWallAttribute()
