@@ -50,7 +50,7 @@ class TextsController extends Controller
             \Telnyx\Telnyx::setApiKey(env('TELNYX_API_KEY'));
 
             $response = \Telnyx\Message::Create([
-                "from" => env('TELNYX_DEFAULT_FROM'), // Your Telnyx number
+                "from" => $request->from, // Your Telnyx number
                 "to" => $request->to,
                 "text" => "Hello, World!",
                 "messaging_profile_id" => env('TELNYX_PROFILE_ID'),
