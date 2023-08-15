@@ -42,4 +42,25 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    protected $appends = [
+        'numbers', 
+    ];
+
+    public function mobileNumbers()
+    {
+        return $this->hasMany(\App\Models\MobileNumber::class, 'userId', 'id');
+        
+    }
+    
+
+    public function getNumbersAttribute()
+    {
+        if(!empty($this->mobileNumbers)){
+            return $this->mobileNumbers->pluck('mobileNumber');
+        }
+        
+        return [];
+    }
 }

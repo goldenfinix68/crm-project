@@ -3,6 +3,7 @@ export type TUser = {
     firstName: string;
     lastName: string;
     email: string;
+    numbers?: string[];
 };
 
 export type TContactType = {
@@ -32,6 +33,7 @@ export type TText = {
     year: string;
     created_at: string;
     time: string;
+    isFromApp: boolean;
 };
 
 export type TDeal = {
