@@ -675,6 +675,57 @@ const DealDetail = () => {
 
         border: "none",
     };
+    const [stagingColor, setStagingColor] = useState({
+        first: "none",
+        second: "none",
+        third: "none",
+        fourth: "none",
+        fifth: "none",
+    });
+    useEffect(() => {
+        if (deals) {
+            if (deals.data.stage == "Comp & Qualify") {
+                setStagingColor({
+                    ...stagingColor,
+                    first: "active",
+                });
+            }
+            if (deals.data.stage == "First Offer Given") {
+                setStagingColor({
+                    ...stagingColor,
+                    first: "done",
+                    second: "active",
+                });
+            }
+            if (deals.data.stage == "In Negotiation") {
+                setStagingColor({
+                    ...stagingColor,
+                    first: "done",
+                    second: "done",
+                    third: "active",
+                });
+            }
+            if (deals.data.stage == "Verbal Offer Accepted") {
+                setStagingColor({
+                    ...stagingColor,
+                    first: "done",
+                    second: "done",
+                    third: "done",
+                    fourth: "active",
+                });
+            }
+            if (deals.data.stage == "Under Contract") {
+                setStagingColor({
+                    ...stagingColor,
+                    first: "done",
+                    second: "done",
+                    third: "done",
+                    fourth: "done",
+                    fifth: "active",
+                });
+            }
+        }
+    }, [deals]);
     const cardForm = () => {
         return (
             <Form form={form} onFinish={(e) => onFinish(e)}>
@@ -1838,12 +1889,7 @@ const DealDetail = () => {
                         <div className="breadcrumb">
                             <a
                                 href="#"
-                                className={
-                                    deals &&
-                                    deals.data.stage == "Comp & Qualify"
-                                        ? "active"
-                                        : "none"
-                                }
+                                className={deals && stagingColor.first}
                                 onClick={() => {
                                     onUpdateStage("Comp & Qualify");
                                 }}
@@ -1856,12 +1902,7 @@ const DealDetail = () => {
                             </a>
                             <a
                                 href="#"
-                                className={
-                                    deals &&
-                                    deals.data.stage == "First Offer Given"
-                                        ? "active"
-                                        : "none"
-                                }
+                                className={deals && stagingColor.second}
                                 onClick={() => {
                                     onUpdateStage("First Offer Given");
                                 }}
@@ -1874,12 +1915,7 @@ const DealDetail = () => {
                             </a>
                             <a
                                 href="#"
-                                className={
-                                    deals &&
-                                    deals.data.stage == "In Negotiation"
-                                        ? "active"
-                                        : "none"
-                                }
+                                className={deals && stagingColor.third}
                                 onClick={() => {
                                     onUpdateStage("In Negotiation");
                                 }}
@@ -1892,12 +1928,7 @@ const DealDetail = () => {
                             </a>
                             <a
                                 href="#"
-                                className={
-                                    deals &&
-                                    deals.data.stage == "Verbal Offer Accepted"
-                                        ? "active"
-                                        : "none"
-                                }
+                                className={deals && stagingColor.fourth}
                                 onClick={() => {
                                     onUpdateStage("Verbal Offer Accepted");
                                 }}
@@ -1910,12 +1941,7 @@ const DealDetail = () => {
                             </a>
                             <a
                                 href="#"
-                                className={
-                                    deals &&
-                                    deals.data.stage == "Under Contract"
-                                        ? "active"
-                                        : "none"
-                                }
+                                className={deals && stagingColor.fifth}
                                 onClick={() => {
                                     onUpdateStage("Under Contract");
                                 }}
