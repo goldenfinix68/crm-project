@@ -288,19 +288,30 @@ const Deal = () => {
                 // onChange={handleTabChange}
             >
                 <Tabs.TabPane tab="FAVORITES" key="tab1">
-                    {isFavorite.length > 0
-                        ? isFavorite.map((item) => {
-                              return (
-                                  <div
-                                      onClick={() => {
-                                          onClickStatus(item);
-                                      }}
-                                  >
-                                      {item}
-                                  </div>
-                              );
-                          })
-                        : "You have no favorties"}
+                    {isFavorite.length > 0 ? (
+                        <Menu
+                            style={{
+                                backgroundColor: "none",
+                                boxShadow: "none",
+                            }}
+                            mode="inline"
+                        >
+                            {isFavorite.map((item, index) => {
+                                return (
+                                    <Menu.Item
+                                        key={index}
+                                        onClick={() => {
+                                            onClickStatus(item);
+                                        }}
+                                    >
+                                        {item}
+                                    </Menu.Item>
+                                );
+                            })}{" "}
+                        </Menu>
+                    ) : (
+                        "You have no favorties"
+                    )}
                 </Tabs.TabPane>
                 <Tabs.TabPane tab="ALL VIEWS" key="tab2">
                     <Menu
