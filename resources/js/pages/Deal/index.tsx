@@ -55,6 +55,8 @@ import Board from "react-trello";
 import { useDealsAll } from "../../api/query/dealQuery";
 import { useMutation, useQueryClient } from "react-query";
 import {
+    useDealAddFavorite,
+    useDealDeleteFavorite,
     useDealMutation,
     useDealMutationDeleteDeal,
     useDealUpdateBoardMutation,
@@ -102,6 +104,37 @@ const Deal = () => {
         title: "",
         status: "All Deals",
     });
+    const [isDropdownVisible, setDropdownVisible] = useState(false);
+    const [isFavorite, setIsFavorite] = useState<string[]>([]);
+
+    const addFavorite = useMutation(useDealAddFavorite, {
+        onSuccess: (res) => {
+            queryClient.invalidateQueries("deals");
+        },
+    });
+    const deleteFavorite = useMutation(useDealDeleteFavorite, {
+        onSuccess: (res) => {
+            queryClient.invalidateQueries("deals");
+        },
+    });
+
+    const handleFavoriteClick = (value) => {
+        console.log("val", value);
+        let isFavoriteVar = [...isFavorite];
+
+        if (!isFavoriteVar.includes(value)) {
+            isFavoriteVar.push(value);
+
+            addFavorite.mutate({ name: value });
+        } else {
+            let index = isFavoriteVar.findIndex((x) => x === value);
+            isFavoriteVar.splice(index, 1);
+
+            deleteFavorite.mutate({ name: value });
+        }
+
+        setIsFavorite(isFavoriteVar);
+    };
     const [showModalAddDealValue, setshowModalAddDealValue] =
         useState<string>("");
     const [showDeleteButton, setShowDeleteButton] = useState(false);
@@ -255,7 +288,19 @@ const Deal = () => {
                 // onChange={handleTabChange}
             >
                 <Tabs.TabPane tab="FAVORITES" key="tab1">
-                    You have no favorties
+                    {isFavorite.length > 0
+                        ? isFavorite.map((item) => {
+                              return (
+                                  <div
+                                      onClick={() => {
+                                          onClickStatus(item);
+                                      }}
+                                  >
+                                      {item}
+                                  </div>
+                              );
+                          })
+                        : "You have no favorties"}
                 </Tabs.TabPane>
                 <Tabs.TabPane tab="ALL VIEWS" key="tab2">
                     <Menu
@@ -265,33 +310,110 @@ const Deal = () => {
                         }}
                         mode="inline"
                     >
-                        <Menu.Item
-                            key="1"
-                            onClick={() => onClickStatus("All Deals")}
-                        >
-                            All Deals
+                        <Menu.Item key="1">
+                            <Space>
+                                <div
+                                    onClick={() => {
+                                        onClickStatus("All Deals");
+                                        setDropdownVisible(true);
+                                    }}
+                                >
+                                    {" "}
+                                    All Deals
+                                </div>
+                                <div
+                                    onClick={() => {
+                                        handleFavoriteClick("All Deals");
+                                    }}
+                                >
+                                    {isFavorite.includes("All Deals") ? (
+                                        <StarFilled />
+                                    ) : (
+                                        <StarOutlined />
+                                    )}
+                                </div>
+                            </Space>
                         </Menu.Item>
-                        <Menu.Item
-                            key="2"
-                            onClick={() => onClickStatus("All Open Deals")}
-                        >
-                            All Open Deals
+                        <Menu.Item key="2">
+                            <Space>
+                                <div
+                                    onClick={() => {
+                                        onClickStatus("All Open Deals");
+                                        setDropdownVisible(true);
+                                    }}
+                                >
+                                    All Open Deals
+                                </div>
+                                <div
+                                    onClick={() => {
+                                        handleFavoriteClick("All Open Deals");
+                                    }}
+                                >
+                                    {isFavorite.includes("All Open Deals") ? (
+                                        <StarFilled />
+                                    ) : (
+                                        <StarOutlined />
+                                    )}
+                                </div>
+                            </Space>
                         </Menu.Item>
-                        <Menu.Item
-                            key="3"
-                            onClick={() =>
-                                onClickStatus("Deals Closing Next Month")
-                            }
-                        >
-                            Deals Closing Next Month
+                        <Menu.Item key="3">
+                            <Space>
+                                <div
+                                    onClick={() => {
+                                        onClickStatus(
+                                            "Deals Closing Next Month"
+                                        );
+                                        setDropdownVisible(true);
+                                    }}
+                                >
+                                    Deals Closing Next Month
+                                </div>
+                                <div
+                                    onClick={() => {
+                                        handleFavoriteClick(
+                                            "Deals Closing Next Month"
+                                        );
+                                    }}
+                                >
+                                    {isFavorite.includes(
+                                        "Deals Closing Next Month"
+                                    ) ? (
+                                        <StarFilled />
+                                    ) : (
+                                        <StarOutlined />
+                                    )}
+                                </div>
+                            </Space>
                         </Menu.Item>
-                        <Menu.Item
-                            key="4"
-                            onClick={() =>
-                                onClickStatus("Deals Closing This Month")
-                            }
-                        >
-                            Deals Closing This Month
+                        <Menu.Item key="4">
+                            <Space>
+                                <div
+                                    onClick={() => {
+                                        onClickStatus(
+                                            "Deals Closing This Month"
+                                        );
+                                        setDropdownVisible(true);
+                                    }}
+                                >
+                                    Deals Closing This Month
+                                </div>
+                                <div
+                                    onClick={() => {
+                                        handleFavoriteClick(
+                                            "Deals Closing This Month"
+                                        );
+                                    }}
+                                >
+                                    {isFavorite.includes(
+                                        "Deals Closing This Month"
+                                    ) ? (
+                                        <StarFilled />
+                                    ) : (
+                                        <StarOutlined />
+                                    )}
+                                </div>
+                            </Space>
                         </Menu.Item>
                         {/* <Menu.Item
                             key="5"
@@ -313,17 +435,51 @@ const Deal = () => {
                         >
                             My Ovderdue Deals
                         </Menu.Item> */}
-                        <Menu.Item
-                            key="8"
-                            onClick={() => onClickStatus("Lost Deals")}
-                        >
-                            Lost Deals
+                        <Menu.Item key="8">
+                            <Space>
+                                <div
+                                    onClick={() => {
+                                        onClickStatus("Lost Deals");
+                                        setDropdownVisible(true);
+                                    }}
+                                >
+                                    Lost Deals
+                                </div>
+                                <div
+                                    onClick={() => {
+                                        handleFavoriteClick("Lost Deals");
+                                    }}
+                                >
+                                    {isFavorite.includes("Lost Deals") ? (
+                                        <StarFilled />
+                                    ) : (
+                                        <StarOutlined />
+                                    )}
+                                </div>
+                            </Space>
                         </Menu.Item>
-                        <Menu.Item
-                            key="9"
-                            onClick={() => onClickStatus("Won Deals")}
-                        >
-                            Won Deals
+                        <Menu.Item key="9">
+                            <Space>
+                                <div
+                                    onClick={() => {
+                                        onClickStatus("Won Deals");
+                                        setDropdownVisible(true);
+                                    }}
+                                >
+                                    Won Deals
+                                </div>
+                                <div
+                                    onClick={() => {
+                                        handleFavoriteClick("Won Deals");
+                                    }}
+                                >
+                                    {isFavorite.includes("Won Deals") ? (
+                                        <StarFilled />
+                                    ) : (
+                                        <StarOutlined />
+                                    )}
+                                </div>
+                            </Space>
                         </Menu.Item>
                     </Menu>
                 </Tabs.TabPane>
@@ -478,7 +634,16 @@ const Deal = () => {
 
     useEffect(() => {
         if (deals) {
-            console.log("deals", deals.sum);
+            if (deals.deal_favorite.length > 0) {
+                let isFavoriteVar: any = [];
+
+                deals.deal_favorite.forEach((element: any) => {
+                    isFavoriteVar.push(element.name);
+                });
+
+                setIsFavorite(isFavoriteVar);
+            }
+
             if (listBoard != "List") {
                 const data: { lanes: Lane[] } = { ...initialBoardData }; // Clone the initial data
 
@@ -746,8 +911,11 @@ const Deal = () => {
                                     </span>
                                     <span style={{ marginRight: 10 }}>
                                         <Dropdown
+                                            visible={isDropdownVisible}
+                                            onVisibleChange={setDropdownVisible}
                                             overlay={activities_type}
                                             placement="bottomLeft"
+                                            trigger={["click"]}
                                         >
                                             <Button>
                                                 <Space>

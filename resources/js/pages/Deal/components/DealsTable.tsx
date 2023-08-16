@@ -114,13 +114,14 @@ const DealsTable = ({
                 onChange={onChange}
                 rowKey={(record) => record.id}
                 rowSelection={{ ...rowSelection }}
-                scroll={{ x: "max-content" }}
+                scroll={{ x: 1300 }}
             >
                 <Table.Column
                     title="Title"
                     dataIndex="title"
                     className="col-status"
-                    width={300}
+                    width={400}
+                    sorter={(a, b) => a.title.length - b.title.length}
                     render={(text: string, record: any) => {
                         return (
                             <>
@@ -135,7 +136,7 @@ const DealsTable = ({
                             </>
                         );
                     }}
-                    fixed
+                    fixed={"left"}
                 />
 
                 <Table.Column title="Name" dataIndex="contact_name" />
