@@ -210,6 +210,10 @@ const ModalAddActivity = ({
             changedFields[0]?.name[0] === "start_date" ||
             changedFields[0]?.name[0] === "start_time"
         ) {
+            let start_time = form.getFieldsValue().start_time;
+            let end_time = form.getFieldsValue().end_time;
+            let end_date = form.getFieldsValue().end_date;
+
             let formTime: any = form.getFieldsValue().start_time
                 ? ` ${dayjs(form.getFieldsValue().start_time).format("HH:mm")}`
                 : "";
@@ -223,22 +227,39 @@ const ModalAddActivity = ({
                 ? dayjs(form.getFieldsValue().start_date).format("YYYY-MM-DD")
                 : "";
 
-            let dataDate: any =
-                changedFields[0]?.value &&
-                changedFields[0]?.name[0] === "start_date"
-                    ? dayjs(changedFields[0]?.value).format("YYYY-MM-DD")
-                    : formDate;
-
             data[0] = {
                 ...data[0],
-                start: `${formDate}${dataTime}`,
+                start:
+                    start_time && end_time
+                        ? `${formDate}${dataTime}`
+                        : formDate,
             };
+
+            if (end_date) {
+                let endTime = end_time
+                    ? ` ${dayjs(end_time).format("HH:mm")}`
+                    : formTime;
+
+                end_date = end_date ? dayjs(end_date).format("YYYY-MM-DD") : "";
+                data[0] = {
+                    ...data[0],
+                    end:
+                        start_time && end_time
+                            ? end_time
+                                ? `${end_date}${endTime}`
+                                : end_time
+                            : end_date,
+                };
+            }
         }
 
         if (
             changedFields[0]?.name[0] === "end_date" ||
             changedFields[0]?.name[0] === "end_time"
         ) {
+            let start_time = form.getFieldsValue().start_time;
+            let end_time = form.getFieldsValue().start_time;
+            let start_date = form.getFieldsValue().start_date;
             let formTime: any = form.getFieldsValue().end_time
                 ? ` ${dayjs(form.getFieldsValue().end_time).format("HH:mm")}`
                 : "";
@@ -252,19 +273,78 @@ const ModalAddActivity = ({
                 ? dayjs(form.getFieldsValue().end_date).format("YYYY-MM-DD")
                 : "";
 
-            let dataDate: any =
-                changedFields[0]?.value &&
-                changedFields[0]?.name[0] === "end_date"
-                    ? dayjs(changedFields[0]?.value).format("YYYY-MM-DD")
-                    : formDate;
-
             data[0] = {
                 ...data[0],
-                end: formDate ? `${formDate}${dataTime}` : dataTime,
+                end:
+                    start_time && end_time
+                        ? `${formDate}${dataTime}`
+                        : formDate,
             };
+
+            if (start_date) {
+                let startTime = start_time
+                    ? ` ${dayjs(start_time).format("HH:mm")}`
+                    : formTime;
+
+                start_date = start_date
+                    ? dayjs(start_date).format("YYYY-MM-DD")
+                    : "";
+                data[0] = {
+                    ...data[0],
+                    start:
+                        start_time && end_time
+                            ? start_time
+                                ? `${start_date}${startTime}`
+                                : start_time
+                            : start_date,
+                };
+            }
         }
 
         setEventCalendarData(data);
+    };
+
+    const handleOnEditCalendar = (info: any) => {
+        if (info.event.allDay) {
+            form.setFieldsValue({
+                start_date: dayjs(
+                    moment(info.event.start).format("YYYY/MM/DD"),
+                    "YYYY/MM/DD"
+                ),
+                start_time: undefined,
+                end_time: undefined,
+                end_date: info.event.end
+                    ? dayjs(
+                          moment(info.event.end).format("YYYY/MM/DD"),
+                          "YYYY/MM/DD"
+                      )
+                    : dayjs(
+                          moment(info.event.start).format("YYYY/MM/DD"),
+                          "YYYY/MM/DD"
+                      ),
+            });
+        } else {
+            form.setFieldsValue({
+                start_date: dayjs(
+                    moment(info.event.start).format("YYYY/MM/DD"),
+                    "YYYY/MM/DD"
+                ),
+                start_time: dayjs(info.event.start),
+                end_time: info.event.end
+                    ? dayjs(info.event.end)
+                    : dayjs(info.event.start).add(1, "hour"),
+                end_date: info.event.end
+                    ? dayjs(
+                          moment(info.event.end).format("YYYY/MM/DD"),
+                          "YYYY/MM/DD"
+                      )
+                    : dayjs(
+                          moment(info.event.start).format("YYYY/MM/DD"),
+                          "YYYY/MM/DD"
+                      ),
+            });
+        }
+        console.log("eventDrop", info.event);
     };
 
     return (
@@ -349,7 +429,7 @@ const ModalAddActivity = ({
                         "YYYY/MM/DD"
                     ),
                     end_date: dayjs(
-                        moment().format("YYYY/MM/DD"),
+                        moment().format("YYYY/MM/DD HH:mm"),
                         "YYYY/MM/DD"
                     ),
                     owner_id: dataUsers?.user_data?.id
@@ -800,21 +880,13 @@ const ModalAddActivity = ({
                                         : []
                                 }
                                 eventDrop={(info) => {
-                                    // Called when an event is dropped to a new date/time
-                                    console.log(
-                                        "Event dropped to:",
-                                        info.event.start
-                                    );
+                                    handleOnEditCalendar(info);
                                 }}
                                 eventResize={(info) => {
-                                    // Called when an event's end time is changed by resizing
-                                    console.log(
-                                        "Event resized to:",
-                                        info.event.start,
-                                        info.event.end
-                                    );
+                                    handleOnEditCalendar(info);
                                 }}
-
+                                droppable={true}
+                                editable={true}
                                 // eventContent={<></>}
                                 // slotDuration={"00:30:00"}
                             />
