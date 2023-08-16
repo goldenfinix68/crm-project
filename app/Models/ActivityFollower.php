@@ -10,4 +10,9 @@ class ActivityFollower extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function activity()
+    {
+        return $this->belongsTo('\App\Models\Activity', 'id', 'activity_id');
+    }
 }

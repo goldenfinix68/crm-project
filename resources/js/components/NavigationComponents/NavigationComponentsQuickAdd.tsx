@@ -135,10 +135,10 @@ const NavigationComponentsQuickAdd: React.FC = () => {
                 <FontAwesomeIcon icon={faPlus} className="header-btn-plus" />
             </Dropdown>
 
-            <ContactsComponentsAddContacts
+            {/* <ContactsComponentsAddContacts
                 isModalOpen={isModalOpen}
                 setIsModalOpen={setIsModalOpen}
-            />
+            /> */}
 
             <ModalAddActivity
                 isModalOpenAdd={isModalOpenAdd}
@@ -146,11 +146,11 @@ const NavigationComponentsQuickAdd: React.FC = () => {
                 handleCancelAdd={handleCancelAdd}
             />
 
-            <ModalAddDeal
+            {/* <ModalAddDeal
                 isModalOpenAdd={isModalDealOpenAdd}
                 handleOkAdd={handleOkAdd}
                 handleCancelAdd={handleCancelAdd}
-            />
+            /> */}
         </>
     );
 };

@@ -25,19 +25,23 @@ export const useUsersList = () => {
     };
 };
 
-export const activitiList = () => {
-    const { data, isLoading, isError, refetch, isFetching } = useQuery<
-        TActivities[]
-    >("activities", async () => {
-        const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
-        const response = await axios.get(`/api/activities`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        });
+export const activitiList = (dataFilter: any) => {
+    const { data, isLoading, isError, refetch, isFetching } = useQuery(
+        "activities",
+        async () => {
+            const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+            const response = await axios.get(
+                `/api/activities?${new URLSearchParams(dataFilter)}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            );
 
-        return response.data.data;
-    });
+            return response.data;
+        }
+    );
 
     return {
         dataSource: data,
