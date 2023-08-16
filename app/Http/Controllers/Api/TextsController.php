@@ -140,7 +140,7 @@ class TextsController extends Controller
             }
         }
 
-        $text = new Text;
+        $text = new Text();
         $text->telnyxId = $json['data']['id'];
         $text->from = $payload['from']['phone_number'];
         $text->to = '[' . implode (", ", $recepients) . ']';

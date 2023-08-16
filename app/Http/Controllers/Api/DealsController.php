@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Deal;
 use App\Models\DealNote;
 use App\Models\DealFile;
+use App\Models\DealFavorite;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -88,14 +89,17 @@ class DealsController extends Controller
         $uc = Deal::where('stage', 'Under Contract')->sum('value');
         $count = Deal::count();
         $sum_upp = Deal::sum('value');
-        return response()->json(['success' => true, 'data' => $data, 'sum' => [
+
+        $deal_favorite = DealFavorite::where('user_id', auth()->user()->id)->get();
+        return response()->json(['success' => true, 'data' => $data, 'deal_favorite' =>   $deal_favorite, 'sum' => [
             'cq' => $cq,
             'fg' => $fg,
             'in' => $in,
             'voa' => $voa,
             'uc' => $uc,
             'count' => $count,
-            'sum_upp' => $sum_upp
+            'sum_upp' => $sum_upp,
+
         ]], 200);
     }
 
@@ -366,6 +370,19 @@ class DealsController extends Controller
             $val->save();
         }
 
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
+    public function favorite(Request $request)
+    {
+        $data = DealFavorite::updateOrCreate(
+            ['user_id' => auth()->user()->id, 'name' => $request->name],
+            ['user_id' => auth()->user()->id, 'name' => $request->name]
+        );
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
+    public function del_favorite(Request $request)
+    {
+        $data = DealFavorite::where('user_id', auth()->user()->id)->where('name', $request->name)->delete();
         return response()->json(['success' => true, 'data' => $data], 200);
     }
 }

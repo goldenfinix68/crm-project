@@ -242,3 +242,37 @@ export const useDealMutationUpdateMituli = async (items: any) => {
     }
     return data;
 };
+
+export const useDealAddFavorite = async (items: any) => {
+    const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+    const response = await fetch("/api/deals/favorite", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(items),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to add deal");
+    }
+    return data;
+};
+
+export const useDealDeleteFavorite = async (items: any) => {
+    const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+    const response = await fetch("/api/deals/del_favorite", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(items),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to add deal");
+    }
+    return data;
+};
