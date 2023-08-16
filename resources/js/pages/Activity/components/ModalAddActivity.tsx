@@ -130,9 +130,19 @@ const ModalAddActivity = ({
             addActivity.mutate(values);
             handleCancelAdd();
             handleReset();
+
+            notification.success({
+                message: "Success",
+                description: "Successfully created",
+            });
         } else if (type === "Save-New") {
             addActivity.mutate(values);
             handleReset();
+
+            notification.success({
+                message: "Success",
+                description: "Successfully created",
+            });
         } else if (type === "Cancel") {
             handleCancelAdd();
             handleReset();

@@ -23,6 +23,7 @@ import {
     Tabs,
     TimePicker,
     Typography,
+    notification,
 } from "antd";
 import type { TabsProps, SelectProps } from "antd";
 import validateRules from "../../../providers/validateRules";
@@ -33,7 +34,7 @@ import {
     faUsers,
     faVideo,
 } from "@fortawesome/free-solid-svg-icons";
-
+import { useMutation, useQueryClient } from "react-query";
 import moment from "moment";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -42,6 +43,7 @@ import {
     useDealsList,
     useUsersList,
 } from "../../../api/query/activityQuery";
+import { addActivityMutation } from "../../../api/mutation/useActivityMutation";
 dayjs.extend(customParseFormat);
 
 interface UpdateProps {
@@ -101,6 +103,7 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
     const { dataContacts, isLoadingContacts } = useContactsList();
     const { dataDeals, isLoadingDeals } = useDealsList();
 
+    const queryClient = useQueryClient();
     const [form] = Form.useForm();
     const [calendarOptions, setCalendarOptions] = useState(false);
     const onChange = (key: string) => {
@@ -660,8 +663,40 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
     };
 
     const handleFinish = (values: any) => {
+        values = {
+            ...values,
+            start_date: values.start_date
+                ? dayjs(values.start_date).format("YYYY/MM/DD")
+                : undefined,
+            end_date: values.end_date
+                ? dayjs(values.end_date).format("YYYY/MM/DD")
+                : undefined,
+            start_time: values.start_time
+                ? dayjs(values.start_time).format("HH:mm")
+                : undefined,
+            end_time: values.end_time
+                ? dayjs(values.end_time).format("HH:mm")
+                : undefined,
+            id: drawerUpdateData?.id,
+        };
+        addActivity.mutate(values);
+        // console.log("handleFinish", values);
         setDrawerUpdateOpen(false);
+
+        notification.success({
+            message: "Success",
+            description: "Successfully created",
+        });
     };
+
+    const addActivity = useMutation(addActivityMutation, {
+        onSuccess: (res) => {
+            console.log("success");
+            queryClient.invalidateQueries("activities");
+            //queryClient.invalidateQueries("contactTypesAll");
+            // form.resetFields();
+        },
+    });
 
     return (
         <>

@@ -15,9 +15,5 @@ export const addActivityMutation = async (contact: TActivities) => {
     if (!response.ok) {
         throw new Error(data.message || "Failed to add contact type");
     }
-    notification.success({
-        message: "Success",
-        description: "Successfully created",
-    });
     return data;
 };
