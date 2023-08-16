@@ -20,6 +20,7 @@ class Text extends Model
         'telnyxId',
         'status',
         'telnyxResponse',
+        'userId',
     ];
 
     protected $appends = [
