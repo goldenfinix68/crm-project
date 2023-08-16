@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\User;
-use App\Models\MobileNumber;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class UsersController extends Controller
+class MobileNumbersController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +14,7 @@ class UsersController extends Controller
      */
     public function index()
     {
-        return User::all();
+        //
     }
 
     /**
@@ -37,36 +35,7 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        if(empty($request->id)){
-            $user = new User();
-        }
-        else{
-            $user = User::find($request->id);
-        }
-        $user->firstName = $request->firstName;
-        $user->lastName = $request->lastName;
-        $user->email = $request->email;
-        $user->password = bcrypt($request->password);
-
-        $user->save();
-
-        foreach($request->numbers as $number){
-            $isExisting = MobileNumber::where('mobileNumber', $number)->where('userId', $user->id)->first();
-            if(empty($isExisting)){
-                $newMobile = new MobileNumber();
-                $newMobile->userId = $user->id;               
-                $newMobile->mobileNumber = $number;
-                $newMobile->save();
-            }
-        }
-        $user->mobileNumbers()->whereNotIn('mobileNumber', $request->numbers)->delete();
-
-        if(empty($request->id)){
-            $user->markEmailAsVerified();
-        }
-
-        
-        return response()->json($user, 200);
+        //
     }
 
     /**
@@ -77,7 +46,7 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        return User::find($id);
+        //
     }
 
     /**

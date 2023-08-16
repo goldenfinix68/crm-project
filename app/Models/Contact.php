@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use Carbon\Carbon;
 
 use App\Models\User;
+use App\Models\Text;
 
 class Contact extends Model
 {
@@ -77,6 +78,7 @@ class Contact extends Model
 
     protected $appends = [
         'wall',
+        'texts',
     ];
 
 
@@ -97,7 +99,8 @@ class Contact extends Model
 
     public function texts()
     {
-        return $this->hasMany(\App\Models\Text::class, 'contactId', 'id')->orderByDesc('id');
+        $texts = Text::where('to', 'like', '%'.$this->mobile.'%')->orderBy('id', 'desc')->get();
+        return $texts;
     }
 
     public function deals()
@@ -108,6 +111,12 @@ class Contact extends Model
     public function updates()
     {
         return $this->hasMany(\App\Models\ContactUpdate::class, 'contactId', 'id');
+    }
+
+    
+    public function getTextsAttribute()
+    {
+        return $this->texts();
     }
 
     public function getWallAttribute()
@@ -126,7 +135,7 @@ class Contact extends Model
             ];
         });
 
-        $texts = $this->texts->map(function ($data) {
+        $texts = $this->texts()->map(function ($data) {
             $createdAt = Carbon::parse($data->created_at);
             return [
                 'type' => 'text',

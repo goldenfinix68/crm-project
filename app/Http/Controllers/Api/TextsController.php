@@ -39,17 +39,45 @@ class TextsController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'contactId' => 'required',
             'from' => 'required',
             'to' => 'required',
             'message' => 'required',
         ]);
         
         $userId = Auth::id();
+
+        try {
+            \Telnyx\Telnyx::setApiKey(env('TELNYX_API_KEY'));
+
+            $response = \Telnyx\Message::Create([
+                "from" => $request->from, // Your Telnyx number
+                "to" => $request->to,
+                "text" => "Hello, World!",
+                "messaging_profile_id" => env('TELNYX_PROFILE_ID'),
+            ]);
+            
+            $text = Text::create(array_merge($request->all(), [
+                'userId' => $userId, 
+                'type'=> 'SMS', 
+                'telnyxId' => $response->id,
+                'status' => 'queued',
+                'isFromApp' => true,
+                'telnyxResponse' => json_encode($response),
+            ]));
+
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 400);
+            // Handle any errors here
+        }
         
-        $text = Text::create(array_merge($request->all(), ['userId' => $userId, 'type'=> 'sent']));
-        
-        return response()->json($text, 200);
+        return response()->json([
+            'success' => true,
+            'message' => "Text sent"
+        ], 200);
     }
 
     /**
@@ -95,5 +123,31 @@ class TextsController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function textReceived(Request $request)
+    {
+        \Log::info('INCOMING TEXT SUCCESS');
+        $json = json_decode(file_get_contents("php://input"), true);
+        \Log::info($json);
+
+        $payload = $json['data']['payload'];
+
+        $recepients = array();
+        if(!empty($payload['to'])){
+            foreach($payload['to'] as $to){
+                $to[] = $to['phone_number'];
+            }
+        }
+
+        $text = new Text;
+        $text->telnyxId = $json['data']['id'];
+        $text->from = $payload['from']['phone_number'];
+        $text->to = '[' . implode (", ", $recepients) . ']';
+        $text->message = $payload['text'];
+        $text->telnyxResponse = json_encode($json);
+        $text->type = $payload['type'];
+        $text->status = 'received';
+        $text->save();
     }
 }

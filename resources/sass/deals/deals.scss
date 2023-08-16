@@ -237,15 +237,28 @@ $base: 15px;
     font-weight: bold;
 }
 
-.breadcrumb a.active,
-.breadcrumb a:hover {
+.breadcrumb a.none:hover,
+.breadcrumb a.none:hover:after {
+    background-color: #d8d3d3;
+}
+
+.breadcrumb a.active {
     background: #1677ff;
     color: white;
 }
 
-.breadcrumb a.active:after,
-.breadcrumb a:hover:after {
+.breadcrumb a.active:after {
     background: #1677ff;
+    color: white;
+}
+
+.breadcrumb a.done {
+    background: #09b749;
+    color: white;
+}
+
+.breadcrumb a.done:after {
+    background: #09b749;
     color: white;
 }
 
