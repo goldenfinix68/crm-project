@@ -342,7 +342,7 @@
         }
 
         .ant-modal-body {
-            padding: 14px 20px 20px;
+            padding: 14px 16px 20px;
 
             .columns-list {
                 // border-right: 1px solid var(--fc-border-color);
@@ -379,6 +379,17 @@
 
                 .ant-list .ant-list-item {
                     padding: 3px 0 !important;
+                }
+            }
+
+            .custom-field-btn {
+                position: absolute;
+                margin-top: -64px;
+                right: 38px;
+                color: #fff;
+
+                span {
+                    text-decoration: underline;
                 }
             }
         }
@@ -434,6 +445,97 @@
 
         .ant-card {
             background: #f4f5f7 !important;
+        }
+    }
+}
+
+// modal manage fields
+.manage-column-field {
+    width: 580px;
+    top: 70px;
+
+    .ant-modal-close {
+        margin-top: -3px;
+        background: #0747a6;
+        border: 0;
+        width: 22px;
+        height: 22px;
+        font-size: 19px;
+
+        .ant-modal-close-icon {
+            font-size: 10px;
+            line-height: 10px;
+            color: #fff;
+            right: 0;
+            width: 22px;
+            height: 22px;
+            top: 1px;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
+    .ant-modal-close:hover {
+        background: #0747a6;
+    }
+
+    .ant-modal-content {
+        border-radius: 0px;
+        padding: 0;
+
+        .ant-modal-header {
+            background: #1f62ff;
+            border-radius: 0;
+            padding: 15px 17px;
+            border-bottom: 0;
+            height: 52px;
+
+            .ant-modal-title {
+                margin-top: -2px;
+
+                .ant-typography {
+                    color: white;
+                    font-weight: 400;
+                    font-size: 16px;
+                }
+            }
+        }
+
+        .ant-modal-body {
+            padding: 14px 16px 20px;
+        }
+
+        .ant-modal-footer {
+            border-top: 1px solid #dfe1e6;
+            padding: 15px;
+
+            .footer-space {
+                display: flex;
+                justify-content: space-between;
+            }
+        }
+    }
+}
+
+.field-list {
+    border-radius: 0 !important;
+
+    .ant-list-items {
+        max-height: 476px;
+        overflow: auto;
+
+        .ant-list-item {
+            padding: 10px 10px !important;
+        }
+
+        .ant-list-item:hover {
+            background: #1f62ff;
+
+            .ant-typography {
+                color: #fff;
+            }
         }
     }
 }
