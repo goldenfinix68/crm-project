@@ -49,9 +49,11 @@ import LoadingComponent from "./components/LoadingComponent";
 import DealDetail from "./pages/Deal/DealDetail";
 import Texts from "./pages/Texts/index";
 import MergeContacts from "./pages/PageContacts/MergeContacts";
+import ForgotPassword from "./pages/ForgotPassword";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isDialer = window.location.pathname === "/dialer";
+    const isForgotPassword = window.location.pathname === "/forgot-password";
 
     return (
         <Router>
@@ -62,6 +64,13 @@ const App: React.FC = () => {
             ) : isDialer ? (
                 <Routes>
                     <Route path="/dialer" element={<Dialer />} />
+                </Routes>
+            ) : isForgotPassword ? (
+                <Routes>
+                    <Route
+                        path="/forgot-password"
+                        element={<ForgotPassword />}
+                    />
                 </Routes>
             ) : (
                 <SideMenu>
