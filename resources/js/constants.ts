@@ -32,109 +32,109 @@ export const FIELD_TYPE_LIST = [
         label: "Text",
         type: "Text",
         description: "The text fields can store up to 255 characters.",
-        icon: "",
+        icon: "text",
     },
     {
         label: "Text Area",
         type: "Text Area",
         description:
             "This field lets you store much bigger texts than text fields. Such fields are not visible on reports or grids.",
-        icon: "",
+        icon: "text-area",
     },
     {
         label: "Integer",
-        type: "Number",
+        type: "Integer",
         description:
             "The integer field can have numeric values without any decimal points.",
-        icon: "",
+        icon: "integer",
     },
     {
         label: "Decimal",
         type: "Decimal",
         description:
             "The decimal field can have numeric values with two decimal points.",
-        icon: "",
+        icon: "decimal",
     },
     {
         label: "Date",
         type: "Date",
         description:
             "The field lets you select date input using the calendar component.",
-        icon: "",
+        icon: "date",
     },
     {
         label: "Email",
         type: "Email",
         description: "The field lets you enter a valid email address..",
-        icon: "",
+        icon: "email",
     },
     {
         label: "Phone",
         type: "Phone",
         description: "The field lets you enter a phone or mobile number.",
-        icon: "",
+        icon: "phone",
     },
     {
         label: "Select",
         type: "Select",
         description:
             "The field lets you define a list of options that will appear in the dropdown. You can select a single option from the list.",
-        icon: "",
+        icon: "select",
     },
     {
         label: "Multi Select",
         type: "Multi Select",
         description:
             "The field lets you define a list of options that will appear in the dropdown. You can select multiple options from the list.",
-        icon: "",
+        icon: "multi-select",
     },
     {
         label: "Contact Lookup",
         type: "Contact Lookup",
         description:
             "The field lets you associate the contact record with your module.",
-        icon: "",
+        icon: "contact-lookup",
     },
     {
         label: "User Lookup",
         type: "User Lookup",
         description:
             "The field lets you associate the user record with your module.",
-        icon: "",
+        icon: "user-lookup",
     },
     {
         label: "URL",
         type: "URL",
         description:
             "This field lets you enter a website or page URL, which appears as a clickable link.",
-        icon: "",
+        icon: "url",
     },
     {
         label: "Big Integer",
         type: "Big Integer",
         description:
             "The big integer field can have numeric values without any decimal points.  Big Integer can go up to 9223372036854775807.",
-        icon: "",
+        icon: "big-integer",
     },
     {
         label: "Percentage",
         type: "Percentage",
         description:
             "The field can have numeric values that appear with a % sign during display.",
-        icon: "",
+        icon: "percentage",
     },
     {
         label: "Boolean",
         type: "Boolean",
         description:
             "The field lets you create a single value (true/false) option with a toggle operation.",
-        icon: "",
+        icon: "boolean",
     },
     {
         label: "Currency",
         type: "Currency",
         description:
             "The field lets you create a numeric value with decimals that appears with the organization's currency symbol during display.",
-        icon: "",
+        icon: "currency",
     },
 ];

@@ -435,7 +435,7 @@
   border-radius: 0 !important;
 }
 .field-list .ant-list-items {
-  max-height: 476px;
+  max-height: 346px;
   overflow: auto;
 }
 .field-list .ant-list-items .ant-list-item {
@@ -446,4 +446,12 @@
 }
 .field-list .ant-list-items .ant-list-item:hover .ant-typography {
   color: #fff;
+}
+
+.text:before {
+  content: "\ea79";
+}
+
+.text-area:before {
+  content: "\ea82";
 }/*# sourceMappingURL=activity.css.map */

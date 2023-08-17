@@ -523,7 +523,7 @@
     border-radius: 0 !important;
 
     .ant-list-items {
-        max-height: 476px;
+        max-height: 346px;
         overflow: auto;
 
         .ant-list-item {
@@ -538,4 +538,13 @@
             }
         }
     }
+}
+
+// icons
+.text:before {
+    content: "\ea79";
+}
+
+.text-area:before {
+    content: "\ea82";
 }

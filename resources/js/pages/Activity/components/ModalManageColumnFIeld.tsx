@@ -101,6 +101,11 @@ const FieldTypeListComponent: React.FC<FieldTypeListComponentProps> = (
                 dataSource={fieldTypeList}
                 renderItem={(item: any) => (
                     <List.Item>
+                        {/* <Row gutter={12} className="w-100">
+                            <Col span={2}>
+                                <span className={item.icon} />
+                            </Col> */}
+                        {/* <Col span={22}> */}
                         <Space direction="vertical" size={0}>
                             <Typography.Text strong>
                                 {item.label}
@@ -109,6 +114,8 @@ const FieldTypeListComponent: React.FC<FieldTypeListComponentProps> = (
                                 {item.description}
                             </Typography.Text>
                         </Space>
+                        {/* </Col>
+                        </Row> */}
                     </List.Item>
                 )}
             />
