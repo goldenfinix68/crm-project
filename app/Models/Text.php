@@ -21,6 +21,7 @@ class Text extends Model
         'status',
         'telnyxResponse',
         'userId',
+        'isFromApp',
     ];
 
     protected $appends = [
