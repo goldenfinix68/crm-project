@@ -30,6 +30,7 @@ import {
 import { CloseOutlined, HolderOutlined } from "@ant-design/icons";
 import { json } from "react-router-dom";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
+import { COLUMN_LIST } from "../../../constants";
 
 interface DragEndResult {
     source: DraggableLocation;
@@ -47,6 +48,7 @@ interface ModalManageColumnProps {
     activitiesSelectColumn: [];
     setActivitiesSelectColumn: any;
     localStorageName: string;
+    handleOpenManageColumnFieldOpen: any;
 }
 
 const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
@@ -55,6 +57,7 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
     activitiesSelectColumn,
     setActivitiesSelectColumn,
     localStorageName,
+    handleOpenManageColumnFieldOpen,
 }) => {
     const [currentTabs, setCurrentTabs] = useState("active");
 
@@ -166,33 +169,7 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
         });
     };
 
-    const columnsList = [
-        "Id",
-        "Title",
-        "Duration",
-        "Owner",
-        "Availability",
-        "Start Date",
-        "Location",
-        "Type",
-        "Video Conferencing",
-        "Title (Deal)",
-        "Name (Contact)",
-        "Tags",
-        "End Date",
-        "Created By",
-        "Completed Date",
-        "Last Modified By",
-        "Created At",
-        "Last Note Added At",
-        "Last Modified Date",
-        "Last Note Added",
-        "Last Note Added By",
-        "Created Longitude",
-        "Created Latitude",
-        "Created Address",
-    ];
-    const [checkboxList, setCheckboxList] = useState(columnsList);
+    const [checkboxList, setCheckboxList] = useState(COLUMN_LIST);
 
     const handleCheckCheckboxList = (value: string) => {
         let checkList = checkboxList.filter((item) => item === value);
@@ -201,21 +178,21 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
 
     const onSeachColumns = (value: string) => {
         if (value) {
-            let filteredColumns = checkboxList.filter((str) =>
+            let filteredColumns = COLUMN_LIST.filter((str) =>
                 str.toLowerCase().includes(value.toLowerCase())
             );
             setCheckboxList(filteredColumns);
         } else {
-            setCheckboxList(columnsList);
+            setCheckboxList(COLUMN_LIST);
         }
     };
 
     return (
         <Modal
-            className="modal-activity-manage-column"
             // open={true}
-            open={isModalManageColumnOpen}
             // onOk={handleOkAdd}
+            className="modal-activity-manage-column"
+            open={isModalManageColumnOpen}
             onCancel={() => {
                 handleCancel();
             }}
@@ -257,6 +234,13 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
                 </Space>
             }
         >
+            <Button
+                className="custom-field-btn"
+                type="link"
+                onClick={() => handleOpenManageColumnFieldOpen()}
+            >
+                Add Custom Field
+            </Button>
             <Row gutter={12} style={{ maxHeight: 645 }}>
                 <Col span={12} className="columns-list">
                     <Space direction="vertical" size={15} className="w-100">
@@ -878,6 +862,9 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
                                     type="link"
                                     onClick={() => {
                                         onChangeCheckbox(item.title, false);
+                                    }}
+                                    style={{
+                                        width: 32,
                                     }}
                                 >
                                     <CloseOutlined />
