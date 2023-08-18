@@ -52,7 +52,7 @@ class TextsController extends Controller
             $response = \Telnyx\Message::Create([
                 "from" => $request->from, // Your Telnyx number
                 "to" => $request->to,
-                "text" => "Hello, World!",
+                "text" => $request->message,
                 "messaging_profile_id" => env('TELNYX_PROFILE_ID'),
             ]);
             
