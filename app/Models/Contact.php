@@ -99,7 +99,7 @@ class Contact extends Model
 
     public function texts()
     {
-        $texts = Text::where('to', 'like', '%'.$this->mobile.'%')->orderBy('id', 'desc')->get();
+        $texts = Text::where('to', 'like', '%'.$this->mobile.'%')->orWhere('from', 'like', '%'.$this->mobile.'%')->orderBy('id', 'desc')->get();
         return $texts;
     }
 

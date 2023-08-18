@@ -145,34 +145,36 @@ const TextContent = ({
                                     />
                                 ))}
                         </div>
-                    </div>
-                    <div
-                        style={{
-                            position: "sticky",
-                            bottom: 0,
-                            left: 0,
-                            width: "100%",
-                            backgroundColor: "white",
-                            padding: "10px",
-                        }}
-                    >
-                        {isFocused ? (
-                            <TextForm
-                                handleSubmit={() => {
-                                    queryClient.invalidateQueries("getContact");
-                                    setIsFocused(false);
-                                }}
-                                handleCancel={() => {
-                                    setIsFocused(false);
-                                }}
-                            />
-                        ) : (
-                            <Input.TextArea
-                                rows={2}
-                                placeholder="Type here ..."
-                                onClick={() => setIsFocused(true)}
-                            ></Input.TextArea>
-                        )}
+                        <div
+                            style={{
+                                position: "sticky",
+                                bottom: 0,
+                                left: 0,
+                                width: "100%",
+                                backgroundColor: "white",
+                                padding: "10px",
+                            }}
+                        >
+                            {isFocused ? (
+                                <TextForm
+                                    handleSubmit={() => {
+                                        queryClient.invalidateQueries(
+                                            "getContact"
+                                        );
+                                        setIsFocused(false);
+                                    }}
+                                    handleCancel={() => {
+                                        setIsFocused(false);
+                                    }}
+                                />
+                            ) : (
+                                <Input.TextArea
+                                    rows={2}
+                                    placeholder="Type here ..."
+                                    onClick={() => setIsFocused(true)}
+                                ></Input.TextArea>
+                            )}
+                        </div>
                     </div>
                 </Col>
                 <Col span={6} style={{ height: "85vh", overflowY: "auto" }}>
