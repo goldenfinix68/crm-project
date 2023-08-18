@@ -126,7 +126,39 @@ const MergeContacts = () => {
     const receivedData = location.state?.data;
 
     useEffect(() => {
-        console.log(" receivedData", receivedData);
+        if (receivedData.length > 0) {
+            const title = Object.keys(receivedData[0]);
+
+            let new_data = {};
+
+            new_data = { title: title };
+
+            receivedData.forEach((item, index) => {
+                let temp_array = Object.values(item);
+                let key_element = "contact_" + index;
+
+                new_data = { ...new_data, [key_element]: temp_array };
+            });
+
+            const keys = Object.keys(new_data);
+            const result: Object[] = [];
+
+            for (let i = 0; i < title.length; i++) {
+                let newObj = {};
+
+                keys.forEach((key) => {
+                    const dataForKey = new_data[key];
+                    if (Array.isArray(dataForKey) && dataForKey.length > i) {
+                        newObj = { ...newObj, [key]: dataForKey[i] };
+                    }
+                });
+                result.push(newObj);
+            }
+            setTableData(result);
+
+            console.log(" title", result);
+            generateCol(result);
+        }
     }, [receivedData]);
 
     useEffect(() => {
@@ -134,126 +166,97 @@ const MergeContacts = () => {
         refetch();
     }, [filter]);
 
-    useEffect(() => {
-        if (receivedData) {
-            // let dataSource = [...contacts];
+    // useEffect(() => {
+    //     if (receivedData) {
+    //         // let dataSource = [...contacts];
 
-            // const newdataSource: { [key: string]: any }[] = [];
+    //         // const newdataSource: { [key: string]: any }[] = [];
 
-            // dataSource.forEach((item) => {
-            //     const columnName = item.firstName + " " + item.lastName;
-            //     const itemData = Object.values(item);
+    //         // dataSource.forEach((item) => {
+    //         //     const columnName = item.firstName + " " + item.lastName;
+    //         //     const itemData = Object.values(item);
 
-            //     const newItem = {
-            //         title: Object.keys(item),
-            //         [columnName]: itemData,
-            //     };
+    //         //     const newItem = {
+    //         //         title: Object.keys(item),
+    //         //         [columnName]: itemData,
+    //         //     };
 
-            //     newdataSource.push(newItem);
-            // });
-            // // let newdataSource = {
-            // //     title: Object.keys(dataSource),
-            // //     contacts: { ...dataSource },
-            // // };
-            // console.log("dataSource", newdataSource);
-            // setDataSource(dataSource);
-            let final_contact = [
-                { title: "Firstname", first_element: "", second_element: "" },
-                { title: "Last Name", first_element: "", second_element: "" },
-            ];
+    //         //     newdataSource.push(newItem);
+    //         // });
+    //         // // let newdataSource = {
+    //         // //     title: Object.keys(dataSource),
+    //         // //     contacts: { ...dataSource },
+    //         // // };
+    //         // console.log("dataSource", newdataSource);
+    //         // setDataSource(dataSource);
+    //         let final_contact = [
+    //             { title: "Firstname", first_element: "", second_element: "" },
+    //             { title: "Last Name", first_element: "", second_element: "" },
+    //         ];
 
-            let contacts1 = receivedData;
-            let contacts2 = receivedData;
+    //         let contacts1 = receivedData;
+    //         let contacts2 = receivedData;
 
-            contacts1.forEach((element) => {
-                if (element.firstName) {
-                    final_contact[0].first_element = element.firstName;
-                }
-                if (element.lastName) {
-                    final_contact[1].first_element = element.lastName;
-                }
+    //         contacts1.forEach((element) => {
+    //             if (element.firstName) {
+    //                 final_contact[0].first_element = element.firstName;
+    //             }
+    //             if (element.lastName) {
+    //                 final_contact[1].first_element = element.lastName;
+    //             }
+    //         });
+    //         contacts2.forEach((element) => {
+    //             if (element.firstName) {
+    //                 final_contact[0].second_element = element.firstName;
+    //             }
+    //             if (element.lastName) {
+    //                 final_contact[1].second_element = element.lastName;
+    //             }
+    //         });
+
+    //         console.log("final contact", final_contact);
+
+    //         setTableData(final_contact);
+    //     }
+    // }, [contacts]);
+
+    const [tableColumns, setTableColumns] = useState<ColumnsType<TContact>>([]);
+    const [selectedKey, setSelectedKey] = useState<string>("");
+
+    const generateCol = (data: any) => {
+        let columns: ColumnsType<TContact> = [];
+
+        console.log("data sdas", data);
+
+        if (data.length > 0) {
+            const keys = Object.keys(data[0]);
+
+            keys.forEach((key) => {
+                columns.push({
+                    key: key,
+                    title: key,
+                    dataIndex: key,
+                    fixed: "left",
+                    width: 700,
+                    render: (text: string, record: TContact) => {
+                        if (key == "title") {
+                            return <span>{text}</span>;
+                        } else {
+                            return <Radio>{text}</Radio>;
+                        }
+
+                        // Customize the rendering logic here
+                    },
+                });
             });
-            contacts2.forEach((element) => {
-                if (element.firstName) {
-                    final_contact[0].second_element = element.firstName;
-                }
-                if (element.lastName) {
-                    final_contact[1].second_element = element.lastName;
-                }
-            });
-
-            setTableData(final_contact);
         }
-    }, [contacts]);
 
-    const columns: ColumnsType<TContact> = [
-        {
-            key: "title",
-            title: "MASTER RECORD",
-            dataIndex: "title",
-            fixed: "left",
-            width: 700,
-        },
+        setTableColumns(columns);
+    };
 
-        {
-            key: "first_element",
-            title: "",
-            dataIndex: "first_element",
-            fixed: "left",
-            width: 700,
-        },
-        {
-            key: "second_element",
-            title: "",
-            dataIndex: "second_element",
-            fixed: "left",
-            width: 700,
-        },
-        // {
-        //     key: "acres",
-        //     title: "Acres",
-        //     dataIndex: "acres",
-        //     width: 150,
-        // },
-        // {
-        //     title: "Tags",
-        //     dataIndex: "tags",
-        //     key: "tags",
-        //     width: 250,
-        // },
-        // {
-        //     key: "owner",
-        //     title: "Owner",
-        //     dataIndex: "owner",
-        //     width: 200,
-        // },
-        // {
-        //     key: "firstName",
-        //     title: "First Name",
-        //     dataIndex: "firstName",
-        //     width: 200,
-        // },
-        // {
-        //     key: "lastName",
-        //     title: "Last Name",
-        //     dataIndex: "lastName",
-        //     width: 200,
-        // },
-        // {
-        //     key: "title",
-        //     title: "Title",
-        //     dataIndex: "title",
-        //     width: 200,
-        //     children: [
-        //         {
-        //             key: "conatct.firstNsame",
-        //             title: "First Name",
-        //             dataIndex: "conatcts.firstName",
-        //             width: 200,
-        //         },
-        //     ],
-        // },
-    ];
+    useEffect(() => {
+        console.log("tableColumns", tableColumns);
+    }, [tableColumns]);
 
     return (
         <>
@@ -269,7 +272,7 @@ const MergeContacts = () => {
 
                         <Table
                             dataSource={tableData}
-                            columns={columns}
+                            columns={tableColumns}
                             pagination={false}
                         />
                     </Card>
