@@ -136,7 +136,7 @@ class TextsController extends Controller
         $recepients = array();
         if(!empty($payload['to'])){
             foreach($payload['to'] as $to){
-                $to[] = $to['phone_number'];
+                $recepients[] = $to['phone_number'];
             }
         }
 
