@@ -6,7 +6,13 @@ import { getTimeAgo } from "../../../helpers";
 
 const SentBox = ({ menu }) => {
     const { texts, isLoading } = useTexts();
-    const filteredTexts = texts?.filter((text) => text?.type == menu);
+    const getFilteredTexts = () => {
+        if (menu == "sent") {
+            return texts?.filter((text) => text?.isFromApp);
+        }
+        return [];
+    };
+    const filteredTexts = getFilteredTexts();
     return (
         <Space direction="vertical" style={{ margin: "12px", width: "95%" }}>
             {filteredTexts?.length ? (
@@ -62,11 +68,11 @@ const SentBoxItem = ({ text }: { text: TText }) => {
                     verticalAlign: "middle",
                 }}
             >
-                {text.receiver.charAt(0)}
+                {text.receivers.charAt(0)}
             </Avatar>
             <Space direction="vertical" size={0} style={{ width: "95%" }}>
                 <div>
-                    <Typography.Text strong>{text.receiver}</Typography.Text>
+                    <Typography.Text strong>{text.receivers}</Typography.Text>
                     <div style={{ float: "right" }}>
                         {getTimeAgo(text.created_at)}
                     </div>

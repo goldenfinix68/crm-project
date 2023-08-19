@@ -27,7 +27,7 @@ export type TText = {
     message: string;
     type: "sent" | "received" | "scheduled";
     sender: string;
-    receiver: string;
+    receivers: string;
     day: string;
     month: string;
     year: string;

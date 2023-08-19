@@ -51,7 +51,7 @@ class TextsController extends Controller
 
             $response = \Telnyx\Message::Create([
                 "from" => $request->from, // Your Telnyx number
-                "to" => $request->to,
+                "to" => '["' . $request->to . '"]', //temp sent to many not enabled yet
                 "text" => $request->message,
                 "messaging_profile_id" => env('TELNYX_PROFILE_ID'),
             ]);
@@ -144,7 +144,7 @@ class TextsController extends Controller
             $recepients = array();
             if(!empty($payload['to'])){
                 foreach($payload['to'] as $to){
-                    $recepients[] = $to['phone_number'];
+                    $recepients[] = '"' . $to['phone_number'] . '"';
                 }
             }
 
