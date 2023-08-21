@@ -125,8 +125,10 @@ const TextContent = ({
                         </span>
                     </div>
 
-                    <div style={{ paddingTop: "50px", height: "100%" }}>
-                        <div style={{ paddingBottom: "106" }}>
+                    <div style={{ paddingTop: "50px", height: "85%" }}>
+                        <div
+                            style={{ paddingBottom: "106", minHeight: "100%" }}
+                        >
                             {contact.texts
                                 ?.sort(
                                     (a, b) =>
@@ -145,7 +147,6 @@ const TextContent = ({
                                     />
                                 ))}
                         </div>
-
                         <div
                             style={{
                                 position: "sticky",

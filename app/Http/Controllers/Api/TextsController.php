@@ -51,8 +51,8 @@ class TextsController extends Controller
 
             $response = \Telnyx\Message::Create([
                 "from" => $request->from, // Your Telnyx number
-                "to" => $request->to,
-                "text" => "Hello, World!",
+                "to" => '["' . $request->to . '"]', //temp sent to many not enabled yet
+                "text" => $request->message,
                 "messaging_profile_id" => env('TELNYX_PROFILE_ID'),
             ]);
             
@@ -131,23 +131,34 @@ class TextsController extends Controller
         $json = json_decode(file_get_contents("php://input"), true);
         \Log::info($json);
 
-        $payload = $json['data']['payload'];
 
-        $recepients = array();
-        if(!empty($payload['to'])){
-            foreach($payload['to'] as $to){
-                $to[] = $to['phone_number'];
+        $payload = $json['data']['payload'];
+        if($json['data']['event_type'] == "message.finalized" || $json['data']['event_type'] == "message.sent"){
+            $text = Text::where('telnyxId', $payload['id'])->first();
+            if(!empty($text)){
+                $text->status = $json['data']['event_type'] == "message.finalized" ? "finalized" : "sent";
+                $text->save();
             }
         }
+        else if($json['data']['event_type'] == "message.received"){
+            $recepients = array();
+            if(!empty($payload['to'])){
+                foreach($payload['to'] as $to){
+                    $recepients[] = '"' . $to['phone_number'] . '"';
+                }
+            }
 
-        $text = new Text();
-        $text->telnyxId = $json['data']['id'];
-        $text->from = $payload['from']['phone_number'];
-        $text->to = '[' . implode (", ", $recepients) . ']';
-        $text->message = $payload['text'];
-        $text->telnyxResponse = json_encode($json);
-        $text->type = $payload['type'];
-        $text->status = 'received';
-        $text->save();
+            $text = new Text();
+            $text->telnyxId = $json['data']['id'];
+            $text->from = $payload['from']['phone_number'];
+            $text->to = '[' . implode (", ", $recepients) . ']';
+            $text->message = $payload['text'];
+            $text->telnyxResponse = json_encode($json);
+            $text->type = $payload['type'];
+            $text->status = 'received';
+            $text->save();
+        }
+
+        
     }
 }
