@@ -142,21 +142,27 @@ Route::get('/telnyx/call/dial', function (Request $request) {
 
 Route::get('/mail_test', function (Request $request) {
 
-    $data = array(
-        'to_name' => 'kyle taj',
-        'to_email' => 'genekyletajores1997@gmail.com',
-        'subject' => 'Speedclick Reset Password',
-        'from_name' => 'Speedclick  Support',
-        'from_email' => 'support@promise.network',
-        'template' => 'admin.emails.password-reset',
-        'body_data' => [
-            'link' => url('forgotpassword/'),
-            'full_name' => 'kyle',
-            'email' => 'genekyletajores1997@gmail.com',
-        ]
-    );
+    return view('admin.emails.password-reset', [
+        'link' => url('forgotpassword/'),
+        'full_name' => 'kyle',
+        'email' => 'genekyletajores1997@gmail.com',
+    ]);
 
-    event(new \App\Events\SendMailEvent($data));
+    // $data = array(
+    //     'to_name' => 'kyle taj',
+    //     'to_email' => 'genekyletajores1997@gmail.com',
+    //     'subject' => 'Speedclick Reset Password',
+    //     'from_name' => 'Speedclick  Support',
+    //     'from_email' => 'support@promise.network',
+    //     'template' => 'admin.emails.password-reset',
+    //     'body_data' => [
+    //         'link' => url('forgotpassword/'),
+    //         'full_name' => 'kyle',
+    //         'email' => 'genekyletajores1997@gmail.com',
+    //     ]
+    // );
 
-    echo  env('MAIL_HOST');
+    // event(new \App\Events\SendMailEvent($data));
+
+    // echo  env('MAIL_HOST');
 });
