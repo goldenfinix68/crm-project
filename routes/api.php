@@ -17,9 +17,12 @@ use ElephantIO\Client;
 
 Route::post('/login', 'App\Http\Controllers\Api\AuthController@login');
 Route::post('/logout', 'App\Http\Controllers\Api\AuthController@logout')->middleware('auth:api');
+Route::post('/forgotpassword', 'App\Http\Controllers\Api\AuthController@forgotpassword');
 
 
 Route::middleware('auth:api')->group(function () {
+    Route::post('/forgotpassword_verify', 'App\Http\Controllers\Api\AuthController@forgotpassword_verify');
+    Route::post('/forgot_password_set_password', 'App\Http\Controllers\Api\AuthController@forgot_password_set_password');
     Route::resource('/users', 'App\Http\Controllers\Api\UsersController');
     Route::resource('/contacts', 'App\Http\Controllers\Api\ContactsController');
     Route::post('/contacts/delete', 'App\Http\Controllers\Api\ContactsController@delete_contacts');
@@ -48,7 +51,6 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/activities_users', 'App\Http\Controllers\Api\ActivityController@get_user');
     Route::get('/activities_contacts', 'App\Http\Controllers\Api\ActivityController@get_contact');
     Route::get('/activities_deals', 'App\Http\Controllers\Api\ActivityController@get_deal');
-
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
@@ -136,4 +138,25 @@ Route::get('/telnyx/call/dial', function (Request $request) {
     } else {
         echo $response;
     }
+});
+
+Route::get('/mail_test', function (Request $request) {
+
+    $data = array(
+        'to_name' => 'kyle taj',
+        'to_email' => 'genekyletajores1997@gmail.com',
+        'subject' => 'Speedclick Reset Password',
+        'from_name' => 'Speedclick  Support',
+        'from_email' => 'support@promise.network',
+        'template' => 'admin.emails.password-reset',
+        'body_data' => [
+            'link' => url('forgotpassword/'),
+            'full_name' => 'kyle',
+            'email' => 'genekyletajores1997@gmail.com',
+        ]
+    );
+
+    event(new \App\Events\SendMailEvent($data));
+
+    echo  env('MAIL_HOST');
 });

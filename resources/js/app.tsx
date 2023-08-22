@@ -50,10 +50,13 @@ import DealDetail from "./pages/Deal/DealDetail";
 import Texts from "./pages/Texts/index";
 import MergeContacts from "./pages/PageContacts/MergeContacts";
 import ForgotPassword from "./pages/ForgotPassword";
+import ForgotPasswordVerifyToken from "./pages/ForgotPasswordVerifyToken";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isDialer = window.location.pathname === "/dialer";
     const isForgotPassword = window.location.pathname === "/forgot-password";
+    const isForgotPasswordVerify =
+        window.location.pathname === "/forgot-password-verify";
 
     return (
         <Router>
@@ -70,6 +73,13 @@ const App: React.FC = () => {
                     <Route
                         path="/forgot-password"
                         element={<ForgotPassword />}
+                    />
+                </Routes>
+            ) : isForgotPasswordVerify ? (
+                <Routes>
+                    <Route
+                        path="/forgot-password-verify"
+                        element={<ForgotPasswordVerifyToken />}
                     />
                 </Routes>
             ) : (

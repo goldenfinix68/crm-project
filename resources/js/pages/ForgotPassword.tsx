@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     Button,
     Card,
@@ -10,29 +10,33 @@ import {
     Row,
     Space,
     Typography,
+    notification,
+    Alert,
 } from "antd";
 import { useMutation, useQueryClient } from "react-query";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const ForgotPassword = () => {
     const navigate = useNavigate();
-    const loginMutation = useMutation(
+    const [showSuscces, setShowSuccess] = useState(false);
+    const checkEmail = useMutation(
         async (credentials: any) => {
-            const response = await axios.post("/api/login", credentials);
+            const response = await axios.post(
+                "/api/forgotpassword",
+                credentials
+            );
             return response.data.access_token;
         },
         {
             onSuccess: (data) => {
-                console.log(data);
-                localStorage.setItem("access_token", data);
-                window.location.replace("/dashboard");
+                setShowSuccess(true);
             },
         }
     );
     const onFinish = async (values: any) => {
         try {
-            await loginMutation.mutateAsync(values);
+            await checkEmail.mutateAsync(values);
             console.log("Login successful");
             // Handle successful login, e.g., redirect to dashboard
         } catch (error) {
@@ -72,7 +76,7 @@ const ForgotPassword = () => {
                         rules={[
                             {
                                 required: true,
-                                message: "Please enter your username!",
+                                message: "Please enter your email!",
                             },
                         ]}
                     >
@@ -86,7 +90,7 @@ const ForgotPassword = () => {
                                     htmlType="submit"
                                     size="large"
                                     style={{ width: "100%" }}
-                                    loading={loginMutation.isLoading}
+                                    loading={checkEmail.isLoading}
                                 >
                                     Reset My Password
                                 </Button>
@@ -107,6 +111,18 @@ const ForgotPassword = () => {
                             </a>
                         </Col>
                     </Row>
+
+                    <div>
+                        {showSuscces && (
+                            <Alert
+                                className="m-t-sm"
+                                type={"success"}
+                                message={
+                                    "An e-mail has been sent, please check your inbox or your spam folder"
+                                }
+                            />
+                        )}
+                    </div>
                 </Form>
             </Card>
             <div style={{ textAlign: "center" }}>
