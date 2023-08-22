@@ -41,15 +41,18 @@ const ForgotPasswordVerifyToken = () => {
     }, []);
 
     const setPassword = useMutation(addSetPassword, {
-        onSuccess: (data) => {},
-        onError: (err) => {
+        onSuccess: (data) => {
+            notification.success({
+                message: "New Password Created Sucessfully",
+            });
             window.location.href = "/";
         },
+        onError: (err) => {},
     });
     const onFinishVerify = async (values: any) => {
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get("token");
-        setPassword.mutate({ token: token });
+        setPassword.mutate({ ...values, token: token });
     };
 
     return (
