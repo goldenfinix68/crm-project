@@ -142,12 +142,6 @@ Route::get('/telnyx/call/dial', function (Request $request) {
 
 Route::get('/mail_test', function (Request $request) {
 
-    return view('admin.emails.password-reset', [
-        'link' => url('forgotpassword/'),
-        'full_name' => 'kyle',
-        'email' => 'genekyletajores1997@gmail.com',
-    ]);
-
     // $data = array(
     //     'to_name' => 'kyle taj',
     //     'to_email' => 'genekyletajores1997@gmail.com',
@@ -164,5 +158,5 @@ Route::get('/mail_test', function (Request $request) {
 
     // event(new \App\Events\SendMailEvent($data));
 
-    // echo  env('MAIL_HOST');
+    echo  env('MAIL_HOST');
 });
