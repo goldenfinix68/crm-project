@@ -14,9 +14,11 @@ import {
     Form,
     Select,
     DatePicker,
+    Popover,
 } from "antd";
 
 import { CloseOutlined } from "@ant-design/icons";
+import moment from "moment";
 
 import { useMutation } from "react-query";
 import { sendTextMutation } from "../../../api/mutation/useTextMutation";
@@ -31,8 +33,10 @@ const TextForm = ({ handleSubmit, handleCancel }: Props) => {
     const [form] = Form.useForm();
     const { contact } = useContext(ContactContext);
     const [error, setError] = useState("");
+    const [isScheduledMessage, setIsScheduledMessage] = useState(false);
     const { user, isLoading } = useLoggedInUser();
-
+    const schedule = Form.useWatch("schedule", form);
+    console.log(schedule);
     const resetFields = () => {
         handleCancel();
         form.resetFields();
@@ -53,7 +57,18 @@ const TextForm = ({ handleSubmit, handleCancel }: Props) => {
         setError("");
         await sendText.mutate({ ...values, contactId: contact.id });
     };
+    const disabledDateAndTime = (current) => {
+        const now = moment();
+        return (
+            current &&
+            (current < now.startOf("day") || // Disable past dates
+                (current.isSame(now, "day") && current < now)) // Disable past times on the current day
+        );
+    };
 
+    const scheduleLabel = schedule
+        ? moment(schedule.$d).format("MMM D, YYYY h:mm a")
+        : "";
     return (
         <Form
             name="basic"
@@ -118,6 +133,7 @@ const TextForm = ({ handleSubmit, handleCancel }: Props) => {
                     placeholder="Type here ..."
                 ></Input.TextArea>
             </Form.Item>
+
             {error ? (
                 <center>
                     <Typography.Text style={{ color: "red" }}>
@@ -126,23 +142,55 @@ const TextForm = ({ handleSubmit, handleCancel }: Props) => {
                 </center>
             ) : null}
 
-            <Form.Item
-                style={{
-                    marginBottom: 0,
-                }}
-            >
-                <Space>
-                    <Button
-                        type="primary"
-                        htmlType="submit"
-                        loading={sendText.isLoading}
-                    >
-                        Send
+            {schedule ? (
+                <center>
+                    <Typography.Text>
+                        {`This text will be sent on ${scheduleLabel}`}
+                    </Typography.Text>
+                </center>
+            ) : null}
+
+            <Space style={{ paddingTop: "5px" }}>
+                <Button
+                    type="primary"
+                    htmlType="submit"
+                    loading={sendText.isLoading}
+                >
+                    Send
+                </Button>
+                <Popover
+                    content={
+                        <Form.Item name="schedule" label="Time & Date">
+                            <DatePicker
+                                showTime
+                                showNow={false}
+                                onOk={() => setIsScheduledMessage(false)}
+                                disabledDate={disabledDateAndTime}
+                                format="MMMM D, YYYY h:mm A"
+                            />
+                        </Form.Item>
+                    }
+                    title={
+                        <Button
+                            type="link"
+                            onClick={() => {
+                                form.setFieldValue("schedule", null);
+                                setIsScheduledMessage(false);
+                            }}
+                            style={{ padding: 0 }}
+                        >
+                            Cancel
+                        </Button>
+                    }
+                    placement="topRight"
+                    visible={isScheduledMessage}
+                >
+                    <Button onClick={() => setIsScheduledMessage(true)}>
+                        Schedule
                     </Button>
-                    <Button onClick={resetFields}>Schedule</Button>
-                    <Button onClick={resetFields}>Cancel</Button>
-                </Space>
-            </Form.Item>
+                </Popover>
+                <Button onClick={resetFields}>Cancel</Button>
+            </Space>
         </Form>
     );
 };

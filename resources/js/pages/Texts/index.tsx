@@ -25,7 +25,6 @@ import {
 } from "@ant-design/icons";
 import { Divider } from "rc-menu";
 import { useContactsAll } from "../../api/query/contactsQuery";
-import TextItem from "./components/TextItem";
 import { TContact, TText } from "../../entities";
 import DropdownComponent from "../../components/DropdownComponent";
 import ChatBoxItem from "./components/ChatBoxItem";
@@ -35,13 +34,14 @@ import TextContent from "./components/TextContent";
 import { useNavigate, useParams } from "react-router-dom";
 import { getTimeAgo } from "../../helpers";
 import SentBox from "./components/SentBox";
+import TextItem from "./components/textItem";
 
 const Texts = () => {
     const { route } = useParams();
     const navigate = useNavigate();
     const [menu, setMenu] = useState(route ?? "all");
-    const isChatBox = ["all", "inbox", "scheduled"].includes(menu);
-    const isSentBox = ["sent", "outbox", "failed"].includes(menu);
+    const isChatBox = ["all", "inbox"].includes(menu);
+    const isSentBox = ["sent", "outbox", "failed", "scheduled"].includes(menu);
     const [selectedContact, setSelectedContact] = useState<TContact | null>(
         null
     );
@@ -53,11 +53,6 @@ const Texts = () => {
         if (menu == "inbox") {
             data = contacts?.filter((contact) =>
                 contact.texts?.some((text) => !text.isFromApp)
-            );
-        }
-        if (menu == "scheduled") {
-            data = contacts?.filter((contact) =>
-                contact.texts?.some((text) => text.type == "scheduled")
             );
         }
         if (searchKey) {

@@ -23,6 +23,8 @@ class Text extends Model
         'telnyxResponse',
         'userId',
         'isFromApp',
+        'schedule',
+        'queueLock',
     ];
 
     protected $appends = [

@@ -1,6 +1,8 @@
 import React from "react";
-import { Avatar, Space } from "antd";
+import { Avatar, Space, Tooltip } from "antd";
 import { TText } from "../../../entities";
+import { CalendarOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import moment from "moment";
 
 const ChatBoxItem = ({ name, text }: { name: string; text: TText }) => {
     return !text.isFromApp ? (
@@ -78,6 +80,22 @@ const ChatBoxItem = ({ name, text }: { name: string; text: TText }) => {
                         borderRadius: "20px 20px 0 20px",
                     }}
                 >
+                    {text.status == "failed" ? (
+                        <Tooltip title={text.telnyxResponse}>
+                            <ExclamationCircleOutlined
+                                style={{ color: "red" }}
+                            />
+                        </Tooltip>
+                    ) : null}
+                    {text.status == "scheduled" && text.schedule ? (
+                        <Tooltip
+                            title={`Will be sent on ${moment(
+                                text.schedule
+                            ).format("MMMM D, YYYY h:mm A")}`}
+                        >
+                            <CalendarOutlined />
+                        </Tooltip>
+                    ) : null}{" "}
                     {text.message}
                 </div>
                 <div style={{ marginTop: "8px", fontSize: "10px" }}>
