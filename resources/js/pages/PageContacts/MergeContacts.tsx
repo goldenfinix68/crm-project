@@ -121,6 +121,7 @@ const MergeContacts = () => {
     };
 
     const [tableData, setTableData] = useState<any>([]);
+    const [tableDataKeys, setTableDataKeys] = useState<any>([]);
 
     const location = useLocation();
     const receivedData = location.state?.data;
@@ -156,8 +157,10 @@ const MergeContacts = () => {
             }
             setTableData(result);
 
-            console.log(" title", result);
-            generateCol(result);
+            let keysData = Object.keys(result[0]);
+            setTableDataKeys(keysData);
+            // console.log(" title", result);
+            // generateCol(result);
         }
     }, [receivedData]);
 
@@ -166,68 +169,34 @@ const MergeContacts = () => {
         refetch();
     }, [filter]);
 
-    // useEffect(() => {
-    //     if (receivedData) {
-    //         // let dataSource = [...contacts];
-
-    //         // const newdataSource: { [key: string]: any }[] = [];
-
-    //         // dataSource.forEach((item) => {
-    //         //     const columnName = item.firstName + " " + item.lastName;
-    //         //     const itemData = Object.values(item);
-
-    //         //     const newItem = {
-    //         //         title: Object.keys(item),
-    //         //         [columnName]: itemData,
-    //         //     };
-
-    //         //     newdataSource.push(newItem);
-    //         // });
-    //         // // let newdataSource = {
-    //         // //     title: Object.keys(dataSource),
-    //         // //     contacts: { ...dataSource },
-    //         // // };
-    //         // console.log("dataSource", newdataSource);
-    //         // setDataSource(dataSource);
-    //         let final_contact = [
-    //             { title: "Firstname", first_element: "", second_element: "" },
-    //             { title: "Last Name", first_element: "", second_element: "" },
-    //         ];
-
-    //         let contacts1 = receivedData;
-    //         let contacts2 = receivedData;
-
-    //         contacts1.forEach((element) => {
-    //             if (element.firstName) {
-    //                 final_contact[0].first_element = element.firstName;
-    //             }
-    //             if (element.lastName) {
-    //                 final_contact[1].first_element = element.lastName;
-    //             }
-    //         });
-    //         contacts2.forEach((element) => {
-    //             if (element.firstName) {
-    //                 final_contact[0].second_element = element.firstName;
-    //             }
-    //             if (element.lastName) {
-    //                 final_contact[1].second_element = element.lastName;
-    //             }
-    //         });
-
-    //         console.log("final contact", final_contact);
-
-    //         setTableData(final_contact);
-    //     }
-    // }, [contacts]);
-
+    // const [allVariable, setAllVariables] = useState<{ [key: string]: any }>({});
+    const [allVariable, setAllVariables] = useState({});
     const [tableColumns, setTableColumns] = useState<ColumnsType<TContact>>([]);
     const [selectedKey, setSelectedKey] = useState<string>("");
 
+    useEffect(() => {
+        if (allVariable) {
+            console.log("allVariable", allVariable);
+        }
+    }, [allVariable]);
+
+    const handleOnchangeRadio = (record: any, key: React.Key) => {
+        setAllVariables((prevAllVariables) => ({
+            ...prevAllVariables,
+            [record["title"]]: record[key],
+        }));
+    };
+
+    const handleCheckedRadio = (record: any, key: React.Key) => {
+        console.log("allVariable", allVariable);
+        if (Object.keys(allVariable).length) {
+            return allVariable[record["title"]] === record[key] ? true : false;
+        }
+    };
+
     const generateCol = (data: any) => {
         let columns: ColumnsType<TContact> = [];
-
-        console.log("data sdas", data);
-
+        console.log("onChange", data);
         if (data.length > 0) {
             const keys = Object.keys(data[0]);
 
@@ -238,11 +207,45 @@ const MergeContacts = () => {
                     dataIndex: key,
                     fixed: "left",
                     width: 700,
-                    render: (text: string, record: TContact) => {
+                    render: (text: string, record) => {
                         if (key == "title") {
                             return <span>{text}</span>;
                         } else {
-                            return <Radio>{text}</Radio>;
+                            return (
+                                <Radio
+                                    key={key}
+                                    checked={handleCheckedRadio(record, key)}
+                                    // onChange={(e) => {
+                                    //     // console.log("radio-0", record[key]);
+                                    //     // console.log("radio-1", record["title"]);
+                                    //     console.log("onChange", record);
+                                    //     handleOnchangeRadio(record, key);
+                                    //     // console.log(
+                                    //     //     "record[key]:",
+                                    //     //     record[key]
+                                    //     // );
+                                    //     // console.log(
+                                    //     //     "record['title']:",
+                                    //     //     record["title"]
+                                    //     // );
+
+                                    //     // let data = {
+                                    //     //     ...allVariable,
+                                    //     //     [record["title"]]: record[key],
+                                    //     // };
+
+                                    //     // setAllVariables(data);
+                                    // }}
+                                    onChange={() => {
+                                        console.log("onChange1", record[key]);
+                                        console.log("onChange2", allVariable);
+
+                                        handleOnchangeRadio(record, key);
+                                    }}
+                                >
+                                    {text}
+                                </Radio>
+                            );
                         }
 
                         // Customize the rendering logic here
@@ -255,8 +258,8 @@ const MergeContacts = () => {
     };
 
     useEffect(() => {
-        console.log("tableColumns", tableColumns);
-    }, [tableColumns]);
+        console.log("tableData", tableDataKeys);
+    }, [tableData]);
 
     return (
         <>
@@ -270,11 +273,45 @@ const MergeContacts = () => {
                             Merge Details
                         </Typography.Title>
 
-                        <Table
-                            dataSource={tableData}
-                            columns={tableColumns}
-                            pagination={false}
-                        />
+                        <Table dataSource={tableData} pagination={false}>
+                            {tableDataKeys.length > 0 &&
+                                tableDataKeys.map(
+                                    (item: any, key: React.Key) => {
+                                        return (
+                                            <Table.Column
+                                                key={key}
+                                                dataIndex={item}
+                                                title={item}
+                                                render={(text, record) => {
+                                                    if (item === "title") {
+                                                        return (
+                                                            <span>{text}</span>
+                                                        );
+                                                    } else {
+                                                        return (
+                                                            <Radio
+                                                                key={key}
+                                                                checked={handleCheckedRadio(
+                                                                    record,
+                                                                    item
+                                                                )}
+                                                                onChange={() => {
+                                                                    handleOnchangeRadio(
+                                                                        record,
+                                                                        item
+                                                                    );
+                                                                }}
+                                                            >
+                                                                {text}
+                                                            </Radio>
+                                                        );
+                                                    }
+                                                }}
+                                            />
+                                        );
+                                    }
+                                )}
+                        </Table>
                     </Card>
                 </Col>
             </Row>
