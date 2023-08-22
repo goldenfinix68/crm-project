@@ -286,7 +286,7 @@
   font-size: 16px;
 }
 .modal-activity-manage-column .ant-modal-content .ant-modal-body {
-  padding: 14px 20px 20px;
+  padding: 14px 16px 20px;
 }
 .modal-activity-manage-column .ant-modal-content .ant-modal-body .columns-list {
   padding-right: 16px !important;
@@ -314,6 +314,15 @@
 }
 .modal-activity-manage-column .ant-modal-content .ant-modal-body .selected-fields .ant-list .ant-list-item {
   padding: 3px 0 !important;
+}
+.modal-activity-manage-column .ant-modal-content .ant-modal-body .custom-field-btn {
+  position: absolute;
+  margin-top: -64px;
+  right: 38px;
+  color: #fff;
+}
+.modal-activity-manage-column .ant-modal-content .ant-modal-body .custom-field-btn span {
+  text-decoration: underline;
 }
 .modal-activity-manage-column .ant-modal-content .ant-modal-footer {
   border-top: 1px solid #dfe1e6;
@@ -361,4 +370,88 @@
 }
 .update-activity-tab .ant-tabs-tabpane .ant-card {
   background: #f4f5f7 !important;
+}
+
+.manage-column-field {
+  width: 580px;
+  top: 70px;
+}
+.manage-column-field .ant-modal-close {
+  margin-top: -3px;
+  background: #0747a6;
+  border: 0;
+  width: 22px;
+  height: 22px;
+  font-size: 19px;
+}
+.manage-column-field .ant-modal-close .ant-modal-close-icon {
+  font-size: 10px;
+  line-height: 10px;
+  color: #fff;
+  right: 0;
+  width: 22px;
+  height: 22px;
+  top: 1px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.manage-column-field .ant-modal-close:hover {
+  background: #0747a6;
+}
+.manage-column-field .ant-modal-content {
+  border-radius: 0px;
+  padding: 0;
+}
+.manage-column-field .ant-modal-content .ant-modal-header {
+  background: #1f62ff;
+  border-radius: 0;
+  padding: 15px 17px;
+  border-bottom: 0;
+  height: 52px;
+}
+.manage-column-field .ant-modal-content .ant-modal-header .ant-modal-title {
+  margin-top: -2px;
+}
+.manage-column-field .ant-modal-content .ant-modal-header .ant-modal-title .ant-typography {
+  color: white;
+  font-weight: 400;
+  font-size: 16px;
+}
+.manage-column-field .ant-modal-content .ant-modal-body {
+  padding: 14px 16px 20px;
+}
+.manage-column-field .ant-modal-content .ant-modal-footer {
+  border-top: 1px solid #dfe1e6;
+  padding: 15px;
+}
+.manage-column-field .ant-modal-content .ant-modal-footer .footer-space {
+  display: flex;
+  justify-content: space-between;
+}
+
+.field-list {
+  border-radius: 0 !important;
+}
+.field-list .ant-list-items {
+  max-height: 346px;
+  overflow: auto;
+}
+.field-list .ant-list-items .ant-list-item {
+  padding: 10px 10px !important;
+}
+.field-list .ant-list-items .ant-list-item:hover {
+  background: #1f62ff;
+}
+.field-list .ant-list-items .ant-list-item:hover .ant-typography {
+  color: #fff;
+}
+
+.text:before {
+  content: "\ea79";
+}
+
+.text-area:before {
+  content: "\ea82";
 }/*# sourceMappingURL=activity.css.map */

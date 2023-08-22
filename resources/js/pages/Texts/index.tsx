@@ -52,9 +52,7 @@ const Texts = () => {
         let data = contacts;
         if (menu == "inbox") {
             data = contacts?.filter((contact) =>
-                contact.texts?.some(
-                    (text) => text.type == "received" || text.type == "sent"
-                )
+                contact.texts?.some((text) => !text.isFromApp)
             );
         }
         if (menu == "scheduled") {

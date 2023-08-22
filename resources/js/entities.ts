@@ -3,6 +3,7 @@ export type TUser = {
     firstName: string;
     lastName: string;
     email: string;
+    numbers?: string[];
 };
 
 export type TContactType = {
@@ -26,12 +27,13 @@ export type TText = {
     message: string;
     type: "sent" | "received" | "scheduled";
     sender: string;
-    receiver: string;
+    receivers: string;
     day: string;
     month: string;
     year: string;
     created_at: string;
     time: string;
+    isFromApp: boolean;
 };
 
 export type TDeal = {

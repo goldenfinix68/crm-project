@@ -3,7 +3,7 @@ import { Avatar, Space } from "antd";
 import { TText } from "../../../entities";
 
 const ChatBoxItem = ({ name, text }: { name: string; text: TText }) => {
-    return text.type == "received" ? (
+    return !text.isFromApp ? (
         <div
             style={{
                 padding: "10px",

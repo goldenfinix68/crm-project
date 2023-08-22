@@ -44,20 +44,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
 import DrawerUpdateActivity from "./DrawerEditActivitty";
+import ModalManageColumnFIeld from "./ModalManageColumnFIeld";
 
 const rowSelection: TableRowSelection<TActivities> = {
     onChange: (selectedRowKeys, selectedRows) => {
-        console.log(
-            `selectedRowKeys: ${selectedRowKeys}`,
-            "selectedRows: ",
-            selectedRows
-        );
+        // console.log(
+        //     `selectedRowKeys: ${selectedRowKeys}`,
+        //     "selectedRows: ",
+        //     selectedRows
+        // );
     },
     onSelect: (record, selected, selectedRows) => {
-        console.log(record, selected, selectedRows);
+        // console.log(record, selected, selectedRows);
     },
     onSelectAll: (selected, selectedRows, changeRows) => {
-        console.log(selected, selectedRows, changeRows);
+        // console.log(selected, selectedRows, changeRows);
     },
 };
 
@@ -142,7 +143,7 @@ const ActivityTable = () => {
         filters: any,
         extra: any
     ) => {
-        console.log("sorter", filters);
+        // console.log("sorter", filters);
 
         setDataFilter({
             ...dataFilter,
@@ -156,10 +157,6 @@ const ActivityTable = () => {
     useEffect(() => {
         refetchUsers();
     }, [dataFilter]);
-
-    useEffect(() => {
-        console.log("dataSource", dataSource);
-    }, [dataSource]);
 
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
     const showModalAdd = () => {
@@ -176,7 +173,11 @@ const ActivityTable = () => {
 
     const [isModalManageColumnOpen, setIsModalManageColumnOpen] =
         useState(false);
-
+    const [modalManageColumnField, setModalManageColumnField] = useState({
+        show: false,
+        title: "Select Field Type",
+        step: 1,
+    });
     const [activitiesSelectColumn, setActivitiesSelectColumn] = useState(
         localStorage.activitiesSelectColumn
             ? JSON.parse(localStorage.activitiesSelectColumn)
@@ -439,6 +440,21 @@ const ActivityTable = () => {
     const [drawerUpdateOpen, setDrawerUpdateOpen] = useState(false);
     const [drawerUpdateData, setDrawerUpdateData] = useState(null);
 
+    const handleOpenManageColumnFieldOpen = () => {
+        setModalManageColumnField({
+            ...modalManageColumnField,
+            show: true,
+        });
+    };
+
+    const handleOpenManageColumnFieldClose = () => {
+        setModalManageColumnField({
+            show: false,
+            title: "Select Field Type",
+            step: 1,
+        });
+    };
+
     return (
         <>
             <Row className="activity-group-row">
@@ -588,6 +604,9 @@ const ActivityTable = () => {
                 activitiesSelectColumn={activitiesSelectColumn}
                 setActivitiesSelectColumn={setActivitiesSelectColumn}
                 localStorageName="activitiesSelectColumn"
+                handleOpenManageColumnFieldOpen={
+                    handleOpenManageColumnFieldOpen
+                }
             />
 
             <DrawerUpdateActivity
@@ -595,6 +614,14 @@ const ActivityTable = () => {
                 setDrawerUpdateOpen={setDrawerUpdateOpen}
                 drawerUpdateData={drawerUpdateData}
                 setDrawerUpdateData={setDrawerUpdateData}
+            />
+
+            <ModalManageColumnFIeld
+                modalManageColumnField={modalManageColumnField}
+                setModalManageColumnField={setModalManageColumnField}
+                handleOpenManageColumnFieldClose={
+                    handleOpenManageColumnFieldClose
+                }
             />
         </>
     );

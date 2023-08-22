@@ -22,6 +22,7 @@ import LoadingComponent from "../../../components/LoadingComponent";
 import queryClient from "../../../queryClient";
 import { useMutation } from "react-query";
 import { sendTextMutation } from "../../../api/mutation/useTextMutation";
+import TextForm from "./TextForm";
 
 const TextContent = ({
     menu,
@@ -56,229 +57,151 @@ const TextContent = ({
         scrollToBottom();
     }, [contact]);
 
-    const resetFields = () => {
-        setIsFocused(false);
-        form.resetFields();
-    };
-
-    const sendText = useMutation(sendTextMutation, {
-        onSuccess: () => {
-            queryClient.invalidateQueries("getContact");
-            resetFields();
-        },
-    });
-
-    const onFinish = async (values: any) => {
-        await sendText.mutate({
-            ...values,
-            ...{ contactId: contactId, to: contact?.phone },
-        });
-    };
-
     if (isLoading || !contact) {
         return <LoadingComponent />;
     }
 
     return ["all", "inbox", "scheduled"].includes(menu) ? (
-        <Row key={contactId}>
-            <Col
-                span={18}
-                style={{ height: "85vh", overflowY: "auto" }}
-                ref={chatBoxRef}
-            >
-                <div
-                    style={{
-                        backgroundColor: "white",
-                        width: "100%",
-                        padding: "15px",
-                        display: "flex",
-                        alignItems: "center",
-                        position: "sticky",
-                        top: 0,
-                        zIndex: 1,
-                    }}
+        <ContactContext.Provider value={{ contact: contact }}>
+            <Row key={contactId}>
+                <Col
+                    span={18}
+                    style={{ height: "85vh", overflowY: "auto" }}
+                    ref={chatBoxRef}
                 >
-                    {/* Your content */}
-                    <Avatar
-                        className="avatarText m-r-sm"
-                        size={32}
-                        style={{
-                            backgroundColor: "#1677FF",
-                            verticalAlign: "middle",
-                        }}
-                    >
-                        {contact.firstName.charAt(0)}
-                    </Avatar>{" "}
-                    {`${contact.firstName} ${contact.lastName}`}
-                    <span style={{ marginLeft: "auto" }}>
-                        <DropdownComponent
-                            menuList={[
-                                {
-                                    label: (
-                                        <Typography.Text onClick={() => {}}>
-                                            Delete all
-                                        </Typography.Text>
-                                    ),
-                                    key: "1",
-                                },
-                                {
-                                    label: (
-                                        <Typography.Text onClick={() => {}}>
-                                            Block number
-                                        </Typography.Text>
-                                    ),
-                                    key: "2",
-                                },
-                            ]}
-                            showCarret={false}
-                            label={
-                                <EllipsisOutlined
-                                    style={{
-                                        transform: "rotate(90deg)",
-                                    }}
-                                />
-                            }
-                        />
-                    </span>
-                </div>
-
-                <div style={{ paddingTop: "50px", height: "100%" }}>
-                    <div style={{ paddingBottom: "106" }}>
-                        {contact.texts
-                            ?.sort(
-                                (a, b) =>
-                                    parseInt(a.id ?? "0") -
-                                    parseInt(b.id ?? "0")
-                            )
-                            .map((text) => (
-                                <ChatBoxItem
-                                    name={
-                                        contact.firstName +
-                                        " " +
-                                        contact.lastName
-                                    }
-                                    text={text}
-                                    key={text.id}
-                                />
-                            ))}
-                    </div>
-
                     <div
                         style={{
-                            position: "sticky",
-                            bottom: 0,
-                            left: 0,
+                            backgroundColor: "white",
                             width: "100%",
+                            padding: "15px",
+                            display: "flex",
+                            alignItems: "center",
+                            position: "sticky",
+                            top: 0,
+                            zIndex: 1,
                         }}
                     >
-                        <Form
-                            name="basic"
-                            layout="vertical"
-                            labelWrap
-                            initialValues={{
-                                to: "+14405633236",
-                                from: "Outreach (+1 303-952-1461)",
-                            }}
-                            onFinish={onFinish}
-                            autoComplete="off"
-                            form={form}
+                        {/* Your content */}
+                        <Avatar
+                            className="avatarText m-r-sm"
+                            size={32}
                             style={{
-                                backgroundColor: "white",
-                                padding: "14px",
-                                position: "sticky",
-                                bottom: 0,
+                                backgroundColor: "#1677FF",
+                                verticalAlign: "middle",
                             }}
                         >
-                            {isFocused && (
-                                <Form.Item
-                                    label="From"
-                                    name="from"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: "this is required",
-                                        },
-                                    ]}
-                                >
-                                    <Select style={{ width: "100%" }}>
-                                        <Select.Option value="Outreach (+1 303-952-1461)">
-                                            Outreach (+1 303-952-1461)
-                                        </Select.Option>
-                                        <Select.Option value="task">
-                                            Default
-                                        </Select.Option>
-                                    </Select>
-                                </Form.Item>
-                            )}
-
-                            <Form.Item
-                                name="message"
-                                rules={[
+                            {contact.firstName.charAt(0)}
+                        </Avatar>{" "}
+                        {`${contact.firstName} ${contact.lastName}`}
+                        <span style={{ marginLeft: "auto" }}>
+                            <DropdownComponent
+                                menuList={[
                                     {
-                                        required: true,
-                                        message: "this is required",
+                                        label: (
+                                            <Typography.Text onClick={() => {}}>
+                                                Delete all
+                                            </Typography.Text>
+                                        ),
+                                        key: "1",
+                                    },
+                                    {
+                                        label: (
+                                            <Typography.Text onClick={() => {}}>
+                                                Block number
+                                            </Typography.Text>
+                                        ),
+                                        key: "2",
                                     },
                                 ]}
-                            >
+                                showCarret={false}
+                                label={
+                                    <EllipsisOutlined
+                                        style={{
+                                            transform: "rotate(90deg)",
+                                        }}
+                                    />
+                                }
+                            />
+                        </span>
+                    </div>
+
+                    <div style={{ paddingTop: "50px", height: "85%" }}>
+                        <div
+                            style={{ paddingBottom: "106", minHeight: "100%" }}
+                        >
+                            {contact.texts
+                                ?.sort(
+                                    (a, b) =>
+                                        parseInt(a.id ?? "0") -
+                                        parseInt(b.id ?? "0")
+                                )
+                                .map((text) => (
+                                    <ChatBoxItem
+                                        name={
+                                            contact.firstName +
+                                            " " +
+                                            contact.lastName
+                                        }
+                                        text={text}
+                                        key={text.id}
+                                    />
+                                ))}
+                        </div>
+                        <div
+                            style={{
+                                position: "sticky",
+                                bottom: 0,
+                                left: 0,
+                                width: "100%",
+                                backgroundColor: "white",
+                                padding: "10px",
+                            }}
+                        >
+                            {isFocused ? (
+                                <TextForm
+                                    handleSubmit={() => {
+                                        queryClient.invalidateQueries(
+                                            "getContact"
+                                        );
+                                        setIsFocused(false);
+                                    }}
+                                    handleCancel={() => {
+                                        setIsFocused(false);
+                                    }}
+                                />
+                            ) : (
                                 <Input.TextArea
                                     rows={2}
                                     placeholder="Type here ..."
                                     onClick={() => setIsFocused(true)}
                                 ></Input.TextArea>
-                            </Form.Item>
-                            {isFocused && (
-                                <div className="modal-footer">
-                                    <Space>
-                                        <Button
-                                            type="primary"
-                                            onClick={() =>
-                                                form
-                                                    .validateFields()
-                                                    .then((values) => {
-                                                        form.submit();
-                                                    })
-                                            }
-                                            loading={sendText.isLoading}
-                                        >
-                                            Send
-                                        </Button>
-                                        <Button onClick={resetFields}>
-                                            Schedule
-                                        </Button>
-                                        <Button onClick={resetFields}>
-                                            Cancel
-                                        </Button>
-                                    </Space>
-                                </div>
                             )}
-                        </Form>
+                        </div>
                     </div>
-                </div>
-            </Col>
-            <Col span={6} style={{ height: "85vh", overflowY: "auto" }}>
-                <Space
-                    direction="vertical"
-                    size={0}
-                    style={{ width: "100%", overflowY: "auto" }}
-                >
-                    <div
-                        style={{
-                            backgroundColor: "#F5F5F5",
-                            width: "100%",
-                            padding: "15px",
-                            display: "flex",
-                            fontWeight: "bold",
-                        }}
+                </Col>
+                <Col span={6} style={{ height: "85vh", overflowY: "auto" }}>
+                    <Space
+                        direction="vertical"
+                        size={0}
+                        style={{ width: "100%", overflowY: "auto" }}
                     >
-                        Related Information
-                    </div>
+                        <div
+                            style={{
+                                backgroundColor: "#F5F5F5",
+                                width: "100%",
+                                padding: "15px",
+                                display: "flex",
+                                fontWeight: "bold",
+                            }}
+                        >
+                            Related Information
+                        </div>
 
-                    <ContactContext.Provider value={{ contact: contact }}>
                         <ContactInfo />
-                    </ContactContext.Provider>
-                </Space>
-            </Col>
-        </Row>
+                    </Space>
+                </Col>
+            </Row>
+        </ContactContext.Provider>
     ) : null;
 };
 

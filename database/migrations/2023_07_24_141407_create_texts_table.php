@@ -15,7 +15,7 @@ class CreateTextsTable extends Migration
     {
         Schema::create('texts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('userId');
+            $table->unsignedInteger('userId')->default(0);
             $table->unsignedInteger('contactId');
             $table->string('from');
             $table->string('to');

@@ -84,7 +84,7 @@ const Login = () => {
                         </Form.Item>
                         <a
                             className="forgot-password"
-                            href="/"
+                            href="/forgot-password"
                             style={{ float: "right" }}
                         >
                             Forgot password
