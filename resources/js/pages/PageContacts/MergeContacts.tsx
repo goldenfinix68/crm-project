@@ -125,6 +125,7 @@ const MergeContacts = () => {
 
     const location = useLocation();
     const receivedData = location.state?.data;
+    const title = "Master Record";
 
     useEffect(() => {
         if (receivedData.length > 0) {
@@ -194,73 +195,6 @@ const MergeContacts = () => {
         }
     };
 
-    const generateCol = (data: any) => {
-        let columns: ColumnsType<TContact> = [];
-        console.log("onChange", data);
-        if (data.length > 0) {
-            const keys = Object.keys(data[0]);
-
-            keys.forEach((key) => {
-                columns.push({
-                    key: key,
-                    title: key,
-                    dataIndex: key,
-                    fixed: "left",
-                    width: 700,
-                    render: (text: string, record) => {
-                        if (key == "title") {
-                            return <span>{text}</span>;
-                        } else {
-                            return (
-                                <Radio
-                                    key={key}
-                                    checked={handleCheckedRadio(record, key)}
-                                    // onChange={(e) => {
-                                    //     // console.log("radio-0", record[key]);
-                                    //     // console.log("radio-1", record["title"]);
-                                    //     console.log("onChange", record);
-                                    //     handleOnchangeRadio(record, key);
-                                    //     // console.log(
-                                    //     //     "record[key]:",
-                                    //     //     record[key]
-                                    //     // );
-                                    //     // console.log(
-                                    //     //     "record['title']:",
-                                    //     //     record["title"]
-                                    //     // );
-
-                                    //     // let data = {
-                                    //     //     ...allVariable,
-                                    //     //     [record["title"]]: record[key],
-                                    //     // };
-
-                                    //     // setAllVariables(data);
-                                    // }}
-                                    onChange={() => {
-                                        console.log("onChange1", record[key]);
-                                        console.log("onChange2", allVariable);
-
-                                        handleOnchangeRadio(record, key);
-                                    }}
-                                >
-                                    {text}
-                                </Radio>
-                            );
-                        }
-
-                        // Customize the rendering logic here
-                    },
-                });
-            });
-        }
-
-        setTableColumns(columns);
-    };
-
-    useEffect(() => {
-        console.log("tableData", tableDataKeys);
-    }, [tableData]);
-
     return (
         <>
             <Row>
@@ -281,7 +215,11 @@ const MergeContacts = () => {
                                             <Table.Column
                                                 key={key}
                                                 dataIndex={item}
-                                                title={item}
+                                                title={
+                                                    item === "title"
+                                                        ? "Master Record"
+                                                        : item
+                                                }
                                                 render={(text, record) => {
                                                     if (item === "title") {
                                                         return (
@@ -312,6 +250,20 @@ const MergeContacts = () => {
                                     }
                                 )}
                         </Table>
+                        <Typography.Title level={5} className="m-t-lg">
+                            Please note the following.
+                        </Typography.Title>
+                        <ul>
+                            <li>
+                                The attachments, activities and notes will be
+                                transferred to the master Contact.
+                            </li>
+                            <li>The action can't be reverted.</li>
+                        </ul>
+                        <Button type="primary" className="m-r-sm">
+                            I Understand, Merge Now
+                        </Button>
+                        <Button>Cancel</Button>
                     </Card>
                 </Col>
             </Row>
