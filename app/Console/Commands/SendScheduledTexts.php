@@ -4,6 +4,9 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\Text;
+use Carbon\Carbon;
+use App\Jobs\SendText;
+use DB;
 
 class SendScheduledTexts extends Command
 {
@@ -48,7 +51,7 @@ class SendScheduledTexts extends Command
 			foreach ($texts as $key => $text) {
 				if (!empty($text->schedule)) {
 					$timeStartSeconds = Carbon::parse($text->schedule)->diffInSeconds($now);
-					SendTimedAuctionSaleEvent::dispatch($text)->delay(now()->addSeconds($timeStartSeconds + 1));
+					SendText::dispatch($text)->delay(now()->addSeconds($timeStartSeconds + 1));
                     $text->queueLock = true;
                     $text->save();
 				}
