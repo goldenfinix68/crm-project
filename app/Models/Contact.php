@@ -99,7 +99,15 @@ class Contact extends Model
 
     public function texts()
     {
-        $texts = Text::where('to', 'like', '%'.$this->mobile.'%')->orWhere('from', 'like', '%'.$this->mobile.'%')->orderBy('id', 'desc')->get();
+        if(empty($this->mobile)){
+            return [];
+        }
+        $texts = Text::where(function ($query) {
+            $query->whereRaw('JSON_CONTAINS(`to`, ?)', ['"' . $this->mobile . '"'])
+                  ->orWhere('from', $this->mobile);
+        })
+        ->orderBy('id', 'desc')
+        ->get();
         return $texts;
     }
 
@@ -135,7 +143,7 @@ class Contact extends Model
             ];
         });
 
-        $texts = $this->texts()->map(function ($data) {
+        $texts = $this->texts() ? $this->texts()->map(function ($data) {
             $createdAt = Carbon::parse($data->created_at);
             return [
                 'type' => 'text',
@@ -146,7 +154,7 @@ class Contact extends Model
                 'time' => $createdAt->format('h:i A'),
                 'text' => $data,
             ];
-        });
+        }) : null;
 
         $deals = $this->deals->map(function ($data) {
             $createdAt = Carbon::parse($data->created_at);

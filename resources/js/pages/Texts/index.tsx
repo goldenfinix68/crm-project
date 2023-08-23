@@ -50,8 +50,10 @@ const Texts = () => {
 
     const filteredContacts = (): TContact[] | undefined => {
         let data = contacts;
+
+        data = data?.filter((contact) => contact.texts?.length);
         if (menu == "inbox") {
-            data = contacts?.filter((contact) =>
+            data = data?.filter((contact) =>
                 contact.texts?.some((text) => !text.isFromApp)
             );
         }
