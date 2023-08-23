@@ -39,7 +39,7 @@ class SendText implements ShouldQueue
 
             $response = \Telnyx\Message::Create([
                 "from" => $text->from, // Your Telnyx number
-                "to" => $to[0].'asd', //temp sent to many not enabled yet
+                "to" => $to[0], //temp sent to many not enabled yet
                 "text" => $text->message,
                 "messaging_profile_id" => env('TELNYX_PROFILE_ID'),
             ]);
