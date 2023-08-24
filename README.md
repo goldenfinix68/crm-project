@@ -74,3 +74,7 @@ php artisan vendor:publish
 php artisan vendor:publish --provider="Spatie\Activitylog\ActivitylogServiceProvider" --tag="migrations"
 
 php artisan vendor:publish --provider="Spatie\Activitylog\ActivitylogServiceProvider" --tag="config"
+
+.env ----
+ACTIVITY_LOGGER_ENABLED=true
+ACTIVITY_LOGGER_DB_CONNECTION=mysql
