@@ -110,7 +110,16 @@ import ContactsWall from "../ContactView/components/ContactsWall";
 import ContactContext from "../ContactView/context";
 import LoadingComponent from "../../components/LoadingComponent";
 import ActionsTabs from "../ContactView/components/ActionsTabs";
-
+import ModalAddDeal from "./components/ModalAddDeal";
+interface TDeals {
+    id: number;
+    title: string;
+    name: string;
+    value: string;
+    stage: string;
+    status: string;
+    owner: string;
+}
 interface DealsById {
     title: string;
     win_probabilty: string;
@@ -703,10 +712,42 @@ const DealDetail = () => {
             style: panelStyle,
         },
     ];
+
+    const [showModalAddDealValue, setshowModalAddDealValue] =
+        useState<string>("");
+    const [isModalOpenAddDeal, setIsModalOpenAddDeal] = useState(false);
+    const [modalValue, setModalValue] = useState(false);
+    const showModalAddDeal = () => {
+        setModalValue(deals.data);
+        setIsModalOpenAddDeal(true);
+    };
+
+    const [isTContact, setTContact] = useState<TDeals | null>(null);
+    const [isTitle, setTitle] = useState("");
+
+    const handleOkAddDeal = () => {
+        setIsModalOpenAddDeal(false);
+        queryClient.invalidateQueries("deals_by_id");
+    };
+
+    const handleCancelAddDeal = () => {
+        setIsModalOpenAddDeal(false);
+    };
+    const handleEditDeal = (record: any) => {
+        setTContact(record);
+    };
     const action: MenuProps["items"] = [
         {
             key: "1",
-            label: <div>Edit</div>,
+            label: (
+                <div
+                    onClick={() => {
+                        showModalAddDeal();
+                    }}
+                >
+                    Edit
+                </div>
+            ),
         },
         {
             key: "2",
@@ -717,6 +758,7 @@ const DealDetail = () => {
             label: <div>Delete</div>,
         },
     ];
+
     const panelStyle = {};
     const [stagingColor, setStagingColor] = useState({
         first: "none",
@@ -1032,6 +1074,14 @@ const DealDetail = () => {
                     handleOkContact={handleOkContact}
                     handleCancelContact={handleCancelContact}
                     dealId={"" + dealId}
+                />
+                <ModalAddDeal
+                    isModalOpenAdd={isModalOpenAddDeal}
+                    handleOkAdd={handleOkAddDeal}
+                    handleCancelAdd={handleCancelAddDeal}
+                    showModalAddDealValue={showModalAddDealValue}
+                    from={"update"}
+                    modalValue={modalValue}
                 />
             </Col>
         </Row>
