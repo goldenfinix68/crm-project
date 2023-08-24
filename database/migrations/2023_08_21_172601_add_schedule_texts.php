@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class DropContactIdUserIdTexts extends Migration
+class AddScheduleTexts extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,8 @@ class DropContactIdUserIdTexts extends Migration
     public function up()
     {
         Schema::table('texts', function (Blueprint $table) {
-            $table->dropColumn('contactId');
+            $table->boolean('queueLock')->default(false);
+            $table->string('schedule')->nullable();
         });
     }
 
@@ -26,7 +27,8 @@ class DropContactIdUserIdTexts extends Migration
     public function down()
     {
         Schema::table('texts', function (Blueprint $table) {
-            $table->string('contactId');
+            $table->dropColumn('queueLock');
+            $table->dropColumn('schedule');
         });
     }
 }

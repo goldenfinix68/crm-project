@@ -204,7 +204,10 @@ const NoteBox = ({ data }: { data: TWallData }) => {
 };
 
 const TextBox = ({ data }: { data: TWallData }) => {
-    const isSent = data.text?.type == "sent";
+    const header = () => {
+        if (data.text?.isFromApp) {
+        }
+    };
     return (
         <Card
             title={
@@ -216,11 +219,11 @@ const TextBox = ({ data }: { data: TWallData }) => {
                         }}
                         size={20}
                     >
-                        J
+                        {data?.text?.sender.charAt(0)}
                     </Avatar>{" "}
-                    {`Text ${data.text?.type} ${isSent ? "by" : "from"} ${
-                        data.text?.sender
-                    }`}
+                    {data.text?.isFromApp
+                        ? "Text Sent by " + data.text.sender
+                        : "Text Received from " + data.text?.sender}
                 </Typography.Text>
             }
             bordered={false}

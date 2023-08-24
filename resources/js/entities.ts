@@ -27,13 +27,16 @@ export type TText = {
     message: string;
     type: "sent" | "received" | "scheduled";
     sender: string;
-    receiver: string;
+    receivers: string;
     day: string;
     month: string;
     year: string;
     created_at: string;
     time: string;
     isFromApp: boolean;
+    status?: string;
+    telnyxResponse?: string;
+    schedule?: string;
 };
 
 export type TDeal = {

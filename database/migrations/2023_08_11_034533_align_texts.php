@@ -14,9 +14,9 @@ class AlignTexts extends Migration
     public function up()
     {
         Schema::table('texts', function (Blueprint $table) {
-            $table->string('telnyxId');
-            $table->string('status');
-            $table->longText('telnyxResponse');
+            $table->string('telnyxId')->nullable();
+            $table->string('status')->nullable();
+            $table->longText('telnyxResponse')->nullable();
         });
     }
 

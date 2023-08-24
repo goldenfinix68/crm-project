@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Text;
 use Auth;
+use Carbon\Carbon;
+use App\Jobs\SendText;
 
 class TextsController extends Controller
 {
@@ -47,23 +49,52 @@ class TextsController extends Controller
         $userId = Auth::id();
 
         try {
-            \Telnyx\Telnyx::setApiKey(env('TELNYX_API_KEY'));
+            if(empty($request->schedule)){
+                \Telnyx\Telnyx::setApiKey(env('TELNYX_API_KEY'));
 
-            $response = \Telnyx\Message::Create([
-                "from" => $request->from, // Your Telnyx number
-                "to" => $request->to,
-                "text" => "Hello, World!",
-                "messaging_profile_id" => env('TELNYX_PROFILE_ID'),
-            ]);
-            
-            $text = Text::create(array_merge($request->all(), [
-                'userId' => $userId, 
-                'type'=> 'SMS', 
-                'telnyxId' => $response->id,
-                'status' => 'queued',
-                'isFromApp' => true,
-                'telnyxResponse' => json_encode($response),
-            ]));
+                $response = \Telnyx\Message::Create([
+                    "from" => $request->from, // Your Telnyx number
+                    "to" => $request->to,
+                    "text" => $request->message,
+                    "messaging_profile_id" => env('TELNYX_PROFILE_ID'),
+                ]);
+                
+                $text = Text::create(array_merge($request->all(), [
+                    'userId' => $userId, 
+                    'type'=> 'SMS', 
+                    'telnyxId' => $response->id,
+                    'status' => 'queued',
+                    'isFromApp' => true,
+                    'telnyxResponse' => json_encode($response),
+                    "to" => '["' . $request->to . '"]',
+                ]));
+            }
+            else{
+                $givenTime = strtotime($request->schedule);
+                $currentTime = time();
+                $fiveMinutesFromNow = $currentTime + (5 * 60);
+                if ($givenTime >= $currentTime && $givenTime <= $fiveMinutesFromNow) {
+                    $text = Text::create(array_merge($request->all(), [
+                        'userId' => $userId, 
+                        'type'=> 'SMS', 
+                        'status' => 'scheduled',
+                        'isFromApp' => true,
+                        'queueLock' => true,
+                        "to" => '["' . $request->to . '"]',
+                    ]));
+                    $timeStartSeconds = $givenTime - $currentTime;
+                    $delayInSeconds = $timeStartSeconds + 1;
+					SendText::dispatch($text)->delay($delayInSeconds);
+                } else {
+                    $text = Text::create(array_merge($request->all(), [
+                        'userId' => $userId, 
+                        'type'=> 'SMS', 
+                        'status' => 'scheduled',
+                        'isFromApp' => true,
+                        "to" => '["' . $request->to . '"]',
+                    ]));
+                }
+            }
 
             
         } catch (\Exception $e) {
@@ -131,23 +162,34 @@ class TextsController extends Controller
         $json = json_decode(file_get_contents("php://input"), true);
         \Log::info($json);
 
-        $payload = $json['data']['payload'];
 
-        $recepients = array();
-        if(!empty($payload['to'])){
-            foreach($payload['to'] as $to){
-                $to[] = $to['phone_number'];
+        $payload = $json['data']['payload'];
+        if($json['data']['event_type'] == "message.finalized" || $json['data']['event_type'] == "message.sent"){
+            $text = Text::where('telnyxId', $payload['id'])->first();
+            if(!empty($text)){
+                $text->status = $json['data']['event_type'] == "message.finalized" ? "finalized" : "sent";
+                $text->save();
             }
         }
+        else if($json['data']['event_type'] == "message.received"){
+            $recepients = array();
+            if(!empty($payload['to'])){
+                foreach($payload['to'] as $to){
+                    $recepients[] = '"' . $to['phone_number'] . '"';
+                }
+            }
 
-        $text = new Text();
-        $text->telnyxId = $json['data']['id'];
-        $text->from = $payload['from']['phone_number'];
-        $text->to = '[' . implode (", ", $recepients) . ']';
-        $text->message = $payload['text'];
-        $text->telnyxResponse = json_encode($json);
-        $text->type = $payload['type'];
-        $text->status = 'received';
-        $text->save();
+            $text = new Text();
+            $text->telnyxId = $json['data']['id'];
+            $text->from = $payload['from']['phone_number'];
+            $text->to = '[' . implode (", ", $recepients) . ']';
+            $text->message = $payload['text'];
+            $text->telnyxResponse = json_encode($json);
+            $text->type = $payload['type'];
+            $text->status = 'received';
+            $text->save();
+        }
+
+        
     }
 }

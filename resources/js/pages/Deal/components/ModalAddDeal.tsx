@@ -63,8 +63,8 @@ interface Props {
     handleCancelAdd: () => void;
 
     showModalAddDealValue?: string;
-    from: string;
-    modalValue: any;
+    from?: string;
+    modalValue?: any;
 }
 
 const ModalAddDeal = ({

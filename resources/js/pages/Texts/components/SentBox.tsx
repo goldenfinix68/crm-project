@@ -3,10 +3,20 @@ import { Avatar, Button, Card, Empty, Space, Typography } from "antd";
 import { TText } from "../../../entities";
 import { useTexts } from "../../../api/query/textQuery";
 import { getTimeAgo } from "../../../helpers";
+import moment from "moment";
 
 const SentBox = ({ menu }) => {
     const { texts, isLoading } = useTexts();
-    const filteredTexts = texts?.filter((text) => text?.type == menu);
+    const getFilteredTexts = () => {
+        if (menu == "sent") {
+            return texts?.filter((text) => text?.isFromApp);
+        }
+        if (menu == "scheduled") {
+            return texts?.filter((text) => text?.status == "scheduled");
+        }
+        return [];
+    };
+    const filteredTexts = getFilteredTexts();
     return (
         <Space direction="vertical" style={{ margin: "12px", width: "95%" }}>
             {filteredTexts?.length ? (
@@ -62,13 +72,21 @@ const SentBoxItem = ({ text }: { text: TText }) => {
                     verticalAlign: "middle",
                 }}
             >
-                {text.receiver.charAt(0)}
+                {text.receivers.charAt(0)}
             </Avatar>
             <Space direction="vertical" size={0} style={{ width: "95%" }}>
                 <div>
-                    <Typography.Text strong>{text.receiver}</Typography.Text>
+                    <Typography.Text strong>{text.receivers}</Typography.Text>
                     <div style={{ float: "right" }}>
-                        {getTimeAgo(text.created_at)}
+                        {text.status == "scheduled" && text.schedule ? (
+                            <div style={{ float: "right" }}>
+                                {`Will be sent on ${moment(
+                                    text.schedule
+                                ).format("MMMM D, YYYY h:mm A")}`}
+                            </div>
+                        ) : (
+                            getTimeAgo(text.created_at)
+                        )}
                     </div>
                 </div>
                 <Typography.Text style={{ fontSize: "10px" }}>

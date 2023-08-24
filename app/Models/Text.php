@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 use App\Models\Contact;
+use App\Models\User;
 
 class Text extends Model
 {
@@ -21,10 +22,14 @@ class Text extends Model
         'status',
         'telnyxResponse',
         'userId',
+        'isFromApp',
+        'schedule',
+        'queueLock',
     ];
 
     protected $appends = [
         'sender', 
+        'receivers', 
         'day', 
         'month', 
         'year', 
@@ -38,12 +43,51 @@ class Text extends Model
 
     public function getSenderAttribute()
     {
-        $sender = Contact::where('mobile', $this->from)->first();
-        if(!empty($sender)){
-            return $sender->firstName . ' ' . $sender->lastName;
+        $from = $this->from;
+        if($this->isFromApp){
+            $senders = User::whereHas('mobileNumbers', function ($query) use ($from) {
+                $query->where('mobileNumber', $from);
+            })->get()->pluck('firstName', 'lastName');
+            
+            $names = $senders->map(function ($lastName, $firstName) {
+                return "$lastName $firstName";
+            })->implode(', ');
+        
+            return $names;
+        }
+        else{
+            $sender = Contact::where('mobile', $this->from)->first();
+            if(!empty($sender)){
+                return $sender->firstName . ' ' . $sender->lastName;
+            }
+            
+            return $this->from;
+        }
+    }
+
+    public function getReceiversAttribute()
+    {
+        $to = json_decode($this->to);
+        
+        if($this->isFromApp){
+            $receivers = Contact::whereIn('mobile', $to)->pluck('firstName', 'lastName');
+        }
+        else{           
+            $receivers = User::whereHas('mobileNumbers', function ($query) use ($to) {
+                $query->whereIn('mobileNumber', $to);
+            })->get()->pluck('firstName', 'lastName');
+        }
+        if(empty($receivers)){
+            return "Unknown";
+        }
+        else{
+            $names = $receivers->map(function ($lastName, $firstName) {
+                return "$lastName $firstName";
+            })->implode(', ');
+        
+            return $names;
         }
         
-        return $this->from;
     }
     
     public function getDayAttribute()
