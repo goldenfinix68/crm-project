@@ -125,19 +125,169 @@ const MergeContacts = () => {
 
     const location = useLocation();
     const receivedData = location.state?.data;
-    const title = "Master Record";
+    // const title = "Master Record";
+
+    const mergeData = [
+        "firstName",
+        "lastName",
+        "mobile",
+        "countryLink",
+        "acres",
+        "phone",
+        "owner",
+        "email2",
+        "type",
+        "mailingStreetAddress",
+        "emailOptOut",
+        "mailingCity",
+        "mailingState",
+        "emailOptOutReason",
+        "mailingZip",
+        "mailingCountry",
+        "subdivision",
+        "APN",
+        "gMapLink",
+        "roadFrontage",
+        "redfinLink",
+        "openingBid",
+        "assessedValue",
+        "assessedVsOpeningMargin",
+        "assessedVsOpeningMultiple",
+        "wetlandsStatus",
+        "legalDescription",
+        "legalSubdivision",
+        "floodzone",
+        "topography",
+        "wireless1",
+        "wireless2",
+        "wireless3",
+        "wireless4",
+        "landline1",
+        "landline2",
+        "landline3",
+        "landline4",
+        "marketAreaName",
+        "hoa/poa?",
+        "skype",
+        "linkedIn",
+        "instagram",
+        "detailsDescription",
+        "tags",
+        "detailsLegalDescription",
+        "addressLine1",
+        "city",
+        "county",
+        "state",
+        "email",
+        "jobTitle",
+        "otherPhone",
+        "smsOptOut",
+        "website",
+        "facebook",
+        "twitter",
+        "addressLine2",
+        "zipCode",
+        "country",
+    ];
+
+    const Title = [
+        "First Name",
+        "Last Name",
+        "Mobile",
+        "Country Link",
+        "Acres",
+        "Phone",
+        "Owner",
+        "Email 2",
+        "Type",
+        "Mailing Street Address",
+        "Email Opt Out",
+        "Mailing City",
+        "Mailing State",
+        "Email Opt Out Reason",
+        "Mailing Zip",
+        "Mailing Country",
+        "Subdivision",
+        "APN",
+        "Google Map Link",
+        "Road Frontage",
+        "Redfin Quick Link",
+        "Opening Bid",
+        "Assessed Value",
+        "Assessed vs. Opening Bid Margin (manual)",
+        "Assessed vs. Opening Bid Multiple (manual)",
+        "Wetlands Status",
+        "Legal Description",
+        "Legal Subdivision",
+        "Flood Zone",
+        "Topography",
+        "Wireless 1",
+        "Wireless 2",
+        "Wireless 3",
+        "Wireless 4",
+        "Landline 1",
+        "Landline 2",
+        "Landline 3",
+        "Landline 4",
+        "MarketAreaName",
+        "HOA/ POA?",
+        "Skype",
+        "LinkedIn",
+        "Instagram",
+        "Details Description",
+        "Tags",
+        "Details Legal Description",
+        "Address Line 1",
+        "City",
+        "County",
+        "State",
+        "Email",
+        "Job Title",
+        "Other Phone",
+        "SMS Opt Out",
+        "Website",
+        "Facebook",
+        "Twitter",
+        "Address Line 2",
+        "ZipCode",
+        "Country",
+    ];
 
     useEffect(() => {
         if (receivedData.length > 0) {
-            const title = Object.keys(receivedData[0]);
+            const mappeddata = receivedData.map((item) => {
+                const dataToArray = Object.entries(item);
+                const filteredData = dataToArray.filter(([key, value]) => {
+                    return mergeData.includes(key);
+                });
 
+                const filteredDataObject = Object.fromEntries(filteredData);
+
+                return filteredDataObject;
+            });
+
+            const dataToArray = Object.entries(receivedData[0]);
+            const filteredData = dataToArray.filter(([key, value]) => {
+                return mergeData.includes(key);
+            });
+
+            // const title = Object.keys(mappeddata[0]);
+
+            // console.log("asdasda", mappeddata);
             let new_data = {};
 
-            new_data = { title: title };
+            new_data = { title: Title };
 
-            receivedData.forEach((item, index) => {
+            let keysWithTitle: any = [["title", "Master Record"]];
+
+            mappeddata.forEach((item, index) => {
                 let temp_array = Object.values(item);
                 let key_element = "contact_" + index;
+
+                keysWithTitle.push([
+                    key_element,
+                    item.firstName + " " + item.lastName,
+                ]);
 
                 new_data = { ...new_data, [key_element]: temp_array };
             });
@@ -145,7 +295,7 @@ const MergeContacts = () => {
             const keys = Object.keys(new_data);
             const result: Object[] = [];
 
-            for (let i = 0; i < title.length; i++) {
+            for (let i = 0; i < Title.length; i++) {
                 let newObj = {};
 
                 keys.forEach((key) => {
@@ -158,8 +308,8 @@ const MergeContacts = () => {
             }
             setTableData(result);
 
-            let keysData = Object.keys(result[0]);
-            setTableDataKeys(keysData);
+            // let keysData = Object.keys(result[0]);
+            setTableDataKeys(keysWithTitle);
             // console.log(" title", result);
             // generateCol(result);
         }
@@ -176,11 +326,8 @@ const MergeContacts = () => {
     const [selectedKey, setSelectedKey] = useState<string>("");
 
     useEffect(() => {
-        if (allVariable) {
-            console.log("allVariable", allVariable);
-        }
+        console.log(allVariable);
     }, [allVariable]);
-
     const handleOnchangeRadio = (record: any, key: React.Key) => {
         setAllVariables((prevAllVariables) => ({
             ...prevAllVariables,
@@ -189,7 +336,6 @@ const MergeContacts = () => {
     };
 
     const handleCheckedRadio = (record: any, key: React.Key) => {
-        console.log("allVariable", allVariable);
         if (Object.keys(allVariable).length) {
             return allVariable[record["title"]] === record[key] ? true : false;
         }
@@ -214,14 +360,10 @@ const MergeContacts = () => {
                                         return (
                                             <Table.Column
                                                 key={key}
-                                                dataIndex={item}
-                                                title={
-                                                    item === "title"
-                                                        ? "Master Record"
-                                                        : item
-                                                }
+                                                dataIndex={item[0]}
+                                                title={item[1]}
                                                 render={(text, record) => {
-                                                    if (item === "title") {
+                                                    if (item[0] === "title") {
                                                         return (
                                                             <span>{text}</span>
                                                         );
@@ -231,12 +373,12 @@ const MergeContacts = () => {
                                                                 key={key}
                                                                 checked={handleCheckedRadio(
                                                                     record,
-                                                                    item
+                                                                    item[0]
                                                                 )}
                                                                 onChange={() => {
                                                                     handleOnchangeRadio(
                                                                         record,
-                                                                        item
+                                                                        item[0]
                                                                     );
                                                                 }}
                                                             >
