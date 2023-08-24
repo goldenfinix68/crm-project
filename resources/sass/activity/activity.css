@@ -454,4 +454,26 @@
 
 .text-area:before {
   content: "\ea82";
+}
+
+.timeline-btn {
+  border: 0px;
+  color: rgba(0, 0, 0, 0.88);
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.timeline-btn:hover {
+  border: 0px;
+  color: rgba(0, 0, 0, 0.88) !important;
+}
+
+.timeline-btn-active {
+  background-color: #403294 !important;
+  border: 0px !important;
+  color: #fff !important;
+}
+
+.timeline-btn-active:hover {
+  color: #fff !important;
 }/*# sourceMappingURL=activity.css.map */

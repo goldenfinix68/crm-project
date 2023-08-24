@@ -16,7 +16,10 @@ import {
     DatePicker,
     Drawer,
     Form,
+    Image,
     Input,
+    List,
+    Radio,
     Row,
     Select,
     Space,
@@ -201,6 +204,30 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
             setDrawerUpdateData(null);
         }
     }, [drawerUpdateData]);
+
+    const [timelineKey, setTimelineKey] = useState("All");
+    const handleChangeTimelineKey = (val) => {
+        setTimelineKey(val);
+    };
+
+    const handleDrawerClose = () => {
+        setDrawerUpdateOpen(false);
+    };
+
+    const handleGetClassName = (val: string) => {
+        return val === timelineKey ? "timeline-btn-active" : "";
+    };
+
+    const data = [
+        {
+            id: 1,
+            title: "Activity Created",
+            description: "by You",
+            user_id: 1,
+            user_image:
+                "https://files.salesmate.io/clinkup.salesmate.io/profilepic/0de525c9-f8b9-4f6b-a325-9d5264fc38d4.jpg",
+        },
+    ];
 
     const items: TabsProps["items"] = [
         {
@@ -654,13 +681,109 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
         {
             key: "2",
             label: `TIMELINE`,
-            children: `Content of Tab Pane 2`,
+            children: (
+                <Card
+                    bordered={false}
+                    style={{
+                        boxShadow: "none",
+                    }}
+                >
+                    <Row gutter={12}>
+                        <Col span={24} className="text-center">
+                            <Space>
+                                <Typography.Text>Showing : </Typography.Text>
+                                <Button
+                                    onClick={() =>
+                                        handleChangeTimelineKey("All")
+                                    }
+                                    shape="round"
+                                    className={`timeline-btn ${handleGetClassName(
+                                        "All"
+                                    )}`}
+                                >
+                                    All
+                                </Button>
+                                <Button
+                                    onClick={() =>
+                                        handleChangeTimelineKey("Notes")
+                                    }
+                                    shape="round"
+                                    className={`timeline-btn ${handleGetClassName(
+                                        "Notes"
+                                    )}`}
+                                >
+                                    Notes
+                                </Button>
+                                <Button
+                                    onClick={() =>
+                                        handleChangeTimelineKey("Emails")
+                                    }
+                                    shape="round"
+                                    className={`timeline-btn ${handleGetClassName(
+                                        "Emails"
+                                    )}`}
+                                >
+                                    Emails
+                                </Button>
+                                <Button
+                                    onClick={() =>
+                                        handleChangeTimelineKey("Files")
+                                    }
+                                    shape="round"
+                                    className={`timeline-btn ${handleGetClassName(
+                                        "Files"
+                                    )}`}
+                                >
+                                    Files
+                                </Button>
+                                <Button
+                                    onClick={() =>
+                                        handleChangeTimelineKey("Updates")
+                                    }
+                                    shape="round"
+                                    className={`timeline-btn ${handleGetClassName(
+                                        "Updates"
+                                    )}`}
+                                >
+                                    Updates
+                                </Button>
+                            </Space>
+                        </Col>
+
+                        <Col span={24} className="m-t-md">
+                            <List
+                                header={false}
+                                footer={false}
+                                bordered={false}
+                                dataSource={data}
+                                renderItem={(item) => (
+                                    <List.Item>
+                                        <Space size={15}>
+                                            <Image
+                                                src={item.user_image}
+                                                style={{
+                                                    width: 25,
+                                                    borderRadius: 100,
+                                                }}
+                                            />
+                                            <Space split={"-"}>
+                                                <Typography.Text strong>
+                                                    {item.title}
+                                                </Typography.Text>
+                                                <Typography.Text>
+                                                    {item.description}
+                                                </Typography.Text>
+                                            </Space>
+                                        </Space>
+                                    </List.Item>
+                                )}
+                            />
+                        </Col>
+                    </Row>
+                </Card>
+            ),
         },
     ];
-
-    const handleDrawerClose = () => {
-        setDrawerUpdateOpen(false);
-    };
 
     const handleFinish = (values: any) => {
         values = {
@@ -757,7 +880,7 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
                             }}
                         >
                             <Typography.Text style={{ fontSize: 25 }}>
-                                Title
+                                {drawerUpdateData?.title}
                             </Typography.Text>
                         </Col>
                     </Row>
@@ -771,34 +894,48 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
                                 justifyContent: "flex-end",
                             }}
                         ></Col>
-                        <Col span={20}>
-                            <Space>
-                                <Button
-                                    shape="circle"
-                                    size="large"
-                                    type="primary"
-                                >
-                                    <PhoneOutlined />
-                                </Button>
-                                <Button
-                                    shape="circle"
-                                    size="large"
-                                    type="primary"
-                                >
-                                    <MailOutlined />
-                                </Button>
-                                <Button
-                                    shape="circle"
-                                    size="large"
-                                    type="primary"
-                                >
-                                    <RedEnvelopeOutlined />
-                                </Button>
-                                <Button shape="circle" size="large">
-                                    <EllipsisOutlined />
-                                </Button>
+                        {/* <Col span={20}>
+                            <Space direction="vertical">
+                                <Space>
+                                    <Button
+                                        shape="circle"
+                                        size="large"
+                                        type="primary"
+                                    >
+                                        <PhoneOutlined />
+                                    </Button>
+                                    <Button
+                                        shape="circle"
+                                        size="large"
+                                        type="primary"
+                                    >
+                                        <MailOutlined />
+                                    </Button>
+                                    <Button
+                                        shape="circle"
+                                        size="large"
+                                        type="primary"
+                                    >
+                                        <RedEnvelopeOutlined />
+                                    </Button>
+                                    <Button shape="circle" size="large">
+                                        <EllipsisOutlined />
+                                    </Button>
+                                </Space>
+
+                                <Radio.Group value={"small"}>
+                                    <Radio.Button value="large">
+                                        Large
+                                    </Radio.Button>
+                                    <Radio.Button value="default">
+                                        Default
+                                    </Radio.Button>
+                                    <Radio.Button value="small">
+                                        Small
+                                    </Radio.Button>
+                                </Radio.Group>
                             </Space>
-                        </Col>
+                        </Col> */}
                     </Row>
                 </Card>
 
