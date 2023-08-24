@@ -239,7 +239,7 @@ $base: 15px;
 
 .breadcrumb a.none:hover,
 .breadcrumb a.none:hover:after {
-    background-color: #d8d3d3;
+    background-color: #b8b7b7;
 }
 
 .breadcrumb a.active {
@@ -382,3 +382,6 @@ $base: 15px;
 //         transform: scale(0.707) rotate(45deg);
 //     }
 // }
+.ant-popover.ant-popconfirm {
+    z-index: 100000;
+}

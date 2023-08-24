@@ -90,6 +90,7 @@ import {
     useDealMutationAddTeammate,
     useDealMutationDeleteTeammate,
     useDealMutationUpdateStage,
+    useDealMutationDeleteDeal,
 } from "../../api/mutation/useDealMutation";
 import moment from "moment";
 import DealsTable from "./components/DealsTable";
@@ -736,6 +737,22 @@ const DealDetail = () => {
     const handleEditDeal = (record: any) => {
         setTContact(record);
     };
+
+    const deleteContact = useMutation(useDealMutationDeleteDeal, {
+        onSuccess: () => {
+            console.log("success");
+            queryClient.invalidateQueries("deals_by_id");
+            notification.success({
+                message: "Success",
+                description: "Deal Successfully Deleted",
+            });
+            navigate("/deals");
+        },
+    });
+    const handleDelete = () => {
+        deleteContact.mutate({ deals_id: [dealId] });
+    };
+    const [isDropdownVisible, setDropdownVisible] = useState(false);
     const action: MenuProps["items"] = [
         {
             key: "1",
@@ -743,19 +760,37 @@ const DealDetail = () => {
                 <div
                     onClick={() => {
                         showModalAddDeal();
+                        setDropdownVisible(true);
                     }}
                 >
                     Edit
                 </div>
             ),
         },
-        {
-            key: "2",
-            label: <div>Clone</div>,
-        },
+        // {
+        //     key: "2",
+        //     label: <div>Clone</div>,
+        // },
         {
             key: "3",
-            label: <div>Delete</div>,
+            label: (
+                <div
+                    onClick={() => {
+                        setDropdownVisible(true);
+                    }}
+                >
+                    {" "}
+                    <Popconfirm
+                        title="Delete"
+                        description="Are you sure to delete this deal?"
+                        onConfirm={handleDelete}
+                        okText="Yes"
+                        cancelText="No"
+                    >
+                        Delete
+                    </Popconfirm>
+                </div>
+            ),
         },
     ];
 
@@ -877,8 +912,11 @@ const DealDetail = () => {
                             </span>
                             <span style={{ marginRight: 10 }}>
                                 <Dropdown
+                                    visible={isDropdownVisible}
+                                    onVisibleChange={setDropdownVisible}
                                     menu={{ items: action }}
                                     placement="bottomLeft"
+                                    trigger={["click"]}
                                 >
                                     <Button>
                                         <Space>
