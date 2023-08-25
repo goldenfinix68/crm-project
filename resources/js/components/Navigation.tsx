@@ -106,6 +106,31 @@ const Navigation: React.FC = () => {
               },
           ];
 
+    const [isDropdownVisible, setDropdownVisible] = useState(false);
+    const handleSignOut = () => {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("userdata");
+        location.href = window.location.origin;
+    };
+    const profile: MenuProps["items"] = [
+        {
+            key: "1",
+            label: (
+                <div
+                    onClick={() => {
+                        handleSignOut();
+                    }}
+                >
+                    Sign out
+                </div>
+            ),
+        },
+        // {
+        //     key: "2",
+        //     label: <div>Clone</div>,
+        // },
+    ];
+
     return (
         <>
             <Row gutter={12}>
@@ -139,18 +164,25 @@ const Navigation: React.FC = () => {
                                 <NavigationComponentsQuickAdd />
 
                                 <NavigationComponentsCall />
-
-                                <Image
-                                    src={
-                                        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-                                    }
-                                    style={{
-                                        height: 50,
-                                        width: 50,
-                                        borderRadius: 100,
-                                    }}
-                                    preview={false}
-                                />
+                                <Dropdown
+                                    visible={isDropdownVisible}
+                                    onVisibleChange={setDropdownVisible}
+                                    menu={{ items: profile }}
+                                    placement="bottomLeft"
+                                    trigger={["click"]}
+                                >
+                                    <Image
+                                        src={
+                                            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                                        }
+                                        style={{
+                                            height: 50,
+                                            width: 50,
+                                            borderRadius: 100,
+                                        }}
+                                        preview={false}
+                                    />
+                                </Dropdown>
                             </Space>
                         </Col>
                     </Row>
