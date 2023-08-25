@@ -104,7 +104,6 @@ public function index(Request $request)
 
         $data = $request->all();
 
-        error_log(json_encode($data));
         if (isset($data['tags'])) {
             $data['tags'] = json_encode($data['tags']);
         }
@@ -194,5 +193,40 @@ public function index(Request $request)
                 'success' => true,
                 'data' => $data
             ]);
+    }
+
+    public function merge_contacts(Request $request){
+
+
+        error_log('asdasd'.json_encode($request->id));
+        $user= auth()->user();
+
+
+        $contactData = $request->data;
+
+        $contactData['ownerId'] = $user->id;
+        if(isset( $contactData['tags'])){
+            if(is_array( $contactData['tags'])){
+                $contactData['tags'] = json_encode( $contactData['tags']);
+            }
+        }
+      
+        
+        error_log(json_encode($contactData));
+
+
+        $contact = Contact::create($contactData);
+
+        if($contact){
+            $deletedContacts = [];
+            foreach ($request->id as $key => $value) {
+               $deletedContacts[] =  Contact::find($value)->delete();
+            }
+        }
+        
+
+
+        return response()->json(['deleted' =>$deletedContacts, 'added' =>  $contact],200);
+
     }
 }

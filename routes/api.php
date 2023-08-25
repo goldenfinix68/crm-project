@@ -26,6 +26,8 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('/users', 'App\Http\Controllers\Api\UsersController');
     Route::resource('/contacts', 'App\Http\Controllers\Api\ContactsController');
     Route::post('/contacts/delete', 'App\Http\Controllers\Api\ContactsController@delete_contacts');
+    Route::post('/contacts/mergeContacts', 'App\Http\Controllers\Api\ContactsController@merge_contacts');
+
 
     Route::resource('/contact-types', 'App\Http\Controllers\Api\ContactTypesController');
     Route::resource('/deals', 'App\Http\Controllers\Api\DealsController');
