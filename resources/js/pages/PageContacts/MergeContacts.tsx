@@ -254,6 +254,8 @@ const MergeContacts = () => {
         country: "Country",
     };
 
+    const keyWithBoolean = ["emailOptOut", "floodzone", "smsOptOut"];
+
     useEffect(() => {
         if (receivedData.length > 0) {
             const mappeddata = receivedData.map((item) => {
@@ -398,13 +400,29 @@ const MergeContacts = () => {
                                                                     item[0]
                                                                 )}
                                                                 onChange={() => {
+                                                                    console.log(
+                                                                        "asdadasd",
+                                                                        record &&
+                                                                            record[
+                                                                                "title"
+                                                                            ]
+                                                                    );
                                                                     handleOnchangeRadio(
                                                                         record,
                                                                         item[0]
                                                                     );
                                                                 }}
                                                             >
-                                                                {text}
+                                                                {keyWithBoolean.includes(
+                                                                    record &&
+                                                                        record[
+                                                                            "title"
+                                                                        ]
+                                                                )
+                                                                    ? text == 1
+                                                                        ? "Yes"
+                                                                        : "No"
+                                                                    : text}
                                                             </Radio>
                                                         );
                                                     }
