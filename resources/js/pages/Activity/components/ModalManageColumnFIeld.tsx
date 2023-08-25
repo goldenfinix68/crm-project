@@ -1,7 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Col, Input, List, Modal, Row, Space, Typography } from "antd";
+import {
+    Button,
+    Checkbox,
+    Col,
+    Empty,
+    Form,
+    Input,
+    List,
+    Modal,
+    Row,
+    Select,
+    Space,
+    Typography,
+} from "antd";
 import { FIELD_TYPE_LIST } from "../../../constants";
-
+import validateRules from "../../../providers/validateRules";
 interface ModalManageColumnFIeldProps {
     modalManageColumnField: any;
     setModalManageColumnField: any;
@@ -26,18 +39,48 @@ const ModalManageColumnFIeld: React.FC<ModalManageColumnFIeldProps> = (
             );
 
             setFieldTypeList(filteredColumns);
-            // if (FIELD_TYPE_LIST.length > 0) {
-            // } else {
-            //     setFieldTypeList(FIELD_TYPE_LIST);
-            // }
         } else {
             setFieldTypeList(FIELD_TYPE_LIST);
         }
     };
 
-    useEffect(() => {
-        console.log("fieldTypeList", fieldTypeList);
-    }, [fieldTypeList]);
+    const [dataCustomField, setDataCustomField] = useState({
+        type: "",
+        name: "",
+        label: "",
+        values: "",
+        section: "",
+        association_type: "",
+        related_record_label: "",
+        required: false,
+    });
+    const [selectedType, setSelectedType] = useState(null);
+
+    const handleSelectField = (values: any) => {
+        setSelectedType(values);
+        let data = {
+            ...modalManageColumnField,
+            title: "Add Custom Field",
+            step: 2,
+        };
+        setModalManageColumnField(data);
+
+        let customField = {
+            ...dataCustomField,
+            type: values.type,
+        };
+        setDataCustomField(customField);
+    };
+
+    const changeSelectField = () => {
+        setSelectedType(null);
+        let data = {
+            ...modalManageColumnField,
+            title: "Select Field Type",
+            step: 1,
+        };
+        setModalManageColumnField(data);
+    };
 
     return (
         <Modal
@@ -49,6 +92,22 @@ const ModalManageColumnFIeld: React.FC<ModalManageColumnFIeldProps> = (
             open={modalManageColumnField.show}
             onCancel={() => handleOpenManageColumnFieldClose()}
             className="manage-column-field"
+            footer={
+                modalManageColumnField.step === 1 ? (
+                    false
+                ) : (
+                    <Space key={"btn"}>
+                        <Button
+                            type="primary"
+                            // onClick={() => resetSelectColumns(true)}
+                        >
+                            Save
+                        </Button>
+
+                        <Button>Cancel</Button>
+                    </Space>
+                )
+            }
         >
             {modalManageColumnField.step === 1 ? (
                 <>
@@ -70,12 +129,21 @@ const ModalManageColumnFIeld: React.FC<ModalManageColumnFIeldProps> = (
                         <Col span={24} className="m-t-md">
                             <FieldTypeListComponent
                                 fieldTypeList={fieldTypeList}
+                                handleSelectField={handleSelectField}
                             />
                         </Col>
                     </Row>
                 </>
             ) : (
-                <></>
+                <>
+                    <Form layout="vertical">
+                        <AddCustomFieldForm
+                            selectedType={selectedType}
+                            modalManageColumnField={modalManageColumnField}
+                            changeSelectField={changeSelectField}
+                        />
+                    </Form>
+                </>
             )}
         </Modal>
     );
@@ -85,11 +153,13 @@ export default ModalManageColumnFIeld;
 
 interface FieldTypeListComponentProps {
     fieldTypeList: [];
+    handleSelectField: any;
 }
+
 const FieldTypeListComponent: React.FC<FieldTypeListComponentProps> = (
     props
 ) => {
-    const { fieldTypeList } = props;
+    const { fieldTypeList, handleSelectField } = props;
     return (
         <>
             <List
@@ -100,7 +170,11 @@ const FieldTypeListComponent: React.FC<FieldTypeListComponentProps> = (
                 bordered
                 dataSource={fieldTypeList}
                 renderItem={(item: any) => (
-                    <List.Item>
+                    <List.Item
+                        onClick={() => {
+                            handleSelectField(item);
+                        }}
+                    >
                         {/* <Row gutter={12} className="w-100">
                             <Col span={2}>
                                 <span className={item.icon} />
@@ -119,6 +193,54 @@ const FieldTypeListComponent: React.FC<FieldTypeListComponentProps> = (
                     </List.Item>
                 )}
             />
+        </>
+    );
+};
+
+interface AddCustomFieldFormProps {
+    selectedType: any;
+    modalManageColumnField: any;
+    changeSelectField: any;
+}
+const AddCustomFieldForm: React.FC<AddCustomFieldFormProps> = (props) => {
+    const { selectedType, modalManageColumnField, changeSelectField } = props;
+    return (
+        <>
+            <Space className="m-b-sm">
+                <Typography.Text strong>
+                    {`${selectedType.type} `}field for Activities
+                </Typography.Text>
+                <Button
+                    type="link"
+                    className="p-l-none"
+                    onClick={() => changeSelectField()}
+                >
+                    Change
+                </Button>
+            </Space>
+
+            <Form.Item
+                name={"label"}
+                label="Label"
+                rules={[validateRules.required]}
+            >
+                <Input />
+            </Form.Item>
+
+            <Form.Item
+                name={"section_name"}
+                label="Section Name"
+                rules={[validateRules.required]}
+                initialValue={"Default"}
+            >
+                <Select>
+                    <Select.Option value="Default">Default</Select.Option>
+                </Select>
+            </Form.Item>
+
+            <Form.Item name={"required"}>
+                <Checkbox>Required</Checkbox>
+            </Form.Item>
         </>
     );
 };
