@@ -132,6 +132,7 @@ const ActivityTable = () => {
         search: "",
         sort_field: "id",
         sort_order: "asc",
+        status: "Active",
     });
 
     const { dataSource, isLoadingUsers, refetchUsers, isFetchingUsers } =

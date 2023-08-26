@@ -44,6 +44,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import {
     useContactsList,
     useDealsList,
+    usePeopleList,
     useUsersList,
 } from "../../../api/query/activityQuery";
 import { addActivityMutation } from "../../../api/mutation/useActivityMutation";
@@ -105,17 +106,17 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
     const { dataUsers, isLoadingUsers } = useUsersList();
     const { dataContacts, isLoadingContacts } = useContactsList();
     const { dataDeals, isLoadingDeals } = useDealsList();
+    const { dataPeople, isLoadingPeople } = usePeopleList();
 
     const queryClient = useQueryClient();
     const [form] = Form.useForm();
     const [calendarOptions, setCalendarOptions] = useState(false);
     const onChange = (key: string) => {
-        console.log(key);
+        // console.log(key);
     };
 
     useEffect(() => {
         if (drawerUpdateData) {
-            console.log("drawerUpdateData", drawerUpdateData);
             const invitees: string[] = [];
             if (drawerUpdateData?.activity_invitees.length > 0) {
                 drawerUpdateData?.activity_invitees.map(
@@ -383,13 +384,26 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
                                             placeholder="Add invitees"
                                             mode="tags"
                                             showSearch
+                                            loading={isLoadingPeople}
                                         >
-                                            <Select.Option
-                                                value="Call"
-                                                search="Call"
-                                            >
-                                                Call
-                                            </Select.Option>
+                                            {dataPeople?.data &&
+                                                dataPeople?.data.map(
+                                                    (
+                                                        item: any,
+                                                        key: React.Key
+                                                    ) => {
+                                                        let data = `${item.firstName} ${item.lastName}`;
+                                                        return (
+                                                            <Select.Option
+                                                                key={key}
+                                                                value={data}
+                                                                search={data}
+                                                            >
+                                                                {data}
+                                                            </Select.Option>
+                                                        );
+                                                    }
+                                                )}
                                         </Select>
                                     </Form.Item>
                                 </Col>
@@ -631,18 +645,23 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
                                         placeholder="Add Followers"
                                         showSearch
                                         mode="multiple"
+                                        loading={isLoadingPeople}
                                     >
-                                        {optionAvailability.map((item, key) => {
-                                            return (
-                                                <Select.Option
-                                                    key={key}
-                                                    value={item.value}
-                                                    search={item.label}
-                                                >
-                                                    {item.label}
-                                                </Select.Option>
-                                            );
-                                        })}
+                                        {dataPeople?.data &&
+                                            dataPeople?.data.map(
+                                                (item: any, key: React.Key) => {
+                                                    let data = `${item.firstName} ${item.lastName}`;
+                                                    return (
+                                                        <Select.Option
+                                                            key={key}
+                                                            value={data}
+                                                            search={data}
+                                                        >
+                                                            {data}
+                                                        </Select.Option>
+                                                    );
+                                                }
+                                            )}
                                     </Select>
                                 </Form.Item>
                             </Col>

@@ -97,3 +97,26 @@ export const useDealsList = () => {
         refetchDeals: refetch,
     };
 };
+
+export const usePeopleList = () => {
+    const { data, isLoading, isError, refetch } = useQuery(
+        "get_people",
+        async () => {
+            const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+            const response = await axios.get(`/api/get_people`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+
+            return response.data;
+        }
+    );
+
+    return {
+        dataPeople: data,
+        isLoadingPeople: isLoading,
+        isErrorPeople: isError,
+        refetchPeople: refetch,
+    };
+};
