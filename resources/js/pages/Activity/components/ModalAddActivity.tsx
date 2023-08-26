@@ -48,6 +48,7 @@ import { addActivityMutation } from "../../../api/mutation/useActivityMutation";
 import {
     useContactsList,
     useDealsList,
+    usePeopleList,
     useUsersList,
 } from "../../../api/query/activityQuery";
 import { an } from "@fullcalendar/core/internal-common";
@@ -174,10 +175,7 @@ const ModalAddActivity = ({
     const { dataUsers, isLoadingUsers } = useUsersList();
     const { dataContacts, isLoadingContacts } = useContactsList();
     const { dataDeals, isLoadingDeals } = useDealsList();
-
-    useEffect(() => {
-        console.log("dataDeals", dataDeals);
-    }, [dataDeals]);
+    const { dataPeople, isLoadingPeople } = usePeopleList();
 
     const halderAfterClose = () => {
         setCalendarOptions(false);
@@ -563,13 +561,26 @@ const ModalAddActivity = ({
                                             placeholder="Add invitees"
                                             mode="tags"
                                             showSearch
+                                            loading={isLoadingPeople}
                                         >
-                                            <Select.Option
-                                                value="Call"
-                                                search="Call"
-                                            >
-                                                Call
-                                            </Select.Option>
+                                            {dataPeople?.data &&
+                                                dataPeople?.data.map(
+                                                    (
+                                                        item: any,
+                                                        key: React.Key
+                                                    ) => {
+                                                        let data = `${item.firstName} ${item.lastName}`;
+                                                        return (
+                                                            <Select.Option
+                                                                key={key}
+                                                                value={data}
+                                                                search={data}
+                                                            >
+                                                                {data}
+                                                            </Select.Option>
+                                                        );
+                                                    }
+                                                )}
                                         </Select>
                                     </Form.Item>
                                 </Col>
@@ -811,18 +822,23 @@ const ModalAddActivity = ({
                                         placeholder="Add Followers"
                                         showSearch
                                         mode="multiple"
+                                        loading={isLoadingPeople}
                                     >
-                                        {optionAvailability.map((item, key) => {
-                                            return (
-                                                <Select.Option
-                                                    key={key}
-                                                    value={item.value}
-                                                    search={item.label}
-                                                >
-                                                    {item.label}
-                                                </Select.Option>
-                                            );
-                                        })}
+                                        {dataPeople?.data &&
+                                            dataPeople?.data.map(
+                                                (item: any, key: React.Key) => {
+                                                    let data = `${item.firstName} ${item.lastName}`;
+                                                    return (
+                                                        <Select.Option
+                                                            key={key}
+                                                            value={data}
+                                                            search={data}
+                                                        >
+                                                            {data}
+                                                        </Select.Option>
+                                                    );
+                                                }
+                                            )}
                                     </Select>
                                 </Form.Item>
                             </Col>

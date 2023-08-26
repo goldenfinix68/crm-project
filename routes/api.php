@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use ElephantIO\Client;
+use Illuminate\Support\Facades\DB;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -159,4 +161,20 @@ Route::get('/mail_test', function (Request $request) {
     // event(new \App\Events\SendMailEvent($data));
 
     echo  env('MAIL_HOST');
+});
+
+// Do not remove this code
+Route::get('/get_people', function (Request $request) {
+    $data = \App\Models\User::select([
+        'id',
+        'firstName',
+        'lastName',
+    ])
+    ->union(DB::table('contacts')->select('id', 'firstName', 'lastName'))
+    ->get();
+
+    return response()->json([
+        'success' => true,
+        'data' => $data,
+    ], 200);
 });
