@@ -15,6 +15,8 @@ import {
 } from "antd";
 import { FIELD_TYPE_LIST } from "../../../constants";
 import validateRules from "../../../providers/validateRules";
+import { addActivityCustomeFieldMutation } from "../../../api/mutation/useActivityMutation";
+import { useMutation, useQueryClient } from "react-query";
 interface ModalManageColumnFIeldProps {
     modalManageColumnField: any;
     setModalManageColumnField: any;
@@ -30,8 +32,9 @@ const ModalManageColumnFIeld: React.FC<ModalManageColumnFIeldProps> = (
         handleOpenManageColumnFieldClose,
     } = props;
 
+    const queryClient = useQueryClient();
     const [fieldTypeList, setFieldTypeList]: any = useState(FIELD_TYPE_LIST);
-
+    const [form] = Form.useForm();
     const onSeachFields = (value: string) => {
         if (value) {
             let filteredColumns = FIELD_TYPE_LIST.filter((str: any) =>
@@ -47,12 +50,12 @@ const ModalManageColumnFIeld: React.FC<ModalManageColumnFIeldProps> = (
     const [dataCustomField, setDataCustomField] = useState({
         type: "",
         name: "",
-        label: "",
-        values: "",
-        section: "",
-        association_type: "",
-        related_record_label: "",
-        required: false,
+        // label: "",
+        // values: "",
+        // section: "",
+        // association_type: "",
+        // related_record_label: "",
+        // required: false,
     });
     const [selectedType, setSelectedType] = useState(null);
 
@@ -82,6 +85,19 @@ const ModalManageColumnFIeld: React.FC<ModalManageColumnFIeldProps> = (
         setModalManageColumnField(data);
     };
 
+    const onFinish = (values: any) => {
+        console.log("onFinish", values);
+
+        addCustomField.mutate(values);
+    };
+
+    const addCustomField = useMutation(addActivityCustomeFieldMutation, {
+        onSuccess: (res) => {
+            console.log("addCustomField", res);
+            queryClient.invalidateQueries("get_activity_custom_field");
+        },
+    });
+
     return (
         <Modal
             title={
@@ -99,7 +115,20 @@ const ModalManageColumnFIeld: React.FC<ModalManageColumnFIeldProps> = (
                     <Space key={"btn"}>
                         <Button
                             type="primary"
-                            // onClick={() => resetSelectColumns(true)}
+                            onClick={() => {
+                                form.validateFields()
+                                    .then((values) => {
+                                        values = {
+                                            ...values,
+                                            ...dataCustomField,
+                                            name: values.label
+                                                .replace(/ /g, "_")
+                                                .toLowerCase(),
+                                        };
+                                        onFinish(values);
+                                    })
+                                    .catch((info) => {});
+                            }}
                         >
                             Save
                         </Button>
@@ -136,7 +165,13 @@ const ModalManageColumnFIeld: React.FC<ModalManageColumnFIeldProps> = (
                 </>
             ) : (
                 <>
-                    <Form layout="vertical">
+                    <Form
+                        layout="vertical"
+                        form={form}
+                        initialValues={{
+                            required: false,
+                        }}
+                    >
                         <AddCustomFieldForm
                             selectedType={selectedType}
                             modalManageColumnField={modalManageColumnField}
@@ -238,8 +273,26 @@ const AddCustomFieldForm: React.FC<AddCustomFieldFormProps> = (props) => {
                 </Select>
             </Form.Item>
 
-            <Form.Item name={"required"}>
-                <Checkbox>Required</Checkbox>
+            {selectedType.type === "Select" && (
+                <Row gutter={24}>
+                    <Col span={12}>
+                        <Form.Item name="values" label="Pick list values">
+                            <Input.TextArea rows={5} />
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={12} className="p-t-md">
+                        <Typography.Text style={{ fontSize: 12 }}>
+                            ter one per line, for example (about Customer
+                            Industry): Accounting Health Care Information
+                            Technology
+                        </Typography.Text>
+                    </Col>
+                </Row>
+            )}
+
+            <Form.Item name={"required"} valuePropName="checked">
+                <Checkbox checked={false}>Required</Checkbox>
             </Form.Item>
         </>
     );

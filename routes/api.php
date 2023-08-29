@@ -56,6 +56,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+
+    Route::resource('/activity_custome_fields', 'App\Http\Controllers\Api\ActivityCustomFieldController');
 });
 
 Route::post('/telnyx/sms/webhook', 'App\Http\Controllers\Api\TextsController@textReceived');

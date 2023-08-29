@@ -31,6 +31,7 @@ import { CloseOutlined, HolderOutlined } from "@ant-design/icons";
 import { json } from "react-router-dom";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import { COLUMN_LIST } from "../../../constants";
+import { useActivutyCustomField } from "../../../api/query/activityQuery";
 
 interface DragEndResult {
     source: DraggableLocation;
@@ -177,15 +178,29 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
     };
 
     const onSeachColumns = (value: string) => {
+        let list = [...COLUMN_LIST];
+        dataCustomField?.data.map((item: any) => {
+            list.push(item.label);
+        });
         if (value) {
-            let filteredColumns = COLUMN_LIST.filter((str) =>
+            let filteredColumns = list.filter((str) =>
                 str.toLowerCase().includes(value.toLowerCase())
             );
             setCheckboxList(filteredColumns);
         } else {
-            setCheckboxList(COLUMN_LIST);
+            setCheckboxList(list);
         }
     };
+
+    const { dataCustomField, isLoadingCustomField } = useActivutyCustomField();
+
+    useEffect(() => {
+        let list = [...COLUMN_LIST];
+        dataCustomField?.data.map((item: any) => {
+            list.push(item.label);
+        });
+        setCheckboxList(list);
+    }, [dataCustomField]);
 
     return (
         <Modal
@@ -264,9 +279,6 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
                                     event.target.value ? event.target.value : ""
                                 );
                             }}
-                            // onSearch={(event: string) => {
-                            //     onSeachColumns(event);
-                            // }}
                         />
                     </Space>
 
@@ -318,6 +330,7 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
                                     Title
                                 </Checkbox>
                             </Col>
+
                             <Col
                                 span={24}
                                 className={handleCheckCheckboxList("Duration")}
@@ -334,6 +347,7 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
                                     Duration
                                 </Checkbox>
                             </Col>
+
                             <Col
                                 span={24}
                                 className={handleCheckCheckboxList("Owner")}
@@ -350,6 +364,7 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
                                     Owner
                                 </Checkbox>
                             </Col>
+
                             <Col
                                 span={24}
                                 className={handleCheckCheckboxList(
@@ -370,6 +385,7 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
                                     Availability
                                 </Checkbox>
                             </Col>
+
                             <Col
                                 span={24}
                                 className={handleCheckCheckboxList(
@@ -390,6 +406,7 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
                                     Start Date
                                 </Checkbox>
                             </Col>
+
                             <Col
                                 span={24}
                                 className={handleCheckCheckboxList("Location")}
@@ -406,6 +423,7 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
                                     Location
                                 </Checkbox>
                             </Col>
+
                             <Col
                                 span={24}
                                 className={handleCheckCheckboxList("Type")}
@@ -422,6 +440,7 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
                                     Type
                                 </Checkbox>
                             </Col>
+
                             <Col
                                 span={24}
                                 className={handleCheckCheckboxList(
@@ -442,6 +461,7 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
                                     Video Conferencing
                                 </Checkbox>
                             </Col>
+
                             <Col
                                 span={24}
                                 className={handleCheckCheckboxList(
@@ -462,6 +482,7 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
                                     Title (Deal)
                                 </Checkbox>
                             </Col>
+
                             <Col
                                 span={24}
                                 className={handleCheckCheckboxList(
@@ -482,6 +503,7 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
                                     Name (Contact)
                                 </Checkbox>
                             </Col>
+
                             <Col
                                 span={24}
                                 className={handleCheckCheckboxList("Tags")}
@@ -498,6 +520,7 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
                                     Tags
                                 </Checkbox>
                             </Col>
+
                             <Col
                                 span={24}
                                 className={handleCheckCheckboxList("End Date")}
@@ -515,13 +538,36 @@ const ModalManageColumn: React.FC<ModalManageColumnProps> = ({
                                 </Checkbox>
                             </Col>
 
-                            {/* custom fields start */}
-                            {/* <Col span={24}>
-                                <Space className="w-100 custom-column-field">
-                                    <Checkbox value={"Owner"}>Owner</Checkbox>
-                                    <FontAwesomeIcon icon={faTrashAlt} />
-                                </Space>
-                            </Col> */}
+                            {dataCustomField &&
+                                dataCustomField.data &&
+                                dataCustomField.data.length > 0 &&
+                                dataCustomField.data.map(
+                                    (item: any, key: React.Key) => {
+                                        return (
+                                            <Col
+                                                key={key}
+                                                span={24}
+                                                className={handleCheckCheckboxList(
+                                                    item.label
+                                                )}
+                                            >
+                                                <Checkbox
+                                                    checked={checkCheckBoxSetValue(
+                                                        item.label
+                                                    )}
+                                                    onChange={(e: any) => {
+                                                        onChangeCheckbox(
+                                                            item.label,
+                                                            e.target.checked
+                                                        );
+                                                    }}
+                                                >
+                                                    {item.label}
+                                                </Checkbox>
+                                            </Col>
+                                        );
+                                    }
+                                )}
                         </Row>
 
                         <Row gutter={[12, 12]} className="m-t-md">

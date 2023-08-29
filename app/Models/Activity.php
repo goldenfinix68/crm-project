@@ -8,32 +8,33 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Activity extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory;
+    // use HasFactory, LogsActivity;
 
     //history custom
-    protected static $logAttributes = [
-        "title",
-        "type",
-        "start_date",
-        "end_date",
-        "start_time",
-        "end_time",
-        "location",
-        "video_conferencing",
-        "recurrence",
-        "availability",
-        "internal_note",
-        "owner_id",
-        "deal_id",
-        "contact_id",
-        "status",
-        "completed_date",
-        "created_longitude",
-        "created_latitude",
-        "created_address",
-    ];
-    protected static $logName = "activity";
-    protected static $logOnlyDirty = true;
+    // protected static $logAttributes = [
+    //     "title",
+    //     "type",
+    //     "start_date",
+    //     "end_date",
+    //     "start_time",
+    //     "end_time",
+    //     "location",
+    //     "video_conferencing",
+    //     "recurrence",
+    //     "availability",
+    //     "internal_note",
+    //     "owner_id",
+    //     "deal_id",
+    //     "contact_id",
+    //     "status",
+    //     "completed_date",
+    //     "created_longitude",
+    //     "created_latitude",
+    //     "created_address",
+    // ];
+    // protected static $logName = "activity";
+    // protected static $logOnlyDirty = true;
     // protected static $recordEvents = ['deleted'];
 
     protected $guarded = [];
