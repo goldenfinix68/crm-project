@@ -120,3 +120,26 @@ export const usePeopleList = () => {
         refetchPeople: refetch,
     };
 };
+
+export const useActivutyCustomField = () => {
+    const { data, isLoading, isError, refetch } = useQuery(
+        "get_activity_custom_field",
+        async () => {
+            const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+            const response = await axios.get(`/api/activity_custome_fields`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+
+            return response.data;
+        }
+    );
+
+    return {
+        dataCustomField: data,
+        isLoadingCustomField: isLoading,
+        isErrorCustomField: isError,
+        refetchCustomField: refetch,
+    };
+};
