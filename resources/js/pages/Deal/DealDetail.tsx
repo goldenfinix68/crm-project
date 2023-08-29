@@ -716,6 +716,8 @@ const DealDetail = () => {
 
     const [showModalAddDealValue, setshowModalAddDealValue] =
         useState<string>("");
+    const [showModalAddDealValueFrom, setshowModalAddDealValueFrom] =
+        useState<string>("add");
     const [isModalOpenAddDeal, setIsModalOpenAddDeal] = useState(false);
     const [modalValue, setModalValue] = useState(false);
     const showModalAddDeal = () => {
@@ -760,6 +762,7 @@ const DealDetail = () => {
                 <div
                     onClick={() => {
                         showModalAddDeal();
+                        setshowModalAddDealValueFrom("update");
                         setDropdownVisible(true);
                     }}
                 >
@@ -767,10 +770,20 @@ const DealDetail = () => {
                 </div>
             ),
         },
-        // {
-        //     key: "2",
-        //     label: <div>Clone</div>,
-        // },
+        {
+            key: "2",
+            label: (
+                <div
+                    onClick={() => {
+                        showModalAddDeal();
+                        setshowModalAddDealValueFrom("clone");
+                        setDropdownVisible(true);
+                    }}
+                >
+                    Clone
+                </div>
+            ),
+        },
         {
             key: "3",
             label: (
@@ -1118,7 +1131,7 @@ const DealDetail = () => {
                     handleOkAdd={handleOkAddDeal}
                     handleCancelAdd={handleCancelAddDeal}
                     showModalAddDealValue={showModalAddDealValue}
-                    from={"update"}
+                    from={showModalAddDealValueFrom}
                     modalValue={modalValue}
                 />
             </Col>
