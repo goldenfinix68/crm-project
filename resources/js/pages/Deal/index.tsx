@@ -647,6 +647,7 @@ const Deal = () => {
         if (deals) {
             if (deals.deal_favorite.length > 0) {
                 let isFavoriteVar: any = [];
+                console.log("deals", deals);
 
                 deals.deal_favorite.forEach((element: any) => {
                     isFavoriteVar.push(element.name);

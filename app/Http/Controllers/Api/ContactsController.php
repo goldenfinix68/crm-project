@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Contact;
 use App\Models\ContactUpdate;
+use App\Models\ContactFavorite;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+
 use Illuminate\Support\Str;
 use Auth;
 use Carbon\Carbon;
@@ -228,5 +230,25 @@ public function index(Request $request)
 
         return response()->json(['deleted' =>$deletedContacts, 'added' =>  $contact],200);
 
+    }
+
+    public function favorite(Request $request)
+    {
+        $data = ContactFavorite::updateOrCreate(
+            ['user_id' => auth()->user()->id, 'name' => $request->name],
+            ['user_id' => auth()->user()->id, 'name' => $request->name]
+        );
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
+    public function del_favorite(Request $request)
+    {
+        $data = ContactFavorite::where('user_id', auth()->user()->id)->where('name', $request->name)->delete();
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
+
+    public function get_favorite(Request $request) 
+    {
+        $contact_favorite = ContactFavorite::where('user_id', auth()->user()->id)->get();
+        return response()->json($contact_favorite, 200);
     }
 }

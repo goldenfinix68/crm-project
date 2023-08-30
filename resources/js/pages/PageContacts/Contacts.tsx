@@ -55,6 +55,7 @@ import ContactsComponentsAddContacts from "./Components/ContactsComponentsAddCon
 import ContactsComponentsFilter from "./Components/ContactsComponentsFilter";
 import ContactsComponentsManageColumn from "./Components/ContactsComponentsManageColumn";
 import { useContactsAll } from "../../api/query/contactsQuery";
+import { useUserFavorites } from "../../api/query/userQuery";
 import { useMutation, useQuery } from "react-query";
 import { TContact } from "../../entities";
 import { deleteContactMutation } from "../../api/mutation/useContactMutation";
@@ -67,6 +68,10 @@ import ContactsComponentsTableEditableCellTags from "./Components/ContactsCompon
 import ContactsComponentsTableEditableCellName from "./Components/ContactsComponentsTableEditableCellName";
 import ContactsComponentsUpdate from "./Components/ContactsComponentsUpdate";
 import Papa from "papaparse";
+import {
+    useContactAddFavorite,
+    useContactDeleteFavorite,
+} from "../../api/mutation/useContactMutation";
 
 interface DataType {
     key: React.Key;
@@ -99,6 +104,8 @@ const Contacts = () => {
     const [filter, setFilter] = useState("All");
     const [isTContact, setTContact] = useState<TContact | null>(null);
     const { contacts, isLoading, refetch } = useContactsAll(filter);
+    const { favorites, isLoadingFavorites, refetchFavorites } =
+        useUserFavorites();
     const [isModalOpen, setisModalOpen] = useState(false);
     const [isModalManageColumnOpen, setIsModalManageColumnOpen] =
         useState(false);
@@ -120,8 +127,17 @@ const Contacts = () => {
 
     useEffect(() => {
         console.log(filter);
+
         refetch();
     }, [filter]);
+
+    const favoriteTitle = {
+        "all-contacts": "All Contacts",
+        "my-contacts": "My Contacts",
+        "new-last-week": "New last week",
+        "new-this-week": "New this week",
+        "recent-modified-contact": "Recently modified contacts",
+    };
 
     const columns: ColumnsType<TContact> = [
         {
@@ -359,16 +375,32 @@ const Contacts = () => {
 
     const [isFavorite, setIsFavorite] = useState<string[]>([]);
 
+    const addFavorite = useMutation(useContactAddFavorite, {
+        onSuccess: (res) => {
+            queryClient.invalidateQueries("contacts");
+        },
+    });
+    const deleteFavorite = useMutation(useContactDeleteFavorite, {
+        onSuccess: (res) => {
+            queryClient.invalidateQueries("contacts");
+        },
+    });
+
     const handleFavoriteClick = (value) => {
         console.log("val", value);
         let isFavoriteVar = [...isFavorite];
 
         if (!isFavoriteVar.includes(value)) {
             isFavoriteVar.push(value);
+
+            addFavorite.mutate({ name: value });
         } else {
             let index = isFavoriteVar.findIndex((x) => x === value);
             isFavoriteVar.splice(index, 1);
+
+            deleteFavorite.mutate({ name: value });
         }
+
         setIsFavorite(isFavoriteVar);
     };
 
@@ -399,6 +431,23 @@ const Contacts = () => {
         link.setAttribute("download", "data.csv");
         link.click();
     };
+
+    useEffect(() => {
+        if (favorites) {
+            console.log("asdads");
+
+            if (favorites.length > 0) {
+                let isFavoriteVar: any = [];
+                console.log("deals", favorites);
+
+                favorites.forEach((element: any) => {
+                    isFavoriteVar.push(element.name);
+                });
+
+                setIsFavorite(isFavoriteVar);
+            }
+        }
+    }, [favorites]);
 
     return (
         <Card>
@@ -488,7 +537,42 @@ const Contacts = () => {
                                         onChange={handleTabChange}
                                     >
                                         <TabPane tab="FAVORITES" key="tab1">
-                                            <Typography.Title
+                                            {isFavorite.length > 0 ? (
+                                                <Menu
+                                                    style={{
+                                                        backgroundColor: "none",
+                                                        boxShadow: "none",
+                                                    }}
+                                                    mode="inline"
+                                                >
+                                                    {isFavorite.map(
+                                                        (item, index) => {
+                                                            return (
+                                                                <Menu.Item
+                                                                    key={index}
+                                                                    onClick={() => {
+                                                                        setDropdownVisible(
+                                                                            false
+                                                                        );
+                                                                        setFilter(
+                                                                            item
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    {
+                                                                        favoriteTitle[
+                                                                            item
+                                                                        ]
+                                                                    }
+                                                                </Menu.Item>
+                                                            );
+                                                        }
+                                                    )}{" "}
+                                                </Menu>
+                                            ) : (
+                                                "You have no favorties"
+                                            )}
+                                            {/* <Typography.Title
                                                 className="m-t-md"
                                                 level={5}
                                                 style={{
@@ -506,7 +590,7 @@ const Contacts = () => {
                                             >
                                                 Select views as favorites to
                                                 make it appear here.
-                                            </Typography>
+                                            </Typography> */}
                                         </TabPane>
                                         <TabPane tab="ALL VIEWS" key="tab2">
                                             <Menu
@@ -545,7 +629,7 @@ const Contacts = () => {
                                                                     false
                                                                 );
                                                                 setFilter(
-                                                                    "All Contacts"
+                                                                    "all-contacts"
                                                                 );
                                                             }}
                                                         >
@@ -560,12 +644,12 @@ const Contacts = () => {
                                                                 );
 
                                                                 handleFavoriteClick(
-                                                                    "All Contacts"
+                                                                    "all-contacts"
                                                                 );
                                                             }}
                                                         >
                                                             {isFavorite.includes(
-                                                                "All Contacts"
+                                                                "all-contacts"
                                                             ) ? (
                                                                 <StarFilled />
                                                             ) : (
@@ -743,7 +827,7 @@ const Contacts = () => {
                                                             }}
                                                         >
                                                             Recently modified
-                                                            Contacts
+                                                            contacts
                                                         </Button>
                                                         <Button
                                                             className="disableHover"
