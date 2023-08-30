@@ -53,7 +53,6 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ForgotPasswordVerifyToken from "./pages/ForgotPasswordVerifyToken";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
-    const isDialer = window.location.pathname === "/dialer";
     const isForgotPassword = window.location.pathname === "/forgot-password";
     const isForgotPasswordVerify =
         window.location.pathname === "/forgot-password-verify";
@@ -63,10 +62,6 @@ const App: React.FC = () => {
             {isLoginPage ? (
                 <Routes>
                     <Route path="/" element={<Login />} />
-                </Routes>
-            ) : isDialer ? (
-                <Routes>
-                    <Route path="/dialer" element={<Dialer />} />
                 </Routes>
             ) : isForgotPassword ? (
                 <Routes>
@@ -90,6 +85,22 @@ const App: React.FC = () => {
                             element={
                                 <PrivateRoute>
                                     <PageDashboard props={""} />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/dialer/:contactId"
+                            element={
+                                <PrivateRoute>
+                                    <Dialer />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/dialer"
+                            element={
+                                <PrivateRoute>
+                                    <Dialer />
                                 </PrivateRoute>
                             }
                         />
