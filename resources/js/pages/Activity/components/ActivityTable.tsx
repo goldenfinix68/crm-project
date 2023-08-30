@@ -173,7 +173,7 @@ const ActivityTable = () => {
     };
 
     const [isModalManageColumnOpen, setIsModalManageColumnOpen] =
-        useState(true);
+        useState(false);
     const [modalManageColumnField, setModalManageColumnField] = useState({
         show: false,
         title: "Select Field Type",
