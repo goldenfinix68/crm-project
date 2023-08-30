@@ -222,6 +222,7 @@ const ModalAddDeal = ({
             open={isModalOpenAdd}
             onCancel={handleCancelAdd}
             width={980}
+            footer={null}
             // footer={
             //     <div className="modal-footer-deal">
             //         <Button className="m-r-xs" type="primary" htmlType="submit">
