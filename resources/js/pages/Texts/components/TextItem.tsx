@@ -46,6 +46,7 @@ const TextItem = ({ name, text }: { name: string; text: TText }) => (
                         textOverflow: "ellipsis",
                         fontSize: "11px",
                         width: "50%",
+                        color: text.status == "failed" ? "red" : "black",
                     }}
                 >
                     {text.message}

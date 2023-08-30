@@ -34,6 +34,9 @@ export type TText = {
     created_at: string;
     time: string;
     isFromApp: boolean;
+    status?: string;
+    telnyxResponse?: string;
+    schedule?: string;
 };
 
 export type TDeal = {

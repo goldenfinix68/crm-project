@@ -1,5 +1,13 @@
 import { CloseOutlined, PhoneOutlined } from "@ant-design/icons";
-import { Button, Col, Input, InputNumber, Row, Select } from "antd";
+import {
+    AutoComplete,
+    Button,
+    Form,
+    Input,
+    Select,
+    Space,
+    Typography,
+} from "antd";
 import { MaskedInput } from "antd-mask-input";
 import React, { useContext, useEffect, useState } from "react";
 import {
@@ -10,6 +18,12 @@ import {
 } from "@telnyx/react-client";
 import { TelnyxRTCProvider, TelnyxRTCContext } from "@telnyx/react-client";
 import { ICall, INotification } from "@telnyx/webrtc";
+import { TContact, TUser } from "../../../entities";
+import { useParams } from "react-router-dom";
+import { useGetContact } from "../../../api/query/contactsQuery";
+import LoadingComponent from "../../../components/LoadingComponent";
+import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
+import DialerKeyPad from "./DialerKeyPad";
 interface DialerData {
     callerNumber: string | undefined;
     destinationNumber: string | undefined;
@@ -21,12 +35,18 @@ interface CallNotificationData {
     direction: string | undefined;
 }
 
-const DialerTab = () => {
-    const [dialerData, setDialerData] = useState<DialerData>({
-        callerNumber: "+16062221172",
-        destinationNumber: "",
-    });
-
+const DialerTab = ({
+    user,
+    contacts,
+}: {
+    user: TUser;
+    contacts?: Array<TContact>;
+}) => {
+    const { contactId } = useParams();
+    const { contact, isLoading } = useGetContact(contactId ?? "");
+    const [form] = Form.useForm();
+    const destinationNumber = Form.useWatch("destinationNumber", form);
+    console.log(destinationNumber);
     const [callNotification, setCallNotification] =
         useState<CallNotificationData>();
 
@@ -56,13 +76,21 @@ const DialerTab = () => {
         },
     });
 
-    const handleCall = () => {
+    const handleCall = (value) => {
         client?.newCall({
-            callerNumber: "+16062221172",
-            destinationNumber: `${dialerData.destinationNumber
+            callerNumber: `${value.callerNumber
+                ?.replace(/ /g, "")
+                .replace(/-/g, "")}`,
+            destinationNumber: `${value.destinationNumber
                 ?.replace(/ /g, "")
                 .replace(/-/g, "")}`,
         });
+    };
+
+    const handleKeyPressed = (e) => {
+        const currentValue = form.getFieldValue("destinationNumber");
+        form.setFieldValue("destinationNumber", `${currentValue ?? ""}${e}`);
+        console.log(`${currentValue}${e}`);
     };
     // type callUpdate
     // call -> state trying
@@ -72,230 +100,96 @@ const DialerTab = () => {
     // call -> direction outbound
     // call -> direction inbound
 
-    return (
-        <>
-            <Phone />
-            <div style={{ padding: "0px 20px" }} className="dialerTab">
-                <div>
-                    <span style={{ color: "red" }}>*</span>From
-                    <Select
-                        style={{ width: "100%" }}
-                        value={dialerData.callerNumber}
-                    >
-                        <Select.Option value="+1 606-222-1172">
-                            +1 606-222-1172
-                        </Select.Option>
-                    </Select>
-                </div>
-                <div style={{ marginTop: 15 }}>
-                    <span style={{ color: "red" }}>*</span>To
-                    {/* <InputNumber
-                    style={{ width: "100%" }}
-                    // prefix="+1"
-                    value={dialerData.to}
-                    onChange={(e) => setDialerData({ ...dialerData, to: e })}
-                /> */}
-                    <MaskedInput
-                        mask="+1 000-000-0000"
-                        value={dialerData.destinationNumber}
-                        onChange={(e) =>
-                            setDialerData({
-                                ...dialerData,
-                                destinationNumber: e.target.value,
-                            })
-                        }
-                    />
-                </div>
-                <div>
-                    <div
-                        style={{
-                            textAlign: "center",
-                            padding: 30,
-                            width: 300,
-                            margin: "auto",
-                        }}
-                    >
-                        <div className="dialerNumberContainer">
-                            <div
-                                className="dialerNumberContent"
-                                style={{ paddingTop: 15 }}
-                                onClick={(e) =>
-                                    setDialerData({
-                                        ...dialerData,
-                                        destinationNumber: `${dialerData.destinationNumber}1`,
-                                    })
-                                }
-                            >
-                                <span className="dialerNumber">1</span>
-                            </div>
-                            <div
-                                className="dialerNumberContent"
-                                onClick={(e) =>
-                                    setDialerData({
-                                        ...dialerData,
-                                        destinationNumber: `${dialerData.destinationNumber}2`,
-                                    })
-                                }
-                            >
-                                <span className="dialerNumber">2</span>
-                                <span className="dialerNumberChars">A B C</span>
-                            </div>
-                            <div
-                                className="dialerNumberContent"
-                                onClick={(e) =>
-                                    setDialerData({
-                                        ...dialerData,
-                                        destinationNumber: `${dialerData.destinationNumber}3`,
-                                    })
-                                }
-                            >
-                                <span className="dialerNumber">3</span>
-                                <span className="dialerNumberChars">D E F</span>
-                            </div>
-                            <div className="break"></div>
-                            <div
-                                className="dialerNumberContent"
-                                onClick={(e) =>
-                                    setDialerData({
-                                        ...dialerData,
-                                        destinationNumber: `${dialerData.destinationNumber}4`,
-                                    })
-                                }
-                            >
-                                <span className="dialerNumber">4</span>
-                                <span className="dialerNumberChars">G H I</span>
-                            </div>
-                            <div
-                                className="dialerNumberContent"
-                                onClick={(e) =>
-                                    setDialerData({
-                                        ...dialerData,
-                                        destinationNumber: `${dialerData.destinationNumber}5`,
-                                    })
-                                }
-                            >
-                                <span className="dialerNumber">5</span>
-                                <span className="dialerNumberChars">J K L</span>
-                            </div>
-                            <div
-                                className="dialerNumberContent"
-                                onClick={(e) =>
-                                    setDialerData({
-                                        ...dialerData,
-                                        destinationNumber: `${dialerData.destinationNumber}6`,
-                                    })
-                                }
-                            >
-                                <span className="dialerNumber">6</span>
-                                <span className="dialerNumberChars">M N O</span>
-                            </div>
-                            <div className="break"></div>
-                            <div
-                                className="dialerNumberContent"
-                                onClick={(e) =>
-                                    setDialerData({
-                                        ...dialerData,
-                                        destinationNumber: `${dialerData.destinationNumber}7`,
-                                    })
-                                }
-                            >
-                                <span className="dialerNumber">7</span>
-                                <span className="dialerNumberChars">
-                                    P Q R S
-                                </span>
-                            </div>
-                            <div
-                                className="dialerNumberContent"
-                                onClick={(e) =>
-                                    setDialerData({
-                                        ...dialerData,
-                                        destinationNumber: `${dialerData.destinationNumber}8`,
-                                    })
-                                }
-                            >
-                                <span className="dialerNumber">8</span>
-                                <span className="dialerNumberChars">T U V</span>
-                            </div>
-                            <div
-                                className="dialerNumberContent"
-                                onClick={(e) =>
-                                    setDialerData({
-                                        ...dialerData,
-                                        destinationNumber: `${dialerData.destinationNumber}9`,
-                                    })
-                                }
-                            >
-                                <span className="dialerNumber">9</span>
-                                <span className="dialerNumberChars">
-                                    W X Y Z
-                                </span>
-                            </div>
-                            <div className="break"></div>
-                            <div
-                                className="dialerNumberContent"
-                                style={{ paddingTop: 15 }}
-                                onClick={(e) =>
-                                    setDialerData({
-                                        ...dialerData,
-                                        destinationNumber: `${dialerData.destinationNumber}*`,
-                                    })
-                                }
-                            >
-                                <span className="dialerNumber">*</span>
-                            </div>
-                            <div
-                                className="dialerNumberContent"
-                                onClick={(e) =>
-                                    setDialerData({
-                                        ...dialerData,
-                                        destinationNumber: `${dialerData.destinationNumber}0`,
-                                    })
-                                }
-                            >
-                                <span className="dialerNumber">0</span>
-                                <span className="dialerNumberChars">+</span>
-                            </div>
-                            <div
-                                className="dialerNumberContent"
-                                style={{ paddingTop: 15 }}
-                                onClick={(e) =>
-                                    setDialerData({
-                                        ...dialerData,
-                                        destinationNumber: `${dialerData.destinationNumber}#`,
-                                    })
-                                }
-                            >
-                                <span className="dialerNumber">#</span>
-                            </div>
-                        </div>
+    const filteredOptions = contacts?.filter((contact) =>
+        contact?.mobile?.includes(
+            destinationNumber ? destinationNumber.replace(/[-\s+_]/g, "") : ""
+        )
+    );
 
-                        <div style={{ paddingTop: 30 }}>
-                            <Button
-                                style={{ width: "100%" }}
-                                className="dialerTabCallIcon"
-                                type="primary"
-                                onClick={(e) => handleCall()}
-                            >
-                                Call <PhoneOutlined />
-                            </Button>
-                            {/* {callNotification &&
-                                callNotification.type == "callUpdate" &&
-                                callNotification?.clientState == "early" && (
-                                    <Button
-                                        style={{ width: "100%" }}
-                                        className="dialerTabCallIcon"
-                                        type="primary"
-                                        onClick={(e) => handleCall()}
-                                        danger
-                                    >
-                                        End Call <CloseOutlined />
-                                    </Button>
-                                )} */}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </>
+    if (isLoading) {
+        return <LoadingComponent />;
+    }
+    return (
+        <Form
+            form={form}
+            initialValues={{
+                callerNumber: user.numbers?.length ? user.numbers[0] : "",
+                destinationNumber: contact ? contact.mobile : "",
+            }}
+            labelCol={{ span: 24 }}
+            wrapperCol={{ span: 24 }}
+            onFinish={handleCall}
+        >
+            <Phone />
+            <Space
+                style={{ padding: "0px 20px", width: "100%" }}
+                className="dialerTab"
+                direction="vertical"
+            >
+                <Form.Item
+                    name="callerNumber"
+                    label="From"
+                    rules={[
+                        {
+                            required: true,
+                            message: DEFAULT_REQUIRED_MESSAGE,
+                        },
+                    ]}
+                >
+                    <Select style={{ width: "100%" }}>
+                        {user.numbers?.map((number, index) => (
+                            <Select.Option value={number} key={index}>
+                                {number}
+                            </Select.Option>
+                        ))}
+                    </Select>
+                </Form.Item>
+
+                <Form.Item
+                    name="destinationNumber"
+                    label="To"
+                    rules={[
+                        {
+                            required: true,
+                            message: DEFAULT_REQUIRED_MESSAGE,
+                        },
+                    ]}
+                >
+                    <AutoComplete
+                        options={filteredOptions?.map((option) => ({
+                            value: option.mobile,
+                            label: (
+                                <Space direction="vertical">
+                                    <Typography.Text strong>
+                                        {`${option.firstName} ${option.lastName}`}
+                                    </Typography.Text>
+                                    <Typography.Text>
+                                        {option.mobile}
+                                    </Typography.Text>
+                                </Space>
+                            ),
+                        }))}
+                        style={{ width: "100%" }}
+                        value={destinationNumber}
+                    >
+                        <Input
+                            // mask="+1 000-000-0000"
+                            value={destinationNumber}
+                        />
+                    </AutoComplete>
+                </Form.Item>
+
+                <DialerKeyPad handleKeyPressed={handleKeyPressed} />
+                <Button
+                    style={{ width: "100%" }}
+                    className="dialerTabCallIcon"
+                    type="primary"
+                    htmlType="submit"
+                >
+                    Call <PhoneOutlined />
+                </Button>
+            </Space>
+        </Form>
     );
 };
 

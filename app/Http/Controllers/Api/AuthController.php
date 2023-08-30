@@ -68,9 +68,9 @@ class AuthController extends Controller
 
 
             event(new \App\Events\SendMailEvent($data));
-            return response()->json(['success' => $token]);
+            return response()->json(['success' => true], 200);
         } else {
-            return response()->json(['success' => false, 'error' => 'Email Address Not Found'], 401);
+            return response()->json(['success' => false, 'error' => 'Email Address Not Found']);
         }
     }
 

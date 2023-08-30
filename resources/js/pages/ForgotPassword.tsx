@@ -26,21 +26,25 @@ const ForgotPassword = () => {
                 "/api/forgotpassword",
                 credentials
             );
-            return response.data.access_token;
+            return response.data;
         },
         {
-            onSuccess: (data) => {
-                setShowSuccess(true);
+            onSuccess: (res) => {
+                if (res.success) {
+                    setShowSuccess(true);
+                } else {
+                    notification.error({
+                        message: "Email Address Not Found",
+                    });
+                }
             },
         }
     );
     const onFinish = async (values: any) => {
         try {
             await checkEmail.mutateAsync(values);
-            console.log("Login successful");
             // Handle successful login, e.g., redirect to dashboard
         } catch (error) {
-            console.error("Login failed:", error);
             // Handle login error, e.g., display an error message
         }
     };

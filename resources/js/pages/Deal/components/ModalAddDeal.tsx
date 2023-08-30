@@ -63,8 +63,8 @@ interface Props {
     handleCancelAdd: () => void;
 
     showModalAddDealValue?: string;
-    from: string;
-    modalValue: any;
+    from?: string;
+    modalValue?: any;
 }
 
 const ModalAddDeal = ({
@@ -117,7 +117,7 @@ const ModalAddDeal = ({
 
     useEffect(() => {
         console.log("modalValue", modalValue);
-        if (from == "update") {
+        if (from == "update" || from == "clone") {
             form.setFieldsValue({
                 ...modalValue,
                 estimated_close_date: moment(modalValue.estimated_close_date),

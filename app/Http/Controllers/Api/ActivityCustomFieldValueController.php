@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
 
-use App\Models\ActivityNote;
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\ActivityCustomFieldValue;
 use Illuminate\Http\Request;
 
-class ActivityNoteController extends Controller
+class ActivityCustomFieldValueController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -31,10 +33,10 @@ class ActivityNoteController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\ActivityNote  $activityNote
+     * @param  \App\Models\ActivityCustomFieldValue  $activityCustomFieldValue
      * @return \Illuminate\Http\Response
      */
-    public function show(ActivityNote $activityNote)
+    public function show(ActivityCustomFieldValue $activityCustomFieldValue)
     {
         //
     }
@@ -43,10 +45,10 @@ class ActivityNoteController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\ActivityNote  $activityNote
+     * @param  \App\Models\ActivityCustomFieldValue  $activityCustomFieldValue
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ActivityNote $activityNote)
+    public function update(Request $request, ActivityCustomFieldValue $activityCustomFieldValue)
     {
         //
     }
@@ -54,10 +56,10 @@ class ActivityNoteController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\ActivityNote  $activityNote
+     * @param  \App\Models\ActivityCustomFieldValue  $activityCustomFieldValue
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ActivityNote $activityNote)
+    public function destroy(ActivityCustomFieldValue $activityCustomFieldValue)
     {
         //
     }

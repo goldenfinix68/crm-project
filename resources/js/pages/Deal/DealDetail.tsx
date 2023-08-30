@@ -25,6 +25,7 @@ import {
     Upload,
     Popconfirm,
     Tag,
+    Descriptions,
 } from "antd";
 import axios from "axios";
 import type { UploadProps } from "antd";
@@ -89,6 +90,7 @@ import {
     useDealMutationAddTeammate,
     useDealMutationDeleteTeammate,
     useDealMutationUpdateStage,
+    useDealMutationDeleteDeal,
 } from "../../api/mutation/useDealMutation";
 import moment from "moment";
 import DealsTable from "./components/DealsTable";
@@ -103,8 +105,22 @@ import ModalAddQuitContact from "./components/ModalAddQuitContact";
 import {
     useContactTypesAll,
     useContactsAll,
+    useGetContact,
 } from "../../api/query/contactsQuery";
-
+import ContactsWall from "../ContactView/components/ContactsWall";
+import ContactContext from "../ContactView/context";
+import LoadingComponent from "../../components/LoadingComponent";
+import ActionsTabs from "../ContactView/components/ActionsTabs";
+import ModalAddDeal from "./components/ModalAddDeal";
+interface TDeals {
+    id: number;
+    title: string;
+    name: string;
+    value: string;
+    stage: string;
+    status: string;
+    owner: string;
+}
 interface DealsById {
     title: string;
     win_probabilty: string;
@@ -143,11 +159,23 @@ const DealDetail = () => {
     const { dealId } = useParams();
     const { dataUsers, isLoadingUsers } = useUsersList();
     const { deals, isLoading, refetch } = useDealsByid(dealId ?? "");
+    const [contact, setContact] = useState();
+    useEffect(() => {
+        if (deals) {
+            setContact(deals.data.contact);
+        }
+    }, [deals]);
+
+    // const { contact } = useGetContact(deals.data.contactId);
+
     const { contacts } = useContactsAll("All");
     const { token } = theme.useToken();
     const { Dragger } = Upload;
     const quillRef = React.useRef(null);
     const [fileList, setFileList] = useState([]);
+
+    // const { contactId } = useParams();
+
     const handleChangeUpload = async ({ fileList: newFileList }) => {
         try {
             const modifiedFiles: any = await Promise.all(
@@ -239,7 +267,13 @@ const DealDetail = () => {
         {
             key: "1",
             label: "Deal Specific Email",
-            children: <p>{deals && deals.data.contact.email}</p>,
+            children: (
+                <Descriptions column={1}>
+                    <Descriptions.Item label="Email">
+                        {deals && deals.data.contact.email}
+                    </Descriptions.Item>
+                </Descriptions>
+            ),
             style: panelStyle,
         },
         {
@@ -258,20 +292,19 @@ const DealDetail = () => {
                                     deals.data.contact.lastName}
                         </span>
                     </div>
-                    <div>
-                        Mobile:{" "}
-                        {deals &&
-                            deals.data.contact.phone +
-                                " " +
+
+                    <Descriptions column={1} style={{ marginTop: 15 }}>
+                        <Descriptions.Item label="Mobile">
+                            {deals &&
+                                deals.data.contact.phone &&
                                 deals.data.contact.phone}
-                    </div>
-                    <div>
-                        Phone:{" "}
-                        {deals &&
-                            deals.data.contact.otherPhone +
-                                " " +
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Phone">
+                            {deals &&
+                                deals.data.contact.otherPhone &&
                                 deals.data.contact.otherPhone}
-                    </div>
+                        </Descriptions.Item>
+                    </Descriptions>
                 </div>
             ),
             style: panelStyle,
@@ -281,7 +314,7 @@ const DealDetail = () => {
             label: "Deal Details",
             children: (
                 <div>
-                    <div>
+                    {/* <div>
                         <b>Source</b>
                     </div>
                     <div>{deals && deals.data.source}</div>
@@ -301,7 +334,22 @@ const DealDetail = () => {
                         <b>Tags</b>
                     </div>
                     <div>{deals && deals.data.tags}</div>
-                    <br></br>
+                    <br></br> */}
+
+                    <Descriptions column={1} style={{ marginTop: 15 }}>
+                        <Descriptions.Item label="Source">
+                            {deals && deals.data.source}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Priority">
+                            {deals && deals.data.priority}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Description">
+                            {deals && deals.data.details}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Tags">
+                            {deals && deals.data.tags}
+                        </Descriptions.Item>
+                    </Descriptions>
                 </div>
             ),
             style: panelStyle,
@@ -521,16 +569,25 @@ const DealDetail = () => {
             key: "1",
             label: "Smart Insights",
             children: (
-                <div>
-                    <div>
-                        <b>Last Communication</b>{" "}
-                        <span style={{ marginLeft: 5 }}>Text</span>
-                    </div>
-                    <div>
-                        <b>Last Communication On</b>{" "}
-                        <span style={{ marginLeft: 5 }}>10hours Ago</span>
-                    </div>
-                </div>
+                <>
+                    <Descriptions column={1}>
+                        <Descriptions.Item label="Last Communication">
+                            Call
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Last Communication On">
+                            16 days ago
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Open Deals">
+                            0 ($0)
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Deals Won">
+                            0 ($0)
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Activities">
+                            0/3
+                        </Descriptions.Item>
+                    </Descriptions>
+                </>
             ),
             style: panelStyle,
         },
@@ -656,25 +713,101 @@ const DealDetail = () => {
             style: panelStyle,
         },
     ];
+
+    const [showModalAddDealValue, setshowModalAddDealValue] =
+        useState<string>("");
+    const [showModalAddDealValueFrom, setshowModalAddDealValueFrom] =
+        useState<string>("add");
+    const [isModalOpenAddDeal, setIsModalOpenAddDeal] = useState(false);
+    const [modalValue, setModalValue] = useState(false);
+    const showModalAddDeal = () => {
+        setModalValue(deals.data);
+        setIsModalOpenAddDeal(true);
+    };
+
+    const [isTContact, setTContact] = useState<TDeals | null>(null);
+    const [isTitle, setTitle] = useState("");
+
+    const handleOkAddDeal = () => {
+        setIsModalOpenAddDeal(false);
+        queryClient.invalidateQueries("deals_by_id");
+    };
+
+    const handleCancelAddDeal = () => {
+        setIsModalOpenAddDeal(false);
+    };
+    const handleEditDeal = (record: any) => {
+        setTContact(record);
+    };
+
+    const deleteContact = useMutation(useDealMutationDeleteDeal, {
+        onSuccess: () => {
+            console.log("success");
+            queryClient.invalidateQueries("deals_by_id");
+            notification.success({
+                message: "Success",
+                description: "Deal Successfully Deleted",
+            });
+            navigate("/deals");
+        },
+    });
+    const handleDelete = () => {
+        deleteContact.mutate({ deals_id: [dealId] });
+    };
+    const [isDropdownVisible, setDropdownVisible] = useState(false);
     const action: MenuProps["items"] = [
         {
             key: "1",
-            label: <div>Edit</div>,
+            label: (
+                <div
+                    onClick={() => {
+                        showModalAddDeal();
+                        setshowModalAddDealValueFrom("update");
+                        setDropdownVisible(true);
+                    }}
+                >
+                    Edit
+                </div>
+            ),
         },
         {
             key: "2",
-            label: <div>Clone</div>,
+            label: (
+                <div
+                    onClick={() => {
+                        showModalAddDeal();
+                        setshowModalAddDealValueFrom("clone");
+                        setDropdownVisible(true);
+                    }}
+                >
+                    Clone
+                </div>
+            ),
         },
         {
             key: "3",
-            label: <div>Delete</div>,
+            label: (
+                <div
+                    onClick={() => {
+                        setDropdownVisible(true);
+                    }}
+                >
+                    {" "}
+                    <Popconfirm
+                        title="Delete"
+                        description="Are you sure to delete this deal?"
+                        onConfirm={handleDelete}
+                        okText="Yes"
+                        cancelText="No"
+                    >
+                        Delete
+                    </Popconfirm>
+                </div>
+            ),
         },
     ];
-    const panelStyle = {
-        marginBottom: 24,
 
-        border: "none",
-    };
+    const panelStyle = {};
     const [stagingColor, setStagingColor] = useState({
         first: "none",
         second: "none",
@@ -682,6 +815,7 @@ const DealDetail = () => {
         fourth: "none",
         fifth: "none",
     });
+    // const [contact, setContact] = useState();
     useEffect(() => {
         if (deals) {
             if (deals.data.stage == "Comp & Qualify") {
@@ -726,1036 +860,6 @@ const DealDetail = () => {
             }
         }
     }, [deals]);
-    const cardForm = () => {
-        return (
-            <Form form={form} onFinish={(e) => onFinish(e)}>
-                <Row gutter={12} className="">
-                    <Col span={24} className="p-md p-t-lg form-left">
-                        <Row gutter={12}>
-                            <Col span={5} className="col-label">
-                                <Typography.Text style={{ color: "red" }}>
-                                    *
-                                </Typography.Text>
-                                <Typography.Text>Title</Typography.Text>
-                            </Col>
-                            <Col span={19}>
-                                {" "}
-                                <Form.Item
-                                    name={"title"}
-                                    rules={[validateRules.required]}
-                                >
-                                    <Input placeholder="Title" className="" />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-
-                        <Row gutter={12}>
-                            <Col span={5} className="col-label">
-                                <Typography.Text style={{ color: "red" }}>
-                                    *
-                                </Typography.Text>
-                                <Typography.Text>Type</Typography.Text>
-                            </Col>
-                            <Col span={19}>
-                                <Form.Item
-                                    name={"type"}
-                                    rules={[validateRules.required]}
-                                >
-                                    <Select
-                                        className="select-custom-width"
-                                        placeholder="Type"
-                                    >
-                                        <Select.Option value="Call">
-                                            <FontAwesomeIcon
-                                                icon={faPhoneVolume}
-                                                className="font-12px m-r-xs"
-                                            />
-                                            Call
-                                        </Select.Option>
-                                        <Select.Option value="Task">
-                                            <FontAwesomeIcon
-                                                icon={faList}
-                                                className="font-12px m-r-xs"
-                                            />
-                                            Task
-                                        </Select.Option>
-                                        <Select.Option value="Meeting">
-                                            <FontAwesomeIcon
-                                                icon={faUsers}
-                                                className="font-12px m-r-xs"
-                                            />
-                                            Meeting
-                                        </Select.Option>
-                                        <Select.Option value="Demo">
-                                            <FontAwesomeIcon
-                                                icon={faVideo}
-                                                className="font-12px m-r-xs"
-                                            />
-                                            Demo
-                                        </Select.Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                        </Row>
-
-                        <Row gutter={12}>
-                            <Col span={5} className="col-label">
-                                <Typography.Text style={{ color: "red" }}>
-                                    *
-                                </Typography.Text>
-                                <Typography.Text>Date & Time</Typography.Text>
-                            </Col>
-                            <Col span={19}>
-                                <Row gutter={12}>
-                                    <Col span={12}>
-                                        <Form.Item
-                                            name="start_date"
-                                            rules={[validateRules.required]}
-                                        >
-                                            <DatePicker
-                                                style={{
-                                                    width: "100%",
-                                                }}
-                                                placeholder="Start Date"
-                                                format={"MMM, DD YYYY"}
-                                            />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={12}>
-                                        <Form.Item name="start_time">
-                                            <TimePicker
-                                                style={{
-                                                    width: "100%",
-                                                }}
-                                                minuteStep={30}
-                                                format="HH:mm"
-                                                placeholder="Start Time"
-                                            />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={12}>
-                                        <Form.Item
-                                            name="end_time"
-                                            rules={[validateRules.required]}
-                                        >
-                                            <TimePicker
-                                                style={{
-                                                    width: "100%",
-                                                }}
-                                                minuteStep={30}
-                                                format="HH:mm"
-                                                placeholder="End Time"
-                                            />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={12}>
-                                        <Form.Item name="end_date">
-                                            <DatePicker
-                                                style={{
-                                                    width: "100%",
-                                                }}
-                                                placeholder="End Date"
-                                                format={"MMM, DD YYYY"}
-                                            />
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-
-                        <Row gutter={12}>
-                            <Col span={5} className="col-label">
-                                <Typography.Text style={{ color: "red" }}>
-                                    *
-                                </Typography.Text>
-                                <Typography.Text>Availability</Typography.Text>
-                            </Col>
-                            <Col span={19}>
-                                <Form.Item
-                                    name={"availability"}
-                                    rules={[validateRules.required]}
-                                >
-                                    <Select
-                                        placeholder="Availability"
-                                        showSearch
-                                        className="select-custom-width"
-                                    >
-                                        {optionAvailability.map((item, key) => {
-                                            return (
-                                                <Select.Option
-                                                    key={key}
-                                                    value={item.value}
-                                                    search={item.label}
-                                                >
-                                                    {item.label}
-                                                </Select.Option>
-                                            );
-                                        })}
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                        </Row>
-
-                        <Row gutter={12}>
-                            <Col span={5} className="col-label col-label-note">
-                                <Typography.Text>Internal Note</Typography.Text>
-                            </Col>
-                            <Col span={19}>
-                                <Form.Item name={"internal_note"}>
-                                    <Input.TextArea
-                                        rows={3}
-                                        placeholder="Add internal note"
-                                        className="no-resize"
-                                    />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-
-                        <Row gutter={12}>
-                            <Col span={5} className="col-label">
-                                <Typography.Text style={{ color: "red" }}>
-                                    *
-                                </Typography.Text>
-                                <Typography.Text>Owner</Typography.Text>
-                            </Col>
-                            <Col span={19}>
-                                <Form.Item
-                                    name={"owner_id"}
-                                    rules={[validateRules.required]}
-                                >
-                                    <Select
-                                        placeholder="Owner"
-                                        showSearch
-                                        className="select-custom-width"
-                                        loading={isLoadingUsers}
-                                    >
-                                        {dataUsers &&
-                                            dataUsers?.data &&
-                                            dataUsers?.data.map(
-                                                (item: any, key: any) => {
-                                                    return (
-                                                        <Select.Option
-                                                            key={key}
-                                                            value={item.id}
-                                                            search={`${item.firstName} ${item.lastName}`}
-                                                        >
-                                                            {`${item.firstName} ${item.lastName}`}
-                                                        </Select.Option>
-                                                    );
-                                                }
-                                            )}
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                        </Row>
-
-                        <Row gutter={12}>
-                            <Col span={5} className="col-label">
-                                <Typography.Text>Followers</Typography.Text>
-                            </Col>
-                            <Col span={19}>
-                                <Form.Item name={"followers"}>
-                                    <Select
-                                        placeholder="Followers"
-                                        showSearch
-                                        mode="multiple"
-                                    >
-                                        {optionAvailability.map((item, key) => {
-                                            return (
-                                                <Select.Option
-                                                    key={key}
-                                                    value={item.value}
-                                                    search={item.label}
-                                                >
-                                                    {item.label}
-                                                </Select.Option>
-                                            );
-                                        })}
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                        </Row>
-
-                        <Row gutter={12}>
-                            <Col span={5} className="col-label">
-                                <Typography.Text>Tags</Typography.Text>
-                            </Col>
-                            <Col span={19}>
-                                <Form.Item name={"tags"}>
-                                    <Select
-                                        placeholder="Tags"
-                                        showSearch
-                                        mode="tags"
-                                    >
-                                        {optionAvailability.map((item, key) => {
-                                            return (
-                                                <Select.Option
-                                                    key={key}
-                                                    value={item.value}
-                                                    search={item.label}
-                                                >
-                                                    {item.label}
-                                                </Select.Option>
-                                            );
-                                        })}
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col md={24}>
-                        <div>
-                            {" "}
-                            <Button
-                                style={{ float: "right" }}
-                                onClick={() => {
-                                    form.submit();
-                                }}
-                                type="primary"
-                            >
-                                Save
-                            </Button>
-                        </div>
-                    </Col>
-                </Row>
-            </Form>
-        );
-    };
-    const itemstab: TabsProps["items"] = [
-        {
-            key: "1",
-            label: `Note`,
-            children: (
-                <div style={{ height: 240, padding: 20 }}>
-                    <Form
-                        form={form_notes}
-                        onFinish={(e) => onSaveChangeQuill(e)}
-                    >
-                        <Form.Item name="notes">
-                            <ReactQuill
-                                ref={quillRef}
-                                style={{ height: "150px" }}
-                            />
-                        </Form.Item>
-
-                        <div style={{ marginTop: 50 }}>
-                            <Button
-                                type="primary"
-                                htmlType="submit"
-                                style={{ float: "right" }}
-                            >
-                                Save
-                            </Button>
-                        </div>
-                    </Form>
-                </div>
-            ),
-        },
-        {
-            key: "2",
-            label: `Email`,
-            children: (
-                <div
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 20,
-                        padding: 20,
-                    }}
-                >
-                    <div>
-                        <FontAwesomeIcon
-                            icon={faPaperPlane}
-                            style={{ fontSize: 50 }}
-                        />
-                    </div>
-
-                    <div>
-                        <div style={{ fontSize: 20 }}>
-                            Configure your Email Account
-                        </div>
-                        <br></br>
-                        logging with Salesmate's two-way email sync
-                        functionality. Measure email engagement with email open
-                        and click tracking. Don't forget to use email templates
-                        for your canned responses and repetitive emails.
-                        <Button type="primary" style={{ marginTop: 20 }}>
-                            Configue email account
-                        </Button>
-                    </div>
-                </div>
-            ),
-        },
-        {
-            key: "3",
-            label: `Add Activity`,
-            children: cardForm(),
-        },
-        {
-            key: "4",
-            label: `Log Activity`,
-            children: cardForm(),
-        },
-        {
-            key: "5",
-            label: `File`,
-            children: (
-                <div
-                    style={{
-                        padding: 20,
-                    }}
-                >
-                    <Dragger
-                        multiple={true}
-                        name="avatar"
-                        action={""}
-                        fileList={fileList}
-                        onChange={handleChangeUpload}
-                        accept="image/png,image/jpg,image/jpeg,image/gif"
-                    >
-                        <p className="ant-upload-drag-icon">
-                            <InboxOutlined />
-                        </p>
-                        <p className="ant-upload-text">
-                            Drag and Drop files here or Click to upload
-                        </p>
-                    </Dragger>
-
-                    <div style={{ marginTop: 15 }}>
-                        <Button
-                            type="primary"
-                            onClick={onSaveChangeFile}
-                            style={{ float: "right" }}
-                        >
-                            Save
-                        </Button>
-                    </div>
-                </div>
-            ),
-        },
-    ];
-    const itemstab2: TabsProps["items"] = [
-        {
-            key: "1",
-            label: `All`,
-            children: (
-                <>
-                    {deals && deals.notes.length > 0 && (
-                        <div>Pinned Notes ({deals.notes.length})</div>
-                    )}
-                    {deals &&
-                        deals.notes.length > 0 &&
-                        deals.notes.map((item: any) => {
-                            return (
-                                <div>
-                                    <Card
-                                        style={{
-                                            marginTop: 20,
-                                            background: "#dfddca",
-                                            marginBottom: "20px",
-                                        }}
-                                    >
-                                        <div className="delete-post-icon">
-                                            <Popconfirm
-                                                title="Delete"
-                                                description="Are you sure to delete this notes?"
-                                                onConfirm={() =>
-                                                    confirmDeleteNotes(item.id)
-                                                }
-                                                okText="Yes"
-                                                cancelText="No"
-                                            >
-                                                <DeleteOutlined />
-                                            </Popconfirm>
-                                        </div>
-                                        <div style={{ display: "flex" }}>
-                                            <span
-                                                style={{
-                                                    fontSize: 16,
-                                                    marginLeft: 10,
-                                                }}
-                                            >
-                                                <b>{"Note Added"}</b> by{" "}
-                                                {item.user.firstName +
-                                                    " " +
-                                                    item.user.lastName}
-                                            </span>
-                                        </div>
-                                        <Divider></Divider>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                            }}
-                                        >
-                                            <span
-                                                style={{
-                                                    fontSize: 16,
-                                                    marginLeft: 10,
-                                                }}
-                                                dangerouslySetInnerHTML={{
-                                                    __html: item.notes,
-                                                }}
-                                            ></span>
-                                        </div>
-                                    </Card>
-                                </div>
-                            );
-                        })}
-
-                    <div>Upcoming (0)</div>
-
-                    {deals &&
-                        deals.data.activities.length > 0 &&
-                        deals.data.activities.map((item: any) => {
-                            return (
-                                <div>
-                                    <Card style={{ marginTop: 20 }}>
-                                        <div className="delete-post-icon">
-                                            <Popconfirm
-                                                title="Delete"
-                                                description="Are you sure to delete this activity?"
-                                                onConfirm={() =>
-                                                    confirmDeleteActivity(
-                                                        item.id
-                                                    )
-                                                }
-                                                okText="Yes"
-                                                cancelText="No"
-                                            >
-                                                <DeleteOutlined />
-                                            </Popconfirm>
-                                        </div>
-                                        <div style={{ display: "flex" }}>
-                                            <span
-                                                className="thumb-name-xs "
-                                                title="Jesse Ashley"
-                                            >
-                                                {item.owner.firstName.charAt(0)}
-                                            </span>
-                                            <span
-                                                style={{
-                                                    fontSize: 16,
-                                                    marginLeft: 10,
-                                                }}
-                                            >
-                                                {" "}
-                                                <b>{item.type}</b> for{" "}
-                                                {item.owner.firstName +
-                                                    " " +
-                                                    item.owner.lastName}
-                                            </span>
-                                        </div>
-                                        <Divider></Divider>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                            }}
-                                        >
-                                            <span>
-                                                <CheckCircleOutlined
-                                                    style={{ fontSize: 24 }}
-                                                />
-                                            </span>
-                                            <span
-                                                style={{
-                                                    fontSize: 16,
-                                                    marginLeft: 10,
-                                                }}
-                                            >
-                                                {item.title}
-                                            </span>
-                                        </div>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                                padding: 20,
-                                                paddingTop: 0,
-                                                paddingBottom: 0,
-                                                marginTop: 10,
-                                            }}
-                                        >
-                                            <span>
-                                                <CalendarOutlined
-                                                    style={{ fontSize: 14 }}
-                                                />
-                                            </span>
-                                            <span
-                                                style={{
-                                                    fontSize: 14,
-                                                    marginLeft: 10,
-                                                }}
-                                            >
-                                                {" "}
-                                                {moment(item.start_date).format(
-                                                    "LLL"
-                                                )}
-                                            </span>
-                                        </div>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                                padding: 20,
-                                                paddingTop: 0,
-                                                paddingBottom: 0,
-                                            }}
-                                        >
-                                            <span>
-                                                <UserOutlined
-                                                    style={{ fontSize: 14 }}
-                                                />
-                                            </span>
-                                            <span
-                                                style={{
-                                                    fontSize: 14,
-                                                    marginLeft: 10,
-                                                }}
-                                            >
-                                                {deals &&
-                                                    deals.data.owner.firstName +
-                                                        " " +
-                                                        deals.data.owner
-                                                            .lastName}
-                                            </span>
-                                        </div>
-                                        <Divider></Divider>
-                                        <Input placeholder="Add your note for this activity"></Input>
-                                    </Card>
-                                </div>
-                            );
-                        })}
-                    {deals &&
-                        deals.data.notes.length > 0 &&
-                        deals.data.notes.map((item: any) => {
-                            return (
-                                <div>
-                                    <Card style={{ marginTop: 20 }}>
-                                        <div style={{ display: "flex" }}>
-                                            <div className="delete-post-icon">
-                                                <Popconfirm
-                                                    title="Delete"
-                                                    description="Are you sure to delete this notes?"
-                                                    onConfirm={() =>
-                                                        confirmDeleteNotes(
-                                                            item.id
-                                                        )
-                                                    }
-                                                    okText="Yes"
-                                                    cancelText="No"
-                                                >
-                                                    <DeleteOutlined />
-                                                </Popconfirm>
-                                            </div>
-                                            <span
-                                                style={{
-                                                    fontSize: 16,
-                                                    marginLeft: 10,
-                                                }}
-                                            >
-                                                <b>{"Note Added"}</b> by{" "}
-                                                {item.user.firstName +
-                                                    " " +
-                                                    item.user.lastName}
-                                            </span>
-                                        </div>
-                                        <Divider></Divider>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                            }}
-                                        >
-                                            <span
-                                                style={{
-                                                    fontSize: 16,
-                                                    marginLeft: 10,
-                                                }}
-                                                dangerouslySetInnerHTML={{
-                                                    __html: item.notes,
-                                                }}
-                                            ></span>
-                                        </div>
-                                    </Card>
-                                </div>
-                            );
-                        })}
-                    {deals &&
-                        deals.data.files.length > 0 &&
-                        deals.data.files.map((item: any) => {
-                            return (
-                                <div>
-                                    <Card style={{ marginTop: 20 }}>
-                                        <div className="delete-post-icon">
-                                            <Popconfirm
-                                                title="Delete"
-                                                description="Are you sure to delete this file?"
-                                                onConfirm={() =>
-                                                    confirmDeleteFile(item.id)
-                                                }
-                                                okText="Yes"
-                                                cancelText="No"
-                                            >
-                                                <DeleteOutlined />
-                                            </Popconfirm>
-                                        </div>
-                                        <div style={{ display: "flex" }}>
-                                            <span
-                                                style={{
-                                                    fontSize: 16,
-                                                    marginLeft: 10,
-                                                }}
-                                            >
-                                                <b>{"File Added"}</b> by{" "}
-                                                {item.uploaded_by.firstName +
-                                                    " " +
-                                                    item.uploaded_by.lastName}
-                                            </span>
-                                        </div>
-                                        <Divider></Divider>
-
-                                        <div
-                                            style={{
-                                                background: "#F2F5FA",
-                                                borderRadius: 5,
-                                                padding: 10,
-                                                cursor: "pointer",
-                                            }}
-                                            onClick={() => {
-                                                window.open(
-                                                    window.location.origin +
-                                                        "/" +
-                                                        item.file_url
-                                                );
-                                            }}
-                                        >
-                                            <div
-                                                style={{
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                }}
-                                            >
-                                                <span>
-                                                    <PaperClipOutlined
-                                                        style={{ fontSize: 20 }}
-                                                    />
-                                                </span>
-                                                <span
-                                                    style={{ marginLeft: 10 }}
-                                                >
-                                                    {item.file_name}
-
-                                                    <div
-                                                        style={{ fontSize: 10 }}
-                                                    >
-                                                        {item.file_size}
-                                                    </div>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </Card>
-                                </div>
-                            );
-                        })}
-                </>
-            ),
-        },
-        {
-            key: "2",
-            label: `Activites`,
-            children: (
-                <>
-                    {deals &&
-                        deals.data.activities.length > 0 &&
-                        deals.data.activities.map((item: any) => {
-                            return (
-                                <div>
-                                    <Card style={{ marginTop: 20 }}>
-                                        <div className="delete-post-icon">
-                                            <Popconfirm
-                                                title="Delete"
-                                                description="Are you sure to delete this activity?"
-                                                onConfirm={() =>
-                                                    confirmDeleteActivity(
-                                                        item.id
-                                                    )
-                                                }
-                                                okText="Yes"
-                                                cancelText="No"
-                                            >
-                                                <DeleteOutlined />
-                                            </Popconfirm>
-                                        </div>
-                                        <div style={{ display: "flex" }}>
-                                            <span
-                                                className="thumb-name-xs "
-                                                title="Jesse Ashley"
-                                            >
-                                                {item.owner.firstName.charAt(0)}
-                                            </span>
-                                            <span
-                                                style={{
-                                                    fontSize: 16,
-                                                    marginLeft: 10,
-                                                }}
-                                            >
-                                                {" "}
-                                                <b>{item.type}</b> for{" "}
-                                                {item.owner.firstName +
-                                                    " " +
-                                                    item.owner.lastName}
-                                            </span>
-                                        </div>
-                                        <Divider></Divider>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                            }}
-                                        >
-                                            <span>
-                                                <CheckCircleOutlined
-                                                    style={{ fontSize: 24 }}
-                                                />
-                                            </span>
-                                            <span
-                                                style={{
-                                                    fontSize: 16,
-                                                    marginLeft: 10,
-                                                }}
-                                            >
-                                                {item.title}
-                                            </span>
-                                        </div>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                                padding: 20,
-                                                paddingTop: 0,
-                                                paddingBottom: 0,
-                                                marginTop: 10,
-                                            }}
-                                        >
-                                            <span>
-                                                <CalendarOutlined
-                                                    style={{ fontSize: 14 }}
-                                                />
-                                            </span>
-                                            <span
-                                                style={{
-                                                    fontSize: 14,
-                                                    marginLeft: 10,
-                                                }}
-                                            >
-                                                {" "}
-                                                {moment(item.start_date).format(
-                                                    "LLL"
-                                                )}
-                                            </span>
-                                        </div>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                                padding: 20,
-                                                paddingTop: 0,
-                                                paddingBottom: 0,
-                                            }}
-                                        >
-                                            <span>
-                                                <UserOutlined
-                                                    style={{ fontSize: 14 }}
-                                                />
-                                            </span>
-                                            <span
-                                                style={{
-                                                    fontSize: 14,
-                                                    marginLeft: 10,
-                                                }}
-                                            >
-                                                {deals &&
-                                                    deals.data.owner.firstName +
-                                                        " " +
-                                                        deals.data.owner
-                                                            .lastName}
-                                            </span>
-                                        </div>
-                                        <Divider></Divider>
-                                        <Input placeholder="Add your note for this activity"></Input>
-                                    </Card>
-                                </div>
-                            );
-                        })}
-                </>
-            ),
-        },
-        {
-            key: "3",
-            label: `Notes`,
-            children: (
-                <>
-                    {deals &&
-                        deals.data.notes.length > 0 &&
-                        deals.data.notes.map((item: any) => {
-                            return (
-                                <div>
-                                    <Card style={{ marginTop: 20 }}>
-                                        <div className="delete-post-icon">
-                                            <Popconfirm
-                                                title="Delete"
-                                                description="Are you sure to delete this notes?"
-                                                onConfirm={() =>
-                                                    confirmDeleteNotes(item.id)
-                                                }
-                                                okText="Yes"
-                                                cancelText="No"
-                                            >
-                                                <DeleteOutlined />
-                                            </Popconfirm>
-                                        </div>
-                                        <div style={{ display: "flex" }}>
-                                            <span
-                                                style={{
-                                                    fontSize: 16,
-                                                    marginLeft: 10,
-                                                }}
-                                            >
-                                                <b>{"Note Added"}</b> by{" "}
-                                                {item.user.firstName +
-                                                    " " +
-                                                    item.user.lastName}
-                                            </span>
-                                        </div>
-                                        <Divider></Divider>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                            }}
-                                        >
-                                            <span
-                                                style={{
-                                                    fontSize: 16,
-                                                    marginLeft: 10,
-                                                }}
-                                                dangerouslySetInnerHTML={{
-                                                    __html: item.notes,
-                                                }}
-                                            ></span>
-                                        </div>
-                                    </Card>
-                                </div>
-                            );
-                        })}
-                </>
-            ),
-        },
-        {
-            key: "4",
-            label: `Emails`,
-            children: `No Content`,
-        },
-        {
-            key: "5",
-            label: `File`,
-            children: (
-                <>
-                    {deals &&
-                        deals.data.files.length > 0 &&
-                        deals.data.files.map((item: any) => {
-                            return (
-                                <div>
-                                    <Card style={{ marginTop: 20 }}>
-                                        <div className="delete-post-icon">
-                                            <Popconfirm
-                                                title="Delete"
-                                                description="Are you sure to delete this file?"
-                                                onConfirm={() =>
-                                                    confirmDeleteFile(item.id)
-                                                }
-                                                okText="Yes"
-                                                cancelText="No"
-                                            >
-                                                <DeleteOutlined />
-                                            </Popconfirm>
-                                        </div>
-                                        <div style={{ display: "flex" }}>
-                                            <span
-                                                style={{
-                                                    fontSize: 16,
-                                                    marginLeft: 10,
-                                                }}
-                                            >
-                                                <b>{"File Added"}</b> by{" "}
-                                                {item.uploaded_by.firstName +
-                                                    " " +
-                                                    item.uploaded_by.lastName}
-                                            </span>
-                                        </div>
-                                        <Divider></Divider>
-
-                                        <div
-                                            style={{
-                                                background: "#F2F5FA",
-                                                borderRadius: 5,
-                                                padding: 10,
-                                                cursor: "pointer",
-                                            }}
-                                            onClick={() => {
-                                                window.open(
-                                                    window.location.origin +
-                                                        "/" +
-                                                        item.file_url
-                                                );
-                                            }}
-                                        >
-                                            <div
-                                                style={{
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                }}
-                                            >
-                                                <span>
-                                                    <PaperClipOutlined
-                                                        style={{ fontSize: 20 }}
-                                                    />
-                                                </span>
-                                                <span
-                                                    style={{ marginLeft: 10 }}
-                                                >
-                                                    {item.file_name}
-
-                                                    <div
-                                                        style={{ fontSize: 10 }}
-                                                    >
-                                                        {item.file_size}
-                                                    </div>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </Card>
-                                </div>
-                            );
-                        })}
-                </>
-            ),
-        },
-        {
-            key: "6",
-            label: `Texts`,
-            children: `No Content`,
-        },
-        {
-            key: "7",
-            label: `Updates`,
-            children: `No Content`,
-        },
-    ];
 
     const updateStage = useMutation(useDealMutationUpdateStage, {
         onSuccess: (res) => {
@@ -1821,8 +925,11 @@ const DealDetail = () => {
                             </span>
                             <span style={{ marginRight: 10 }}>
                                 <Dropdown
+                                    visible={isDropdownVisible}
+                                    onVisibleChange={setDropdownVisible}
                                     menu={{ items: action }}
                                     placement="bottomLeft"
+                                    trigger={["click"]}
                                 >
                                     <Button>
                                         <Space>
@@ -1957,9 +1064,11 @@ const DealDetail = () => {
                     <div style={{ marginTop: 30 }}>
                         <Row gutter={24}>
                             <Col md={6}>
-                                <div className="card-left-deal-details ">
+                                <div
+                                // className="card-left-deal-details "
+                                >
                                     <Collapse
-                                        bordered={false}
+                                        // bordered={false}
                                         defaultActiveKey={["1", "2", "3"]}
                                         expandIcon={({ isActive }) => (
                                             <CaretRightOutlined
@@ -1971,32 +1080,20 @@ const DealDetail = () => {
                                 </div>
                             </Col>
                             <Col md={12}>
-                                <Card
-                                    bodyStyle={{
-                                        padding: 10,
-                                        paddingTop: 0,
-                                    }}
-                                >
-                                    <Tabs
-                                        defaultActiveKey="1"
-                                        items={itemstab}
-                                        // onChange={onChange}
-                                    />
-                                </Card>
-
-                                <div style={{ marginTop: 20 }}>
-                                    <Tabs
-                                        style={{ padding: 10 }}
-                                        defaultActiveKey="1"
-                                        items={itemstab2}
-                                        // onChange={onChange}
-                                    />
-                                </div>
+                                {contact && (
+                                    <ContactContext.Provider
+                                        value={{ contact }}
+                                    >
+                                        <ActionsTabs />
+                                        <div style={{ paddingTop: "15px" }}>
+                                            <ContactsWall />
+                                        </div>
+                                    </ContactContext.Provider>
+                                )}
                             </Col>
                             <Col md={6}>
-                                <div className="card-left-deal-details ">
+                                <div>
                                     <Collapse
-                                        bordered={false}
                                         defaultActiveKey={["1", "2", "3"]}
                                         expandIcon={({ isActive }) => (
                                             <CaretRightOutlined
@@ -2028,6 +1125,14 @@ const DealDetail = () => {
                     handleOkContact={handleOkContact}
                     handleCancelContact={handleCancelContact}
                     dealId={"" + dealId}
+                />
+                <ModalAddDeal
+                    isModalOpenAdd={isModalOpenAddDeal}
+                    handleOkAdd={handleOkAddDeal}
+                    handleCancelAdd={handleCancelAddDeal}
+                    showModalAddDealValue={showModalAddDealValue}
+                    from={showModalAddDealValueFrom}
+                    modalValue={modalValue}
                 />
             </Col>
         </Row>

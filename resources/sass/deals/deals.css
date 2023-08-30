@@ -206,7 +206,7 @@
 
 .breadcrumb a.none:hover,
 .breadcrumb a.none:hover:after {
-  background-color: #d8d3d3;
+  background-color: #b8b7b7;
 }
 
 .breadcrumb a.active {
@@ -313,4 +313,8 @@
   top: 7px;
   font-size: 17px;
   cursor: pointer;
+}
+
+.ant-popover.ant-popconfirm {
+  z-index: 100000;
 }/*# sourceMappingURL=deals.css.map */

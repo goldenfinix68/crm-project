@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Text;
 use Auth;
+use Carbon\Carbon;
+use App\Jobs\SendText;
 
 class TextsController extends Controller
 {
@@ -47,23 +49,52 @@ class TextsController extends Controller
         $userId = Auth::id();
 
         try {
-            \Telnyx\Telnyx::setApiKey(env('TELNYX_API_KEY'));
+            if(empty($request->schedule)){
+                \Telnyx\Telnyx::setApiKey(env('TELNYX_API_KEY'));
 
-            $response = \Telnyx\Message::Create([
-                "from" => $request->from, // Your Telnyx number
-                "to" => '["' . $request->to . '"]', //temp sent to many not enabled yet
-                "text" => $request->message,
-                "messaging_profile_id" => env('TELNYX_PROFILE_ID'),
-            ]);
-            
-            $text = Text::create(array_merge($request->all(), [
-                'userId' => $userId, 
-                'type'=> 'SMS', 
-                'telnyxId' => $response->id,
-                'status' => 'queued',
-                'isFromApp' => true,
-                'telnyxResponse' => json_encode($response),
-            ]));
+                $response = \Telnyx\Message::Create([
+                    "from" => $request->from, // Your Telnyx number
+                    "to" => $request->to,
+                    "text" => $request->message,
+                    "messaging_profile_id" => env('TELNYX_PROFILE_ID'),
+                ]);
+                
+                $text = Text::create(array_merge($request->all(), [
+                    'userId' => $userId, 
+                    'type'=> 'SMS', 
+                    'telnyxId' => $response->id,
+                    'status' => 'queued',
+                    'isFromApp' => true,
+                    'telnyxResponse' => json_encode($response),
+                    "to" => '["' . $request->to . '"]',
+                ]));
+            }
+            else{
+                $givenTime = strtotime($request->schedule);
+                $currentTime = time();
+                $fiveMinutesFromNow = $currentTime + (5 * 60);
+                if ($givenTime >= $currentTime && $givenTime <= $fiveMinutesFromNow) {
+                    $text = Text::create(array_merge($request->all(), [
+                        'userId' => $userId, 
+                        'type'=> 'SMS', 
+                        'status' => 'scheduled',
+                        'isFromApp' => true,
+                        'queueLock' => true,
+                        "to" => '["' . $request->to . '"]',
+                    ]));
+                    $timeStartSeconds = $givenTime - $currentTime;
+                    $delayInSeconds = $timeStartSeconds + 1;
+					SendText::dispatch($text)->delay($delayInSeconds);
+                } else {
+                    $text = Text::create(array_merge($request->all(), [
+                        'userId' => $userId, 
+                        'type'=> 'SMS', 
+                        'status' => 'scheduled',
+                        'isFromApp' => true,
+                        "to" => '["' . $request->to . '"]',
+                    ]));
+                }
+            }
 
             
         } catch (\Exception $e) {

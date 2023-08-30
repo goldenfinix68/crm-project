@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlignTexts extends Migration
+class CreateCallsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,15 @@ class AlignTexts extends Migration
      */
     public function up()
     {
-        Schema::table('texts', function (Blueprint $table) {
-            $table->string('telnyxId')->nullable();
-            $table->string('status')->nullable();
+        Schema::create('calls', function (Blueprint $table) {
+            $table->id();
+            $table->string('from');
+            $table->string('to');
+            $table->string('telnyxCallSessionId');
+            $table->string('type');
             $table->longText('telnyxResponse')->nullable();
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -27,10 +32,6 @@ class AlignTexts extends Migration
      */
     public function down()
     {
-        Schema::table('texts', function (Blueprint $table) {
-            $table->dropColumn('telnyxId');
-            $table->dropColumn('status');
-            $table->dropColumn('telnyxResponse');
-        });
+        Schema::dropIfExists('calls');
     }
 }

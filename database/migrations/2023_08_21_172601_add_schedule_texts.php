@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlignTexts extends Migration
+class AddScheduleTexts extends Migration
 {
     /**
      * Run the migrations.
@@ -14,9 +14,8 @@ class AlignTexts extends Migration
     public function up()
     {
         Schema::table('texts', function (Blueprint $table) {
-            $table->string('telnyxId')->nullable();
-            $table->string('status')->nullable();
-            $table->longText('telnyxResponse')->nullable();
+            $table->boolean('queueLock')->default(false);
+            $table->string('schedule')->nullable();
         });
     }
 
@@ -28,9 +27,8 @@ class AlignTexts extends Migration
     public function down()
     {
         Schema::table('texts', function (Blueprint $table) {
-            $table->dropColumn('telnyxId');
-            $table->dropColumn('status');
-            $table->dropColumn('telnyxResponse');
+            $table->dropColumn('queueLock');
+            $table->dropColumn('schedule');
         });
     }
 }

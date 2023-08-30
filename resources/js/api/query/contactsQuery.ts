@@ -58,7 +58,7 @@ export const useGetContact = (
     };
 };
 
-export const useContactsAll = (filter: any) => {
+export const useContactsAll = (filter?: any) => {
     const { data, isLoading, isError, refetch } = useQuery<TContact[]>(
         "contacts",
         async () => {

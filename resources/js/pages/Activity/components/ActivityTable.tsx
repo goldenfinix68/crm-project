@@ -132,6 +132,7 @@ const ActivityTable = () => {
         search: "",
         sort_field: "id",
         sort_order: "asc",
+        status: "Active",
     });
 
     const { dataSource, isLoadingUsers, refetchUsers, isFetchingUsers } =
@@ -172,7 +173,7 @@ const ActivityTable = () => {
     };
 
     const [isModalManageColumnOpen, setIsModalManageColumnOpen] =
-        useState(false);
+        useState(true);
     const [modalManageColumnField, setModalManageColumnField] = useState({
         show: false,
         title: "Select Field Type",

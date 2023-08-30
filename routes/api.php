@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use ElephantIO\Client;
+use Illuminate\Support\Facades\DB;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -62,18 +64,17 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+
+    Route::resource('/activity_custome_fields', 'App\Http\Controllers\Api\ActivityCustomFieldController');
 });
 
 Route::post('/telnyx/sms/webhook', 'App\Http\Controllers\Api\TextsController@textReceived');
 Route::get('/telnyx/sms/webhook', 'App\Http\Controllers\Api\TextsController@textReceived');
+Route::get('/telnyx/call/webhook', 'App\Http\Controllers\Api\CallsController@webhook');
+Route::get('/telnyx/call/webhook/fail', 'App\Http\Controllers\Api\CallsController@webhook');
 
 Route::post('/telnyx/call/webhook', function (Request $request) {
     \Log::info('INCOMING CALL SUCCESS');
-    $json = json_decode(file_get_contents("php://input"), true);
-    \Log::info($json);
-});
-Route::post('/telnyx/call/webhook/fail', function (Request $request) {
-    \Log::error('INCOMING CALL FAIL');
     $json = json_decode(file_get_contents("php://input"), true);
     \Log::info($json);
 });
@@ -82,17 +83,6 @@ Route::post('/telnyx/sms/webhook/fail', function (Request $request) {
     $json = json_decode(file_get_contents("php://input"), true);
     \Log::error($json);
 });
-Route::get('/telnyx/call/webhook', function (Request $request) {
-    \Log::info('INCOMING CALL SUCCESS');
-    $json = json_decode(file_get_contents("php://input"), true);
-    \Log::info($json);
-});
-Route::get('/telnyx/call/webhook/fail', function (Request $request) {
-    \Log::error('INCOMING CALL FAIL');
-    $json = json_decode(file_get_contents("php://input"), true);
-    \Log::info($json);
-});
-
 Route::get('/telnyx/sms/webhook/fail', function (Request $request) {
     \Log::error('INCOMING SMS FAIL');
     $json = json_decode(file_get_contents("php://input"), true);
@@ -150,12 +140,6 @@ Route::get('/telnyx/call/dial', function (Request $request) {
 
 Route::get('/mail_test', function (Request $request) {
 
-    return view('admin.emails.password-reset', [
-        'link' => url('forgotpassword/'),
-        'full_name' => 'kyle',
-        'email' => 'genekyletajores1997@gmail.com',
-    ]);
-
     // $data = array(
     //     'to_name' => 'kyle taj',
     //     'to_email' => 'genekyletajores1997@gmail.com',
@@ -172,5 +156,21 @@ Route::get('/mail_test', function (Request $request) {
 
     // event(new \App\Events\SendMailEvent($data));
 
-    // echo  env('MAIL_HOST');
+    echo  env('MAIL_HOST');
+});
+
+// Do not remove this code
+Route::get('/get_people', function (Request $request) {
+    $data = \App\Models\User::select([
+        'id',
+        'firstName',
+        'lastName',
+    ])
+    ->union(DB::table('contacts')->select('id', 'firstName', 'lastName'))
+    ->get();
+
+    return response()->json([
+        'success' => true,
+        'data' => $data,
+    ], 200);
 });
