@@ -46,12 +46,14 @@ import validateRules from "../../../providers/validateRules";
 import { useMutation, useQueryClient } from "react-query";
 import { addActivityMutation } from "../../../api/mutation/useActivityMutation";
 import {
+    useActivutyCustomField,
     useContactsList,
     useDealsList,
     usePeopleList,
     useUsersList,
 } from "../../../api/query/activityQuery";
 import { an } from "@fullcalendar/core/internal-common";
+import DynamicFields from "./DyNamicFields";
 
 const optionRecurrence: SelectProps["options"] = [
     {
@@ -104,6 +106,7 @@ const ModalAddActivity = ({
 }: ModalActivityProps) => {
     const queryClient = useQueryClient();
     const [form] = Form.useForm();
+    const [formDynamic] = Form.useForm();
     const [calendarOptions, setCalendarOptions] = useState(false);
 
     const calendar = useRef();
@@ -152,6 +155,7 @@ const ModalAddActivity = ({
 
     const handleReset = () => {
         form.resetFields();
+        formDynamic.resetFields();
         setEventCalendarData([
             {
                 title: "",
@@ -167,8 +171,8 @@ const ModalAddActivity = ({
         onSuccess: (res) => {
             console.log("success");
             queryClient.invalidateQueries("activities");
-            //queryClient.invalidateQueries("contactTypesAll");
-            // form.resetFields();
+            form.resetFields();
+            formDynamic.resetFields();
         },
     });
 
@@ -345,6 +349,17 @@ const ModalAddActivity = ({
         console.log("eventDrop", info.event);
     };
 
+    const { dataCustomField, isLoadingCustomField } = useActivutyCustomField();
+
+    const [customFieldsData, setCustomFieldsData] = useState([]);
+
+    useEffect(() => {
+        // console.log("customFieldsData", dataCustomField?.data);
+        if (customFieldsData.length > 0) {
+            console.log("customFieldsData", customFieldsData);
+        }
+    }, [customFieldsData]);
+
     return (
         <Modal
             className="modal-activity"
@@ -369,9 +384,28 @@ const ModalAddActivity = ({
                                 <Button
                                     type="primary"
                                     onClick={() => {
+                                        let submit = false;
+                                        formDynamic
+                                            .validateFields()
+                                            .then((datas) => {
+                                                submit = true;
+                                            })
+                                            .catch(() => {
+                                                submit = false;
+                                                notification.warning({
+                                                    message: "Warning",
+                                                    description:
+                                                        "Please fill-up required fields!",
+                                                });
+                                            });
                                         form.validateFields()
                                             .then((values) => {
-                                                onFinish(values, "Save-Close");
+                                                if (submit) {
+                                                    onFinish(
+                                                        values,
+                                                        "Save-Close"
+                                                    );
+                                                }
                                             })
                                             .catch((info) => {
                                                 notification.warning({
@@ -387,9 +421,28 @@ const ModalAddActivity = ({
                                 <Button
                                     type="primary"
                                     onClick={() => {
+                                        let submit = false;
+                                        formDynamic
+                                            .validateFields()
+                                            .then((datas) => {
+                                                submit = true;
+                                            })
+                                            .catch(() => {
+                                                submit = false;
+                                                notification.warning({
+                                                    message: "Warning",
+                                                    description:
+                                                        "Please fill-up required fields!",
+                                                });
+                                            });
                                         form.validateFields()
                                             .then((values) => {
-                                                onFinish(values, "Save-New");
+                                                if (submit) {
+                                                    onFinish(
+                                                        values,
+                                                        "Save-Close"
+                                                    );
+                                                }
                                             })
                                             .catch((info) => {
                                                 notification.warning({
@@ -416,28 +469,28 @@ const ModalAddActivity = ({
                 </>
             }
         >
-            <Form
-                form={form}
-                initialValues={{
-                    type: "Call",
-                    recurrence: "Doesn’t repeat",
-                    availability: "Busy",
-                    start_date: dayjs(
-                        moment().format("YYYY/MM/DD"),
-                        "YYYY/MM/DD"
-                    ),
-                    end_date: dayjs(
-                        moment().format("YYYY/MM/DD HH:mm"),
-                        "YYYY/MM/DD"
-                    ),
-                    owner_id: dataUsers?.user_data?.id
-                        ? dataUsers?.user_data?.id
-                        : null,
-                }}
-                onFieldsChange={handleFieldsChange}
-            >
-                <Row gutter={12} className="">
-                    <Col span={17} className="p-md p-t-lg form-left">
+            <Row gutter={12} className="">
+                <Col span={17} className="p-md p-t-lg form-left">
+                    <Form
+                        form={form}
+                        initialValues={{
+                            type: "Call",
+                            recurrence: "Doesn’t repeat",
+                            availability: "Busy",
+                            start_date: dayjs(
+                                moment().format("YYYY/MM/DD"),
+                                "YYYY/MM/DD"
+                            ),
+                            end_date: dayjs(
+                                moment().format("YYYY/MM/DD HH:mm"),
+                                "YYYY/MM/DD"
+                            ),
+                            owner_id: dataUsers?.user_data?.id
+                                ? dataUsers?.user_data?.id
+                                : null,
+                        }}
+                        onFieldsChange={handleFieldsChange}
+                    >
                         <Form.Item
                             name={"title"}
                             rules={[validateRules.required]}
@@ -870,46 +923,83 @@ const ModalAddActivity = ({
                                 </Form.Item>
                             </Col>
                         </Row>
-                    </Col>
+                    </Form>
 
-                    <Col
-                        span={7}
-                        className="p-l-none p-r-none p-t-lg form-right"
-                    >
-                        <div className={"FullCalendarActivity"}>
-                            <FullCalendar
-                                plugins={[
-                                    dayGridPlugin,
-                                    timeGridPlugin,
-                                    interactionPlugin,
-                                ]}
-                                initialView="timeGridDay"
-                                headerToolbar={{
-                                    left: "prev",
-                                    center: "title",
-                                    right: "next",
-                                }}
-                                weekends={false}
-                                events={
-                                    eventCalendarData[0].title
-                                        ? eventCalendarData
-                                        : []
+                    {/* custom fields */}
+                    <Form form={formDynamic}>
+                        {dataCustomField &&
+                            dataCustomField?.data &&
+                            dataCustomField?.data.length > 0 &&
+                            dataCustomField?.data.map(
+                                (item: any, key: React.Key) => {
+                                    let col = 19;
+                                    let classNote =
+                                        item?.type === "Text Area"
+                                            ? "col-label-note"
+                                            : "";
+
+                                    return (
+                                        <Row gutter={12} key={key}>
+                                            <Col
+                                                span={5}
+                                                className={`col-label ${classNote}`}
+                                            >
+                                                <Typography.Text>
+                                                    {item?.label}
+                                                </Typography.Text>
+                                            </Col>
+                                            <Col span={col}>
+                                                <DynamicFields
+                                                    data={item}
+                                                    customFieldsData={
+                                                        customFieldsData
+                                                    }
+                                                    setCustomFieldsData={
+                                                        setCustomFieldsData
+                                                    }
+                                                />
+                                            </Col>
+                                        </Row>
+                                    );
                                 }
-                                eventDrop={(info) => {
-                                    handleOnEditCalendar(info);
-                                }}
-                                eventResize={(info) => {
-                                    handleOnEditCalendar(info);
-                                }}
-                                droppable={true}
-                                editable={true}
-                                // eventContent={<></>}
-                                // slotDuration={"00:30:00"}
-                            />
-                        </div>
-                    </Col>
-                </Row>
-            </Form>
+                            )}
+                    </Form>
+                </Col>
+
+                <Col span={7} className="p-l-none p-r-none p-t-lg form-right">
+                    <div className={"FullCalendarActivity"}>
+                        <FullCalendar
+                            plugins={[
+                                dayGridPlugin,
+                                timeGridPlugin,
+                                interactionPlugin,
+                            ]}
+                            initialView="timeGridDay"
+                            headerToolbar={{
+                                left: "prev",
+                                center: "title",
+                                right: "next",
+                            }}
+                            weekends={false}
+                            events={
+                                eventCalendarData[0].title
+                                    ? eventCalendarData
+                                    : []
+                            }
+                            eventDrop={(info) => {
+                                handleOnEditCalendar(info);
+                            }}
+                            eventResize={(info) => {
+                                handleOnEditCalendar(info);
+                            }}
+                            droppable={true}
+                            editable={true}
+                            // eventContent={<></>}
+                            // slotDuration={"00:30:00"}
+                        />
+                    </div>
+                </Col>
+            </Row>
         </Modal>
     );
 };

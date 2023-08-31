@@ -42,6 +42,16 @@ class ActivityCustomFieldController extends Controller
             'required' => $request->required,
         ]);
 
+        if (isset($request->values)) {
+            $data->values = $request->values;
+        }
+
+        if (isset($request->values_option)) {
+            $data->values_option = $request->values_option;
+        }
+
+        $data->save();
+
         return response()->json([
             'success' => true,
             'data' =>  $data
