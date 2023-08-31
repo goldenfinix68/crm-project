@@ -822,6 +822,10 @@ const DealDetail = () => {
                 setStagingColor({
                     ...stagingColor,
                     first: "active",
+                    second: "none",
+                    third: "none",
+                    fourth: "none",
+                    fifth: "none",
                 });
             }
             if (deals.data.stage == "First Offer Given") {
@@ -829,6 +833,10 @@ const DealDetail = () => {
                     ...stagingColor,
                     first: "done",
                     second: "active",
+
+                    third: "none",
+                    fourth: "none",
+                    fifth: "none",
                 });
             }
             if (deals.data.stage == "In Negotiation") {
@@ -837,6 +845,9 @@ const DealDetail = () => {
                     first: "done",
                     second: "done",
                     third: "active",
+
+                    fourth: "none",
+                    fifth: "none",
                 });
             }
             if (deals.data.stage == "Verbal Offer Accepted") {
@@ -846,6 +857,7 @@ const DealDetail = () => {
                     second: "done",
                     third: "done",
                     fourth: "active",
+                    fifth: "none",
                 });
             }
             if (deals.data.stage == "Under Contract") {
