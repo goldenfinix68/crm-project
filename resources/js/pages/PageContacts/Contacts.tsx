@@ -570,7 +570,22 @@ const Contacts = () => {
                                                     )}{" "}
                                                 </Menu>
                                             ) : (
-                                                "You have no favorties"
+                                                <Col
+                                                    style={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        flexDirection: "column",
+                                                    }}
+                                                >
+                                                    <Typography.Title level={5}>
+                                                        You have no favorites
+                                                    </Typography.Title>
+                                                    <Typography.Text>
+                                                        Select views as
+                                                        favorites to make it
+                                                        appear here.
+                                                    </Typography.Text>
+                                                </Col>
                                             )}
                                             {/* <Typography.Title
                                                 className="m-t-md"
