@@ -86,15 +86,16 @@ const ModalManageColumnFIeld: React.FC<ModalManageColumnFIeldProps> = (
     };
 
     const onFinish = (values: any) => {
-        console.log("onFinish", values);
+        // console.log("onFinish", values);
 
         addCustomField.mutate(values);
     };
 
     const addCustomField = useMutation(addActivityCustomeFieldMutation, {
         onSuccess: (res) => {
-            console.log("addCustomField", res);
             queryClient.invalidateQueries("get_activity_custom_field");
+            form.resetFields();
+            handleOpenManageColumnFieldClose();
         },
     });
 
@@ -125,6 +126,14 @@ const ModalManageColumnFIeld: React.FC<ModalManageColumnFIeldProps> = (
                                                 .replace(/ /g, "_")
                                                 .toLowerCase(),
                                         };
+
+                                        if (values.values) {
+                                            values = {
+                                                ...values,
+                                                values_option:
+                                                    values.values.split("\n"),
+                                            };
+                                        }
                                         onFinish(values);
                                     })
                                     .catch((info) => {});
@@ -133,7 +142,11 @@ const ModalManageColumnFIeld: React.FC<ModalManageColumnFIeldProps> = (
                             Save
                         </Button>
 
-                        <Button>Cancel</Button>
+                        <Button
+                            onClick={() => handleOpenManageColumnFieldClose()}
+                        >
+                            Cancel
+                        </Button>
                     </Space>
                 )
             }
@@ -273,7 +286,8 @@ const AddCustomFieldForm: React.FC<AddCustomFieldFormProps> = (props) => {
                 </Select>
             </Form.Item>
 
-            {selectedType.type === "Select" && (
+            {selectedType.type === "Select" ||
+            selectedType.type === "Multi Select" ? (
                 <Row gutter={24}>
                     <Col span={12}>
                         <Form.Item name="values" label="Pick list values">
@@ -289,6 +303,8 @@ const AddCustomFieldForm: React.FC<AddCustomFieldFormProps> = (props) => {
                         </Typography.Text>
                     </Col>
                 </Row>
+            ) : (
+                ""
             )}
 
             <Form.Item name={"required"} valuePropName="checked">

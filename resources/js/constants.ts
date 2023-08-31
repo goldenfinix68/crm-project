@@ -63,6 +63,13 @@ export const FIELD_TYPE_LIST = [
         icon: "date",
     },
     {
+        label: "Date Time",
+        type: "Date Time",
+        description:
+            "The field lets you select a date and time information using calendar + time picker.",
+        icon: "date",
+    },
+    {
         label: "Email",
         type: "Email",
         description: "The field lets you enter a valid email address..",
@@ -88,20 +95,20 @@ export const FIELD_TYPE_LIST = [
             "The field lets you define a list of options that will appear in the dropdown. You can select multiple options from the list.",
         icon: "multi-select",
     },
-    {
-        label: "Contact Lookup",
-        type: "Contact Lookup",
-        description:
-            "The field lets you associate the contact record with your module.",
-        icon: "contact-lookup",
-    },
-    {
-        label: "User Lookup",
-        type: "User Lookup",
-        description:
-            "The field lets you associate the user record with your module.",
-        icon: "user-lookup",
-    },
+    // {
+    //     label: "Contact Lookup",
+    //     type: "Contact Lookup",
+    //     description:
+    //         "The field lets you associate the contact record with your module.",
+    //     icon: "contact-lookup",
+    // },
+    // {
+    //     label: "User Lookup",
+    //     type: "User Lookup",
+    //     description:
+    //         "The field lets you associate the user record with your module.",
+    //     icon: "user-lookup",
+    // },
     {
         label: "URL",
         type: "URL",
