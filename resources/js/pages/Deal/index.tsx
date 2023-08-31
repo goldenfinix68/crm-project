@@ -795,7 +795,7 @@ const Deal = () => {
 
     const mutation = useMutation(useDealUpdateBoardMutation, {
         onSuccess: (res) => {
-            console.log("wew", res);
+            // console.log("wew", res);
         },
     });
 
