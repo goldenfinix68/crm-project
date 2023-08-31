@@ -14,6 +14,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+    if (localStorage.access_token) {
+        window.location.href = window.location.origin + "/dashboard";
+    }
     const loginMutation = useMutation(
         async (credentials: any) => {
             const response = await axios.post("/api/login", credentials);
