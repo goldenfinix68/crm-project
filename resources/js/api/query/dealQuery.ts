@@ -7,7 +7,7 @@ export const useDealsAll = (url: any) => {
         async () => {
             const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
             const response = await axios.get(
-                `/api/deals?pipeline=${url.pipeline}&title=${url.title}&status=${url.status}`,
+                `/api/deals?${new URLSearchParams(url)}`,
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,

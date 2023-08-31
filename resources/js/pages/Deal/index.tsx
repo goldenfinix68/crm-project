@@ -103,6 +103,11 @@ const Deal = () => {
         pipeline: "ACQ",
         title: "",
         status: "All Deals",
+        page: 1,
+        page_size: 50,
+        search: "",
+        sort_field: "id",
+        sort_order: "asc",
     });
     const [isDropdownVisible, setDropdownVisible] = useState(false);
     const [isFavorite, setIsFavorite] = useState<string[]>([]);
@@ -645,6 +650,7 @@ const Deal = () => {
 
     useEffect(() => {
         if (deals) {
+            console.log(deals);
             if (deals.deal_favorite.length > 0) {
                 let isFavoriteVar: any = [];
 
@@ -658,7 +664,7 @@ const Deal = () => {
             if (listBoard != "List") {
                 const data: { lanes: Lane[] } = { ...initialBoardData }; // Clone the initial data
 
-                deals.data.forEach((x: any, key: any) => {
+                deals.data.data.forEach((x: any, key: any) => {
                     if (x.stage == "Comp & Qualify") {
                         data.lanes[0].cards.push({
                             id: x.id,
@@ -697,8 +703,8 @@ const Deal = () => {
                 });
                 setBoardData(data);
             } else {
-                setListData(deals.data);
-                console.log("wew", deals.data);
+                setListData(deals.data.data);
+                console.log("wew", deals.data.data);
             }
         }
     }, [deals, listBoard]);
@@ -1048,7 +1054,9 @@ const Deal = () => {
                     ) : (
                         <div>
                             <DealsTable
-                                deals={listData}
+                                deals={deals}
+                                filterPage={filterPage}
+                                setFilterPage={setFilterPage}
                                 showDeleteButton={showDeleteButton}
                                 setShowDeleteButton={setShowDeleteButton}
                                 selectedData={selectedData}

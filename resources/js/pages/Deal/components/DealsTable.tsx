@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { EditOutlined } from "@ant-design/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
-import { useDealsAll } from "../../../api/query/dealQuery";
+import { useDealsAll, useDealsAllFiter } from "../../../api/query/dealQuery";
 import ModalAddDeal from "./ModalAddDeal";
 import { useMutation, useQueryClient } from "react-query";
 import ContactsComponentsUpdate from "./ContactsComponentsUpdate";
@@ -22,6 +22,8 @@ interface TDeals {
 
 const DealsTable = ({
     deals,
+    filterPage,
+    setFilterPage,
     showDeleteButton,
     setShowDeleteButton,
     selectedData,
@@ -36,6 +38,8 @@ const DealsTable = ({
     setTitle,
 }: {
     deals: any;
+    filterPage: any;
+    setFilterPage: any;
     showDeleteButton: any;
     setShowDeleteButton: any;
     selectedData: any;
@@ -51,12 +55,18 @@ const DealsTable = ({
 }) => {
     const queryClient = useQueryClient();
     const onChange: TableProps<TDeals>["onChange"] = (
-        pagination,
-        filters,
-        sorter,
-        extra
+        pagination: any,
+        sorter: any,
+        filters: any,
+        extra: any
     ) => {
-        console.log("params", pagination, filters, sorter, extra);
+        setFilterPage({
+            ...setFilterPage,
+            sort_field: filters.field,
+            sort_order: filters.order ? filters.order.replace("end", "") : null,
+            page: pagination.current,
+            page_size: pagination.pageSize,
+        });
     };
 
     const onSelectChange = (
@@ -110,18 +120,27 @@ const DealsTable = ({
     return (
         <>
             <Table
-                dataSource={deals}
+                dataSource={deals?.data && deals?.data?.data}
                 onChange={onChange}
                 rowKey={(record) => record.id}
                 rowSelection={{ ...rowSelection }}
                 scroll={{ x: 1300 }}
+                pagination={{
+                    total: deals?.data?.total,
+                    current: filterPage.page,
+                    pageSize: filterPage.page_size,
+                    showSizeChanger: true,
+                    pageSizeOptions: [10, 20, 50, 100, 200],
+                    showTotal: (total, range) =>
+                        `${range[0]}-${range[1]} of ${total} items`,
+                }}
             >
                 <Table.Column
                     title="Title"
                     dataIndex="title"
                     className="col-status"
                     width={400}
-                    sorter={(a, b) => a.title.length - b.title.length}
+                    sorter
                     render={(text: string, record: any) => {
                         return (
                             <>
@@ -139,13 +158,13 @@ const DealsTable = ({
                     fixed={"left"}
                 />
 
-                <Table.Column title="Name" dataIndex="contact_name" />
+                <Table.Column title="Name" dataIndex="contact_name" sorter />
 
-                <Table.Column title="Value" dataIndex="value" />
-                <Table.Column title="Stage" dataIndex="stage" />
+                <Table.Column title="Value" dataIndex="value" sorter />
+                <Table.Column title="Stage" dataIndex="stage" sorter />
 
-                <Table.Column title="Status" dataIndex={"status"} />
-                <Table.Column title="Owner" dataIndex={"owner_name"} />
+                <Table.Column title="Status" dataIndex={"status"} sorter />
+                <Table.Column title="Owner" dataIndex={"owner_name"} sorter />
             </Table>
             <ModalAddDeal
                 isModalOpenAdd={isModalOpenAdd}
