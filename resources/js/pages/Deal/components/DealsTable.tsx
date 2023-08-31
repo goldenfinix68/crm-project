@@ -61,7 +61,7 @@ const DealsTable = ({
         extra: any
     ) => {
         setFilterPage({
-            ...setFilterPage,
+            ...filterPage,
             sort_field: filters.field,
             sort_order: filters.order ? filters.order.replace("end", "") : null,
             page: pagination.current,
