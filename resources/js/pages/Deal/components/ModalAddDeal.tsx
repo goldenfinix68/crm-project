@@ -218,11 +218,22 @@ const ModalAddDeal = ({
     }, [teamateLocal]);
     return (
         <Modal
-            className="modal-activity"
+            className="your-modal"
             open={isModalOpenAdd}
             onCancel={handleCancelAdd}
             width={980}
             footer={null}
+            // footer={
+            //     <div className="modal-footer-deal">
+            //         <Button className="m-r-xs" type="primary" htmlType="submit">
+            //             Save
+            //         </Button>
+            //         <Button className="m-r-xs" type="primary">
+            //             Save and add other
+            //         </Button>
+            //         <Button onClick={handleCancelAdd}>Cancel</Button>
+            //     </div>
+            // }
             title={null}
             closable={false}
             // footer={[
@@ -260,7 +271,7 @@ const ModalAddDeal = ({
                         icon={<CloseOutlined style={{ color: "white" }} />}
                     />
                 </div>
-                <Row gutter={12}>
+                <Row gutter={12} style={{ marginTop: 10 }}>
                     <Col md={16} className="col-1-modal-act">
                         <Form.Item
                             label="Title"

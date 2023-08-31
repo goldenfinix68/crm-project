@@ -60,3 +60,25 @@ export const usefindUser = (id: string) => {
         isError,
     };
 };
+
+export const useUserFavorites = () => {
+    const { data, isLoading, isError, refetch } = useQuery(
+        "contactsFavorite",
+        async () => {
+            const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+            const response = await axios.get(`/api/contacts/get_favorite`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            return response.data;
+        }
+    );
+
+    return {
+        favorites: data,
+        isLoadingFavorites: isLoading,
+        isErrorFavorites: isError,
+        refetchFavorites: refetch,
+    };
+};

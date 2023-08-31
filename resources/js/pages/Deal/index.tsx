@@ -103,7 +103,13 @@ const Deal = () => {
         pipeline: "ACQ",
         title: "",
         status: "All Deals",
+        page: 1,
+        page_size: 50,
+        search: "",
+        sort_field: "id",
+        sort_order: "asc",
     });
+
     const [isDropdownVisible, setDropdownVisible] = useState(false);
     const [isFavorite, setIsFavorite] = useState<string[]>([]);
 
@@ -139,6 +145,10 @@ const Deal = () => {
         useState<string>("");
     const [showDeleteButton, setShowDeleteButton] = useState(false);
     const { deals, isLoading, refetch } = useDealsAll(filterPage);
+
+    useEffect(() => {
+        refetch();
+    }, [filterPage]);
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
     const [byTotalDeals, setByTotalDeals] = useState<Bytotal>({
         comp_qualify: 0,
@@ -647,6 +657,7 @@ const Deal = () => {
         if (deals) {
             if (deals.deal_favorite.length > 0) {
                 let isFavoriteVar: any = [];
+                console.log("deals", deals);
 
                 deals.deal_favorite.forEach((element: any) => {
                     isFavoriteVar.push(element.name);
@@ -658,7 +669,7 @@ const Deal = () => {
             if (listBoard != "List") {
                 const data: { lanes: Lane[] } = { ...initialBoardData }; // Clone the initial data
 
-                deals.data.forEach((x: any, key: any) => {
+                deals.data.data.forEach((x: any, key: any) => {
                     if (x.stage == "Comp & Qualify") {
                         data.lanes[0].cards.push({
                             id: x.id,
@@ -697,8 +708,8 @@ const Deal = () => {
                 });
                 setBoardData(data);
             } else {
-                setListData(deals.data);
-                console.log("wew", deals.data);
+                setListData(deals.data.data);
+                console.log("wew", deals.data.data);
             }
         }
     }, [deals, listBoard]);
@@ -784,7 +795,7 @@ const Deal = () => {
 
     const mutation = useMutation(useDealUpdateBoardMutation, {
         onSuccess: (res) => {
-            console.log("wew", res);
+            // console.log("wew", res);
         },
     });
 
@@ -1026,7 +1037,7 @@ const Deal = () => {
                         </>
                     )}
 
-                    {listBoard != "List" ? (
+                    {boardData && listBoard != "List" ? (
                         <div>
                             <div className="mainDealArrow">
                                 <div style={{ width: "100%", height: "100vh" }}>
@@ -1048,7 +1059,9 @@ const Deal = () => {
                     ) : (
                         <div>
                             <DealsTable
-                                deals={listData}
+                                deals={deals}
+                                filterPage={filterPage}
+                                setFilterPage={setFilterPage}
                                 showDeleteButton={showDeleteButton}
                                 setShowDeleteButton={setShowDeleteButton}
                                 selectedData={selectedData}

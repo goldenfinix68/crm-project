@@ -57,6 +57,7 @@ import { useContactsAll } from "../../api/query/contactsQuery";
 import { useMutation, useQuery } from "react-query";
 import { TContact } from "../../entities";
 import { deleteContactMutation } from "../../api/mutation/useContactMutation";
+import { mergeContactMutation } from "../../api/mutation/useContactMutation";
 import queryClient from "../../queryClient";
 import { useNavigate } from "react-router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -136,7 +137,7 @@ const MergeContacts = () => {
         "phone",
         "owner",
         "email2",
-        "type",
+        "typeId",
         "mailingStreetAddress",
         "emailOptOut",
         "mailingCity",
@@ -190,68 +191,70 @@ const MergeContacts = () => {
         "country",
     ];
 
-    const Title = [
-        "First Name",
-        "Last Name",
-        "Mobile",
-        "Country Link",
-        "Acres",
-        "Phone",
-        "Owner",
-        "Email 2",
-        "Type",
-        "Mailing Street Address",
-        "Email Opt Out",
-        "Mailing City",
-        "Mailing State",
-        "Email Opt Out Reason",
-        "Mailing Zip",
-        "Mailing Country",
-        "Subdivision",
-        "APN",
-        "Google Map Link",
-        "Road Frontage",
-        "Redfin Quick Link",
-        "Opening Bid",
-        "Assessed Value",
-        "Assessed vs. Opening Bid Margin (manual)",
-        "Assessed vs. Opening Bid Multiple (manual)",
-        "Wetlands Status",
-        "Legal Description",
-        "Legal Subdivision",
-        "Flood Zone",
-        "Topography",
-        "Wireless 1",
-        "Wireless 2",
-        "Wireless 3",
-        "Wireless 4",
-        "Landline 1",
-        "Landline 2",
-        "Landline 3",
-        "Landline 4",
-        "MarketAreaName",
-        "HOA/ POA?",
-        "Skype",
-        "LinkedIn",
-        "Instagram",
-        "Details Description",
-        "Tags",
-        "Details Legal Description",
-        "Address Line 1",
-        "City",
-        "County",
-        "State",
-        "Email",
-        "Job Title",
-        "Other Phone",
-        "SMS Opt Out",
-        "Website",
-        "Facebook",
-        "Twitter",
-        "Address Line 2",
-        "ZipCode",
-        "Country",
-    ];
+    const titleEq = {
+        firstName: "First Name",
+        lastName: "Last Name",
+        mobile: "Mobile",
+        countryLink: "Country Link",
+        acres: "Acres",
+        phone: "Phone",
+        owner: "Owner",
+        email2: "Email 2",
+        typeId: "Type",
+        mailingStreetAddress: "Mailing Street Address",
+        emailOptOut: "Email Opt Out",
+        mailingCity: "Mailing City",
+        mailingState: "Mailing State",
+        emailOptOutReason: "Email Opt Out Reason",
+        mailingZip: "Mailing Zip",
+        mailingCountry: "Mailing Country",
+        subdivision: "Subdivision",
+        APN: "APN",
+        gMapLink: "Google Map Link",
+        roadFrontage: "Road Frontage",
+        redfinLink: "Redfin Quick Link",
+        openingBid: "Opening Bid",
+        assessedValue: "Assessed Value",
+        assessedVsOpeningMargin: "Assessed vs. Opening Bid Margin (manual)",
+        assessedVsOpeningMultiple: "Assessed vs. Opening Bid Multiple (manual)",
+        wetlandsStatus: "Wetlands Status",
+        legalDescription: "Legal Description",
+        legalSubdivision: "Legal Subdivision",
+        floodzone: "Flood Zone",
+        topography: "Topography",
+        wireless1: "Wireless 1",
+        wireless2: "Wireless 2",
+        wireless3: "Wireless 3",
+        wireless4: "Wireless 4",
+        landline1: "Landline 1",
+        landline2: "Landline 2",
+        landline3: "Landline 3",
+        landline4: "Landline 4",
+        marketAreaName: "MarketAreaName",
+        "hoa/poa": "HOA/ POA?",
+        skype: "Skype",
+        linkedIn: "LinkedIn",
+        instagram: "Instagram",
+        detailsDescription: "Details Description",
+        tags: "Tags",
+        detailsLegalDescription: "Details Legal Description",
+        addressLine1: "Address Line 1",
+        city: "City",
+        county: "County",
+        state: "State",
+        email: "Email",
+        jobTitle: "Job Title",
+        otherPhone: "Other Phone",
+        smsOptOut: "SMS Opt Out",
+        website: "Website",
+        facebook: "Facebook",
+        twitter: "Twitter",
+        addressLine2: "Address Line 2",
+        zipCode: "ZipCode",
+        country: "Country",
+    };
+
+    const keyWithBoolean = ["emailOptOut", "floodzone", "smsOptOut"];
 
     useEffect(() => {
         if (receivedData.length > 0) {
@@ -265,18 +268,20 @@ const MergeContacts = () => {
 
                 return filteredDataObject;
             });
+            const id = receivedData.map((item) => item.id);
+            setSelectedID(id);
 
             const dataToArray = Object.entries(receivedData[0]);
             const filteredData = dataToArray.filter(([key, value]) => {
                 return mergeData.includes(key);
             });
 
-            // const title = Object.keys(mappeddata[0]);
+            const title = Object.keys(mappeddata[0]);
 
             // console.log("asdasda", mappeddata);
             let new_data = {};
 
-            new_data = { title: Title };
+            new_data = { title: title };
 
             let keysWithTitle: any = [["title", "Master Record"]];
 
@@ -295,7 +300,7 @@ const MergeContacts = () => {
             const keys = Object.keys(new_data);
             const result: Object[] = [];
 
-            for (let i = 0; i < Title.length; i++) {
+            for (let i = 0; i < title.length; i++) {
                 let newObj = {};
 
                 keys.forEach((key) => {
@@ -324,6 +329,7 @@ const MergeContacts = () => {
     const [allVariable, setAllVariables] = useState({});
     const [tableColumns, setTableColumns] = useState<ColumnsType<TContact>>([]);
     const [selectedKey, setSelectedKey] = useState<string>("");
+    const [selectedID, setSelectedID] = useState();
 
     useEffect(() => {
         console.log(allVariable);
@@ -339,6 +345,22 @@ const MergeContacts = () => {
         if (Object.keys(allVariable).length) {
             return allVariable[record["title"]] === record[key] ? true : false;
         }
+    };
+
+    const mergeContact = useMutation(mergeContactMutation, {
+        onSuccess: () => {
+            console.log("success");
+            navigate(`/contacts`);
+            queryClient.invalidateQueries("contacts");
+        },
+    });
+
+    const handleMerge = () => {
+        let data = {
+            data: allVariable,
+            id: selectedID,
+        };
+        mergeContact.mutate(data);
     };
 
     return (
@@ -365,7 +387,9 @@ const MergeContacts = () => {
                                                 render={(text, record) => {
                                                     if (item[0] === "title") {
                                                         return (
-                                                            <span>{text}</span>
+                                                            <span>
+                                                                {titleEq[text]}
+                                                            </span>
                                                         );
                                                     } else {
                                                         return (
@@ -376,13 +400,29 @@ const MergeContacts = () => {
                                                                     item[0]
                                                                 )}
                                                                 onChange={() => {
+                                                                    console.log(
+                                                                        "asdadasd",
+                                                                        record &&
+                                                                            record[
+                                                                                "title"
+                                                                            ]
+                                                                    );
                                                                     handleOnchangeRadio(
                                                                         record,
                                                                         item[0]
                                                                     );
                                                                 }}
                                                             >
-                                                                {text}
+                                                                {keyWithBoolean.includes(
+                                                                    record &&
+                                                                        record[
+                                                                            "title"
+                                                                        ]
+                                                                )
+                                                                    ? text == 1
+                                                                        ? "Yes"
+                                                                        : "No"
+                                                                    : text}
                                                             </Radio>
                                                         );
                                                     }
@@ -402,7 +442,13 @@ const MergeContacts = () => {
                             </li>
                             <li>The action can't be reverted.</li>
                         </ul>
-                        <Button type="primary" className="m-r-sm">
+                        <Button
+                            type="primary"
+                            className="m-r-sm"
+                            onClick={() => {
+                                handleMerge();
+                            }}
+                        >
                             I Understand, Merge Now
                         </Button>
                         <Button>Cancel</Button>

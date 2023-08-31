@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Contact;
 use App\Models\ContactUpdate;
+use App\Models\ContactFavorite;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+
 use Illuminate\Support\Str;
 use Auth;
 use Carbon\Carbon;
@@ -104,7 +106,6 @@ public function index(Request $request)
 
         $data = $request->all();
 
-        error_log(json_encode($data));
         if (isset($data['tags'])) {
             $data['tags'] = json_encode($data['tags']);
         }
@@ -194,5 +195,60 @@ public function index(Request $request)
                 'success' => true,
                 'data' => $data
             ]);
+    }
+
+    public function merge_contacts(Request $request){
+
+
+        error_log('asdasd'.json_encode($request->id));
+        $user= auth()->user();
+
+
+        $contactData = $request->data;
+
+        $contactData['ownerId'] = $user->id;
+        if(isset( $contactData['tags'])){
+            if(is_array( $contactData['tags'])){
+                $contactData['tags'] = json_encode( $contactData['tags']);
+            }
+        }
+      
+        
+        error_log(json_encode($contactData));
+
+
+        $contact = Contact::create($contactData);
+
+        if($contact){
+            $deletedContacts = [];
+            foreach ($request->id as $key => $value) {
+               $deletedContacts[] =  Contact::find($value)->delete();
+            }
+        }
+        
+
+
+        return response()->json(['deleted' =>$deletedContacts, 'added' =>  $contact],200);
+
+    }
+
+    public function favorite(Request $request)
+    {
+        $data = ContactFavorite::updateOrCreate(
+            ['user_id' => auth()->user()->id, 'name' => $request->name],
+            ['user_id' => auth()->user()->id, 'name' => $request->name]
+        );
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
+    public function del_favorite(Request $request)
+    {
+        $data = ContactFavorite::where('user_id', auth()->user()->id)->where('name', $request->name)->delete();
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
+
+    public function get_favorite(Request $request) 
+    {
+        $contact_favorite = ContactFavorite::where('user_id', auth()->user()->id)->get();
+        return response()->json($contact_favorite, 200);
     }
 }

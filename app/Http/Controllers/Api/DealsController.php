@@ -70,14 +70,25 @@ class DealsController extends Controller
         }
 
 
-        if ($request->sort_order != '') {
-            $data->orderBy($request->sort_field, $request->sort_order == 'ascend' ? 'asc' : 'desc');
+        if ($request->sort_field && $request->sort_order) {
+            if (
+                $request->sort_field != '' && $request->sort_field != 'undefined' && $request->sort_field != 'null'  &&
+                $request->sort_order != ''  && $request->sort_order != 'undefined' && $request->sort_order != 'null'
+            ) {
+                if ($request->sort_field == "column") {
+                    //
+                } else {
+                    $data = $data->orderBy(isset($request->sort_field) ? $request->sort_field : 'id', isset($request->sort_order)  ? $request->sort_order : 'desc');
+                }
+            }
         } else {
-            $data->orderBy('sort', 'asc');
+            $data = $data->orderBy('id', 'asc');
         }
 
-        if (isset($request->pagination)) {
-            $data = $data->paginate($request->page_size);
+        if ($request->page_size) {
+            $data = $data->limit($request->page_size)
+                ->paginate($request->page_size, ['*'], 'page', $request->page)
+                ->toArray();
         } else {
             $data = $data->get();
         }
