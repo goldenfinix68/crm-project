@@ -109,6 +109,7 @@ const Deal = () => {
         sort_field: "id",
         sort_order: "asc",
     });
+
     const [isDropdownVisible, setDropdownVisible] = useState(false);
     const [isFavorite, setIsFavorite] = useState<string[]>([]);
 
@@ -144,6 +145,10 @@ const Deal = () => {
         useState<string>("");
     const [showDeleteButton, setShowDeleteButton] = useState(false);
     const { deals, isLoading, refetch } = useDealsAll(filterPage);
+
+    useEffect(() => {
+        refetch();
+    }, [filterPage]);
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
     const [byTotalDeals, setByTotalDeals] = useState<Bytotal>({
         comp_qualify: 0,
@@ -1032,7 +1037,7 @@ const Deal = () => {
                         </>
                     )}
 
-                    {listBoard != "List" ? (
+                    {boardData && listBoard != "List" ? (
                         <div>
                             <div className="mainDealArrow">
                                 <div style={{ width: "100%", height: "100vh" }}>
