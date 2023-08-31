@@ -655,7 +655,6 @@ const Deal = () => {
 
     useEffect(() => {
         if (deals) {
-            console.log(deals);
             if (deals.deal_favorite.length > 0) {
                 let isFavoriteVar: any = [];
 
