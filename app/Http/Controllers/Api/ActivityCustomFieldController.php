@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\ActivityCustomField;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ActivityCustomFieldController extends Controller
 {
@@ -13,10 +14,17 @@ class ActivityCustomFieldController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $data = new ActivityCustomField;
-        $data = $data->where('status', 1)->get();
+        if (isset($request->activity_id)) {
+            $data = $data->select([
+                'activity_custom_fields.*',
+                DB::raw("(SELECT activity_custom_field_values.values FROM `activity_custom_field_values` WHERE activity_custom_field_values.activity_custom_fields_id=activity_custom_fields.id AND activity_custom_field_values.activity_id=".$request->activity_id.") as `value`"),
+            ]);
+        }
+        $data = $data->where('status', 1);
+        $data = $data->get();
 
         return response()->json([
             'success' => true,

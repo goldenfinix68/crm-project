@@ -126,9 +126,8 @@ const ModalAddActivity = ({
             end_time: values.end_time
                 ? dayjs(values.end_time).format("HH:mm")
                 : undefined,
+            custom_fields: customFieldsData,
         };
-
-        console.log("onFinish", values);
 
         if (type === "Save-Close") {
             addActivity.mutate(values);
@@ -169,7 +168,6 @@ const ModalAddActivity = ({
 
     const addActivity = useMutation(addActivityMutation, {
         onSuccess: (res) => {
-            console.log("success");
             queryClient.invalidateQueries("activities");
             form.resetFields();
             formDynamic.resetFields();
@@ -194,7 +192,6 @@ const ModalAddActivity = ({
     ]);
 
     const handleFieldsChange = (changedFields: any, allFields: any) => {
-        console.log("Fields", changedFields);
         let titleString: string = "";
 
         let data: any = [...eventCalendarData];
@@ -346,19 +343,18 @@ const ModalAddActivity = ({
                       ),
             });
         }
-        console.log("eventDrop", info.event);
     };
 
     const { dataCustomField, isLoadingCustomField } = useActivutyCustomField();
 
     const [customFieldsData, setCustomFieldsData] = useState([]);
 
-    useEffect(() => {
-        // console.log("customFieldsData", dataCustomField?.data);
-        if (customFieldsData.length > 0) {
-            console.log("customFieldsData", customFieldsData);
-        }
-    }, [customFieldsData]);
+    // useEffect(() => {
+    //     // console.log("customFieldsData", dataCustomField?.data);
+    //     if (customFieldsData.length > 0) {
+    //         console.log("customFieldsData", customFieldsData);
+    //     }
+    // }, [customFieldsData]);
 
     return (
         <Modal
@@ -944,6 +940,13 @@ const ModalAddActivity = ({
                                                 span={5}
                                                 className={`col-label ${classNote}`}
                                             >
+                                                {item?.required === "1" && (
+                                                    <Typography.Text
+                                                        style={{ color: "red" }}
+                                                    >
+                                                        *
+                                                    </Typography.Text>
+                                                )}
                                                 <Typography.Text>
                                                     {item?.label}
                                                 </Typography.Text>
