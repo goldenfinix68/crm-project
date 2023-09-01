@@ -587,25 +587,6 @@ const Contacts = () => {
                                                     </Typography.Text>
                                                 </Col>
                                             )}
-                                            {/* <Typography.Title
-                                                className="m-t-md"
-                                                level={5}
-                                                style={{
-                                                    display: "flex",
-                                                    justifyContent: "center",
-                                                }}
-                                            >
-                                                You have no favorites
-                                            </Typography.Title>
-                                            <Typography
-                                                style={{
-                                                    display: "flex",
-                                                    justifyContent: "center",
-                                                }}
-                                            >
-                                                Select views as favorites to
-                                                make it appear here.
-                                            </Typography> */}
                                         </TabPane>
                                         <TabPane tab="ALL VIEWS" key="tab2">
                                             <Menu
