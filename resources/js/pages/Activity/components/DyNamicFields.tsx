@@ -19,7 +19,7 @@ const DynamicFields: React.FC<DynamicFields> = (props) => {
 
         let findObjKey: any = "";
         customFieldsData.map((item: any, key: React.Key) => {
-            if (item.field_mame === data.name) {
+            if (item.field_name === data.name) {
                 findObjKey = key;
             }
         });
@@ -31,7 +31,7 @@ const DynamicFields: React.FC<DynamicFields> = (props) => {
             };
         } else {
             arrData.push({
-                field_mame: data.name,
+                field_name: data.name,
                 field_id: data.id,
                 value: value,
             });
@@ -49,6 +49,7 @@ const DynamicFields: React.FC<DynamicFields> = (props) => {
                         onBlur={(e) => {
                             handleChangeCustomField(e.target.value);
                         }}
+                        // defaultValue={data?.value ? data?.value : undefined}
                     />
                 );
             case "Text Area":
@@ -59,6 +60,7 @@ const DynamicFields: React.FC<DynamicFields> = (props) => {
                         onBlur={(e) => {
                             handleChangeCustomField(e.target.value);
                         }}
+                        // defaultValue={data?.value ? data?.value : undefined}
                     />
                 );
             case "Integer":
@@ -69,6 +71,7 @@ const DynamicFields: React.FC<DynamicFields> = (props) => {
                         onChange={(e) => {
                             handleChangeCustomField(e);
                         }}
+                        // defaultValue={data?.value ? data?.value : undefined}
                     />
                 );
             case "Select":
@@ -81,6 +84,7 @@ const DynamicFields: React.FC<DynamicFields> = (props) => {
                         onChange={(e) => {
                             handleChangeCustomField(e);
                         }}
+                        // defaultValue={data?.value ? data?.value : undefined}
                     >
                         {opt.length > 0 &&
                             opt.map((item: any, key: React.Key) => {
@@ -107,6 +111,7 @@ const DynamicFields: React.FC<DynamicFields> = (props) => {
                         onChange={(e) => {
                             handleChangeCustomField(e);
                         }}
+                        // defaultValue={data?.value ? data?.value : undefined}
                     >
                         {optMulti.length > 0 &&
                             optMulti.map((item: any, key: React.Key) => {
@@ -130,6 +135,7 @@ const DynamicFields: React.FC<DynamicFields> = (props) => {
                         onBlur={(e) => {
                             handleChangeCustomField(e.target.value);
                         }}
+                        // defaultValue={data?.value ? data?.value : undefined}
                     />
                 );
             case "Date":
@@ -144,6 +150,7 @@ const DynamicFields: React.FC<DynamicFields> = (props) => {
                                 handleChangeCustomField(val);
                             }
                         }}
+                        // defaultValue={data?.value ? data?.value : undefined}
                     />
                 );
             case "Date Time":
@@ -159,6 +166,7 @@ const DynamicFields: React.FC<DynamicFields> = (props) => {
                                 handleChangeCustomField(val);
                             }
                         }}
+                        // defaultValue={data?.value ? data?.value : undefined}
                     />
                 );
             case "Email":
@@ -169,6 +177,7 @@ const DynamicFields: React.FC<DynamicFields> = (props) => {
                         onBlur={(e) => {
                             handleChangeCustomField(e.target.value);
                         }}
+                        // defaultValue={data?.value ? data?.value : undefined}
                     />
                 );
             case "Phone":
@@ -179,6 +188,7 @@ const DynamicFields: React.FC<DynamicFields> = (props) => {
                         onBlur={(e) => {
                             handleChangeCustomField(e.target.value);
                         }}
+                        // defaultValue={data?.value ? data?.value : undefined}
                     />
                 );
             case "URL":
@@ -189,6 +199,7 @@ const DynamicFields: React.FC<DynamicFields> = (props) => {
                         onBlur={(e) => {
                             handleChangeCustomField(e.target.value);
                         }}
+                        // defaultValue={data?.value ? data?.value : undefined}
                     />
                 );
             case "Big Integer":
@@ -199,6 +210,7 @@ const DynamicFields: React.FC<DynamicFields> = (props) => {
                         onBlur={(e) => {
                             handleChangeCustomField(e.target.value);
                         }}
+                        // defaultValue={data?.value ? data?.value : undefined}
                     />
                 );
             case "Percentage":
@@ -209,6 +221,7 @@ const DynamicFields: React.FC<DynamicFields> = (props) => {
                         onBlur={(e) => {
                             handleChangeCustomField(e.target.value);
                         }}
+                        // defaultValue={data?.value ? data?.value : undefined}
                     />
                 );
             case "Boolean":
@@ -219,6 +232,7 @@ const DynamicFields: React.FC<DynamicFields> = (props) => {
                         onBlur={(e) => {
                             handleChangeCustomField(e.target.value);
                         }}
+                        // defaultValue={data?.value ? data?.value : undefined}
                     />
                 );
             case "Currency":
@@ -229,6 +243,7 @@ const DynamicFields: React.FC<DynamicFields> = (props) => {
                         onBlur={(e) => {
                             handleChangeCustomField(e.target.value);
                         }}
+                        // defaultValue={data?.value ? data?.value : undefined}
                     />
                 );
             default:
@@ -238,6 +253,7 @@ const DynamicFields: React.FC<DynamicFields> = (props) => {
                         onBlur={(e) => {
                             handleChangeCustomField(e.target.value);
                         }}
+                        // defaultValue={data?.value ? data?.value : undefined}
                     />
                 );
         }

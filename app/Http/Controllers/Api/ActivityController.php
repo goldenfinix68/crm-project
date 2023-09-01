@@ -18,7 +18,20 @@ class ActivityController extends Controller
     public function index(Request $request)
     {
         $data = new Activity();
-        $data = $data->with(['activity_tags', "activity_followers", "activity_invitees"]);
+        $data = $data->with([
+            'activity_tags',
+            "activity_followers",
+            "activity_invitees",
+            "custom_field_values" => function($query) {
+                $query->select([
+                    'activity_custom_field_values.activity_id',
+                    'activity_custom_field_values.activity_custom_fields_id AS field_id',
+                    'activity_custom_field_values.values AS value',
+                    DB::raw("(SELECT name FROM `activity_custom_fields` WHERE activity_custom_fields.id = activity_custom_field_values.activity_custom_fields_id) AS `field_name`"),
+                    DB::raw("(SELECT type FROM `activity_custom_fields` WHERE activity_custom_fields.id = activity_custom_field_values.activity_custom_fields_id) AS `field_type`"),
+                ]);
+            }
+        ]);
         $data = $data->select([
             'activities.*',
             DB::raw("(SELECT CONCAT(users.firstName, ' ', users.lastName)) as `owner`"),
@@ -128,6 +141,19 @@ class ActivityController extends Controller
                 \App\Models\ActivityTag::create([
                     'activity_id' => $data->id,
                     'tag' => $tag,
+                ]);
+            }
+        }
+
+        if (isset($request->custom_fields) && count($request->custom_fields)) {
+            foreach ($request->custom_fields as $key => $value) {
+                \App\Models\ActivityCustomFieldValue::updateOrCreate([
+                    'activity_id' => $data->id,
+                    'activity_custom_fields_id' => $value['field_id'],
+                ],[
+                    'activity_id' => $data->id,
+                    'activity_custom_fields_id' => $value['field_id'],
+                    'values' => is_array($value['value']) ? json_encode($value['value']) : $value['value'],
                 ]);
             }
         }

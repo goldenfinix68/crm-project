@@ -152,21 +152,6 @@
             }
         }
 
-        .col-label {
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-
-            .ant-typography {
-                line-height: 14px;
-            }
-        }
-
-        .col-label-note {
-            height: 72px;
-        }
-
         .select-custom-width {
             width: 200px;
         }
@@ -569,4 +554,19 @@
 
 .timeline-btn-active:hover {
     color: #fff !important;
+}
+
+.col-label {
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    .ant-typography {
+        line-height: 14px;
+    }
+}
+
+.col-label-note {
+    height: 72px;
 }

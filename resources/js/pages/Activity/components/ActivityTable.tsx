@@ -610,12 +610,14 @@ const ActivityTable = () => {
                 }
             />
 
-            <DrawerUpdateActivity
-                drawerUpdateOpen={drawerUpdateOpen}
-                setDrawerUpdateOpen={setDrawerUpdateOpen}
-                drawerUpdateData={drawerUpdateData}
-                setDrawerUpdateData={setDrawerUpdateData}
-            />
+            {drawerUpdateOpen && (
+                <DrawerUpdateActivity
+                    drawerUpdateOpen={drawerUpdateOpen}
+                    setDrawerUpdateOpen={setDrawerUpdateOpen}
+                    drawerUpdateData={drawerUpdateData}
+                    setDrawerUpdateData={setDrawerUpdateData}
+                />
+            )}
 
             <ModalManageColumnFIeld
                 modalManageColumnField={modalManageColumnField}

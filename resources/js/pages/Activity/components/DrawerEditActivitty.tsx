@@ -42,12 +42,15 @@ import moment from "moment";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import {
+    useActivutyCustomField,
+    useActivutyCustomFieldValue,
     useContactsList,
     useDealsList,
     usePeopleList,
     useUsersList,
 } from "../../../api/query/activityQuery";
 import { addActivityMutation } from "../../../api/mutation/useActivityMutation";
+import DynamicFields from "./DyNamicFields";
 dayjs.extend(customParseFormat);
 
 interface UpdateProps {
@@ -110,6 +113,7 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
 
     const queryClient = useQueryClient();
     const [form] = Form.useForm();
+    const [formDynamic] = Form.useForm();
     const [calendarOptions, setCalendarOptions] = useState(false);
     const onChange = (key: string) => {
         // console.log(key);
@@ -142,6 +146,10 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
                         tags.push(item.tag);
                     }
                 );
+            }
+
+            if (drawerUpdateData?.custom_field_values.length > 0) {
+                setCustomFieldsData(drawerUpdateData?.custom_field_values);
             }
 
             form.setFieldsValue({
@@ -211,8 +219,16 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
         setTimelineKey(val);
     };
 
+    const { dataCustomField, isLoadingCustomField } =
+        useActivutyCustomFieldValue(drawerUpdateData && drawerUpdateData?.id);
+    const [customFieldsData, setCustomFieldsData] = useState([]);
+
     const handleDrawerClose = () => {
+        form.resetFields();
+        formDynamic.resetFields();
+        setCustomFieldsData([]);
         setDrawerUpdateOpen(false);
+        setDrawerUpdateData(null);
     };
 
     const handleGetClassName = (val: string) => {
@@ -230,6 +246,32 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
         },
     ];
 
+    useEffect(() => {
+        if (customFieldsData.length > 0) {
+            let formData: any = [];
+
+            customFieldsData.map((item: any) => {
+                let value = item.value;
+
+                if (item.field_type === "Multi Select") {
+                    value = JSON.parse(item.value);
+                }
+                formData = {
+                    ...formData,
+                    [item["field_name"]]: value,
+                };
+            });
+            console.log(
+                "customFieldsData",
+                customFieldsData
+                // customFieldsData.filter((item: any) => item.field_id === 2)
+            );
+            console.log("customFieldsData", formData);
+
+            formDynamic.setFieldsValue(formData);
+        }
+    }, [customFieldsData]);
+
     const items: TabsProps["items"] = [
         {
             key: "1",
@@ -240,26 +282,9 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
                     style={{
                         boxShadow: "none",
                     }}
+                    loading={isLoadingCustomField}
                 >
-                    <Form
-                        form={form}
-                        // initialValues={{
-                        //     type: "Call",
-                        //     location: "Doesn’t repeat",
-                        //     availability: "Busy",
-                        //     start_date: dayjs(
-                        //         moment().format("YYYY/MM/DD"),
-                        //         "YYYY/MM/DD"
-                        //     ),
-                        //     end_date: dayjs(
-                        //         moment().format("YYYY/MM/DD"),
-                        //         "YYYY/MM/DD"
-                        //     ),
-                        //     // owner_id: dataUsers?.user_data?.id
-                        //     //     ? dataUsers?.user_data?.id
-                        //     //     : null,
-                        // }}
-                    >
+                    <Form form={form}>
                         <Row gutter={12}>
                             <Col span={5} className="col-label">
                                 <Typography.Text>Title</Typography.Text>
@@ -694,6 +719,57 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
                             </Col>
                         </Row>
                     </Form>
+
+                    <Form form={formDynamic}>
+                        {dataCustomField &&
+                            dataCustomField?.data &&
+                            dataCustomField?.data.length > 0 &&
+                            dataCustomField?.data.map(
+                                (item: any, key: React.Key) => {
+                                    let col = 19;
+                                    let classNote =
+                                        item?.type === "Text Area"
+                                            ? "col-label-note"
+                                            : "";
+                                    let findValue: any =
+                                        customFieldsData.filter(
+                                            (itemField: any) =>
+                                                itemField.field_id === item.id
+                                        );
+
+                                    return (
+                                        <Row gutter={12} key={key}>
+                                            <Col
+                                                span={5}
+                                                className={`col-label ${classNote}`}
+                                            >
+                                                {item?.required === "1" && (
+                                                    <Typography.Text
+                                                        style={{ color: "red" }}
+                                                    >
+                                                        *
+                                                    </Typography.Text>
+                                                )}
+                                                <Typography.Text>
+                                                    {item?.label}
+                                                </Typography.Text>
+                                            </Col>
+                                            <Col span={col}>
+                                                <DynamicFields
+                                                    data={item}
+                                                    customFieldsData={
+                                                        customFieldsData
+                                                    }
+                                                    setCustomFieldsData={
+                                                        setCustomFieldsData
+                                                    }
+                                                />
+                                            </Col>
+                                        </Row>
+                                    );
+                                }
+                            )}
+                    </Form>
                 </Card>
             ),
         },
@@ -820,6 +896,7 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
                 ? dayjs(values.end_time).format("HH:mm")
                 : undefined,
             id: drawerUpdateData?.id,
+            custom_fields: customFieldsData,
         };
         addActivity.mutate(values);
         // console.log("handleFinish", values);
@@ -836,9 +913,15 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
             console.log("success");
             queryClient.invalidateQueries("activities");
             //queryClient.invalidateQueries("contactTypesAll");
-            // form.resetFields();
+            form.resetFields();
+            formDynamic.resetFields();
         },
     });
+
+    // useEffect(() => {
+    //     console.log("useEffect", customFieldsData);
+    //     console.log("useEffect", dataCustomField);
+    // }, [customFieldsData]);
 
     return (
         <>
@@ -913,48 +996,6 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
                                 justifyContent: "flex-end",
                             }}
                         ></Col>
-                        {/* <Col span={20}>
-                            <Space direction="vertical">
-                                <Space>
-                                    <Button
-                                        shape="circle"
-                                        size="large"
-                                        type="primary"
-                                    >
-                                        <PhoneOutlined />
-                                    </Button>
-                                    <Button
-                                        shape="circle"
-                                        size="large"
-                                        type="primary"
-                                    >
-                                        <MailOutlined />
-                                    </Button>
-                                    <Button
-                                        shape="circle"
-                                        size="large"
-                                        type="primary"
-                                    >
-                                        <RedEnvelopeOutlined />
-                                    </Button>
-                                    <Button shape="circle" size="large">
-                                        <EllipsisOutlined />
-                                    </Button>
-                                </Space>
-
-                                <Radio.Group value={"small"}>
-                                    <Radio.Button value="large">
-                                        Large
-                                    </Radio.Button>
-                                    <Radio.Button value="default">
-                                        Default
-                                    </Radio.Button>
-                                    <Radio.Button value="small">
-                                        Small
-                                    </Radio.Button>
-                                </Radio.Group>
-                            </Space>
-                        </Col> */}
                     </Row>
                 </Card>
 

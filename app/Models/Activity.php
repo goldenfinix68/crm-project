@@ -59,4 +59,9 @@ class Activity extends Model
         return $this->hasOne(\App\Models\User::class, 'id', 'owner_id');
     }
 
+    public function custom_field_values()
+    {
+        return $this->hasMany('\App\Models\ActivityCustomFieldValue', 'activity_id', 'id');
+    }
+
 }
