@@ -148,9 +148,9 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
                 );
             }
 
-            if (drawerUpdateData?.custom_field_values.length > 0) {
-                setCustomFieldsData(drawerUpdateData?.custom_field_values);
-            }
+            // if (drawerUpdateData?.custom_field_values.length > 0) {
+            //     setCustomFieldsData(drawerUpdateData?.custom_field_values);
+            // }
 
             form.setFieldsValue({
                 title: drawerUpdateData?.title,
@@ -247,10 +247,10 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
     ];
 
     useEffect(() => {
-        if (customFieldsData.length > 0) {
+        if (drawerUpdateData?.custom_field_values.length > 0) {
             let formData: any = [];
 
-            customFieldsData.map((item: any) => {
+            drawerUpdateData?.custom_field_values.map((item: any) => {
                 let value = item.value;
 
                 if (item.field_type === "Multi Select") {
@@ -261,16 +261,16 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
                     [item["field_name"]]: value,
                 };
             });
-            console.log(
-                "customFieldsData",
-                customFieldsData
-                // customFieldsData.filter((item: any) => item.field_id === 2)
-            );
-            console.log("customFieldsData", formData);
+            // console.log(
+            //     "customFieldsData",
+            //     customFieldsData
+            //     // customFieldsData.filter((item: any) => item.field_id === 2)
+            // );
+            // console.log("customFieldsData", formData);
 
             formDynamic.setFieldsValue(formData);
         }
-    }, [customFieldsData]);
+    }, [drawerUpdateData?.custom_field_values]);
 
     const items: TabsProps["items"] = [
         {
