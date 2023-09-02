@@ -20,14 +20,15 @@ import { TelnyxRTCProvider, TelnyxRTCContext } from "@telnyx/react-client";
 import { ICall, INotification } from "@telnyx/webrtc";
 import { TContact, TUser } from "../../../entities";
 import { useParams } from "react-router-dom";
-import { useGetContact } from "../../../api/query/contactsQuery";
+import {
+    useContactsAll,
+    useGetContact,
+} from "../../../api/query/contactsQuery";
 import LoadingComponent from "../../../components/LoadingComponent";
 import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
 import DialerKeyPad from "./DialerKeyPad";
-interface DialerData {
-    callerNumber: string | undefined;
-    destinationNumber: string | undefined;
-}
+import { useLoggedInUser } from "../../../api/query/userQuery";
+import { useCallContext } from "../../../context/CallContext";
 
 interface CallNotificationData {
     type: string | undefined;
@@ -36,55 +37,41 @@ interface CallNotificationData {
 }
 
 const DialerTab = ({
-    user,
-    contacts,
+    handleFinish,
+    isCallBtnLoading,
 }: {
-    user: TUser;
-    contacts?: Array<TContact>;
+    handleFinish: () => void;
+    isCallBtnLoading: boolean;
 }) => {
     const { contactId } = useParams();
     const { contact, isLoading } = useGetContact(contactId ?? "");
+    const { user, isLoading: isLogginUserLoading } = useLoggedInUser();
+    const { contacts, isLoading: isContactsLoading } = useContactsAll("All");
+
     const [form] = Form.useForm();
-    const destinationNumber = Form.useWatch("destinationNumber", form);
-    console.log(destinationNumber);
-    const [callNotification, setCallNotification] =
-        useState<CallNotificationData>();
 
-    useEffect(() => {
-        console.log(callNotification);
-
-        return () => {};
-    }, [callNotification]);
-
-    const client = useContext(TelnyxRTCContext);
-
-    // client?.on("telnyx.ready", () => {
-    //     // console.log("client ready");
-    // });
-    useCallbacks({
-        onReady: () => console.log("client ready"),
-        onError: () => console.log("client registration error"),
-        onSocketError: () => console.log("client socket error"),
-        onSocketClose: () => console.log("client disconnected"),
-        onNotification: (x) => {
-            setCallNotification({
-                type: x.type,
-                call: x.call,
-                direction: x.displayDirection,
-            });
-            console.log("received notification:", x);
-        },
-    });
+    const {
+        setCallerNumber,
+        setDestinationNumber,
+        callerNumber,
+        destinationNumber,
+    } = useCallContext();
 
     const handleCall = (value) => {
-        client?.newCall({
+        const data = {
             callerNumber: `${value.callerNumber
                 ?.replace(/ /g, "")
                 .replace(/-/g, "")}`,
             destinationNumber: `${value.destinationNumber
                 ?.replace(/ /g, "")
                 .replace(/-/g, "")}`,
-        });
+        };
+        handleFinish();
+    };
+
+    const handleFormChange = (value: any, allValues: any) => {
+        setCallerNumber(allValues.callerNumber);
+        setDestinationNumber(allValues.destinationNumber);
     };
 
     const handleKeyPressed = (e) => {
@@ -92,35 +79,34 @@ const DialerTab = ({
         form.setFieldValue("destinationNumber", `${currentValue ?? ""}${e}`);
         console.log(`${currentValue}${e}`);
     };
-    // type callUpdate
-    // call -> state trying
-    // state early
-    // state destroy
-
-    // call -> direction outbound
-    // call -> direction inbound
-
     const filteredOptions = contacts?.filter((contact) =>
         contact?.mobile?.includes(
             destinationNumber ? destinationNumber.replace(/[-\s+_]/g, "") : ""
         )
     );
+    useEffect(() => {
+        form.setFieldsValue({
+            callerNumber: callerNumber,
+            destinationNumber: destinationNumber,
+        });
+    }, [callerNumber, destinationNumber]);
 
-    if (isLoading) {
+    if (isLoading || isLogginUserLoading || isContactsLoading) {
         return <LoadingComponent />;
     }
+
     return (
         <Form
             form={form}
-            initialValues={{
-                callerNumber: user.numbers?.length ? user.numbers[0] : "",
-                destinationNumber: contact ? contact.mobile : "",
-            }}
+            // initialValues={{
+            //     callerNumber: user.numbers?.length ? user.numbers[0] : "",
+            //     destinationNumber: contact ? contact.mobile : "",
+            // }}
             labelCol={{ span: 24 }}
             wrapperCol={{ span: 24 }}
             onFinish={handleCall}
+            onValuesChange={handleFormChange}
         >
-            <Phone />
             <Space
                 style={{ padding: "0px 20px", width: "100%" }}
                 className="dialerTab"
@@ -136,7 +122,7 @@ const DialerTab = ({
                         },
                     ]}
                 >
-                    <Select style={{ width: "100%" }}>
+                    <Select style={{ width: "100%" }} value={callerNumber}>
                         {user.numbers?.map((number, index) => (
                             <Select.Option value={number} key={index}>
                                 {number}
@@ -180,32 +166,45 @@ const DialerTab = ({
                 </Form.Item>
 
                 <DialerKeyPad handleKeyPressed={handleKeyPressed} />
-                <Button
-                    style={{ width: "100%" }}
-                    className="dialerTabCallIcon"
-                    type="primary"
-                    htmlType="submit"
+
+                <Space
+                    style={{
+                        position: "absolute",
+                        bottom: "16px",
+                        right: "16px",
+                    }}
                 >
-                    Call <PhoneOutlined />
-                </Button>
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        loading={isCallBtnLoading}
+                    >
+                        Call <PhoneOutlined />
+                    </Button>
+                </Space>
+
+                {/* {call && call.state !== "destroy" ? (
+                    <Button
+                        style={{ width: "100%", backgroundColor: "red" }}
+                        className="dialerTabCallIcon"
+                        type="primary"
+                        onClick={() => call.hangup()}
+                    >
+                        Hangup <PhoneOutlined />
+                    </Button>
+                ) : (
+                    <Button
+                        style={{ width: "100%" }}
+                        className="dialerTabCallIcon"
+                        type="primary"
+                        htmlType="submit"
+                    >
+                        Call <PhoneOutlined />
+                    </Button>
+                )} */}
             </Space>
         </Form>
     );
 };
 
 export default DialerTab;
-
-function Phone() {
-    const notification = useNotification();
-    const activeCall = notification && notification.call;
-
-    return (
-        <div>
-            {activeCall &&
-                activeCall.state === "ringing" &&
-                "You have an incoming call."}
-
-            <Audio stream={activeCall && activeCall.remoteStream} />
-        </div>
-    );
-}

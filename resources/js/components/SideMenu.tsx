@@ -12,16 +12,22 @@ import {
     MailOutlined,
     MessageOutlined,
     MobileOutlined,
+    PhoneFilled,
 } from "@ant-design/icons";
 import { Layout, Menu, Button, theme } from "antd";
 import { useNavigate } from "react-router-dom";
 import Deal from "../pages/Deal";
 import Navigation from "./Navigation";
+import { useCallContext } from "../context/CallContext";
+import { useLoggedInUser } from "../api/query/userQuery";
 
 const { Header, Sider, Content } = Layout;
 
 const SideMenu = ({ children }) => {
     const navigate = useNavigate();
+    const { setIsModalOpen, setCallerNumber, setDestinationNumber } =
+        useCallContext();
+    const { user, isLoading: isLogginUserLoading } = useLoggedInUser();
     const {
         token: { colorBgContainer },
     } = theme.useToken();
@@ -83,9 +89,22 @@ const SideMenu = ({ children }) => {
                             icon: <MobileOutlined />,
                             label: "Text",
                         },
+                        {
+                            key: "/dialer",
+                            icon: <PhoneFilled />,
+                            label: "Dialer",
+                        },
                     ]}
                     onClick={(e) => {
-                        navigate(e.key);
+                        if (e.key == "/dialer") {
+                            setCallerNumber(
+                                user.numbers?.length ? user.numbers[0] : ""
+                            );
+                            setDestinationNumber("");
+                            setIsModalOpen(true);
+                        } else {
+                            navigate(e.key);
+                        }
                     }}
                 />
             </Sider>

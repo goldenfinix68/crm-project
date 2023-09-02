@@ -12,6 +12,7 @@ import DialerTab from "./DialerTab/DialerTab";
 import { useLoggedInUser } from "../../api/query/userQuery";
 import LoadingComponent from "../../components/LoadingComponent";
 import { useContactsAll } from "../../api/query/contactsQuery";
+import IncomingCallListener from "./DialerTab/IncomingCallListener";
 
 const Dialer = () => {
     const { user, isLoading } = useLoggedInUser();
@@ -25,7 +26,7 @@ const Dialer = () => {
         {
             key: "1",
             label: <b>DIALER</b>,
-            children: <DialerTab user={user} contacts={contacts} />,
+            children: <DialerTab />,
         },
         {
             key: "2",
@@ -58,13 +59,15 @@ const Dialer = () => {
         return <LoadingComponent />;
     }
     return (
-        <TelnyxRTCProvider credential={credential}>
-            <Tabs
-                className="dialerComponent"
-                defaultActiveKey="1"
-                items={dialerTabs}
-            ></Tabs>
-        </TelnyxRTCProvider>
+        <>
+            <TelnyxRTCProvider credential={credential}>
+                <Tabs
+                    className="dialerComponent"
+                    defaultActiveKey="1"
+                    items={dialerTabs}
+                ></Tabs>
+            </TelnyxRTCProvider>
+        </>
     );
 
     // return (
@@ -75,35 +78,3 @@ const Dialer = () => {
 };
 
 export default Dialer;
-
-function Phone() {
-    const notification = useNotification();
-    const activeCall = notification && notification.call;
-
-    const client = useContext(TelnyxRTCContext);
-
-    client?.on("telnyx.ready", () => {
-        console.log("client ready");
-        // client?.newCall({
-        //     destinationNumber: "+1702-472-0013",
-        //     callerNumber: "+16062221172",
-        // });
-    });
-    useCallbacks({
-        onReady: () => console.log("client ready"),
-        onError: () => console.log("client registration error"),
-        onSocketError: () => console.log("client socket error"),
-        onSocketClose: () => console.log("client disconnected"),
-        onNotification: (x) => console.log("received notification:", x),
-    });
-
-    return (
-        <div>
-            {activeCall &&
-                activeCall.state === "ringing" &&
-                "You have an incoming call."}
-
-            <Audio stream={activeCall && activeCall.remoteStream} />
-        </div>
-    );
-}

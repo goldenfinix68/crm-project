@@ -7,18 +7,25 @@ import {
     GlobalOutlined,
 } from "@ant-design/icons";
 import { Button, Popover, Space, Typography } from "antd";
-import React from "react";
+import React, { useContext } from "react";
 import ActionMenuBtn from "./ActionMenuBtn";
 import DropdownComponent from "../../../components/DropdownComponent";
 import TextModal from "./TextModal";
 import ModalAddActivity from "../../Activity/components/ModalAddActivity";
 import ModalAddDeal from "../../Deal/components/ModalAddDeal";
 import queryClient from "../../../queryClient";
+import { useCallContext } from "../../../context/CallContext";
+import { useLoggedInUser } from "../../../api/query/userQuery";
+import ContactContext from "../context";
 
 const ActionMenu = () => {
     const [textModalOpen, setTextModalOpen] = React.useState(false);
     const [activityModalOpen, setActivityModalOpen] = React.useState(false);
     const [dealModalOpen, setDealModalOpen] = React.useState(false);
+    const { setIsModalOpen, setCallerNumber, setDestinationNumber } =
+        useCallContext();
+    const { contact } = useContext(ContactContext);
+    const { user, isLoading: isLogginUserLoading } = useLoggedInUser();
 
     return (
         <Space
@@ -34,7 +41,19 @@ const ActionMenu = () => {
                 menuList={[
                     {
                         label: (
-                            <Space>
+                            <Space
+                                onClick={() => {
+                                    setCallerNumber(
+                                        user.numbers?.length
+                                            ? user.numbers[0]
+                                            : ""
+                                    );
+                                    setDestinationNumber(
+                                        contact?.mobile ? contact?.mobile : ""
+                                    );
+                                    setIsModalOpen(true);
+                                }}
+                            >
                                 <GlobalOutlined />
                                 Call Via Browser
                             </Space>

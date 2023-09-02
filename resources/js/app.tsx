@@ -51,6 +51,8 @@ import Texts from "./pages/Texts/index";
 import MergeContacts from "./pages/PageContacts/MergeContacts";
 import ForgotPassword from "./pages/ForgotPassword";
 import ForgotPasswordVerifyToken from "./pages/ForgotPasswordVerifyToken";
+import IncomingCallListener from "./pages/Dialer/DialerTab/IncomingCallListener";
+import { CallProvider } from "./context/CallContext";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isForgotPassword = window.location.pathname === "/forgot-password";
@@ -58,151 +60,154 @@ const App: React.FC = () => {
         window.location.pathname === "/forgot-password-verify";
 
     return (
-        <Router>
-            {isLoginPage ? (
-                <Routes>
-                    <Route path="/" element={<Login />} />
-                </Routes>
-            ) : isForgotPassword ? (
-                <Routes>
-                    <Route
-                        path="/forgot-password"
-                        element={<ForgotPassword />}
-                    />
-                </Routes>
-            ) : isForgotPasswordVerify ? (
-                <Routes>
-                    <Route
-                        path="/forgot-password-verify"
-                        element={<ForgotPasswordVerifyToken />}
-                    />
-                </Routes>
-            ) : (
-                <SideMenu>
+        <CallProvider>
+            <Router>
+                {isLoginPage ? (
+                    <Routes>
+                        <Route path="/" element={<Login />} />
+                    </Routes>
+                ) : isForgotPassword ? (
                     <Routes>
                         <Route
-                            path="/dashboard"
-                            element={
-                                <PrivateRoute>
-                                    <PageDashboard props={""} />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path="/dialer/:contactId"
-                            element={
-                                <PrivateRoute>
-                                    <Dialer />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path="/dialer"
-                            element={
-                                <PrivateRoute>
-                                    <Dialer />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path="/users"
-                            element={
-                                <PrivateRoute>
-                                    <Users />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path="/users/new"
-                            element={
-                                <PrivateRoute>
-                                    <AddEditUser />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path="/users/:userId"
-                            element={
-                                <PrivateRoute>
-                                    <AddEditUser />
-                                </PrivateRoute>
-                            }
-                        />
-
-                        <Route
-                            path="/contacts/:contactId"
-                            element={
-                                <PrivateRoute>
-                                    <ContactView />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path="/home"
-                            element={
-                                <PrivateRoute>
-                                    <Home />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route path="/contacts" element={<Contacts />} />
-                        <Route
-                            path="/contacts/mergeContacts"
-                            element={<MergeContacts />}
-                        />
-
-                        <Route
-                            path="/activities"
-                            element={
-                                <PrivateRoute>
-                                    <Activity />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path="/deals"
-                            element={
-                                <PrivateRoute>
-                                    <Deal />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path="/deals/:dealId"
-                            element={
-                                <PrivateRoute>
-                                    <DealDetail />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path="/inbox"
-                            element={
-                                <PrivateRoute>
-                                    <Inbox />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path="/texts"
-                            element={
-                                <PrivateRoute>
-                                    <Texts />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path="/texts/:route"
-                            element={
-                                <PrivateRoute>
-                                    <Texts />
-                                </PrivateRoute>
-                            }
+                            path="/forgot-password"
+                            element={<ForgotPassword />}
                         />
                     </Routes>
-                </SideMenu>
-            )}
-        </Router>
+                ) : isForgotPasswordVerify ? (
+                    <Routes>
+                        <Route
+                            path="/forgot-password-verify"
+                            element={<ForgotPasswordVerifyToken />}
+                        />
+                    </Routes>
+                ) : (
+                    <SideMenu>
+                        <Routes>
+                            <Route
+                                path="/dashboard"
+                                element={
+                                    <PrivateRoute>
+                                        <PageDashboard props={""} />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/dialer/:contactId"
+                                element={
+                                    <PrivateRoute>
+                                        <Dialer />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/dialer"
+                                element={
+                                    <PrivateRoute>
+                                        <Dialer />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/users"
+                                element={
+                                    <PrivateRoute>
+                                        <Users />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/users/new"
+                                element={
+                                    <PrivateRoute>
+                                        <AddEditUser />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/users/:userId"
+                                element={
+                                    <PrivateRoute>
+                                        <AddEditUser />
+                                    </PrivateRoute>
+                                }
+                            />
+
+                            <Route
+                                path="/contacts/:contactId"
+                                element={
+                                    <PrivateRoute>
+                                        <ContactView />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/home"
+                                element={
+                                    <PrivateRoute>
+                                        <Home />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route path="/contacts" element={<Contacts />} />
+                            <Route
+                                path="/contacts/mergeContacts"
+                                element={<MergeContacts />}
+                            />
+
+                            <Route
+                                path="/activities"
+                                element={
+                                    <PrivateRoute>
+                                        <Activity />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/deals"
+                                element={
+                                    <PrivateRoute>
+                                        <Deal />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/deals/:dealId"
+                                element={
+                                    <PrivateRoute>
+                                        <DealDetail />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/inbox"
+                                element={
+                                    <PrivateRoute>
+                                        <Inbox />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/texts"
+                                element={
+                                    <PrivateRoute>
+                                        <Texts />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/texts/:route"
+                                element={
+                                    <PrivateRoute>
+                                        <Texts />
+                                    </PrivateRoute>
+                                }
+                            />
+                        </Routes>
+                    </SideMenu>
+                )}
+            </Router>
+            <IncomingCallListener />
+        </CallProvider>
     );
 };
 
