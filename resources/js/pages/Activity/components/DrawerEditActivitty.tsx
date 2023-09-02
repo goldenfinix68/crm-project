@@ -256,17 +256,21 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
                 if (item.field_type === "Multi Select") {
                     value = JSON.parse(item.value);
                 }
+                if (item.field_type === "Date") {
+                    value = item.value
+                        ? dayjs(item.value, "YYYY/MM/DD")
+                        : undefined;
+                }
+                if (item.field_type === "Date Time") {
+                    value = item.value
+                        ? dayjs(item.value, "YYYY/MM/DD HH:mm A")
+                        : undefined;
+                }
                 formData = {
                     ...formData,
                     [item["field_name"]]: value,
                 };
             });
-            // console.log(
-            //     "customFieldsData",
-            //     customFieldsData
-            //     // customFieldsData.filter((item: any) => item.field_id === 2)
-            // );
-            // console.log("customFieldsData", formData);
 
             formDynamic.setFieldsValue(formData);
         }
@@ -935,15 +939,32 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
                         <Button
                             type="primary"
                             onClick={() => {
+                                let submit = false;
+                                formDynamic
+                                    .validateFields()
+                                    .then((datas) => {
+                                        submit = true;
+                                    })
+                                    .catch(() => {
+                                        submit = false;
+                                        notification.warning({
+                                            message: "Warning",
+                                            description:
+                                                "Please fill-up required fields!",
+                                        });
+                                    });
                                 form.validateFields()
-                                    .then((values: any) => {
-                                        handleFinish(values);
+                                    .then((values) => {
+                                        if (submit) {
+                                            handleFinish(values);
+                                        }
                                     })
                                     .catch((info) => {
-                                        //   notification.warning({
-                                        //     message: "Warning",
-                                        //     description: "Please fill-up required fields!",
-                                        //   });
+                                        notification.warning({
+                                            message: "Warning",
+                                            description:
+                                                "Please fill-up required fields!",
+                                        });
                                     });
                             }}
                         >
