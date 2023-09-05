@@ -73,6 +73,8 @@ export type TUpdate = {
     title: string;
     from: string;
     to: string;
+    type: string;
+    owner: string;
 };
 
 export type TWallData = {
@@ -80,7 +82,7 @@ export type TWallData = {
     day: string;
     month: string;
     year: string;
-    type: "call" | "text" | "note" | "deal" | "update";
+    type: "call" | "text" | "note" | "deal" | "update" | "activity log";
     note?: TNote;
     text?: TText;
     deal?: TDeal;

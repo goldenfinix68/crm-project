@@ -78,6 +78,8 @@ const ContactsWall = () => {
             return <DealBox data={data} />;
         } else if (data.type === "update") {
             return <UpdateBox data={data} user={user} />;
+        } else if (data.type === "activity log") {
+            return <Log data={data} />;
         } else {
             return <></>;
         }
@@ -290,6 +292,31 @@ const UpdateBox = ({ data, user }: { data: TWallData; user: TUser }) => {
         >
             {data.update?.from ?? "blank"} <ArrowRightOutlined />{" "}
             {data.update?.to ?? "blank"}
+        </Card>
+    );
+};
+const Log = ({ data }: { data: TWallData }) => {
+    console.log(data);
+    return (
+        <Card
+            title={
+                <Typography.Text>
+                    <Avatar
+                        style={{
+                            backgroundColor: "#C0CA33",
+                            verticalAlign: "middle",
+                        }}
+                        size={20}
+                    >
+                        {data.update?.owner.charAt(0)}
+                    </Avatar>{" "}
+                    {data.update?.type}
+                </Typography.Text>
+            }
+            bordered={false}
+            extra={data.month.substring(0, 3) + " " + data.day}
+        >
+            {/* <Button type="link">{data.deal?.title}</Button> */}
         </Card>
     );
 };

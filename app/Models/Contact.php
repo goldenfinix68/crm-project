@@ -99,15 +99,15 @@ class Contact extends Model
 
     public function texts()
     {
-        if(empty($this->mobile)){
+        if (empty($this->mobile)) {
             return [];
         }
         $texts = Text::where(function ($query) {
             $query->whereRaw('JSON_CONTAINS(`to`, ?)', ['"' . $this->mobile . '"'])
-                  ->orWhere('from', $this->mobile);
+                ->orWhere('from', $this->mobile);
         })
-        ->orderBy('id', 'desc')
-        ->get();
+            ->orderBy('id', 'desc')
+            ->get();
         return $texts;
     }
 
@@ -121,7 +121,12 @@ class Contact extends Model
         return $this->hasMany(\App\Models\ContactUpdate::class, 'contactId', 'id');
     }
 
-    
+    public function log()
+    {
+        return $this->hasMany(\App\Models\ContactLog::class, 'contact_id', 'id');
+    }
+
+
     public function getTextsAttribute()
     {
         return $this->texts();
@@ -179,8 +184,19 @@ class Contact extends Model
                 'update' => $data,
             ];
         });
+        $log = $this->log->map(function ($data) {
+            $createdAt = Carbon::parse($data->created_at);
+            return [
+                'type' => 'activity log',
+                'date' => $data->created_at,
+                'day' => $createdAt->format('j'),
+                'month' => $createdAt->format('F'),
+                'year' => $createdAt->format('Y'),
+                'update' => $data,
+            ];
+        });
 
-        $data = $data->merge($notes)->merge($texts)->merge($deals)->merge($updates);
+        $data = $data->merge($notes)->merge($texts)->merge($deals)->merge($updates)->merge($log);
 
         // Sort the combined data array based on the 'date' in ascending order
         $sortedData = $data->sortByDesc('date')->values()->all();

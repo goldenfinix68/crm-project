@@ -8,17 +8,41 @@ import {
     Input,
     Row,
     Select,
+    notification,
 } from "antd";
-import React from "react";
+import React, { useContext } from "react";
 import moment from "moment";
 import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
+import { useContactAddActivityLog } from "../../../api/mutation/useContactMutation";
+import { useMutation } from "react-query";
+import ContactContext from "../context";
+import { useUsersList } from "../../../api/query/activityQuery";
 
 const LogActivityTab = () => {
+    const { dataUsers, isLoadingUsers } = useUsersList();
+    const { contact } = useContext(ContactContext);
     const [form] = Form.useForm();
 
-    const handleFinish = (values) => {
-        console.log(values);
-        // Perform form submission logic here
+    const mutation = useMutation(useContactAddActivityLog, {
+        onSuccess: (res) => {
+            // navigate("/users"); // Redirect to the users list page after successful submission
+            if (res.success) {
+                notification.success({
+                    message: "Contact",
+                    description: "Updated Successfully",
+                });
+            }
+        },
+    });
+
+    const handleFinish = (values: any) => {
+        mutation.mutate({
+            ...values,
+            contact_id: contact.id,
+            start_date: values.dateTime[0].format("YYYY-MM-DD HH:mm:ss"),
+            end_date: values.dateTime[1].format("YYYY-MM-DD HH:mm:ss"),
+        });
+        form.resetFields();
     };
     return (
         <Form
@@ -30,6 +54,7 @@ const LogActivityTab = () => {
             initialValues={{
                 type: "call",
                 availability: "busy",
+                outcome: "No Answer",
             }}
             onFinish={handleFinish}
             autoComplete="off"
@@ -74,13 +99,19 @@ const LogActivityTab = () => {
                 ]}
             >
                 <Select>
-                    <Select.Option value="call">No Answer</Select.Option>
-                    <Select.Option value="task">Busy</Select.Option>
-                    <Select.Option value="meeting">Wrong Number</Select.Option>
-                    <Select.Option value="demo">Left Voicemail</Select.Option>
-                    <Select.Option value="demo">Connected</Select.Option>
-                    <Select.Option value="demo">Call Me Again</Select.Option>
-                    <Select.Option value="demo">Missed</Select.Option>
+                    <Select.Option value="No Answer">No Answer</Select.Option>
+                    <Select.Option value="Busy">Busy</Select.Option>
+                    <Select.Option value="Wrong Number">
+                        Wrong Number
+                    </Select.Option>
+                    <Select.Option value="Left Voicemail">
+                        Left Voicemail
+                    </Select.Option>
+                    <Select.Option value="Connected">Connected</Select.Option>
+                    <Select.Option value="Call Me Again">
+                        Call Me Again
+                    </Select.Option>
+                    <Select.Option value="Missed">Missed</Select.Option>
                 </Select>
             </Form.Item>
 
@@ -112,7 +143,7 @@ const LogActivityTab = () => {
 
             <Form.Item
                 label="Internal Note"
-                name="internalNote"
+                name="internal_note"
                 rules={[
                     {
                         required: true,
@@ -122,44 +153,66 @@ const LogActivityTab = () => {
             >
                 <Input.TextArea rows={4}></Input.TextArea>
             </Form.Item>
-            <Form.Item
-                label="Owner"
-                name="owner"
-                rules={[
-                    {
-                        required: true,
-                        message: "this is required",
-                    },
-                ]}
-            >
-                <Select>
-                    <Select.Option value="Jesse Admin">
-                        Jesse Admin
-                    </Select.Option>
-                    <Select.Option value="Jesse Ashley">
-                        Jesse Ashley
-                    </Select.Option>
-                </Select>
-            </Form.Item>
-            <Form.Item
-                label="Link Records"
-                name="linkRecords"
-                rules={[
-                    {
-                        required: true,
-                        message: "this is required",
-                    },
-                ]}
-            >
-                <Row gutter={12}>
-                    <Col md={12}>
+            <Col md={24} xs={24}>
+                <Form.Item
+                    name="owner"
+                    label="Owner"
+                    rules={[
+                        {
+                            required: true,
+                            message: "this is required",
+                        },
+                    ]}
+                >
+                    <Select style={{ width: "100%" }}>
+                        {dataUsers &&
+                            dataUsers?.data &&
+                            dataUsers?.data.map((item: any, key: any) => {
+                                return (
+                                    <Select.Option
+                                        key={key}
+                                        value={item.id}
+                                        search={`${item.firstName} ${item.lastName}`}
+                                    >
+                                        {`${item.firstName} ${item.lastName}`}
+                                    </Select.Option>
+                                );
+                            })}
+                    </Select>
+                </Form.Item>
+            </Col>
+
+            <Row gutter={12}>
+                <Col md={12}>
+                    <Form.Item
+                        label="Link Records"
+                        name="link_deal"
+                        rules={[
+                            {
+                                required: true,
+                                message: "this is required",
+                            },
+                        ]}
+                    >
                         <Input placeholder="Deal" />
-                    </Col>
-                    <Col md={12}>
+                    </Form.Item>
+                </Col>
+                <Col md={12}>
+                    <Form.Item
+                        label={null}
+                        name="link_contact"
+                        rules={[
+                            {
+                                required: true,
+                                message: "this is required",
+                            },
+                        ]}
+                    >
                         <Input placeholder="Contact" />
-                    </Col>
-                </Row>
-            </Form.Item>
+                    </Form.Item>
+                </Col>
+            </Row>
+
             <Form.Item
                 label="Tags"
                 name="tags"

@@ -32,8 +32,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/contacts/mergeContacts', 'App\Http\Controllers\Api\ContactsController@merge_contacts');
     Route::post('/contacts/favorite', 'App\Http\Controllers\Api\ContactsController@favorite');
     Route::post('/contacts/del_favorite', 'App\Http\Controllers\Api\ContactsController@del_favorite');
-    
-    
+    Route::post('/contacts/activity_log', 'App\Http\Controllers\Api\ContactsController@activity_log');
 
 
 
@@ -167,8 +166,8 @@ Route::get('/get_people', function (Request $request) {
         'firstName',
         'lastName',
     ])
-    ->union(DB::table('contacts')->select('id', 'firstName', 'lastName'))
-    ->get();
+        ->union(DB::table('contacts')->select('id', 'firstName', 'lastName'))
+        ->get();
 
     return response()->json([
         'success' => true,
