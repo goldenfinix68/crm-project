@@ -18,6 +18,15 @@ export type TNote = {
     notes: string;
 };
 
+export type TCallHistory = {
+    telnyxCallSessionId: string;
+    isAnswered: boolean;
+    dateTime: string;
+    isFromApp: string;
+    contactName: string;
+    duration: string;
+};
+
 export type TText = {
     id?: string;
     userId?: string;

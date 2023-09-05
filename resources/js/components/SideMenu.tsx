@@ -91,7 +91,7 @@ const SideMenu = ({ children }) => {
                         },
                         {
                             key: "/dialer",
-                            icon: <PhoneFilled />,
+                            icon: <i className="bi bi-newspaper"></i>,
                             label: "Dialer",
                         },
                     ]}

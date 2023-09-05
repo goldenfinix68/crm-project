@@ -1,8 +1,9 @@
-import { Button, Modal, Space } from "antd";
+import { Button, Modal, Space, Tabs, TabsProps } from "antd";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Audio } from "@telnyx/react-client";
 import DialerTab from "./DialerTab";
 import { useCallContext } from "../../../context/CallContext";
+import RecentTab from "./RecentTab";
 
 const IncomingCallListener = () => {
     const [telnyxClient, setTelnyxClient] = useState<any>(null);
@@ -41,9 +42,9 @@ const IncomingCallListener = () => {
                 break;
             case "ringing": // Someone is calling you
                 // Used to avoid alert blocking audio play, delay audio play first.
+                setCurrentCall(currentCall);
                 setIsModalOpen(true);
                 setIsloading(false);
-                setCurrentCall(currentCall);
                 break;
             case "active": // Call has become active
                 console.log("Call has become active");
@@ -154,6 +155,44 @@ const IncomingCallListener = () => {
             return "Make a Call";
         }
     };
+
+    const dialerTabs: TabsProps["items"] = [
+        {
+            key: "1",
+            label: <b>DIALER</b>,
+            children: (
+                <DialerTab
+                    handleFinish={() => makeCall()}
+                    isCallBtnLoading={isLoading}
+                />
+            ),
+        },
+        // {
+        //     key: "2",
+        //     label: <b>PENDING</b>,
+        //     children: `Content of Tab Pane 2`,
+        // },
+        {
+            key: "3",
+            label: <b>RECENT</b>,
+            children: <RecentTab />,
+        },
+        // {
+        //     key: "4",
+        //     label: <b>MISSED</b>,
+        //     children: `Content of Tab Pane 4`,
+        // },
+        // {
+        //     key: "5",
+        //     label: <b>VM'S</b>,
+        //     children: `Content of Tab Pane 5`,
+        // },
+        // {
+        //     key: "6",
+        //     label: <b>SETTINGS</b>,
+        //     children: `Content of Tab Pane 6`,
+        // },
+    ];
     return (
         <>
             <Audio stream={currentCall && currentCall.remoteStream} />
@@ -171,7 +210,7 @@ const IncomingCallListener = () => {
                 // okText="Answer"
                 // cancelText="Reject"
             >
-                {currentCall?.state == "ringing?" ? (
+                {currentCall?.state == "ringing" ? (
                     <>
                         <p>
                             {`Pick up the call from ${currentCall?.options?.remoteCallerName}?`}
@@ -218,9 +257,10 @@ const IncomingCallListener = () => {
                     </Space>
                 ) : (
                     <>
-                        <DialerTab
-                            handleFinish={() => makeCall()}
-                            isCallBtnLoading={isLoading}
+                        <Tabs
+                            className="dialerComponent"
+                            defaultActiveKey="1"
+                            items={dialerTabs}
                         />
                     </>
                 )}

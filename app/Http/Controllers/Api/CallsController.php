@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Call;
+use App\Models\Contact;
+use App\Models\MobileNumber;
+use Carbon\Carbon;
+use DB;
 
 class CallsController extends Controller
 {
@@ -15,7 +19,46 @@ class CallsController extends Controller
      */
     public function index()
     {
-        //
+
+    }
+
+    
+    public function call_history()
+    {
+        $data = [];
+        $calls = Call::select('*')
+            ->whereIn('id', function($query) {
+                $query->select(DB::raw('MAX(id)'))
+                    ->from('calls')
+                    ->groupBy('telnyxCallSessionId');
+            })
+            ->orderBy('id', 'desc')
+            ->get();
+
+        foreach($calls as $call){
+            $callData = Call::where('telnyxCallSessionId', $call->telnyxCallSessionId)->get();
+            $isFromApp = MobileNumber::where('mobileNumber', $call->from)->first();
+            
+            $contact = Contact::where('mobile', !empty($isFromApp) ? $call->to : $call->from)->first();
+            $contactName = !empty($isFromApp) ? $call->to : $call->from;
+            
+            if(!empty($contact)){
+                $contactName = $contact->firstName . ' ' . $contact->lastName;
+            }
+            $answeredData = $callData->where('type', 'call.answered')->first();
+            $hangupData = $callData->where('type', 'call.hangup')->first();
+            $isAnswered = !empty($answeredData) && !empty($hangupData);
+            
+            $data[] = [
+                'telnyxCallSessionId' => $call->telnyxCallSessionId,
+                'dateTime' => $call->created_at->format('M j, Y h:i a'),
+                'isFromApp' => !empty($isFromApp),
+                'contactName' => $contactName,
+                'duration' => $isAnswered ? $hangupData->created_at->diffInSeconds($answeredData->created_at) : "0"
+            ];
+        }
+        
+        return response()->json($data, 200);
     }
 
     /**
