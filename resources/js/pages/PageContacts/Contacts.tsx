@@ -640,9 +640,12 @@ const Contacts = () => {
                                                     // }
                                                     // defaultOpenKeys={["sub1"]}
                                                 >
-                                                    <Typography className="m-b-sm">
+                                                    <Typography.Text
+                                                        className="m-b-sm"
+                                                        strong
+                                                    >
                                                         SYSTEM
-                                                    </Typography>
+                                                    </Typography.Text>
                                                     <Menu.Item
                                                         className="menuList"
                                                         key="item1"
@@ -904,99 +907,124 @@ const Contacts = () => {
                                                         searchQuery.toLocaleLowerCase()
                                                     )
                                             ).length > 0 ? (
-                                                <Menu
-                                                    style={{
-                                                        backgroundColor: "none",
-                                                        boxShadow: "none",
-                                                    }}
-                                                    mode="inline"
-                                                >
-                                                    {Object.values(
-                                                        favoriteTitle
-                                                    )
-                                                        .filter((item) =>
-                                                            item
-                                                                .toLocaleLowerCase()
-                                                                .startsWith(
-                                                                    searchQuery.toLocaleLowerCase()
-                                                                )
+                                                <>
+                                                    <div className="m-t-md">
+                                                        <Typography.Text>
+                                                            {Object.values(
+                                                                favoriteTitle
+                                                            ).filter((item) =>
+                                                                item
+                                                                    .toLocaleLowerCase()
+                                                                    .startsWith(
+                                                                        searchQuery.toLocaleLowerCase()
+                                                                    )
+                                                            ).length +
+                                                                " Result Found"}
+                                                        </Typography.Text>
+                                                    </div>
+                                                    <div className="m-t-lg">
+                                                        <Typography.Text strong>
+                                                            SYSTEM
+                                                        </Typography.Text>
+                                                    </div>
+
+                                                    <Menu
+                                                        style={{
+                                                            backgroundColor:
+                                                                "none",
+                                                            boxShadow: "none",
+                                                        }}
+                                                        mode="inline"
+                                                    >
+                                                        {Object.values(
+                                                            favoriteTitle
                                                         )
-                                                        .map((item) => {
-                                                            return (
-                                                                <Menu.Item
-                                                                    className="menuList"
-                                                                    key={item}
-                                                                    icon={
-                                                                        <LockOutlined />
-                                                                    }
-                                                                >
-                                                                    <Space>
-                                                                        <Button
-                                                                            className="disableHover"
-                                                                            style={{
-                                                                                paddingLeft:
-                                                                                    "0px",
-                                                                                width: "220px",
-                                                                                display:
-                                                                                    "flex",
-                                                                                alignItems:
-                                                                                    "start",
-                                                                            }}
-                                                                            type="text"
-                                                                            onClick={() => {
-                                                                                let objkey =
-                                                                                    Object.fromEntries(
-                                                                                        Object.entries(
-                                                                                            favoriteTitle
-                                                                                        ).filter(
-                                                                                            ([
-                                                                                                key,
-                                                                                                value,
-                                                                                            ]) =>
-                                                                                                value.toLocaleLowerCase() ==
-                                                                                                item.toLocaleLowerCase()
-                                                                                        )
-                                                                                    );
+                                                            .filter((item) =>
+                                                                item
+                                                                    .toLocaleLowerCase()
+                                                                    .startsWith(
+                                                                        searchQuery.toLocaleLowerCase()
+                                                                    )
+                                                            )
+                                                            .map((item) => {
+                                                                return (
+                                                                    <Menu.Item
+                                                                        className="menuList"
+                                                                        key={
+                                                                            item
+                                                                        }
+                                                                        icon={
+                                                                            <LockOutlined />
+                                                                        }
+                                                                    >
+                                                                        <Space>
+                                                                            <Button
+                                                                                className="disableHover"
+                                                                                style={{
+                                                                                    paddingLeft:
+                                                                                        "0px",
+                                                                                    width: "220px",
+                                                                                    display:
+                                                                                        "flex",
+                                                                                    alignItems:
+                                                                                        "start",
+                                                                                }}
+                                                                                type="text"
+                                                                                onClick={() => {
+                                                                                    let objkey =
+                                                                                        Object.fromEntries(
+                                                                                            Object.entries(
+                                                                                                favoriteTitle
+                                                                                            ).filter(
+                                                                                                ([
+                                                                                                    key,
+                                                                                                    value,
+                                                                                                ]) =>
+                                                                                                    value.toLocaleLowerCase() ==
+                                                                                                    item.toLocaleLowerCase()
+                                                                                            )
+                                                                                        );
 
-                                                                                let finalKey =
-                                                                                    Object.keys(
-                                                                                        objkey
-                                                                                    );
+                                                                                    let finalKey =
+                                                                                        Object.keys(
+                                                                                            objkey
+                                                                                        );
 
-                                                                                setDropdownVisible(
-                                                                                    false
-                                                                                );
-                                                                                setFilter(
-                                                                                    finalKey[0]
-                                                                                );
-                                                                            }}
-                                                                        >
-                                                                            {
-                                                                                item
-                                                                            }
-                                                                        </Button>
-                                                                        <Button
-                                                                            className="disableHover"
-                                                                            type="text"
-                                                                            onClick={() => {
-                                                                                handleFavoriteClick(
+                                                                                    setDropdownVisible(
+                                                                                        false
+                                                                                    );
+                                                                                    setFilter(
+                                                                                        finalKey[0]
+                                                                                    );
+                                                                                }}
+                                                                            >
+                                                                                {
+                                                                                    item
+                                                                                }
+                                                                            </Button>
+                                                                            <Button
+                                                                                className="disableHover"
+                                                                                type="text"
+                                                                                onClick={() => {
+                                                                                    handleFavoriteClick(
+                                                                                        "recent-modified-contact"
+                                                                                    );
+                                                                                }}
+                                                                            >
+                                                                                {isFavorite.includes(
                                                                                     "recent-modified-contact"
-                                                                                );
-                                                                            }}
-                                                                        >
-                                                                            {isFavorite.includes(
-                                                                                "recent-modified-contact"
-                                                                            ) ? (
-                                                                                <StarFilled />
-                                                                            ) : (
-                                                                                <StarOutlined />
-                                                                            )}
-                                                                        </Button>
-                                                                    </Space>
-                                                                </Menu.Item>
-                                                            );
-                                                        })}
-                                                </Menu>
+                                                                                ) ? (
+                                                                                    <StarFilled />
+                                                                                ) : (
+                                                                                    <StarOutlined />
+                                                                                )}
+                                                                            </Button>
+                                                                        </Space>
+                                                                    </Menu.Item>
+                                                                );
+                                                            })}
+                                                    </Menu>
+                                                </>
                                             ) : (
                                                 <div className="noResult m-t-lg">
                                                     <Typography.Title level={5}>
