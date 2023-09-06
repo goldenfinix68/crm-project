@@ -74,6 +74,7 @@ import {
     useContactAddFavorite,
     useContactDeleteFavorite,
 } from "../../api/mutation/useContactMutation";
+import ContactsComponentsAddtoList from "./Components/ContactsComponentsAddtoList";
 
 interface DataType {
     key: React.Key;
@@ -122,6 +123,7 @@ const Contacts = () => {
     const [hideHeader, setHideHeader] = useState(true);
 
     const [isModalOpenUpdate, setisModalOpenUpdate] = useState(false);
+    const [isModalOpenAddList, setisModalOpenAddlist] = useState(false);
 
     const handleEdit = (record: TContact) => {
         setTContact(record);
@@ -542,7 +544,12 @@ const Contacts = () => {
                     <Button icon={<CheckCircleOutlined />} className="m-r-sm">
                         Create Activities
                     </Button>
-                    <Button icon={<UnorderedListOutlined />}>
+                    <Button
+                        icon={<UnorderedListOutlined />}
+                        onClick={() => {
+                            setisModalOpenAddlist(true);
+                        }}
+                    >
                         Add to List
                     </Button>
                 </Row>
@@ -1158,6 +1165,14 @@ const Contacts = () => {
             <ContactsComponentsUpdate
                 isModalOpenUpdate={isModalOpenUpdate}
                 setisModalOpenUpdate={setisModalOpenUpdate}
+                record={isTContact}
+                title={isTitle}
+                selectedData={selectedData}
+                setTContact={setTContact}
+            />
+            <ContactsComponentsAddtoList
+                isModalOpenAddList={isModalOpenAddList}
+                setisModalOpenAddList={setisModalOpenAddlist}
                 record={isTContact}
                 title={isTitle}
                 selectedData={selectedData}
