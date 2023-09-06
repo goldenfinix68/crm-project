@@ -123,7 +123,7 @@ class Contact extends Model
 
     public function log()
     {
-        return $this->hasMany(\App\Models\ContactLog::class, 'contact_id', 'id');
+        return $this->hasMany(\App\Models\ContactLog::class, 'contact_id', 'id')->with('owner');
     }
 
 

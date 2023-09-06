@@ -66,6 +66,9 @@ export type TDeal = {
     sort?: string;
 };
 
+export type TUpdateOwner = {
+    firstName: string;
+};
 export type TUpdate = {
     id: string;
     userId: string;
@@ -74,7 +77,10 @@ export type TUpdate = {
     from: string;
     to: string;
     type: string;
-    owner: string;
+    owner: TUpdateOwner;
+    start_date: string;
+    outcome: string;
+    firstName: string;
 };
 
 export type TWallData = {

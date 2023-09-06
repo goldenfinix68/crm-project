@@ -82,10 +82,10 @@ const LogActivityTab = () => {
                 ]}
             >
                 <Select>
-                    <Select.Option value="call">Call</Select.Option>
-                    <Select.Option value="task">Task</Select.Option>
-                    <Select.Option value="meeting">Meeting</Select.Option>
-                    <Select.Option value="demo">Demo</Select.Option>
+                    <Select.Option value="Call">Call</Select.Option>
+                    <Select.Option value="Task">Task</Select.Option>
+                    <Select.Option value="Meeting">Meeting</Select.Option>
+                    <Select.Option value="Demo">Demo</Select.Option>
                 </Select>
             </Form.Item>
             <Form.Item

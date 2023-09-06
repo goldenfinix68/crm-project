@@ -33,7 +33,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/contacts/favorite', 'App\Http\Controllers\Api\ContactsController@favorite');
     Route::post('/contacts/del_favorite', 'App\Http\Controllers\Api\ContactsController@del_favorite');
     Route::post('/contacts/activity_log', 'App\Http\Controllers\Api\ContactsController@activity_log');
-
+    Route::post('/contacts/add_files', 'App\Http\Controllers\Api\ContactsController@add_files');
 
 
     Route::resource('/contact-types', 'App\Http\Controllers\Api\ContactTypesController');

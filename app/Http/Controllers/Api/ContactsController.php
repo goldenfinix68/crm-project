@@ -6,6 +6,7 @@ use App\Models\Contact;
 use App\Models\ContactUpdate;
 use App\Models\ContactFavorite;
 use App\Http\Controllers\Controller;
+use App\Models\ContactFile;
 use App\Models\ContactLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -254,5 +255,50 @@ class ContactsController extends Controller
     {
         $activity_log = ContactLog::create($request->except('dateTime'));
         return response()->json($activity_log, 200);
+    }
+    public function add_files(Request $request)
+    {
+        $ret = [
+            "success" => false,
+            "message" => "File not saved",
+        ];
+
+        $category =  $request->category;
+
+        if ((int) $request->files_count !== 0) {
+            for ($i = 0; $i < $request->files_count; $i++) {
+                $file = $request->file('files_' . $i);
+
+                if ($file) {
+                    $file_name =  $file->getClientOriginalName();
+                    $file_size = $this->bytesToHuman($file->getSize());
+                    $fileFilePath = Str::random(10)  . '.' . $file->getClientOriginalExtension();
+                    $fileFilePathNew = $file->storeAs('uploads/delivery_requests', $fileFilePath, 'public');
+
+                    $file_url = $file->storeAs(
+                        'public/files',
+                        time() . '_' . $file_name
+                    );
+
+                    $file_url = str_replace('public/files/', '', $file_url);
+                    ContactFile::create([
+                        'contact_id' => $request->contact_id,
+                        'file_size' => $file_size,
+                        'file_name' => $file_name,
+                        'file_url' => 'storage/' . $fileFilePathNew,
+                        'uploaded_by' => auth()->user()->id
+                    ]);
+                }
+            }
+
+
+
+            $ret = [
+                "success" => true,
+                "message" => "Files saved successfully"
+            ];
+        }
+
+        return response()->json($ret, 200);
     }
 }

@@ -18,9 +18,11 @@ import {
     Breadcrumb,
     Button,
     Card,
+    Col,
     Empty,
     Menu,
     Popover,
+    Row,
     Space,
     Tooltip,
     Typography,
@@ -31,6 +33,7 @@ import Notestab from "./NotesTab";
 import ContactContext from "../context";
 import { TNote, TUser, TWallData } from "../../../entities";
 import { useLoggedInUser } from "../../../api/query/userQuery";
+import moment from "moment";
 
 const ContactsWall = () => {
     const { contact } = useContext(ContactContext);
@@ -59,7 +62,7 @@ const ContactsWall = () => {
             title: <a>Emails</a>,
         },
         {
-            title: <a>Files</a>,
+            title: <a onClick={() => setShowing("activity log")}>Log</a>,
         },
         {
             title: <a onClick={() => setShowing("text")}>Texts</a>,
@@ -308,15 +311,66 @@ const Log = ({ data }: { data: TWallData }) => {
                         }}
                         size={20}
                     >
-                        {data.update?.owner.charAt(0)}
+                        {data.update?.owner?.firstName.charAt(0)}
                     </Avatar>{" "}
-                    {data.update?.type}
+                    {data.update?.type + "  - by you"}
                 </Typography.Text>
             }
             bordered={false}
             extra={data.month.substring(0, 3) + " " + data.day}
         >
-            {/* <Button type="link">{data.deal?.title}</Button> */}
+            <Row>
+                <Col md={14}>
+                    {" "}
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            padding: 20,
+                            paddingTop: 0,
+                            paddingBottom: 0,
+                            marginTop: 10,
+                        }}
+                    >
+                        <span>
+                            <CalendarOutlined style={{ fontSize: 14 }} />
+                        </span>
+                        <span
+                            style={{
+                                fontSize: 14,
+                                marginLeft: 10,
+                            }}
+                        >
+                            {" "}
+                            {moment(data.update?.start_date).format("LLL")}
+                        </span>
+                    </div>
+                </Col>
+                <Col md={10}>
+                    {" "}
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            padding: 20,
+                            paddingTop: 0,
+                            paddingBottom: 0,
+                            marginTop: 10,
+                        }}
+                    >
+                        <span>Outcome:</span>
+                        <span
+                            style={{
+                                fontSize: 14,
+                                marginLeft: 10,
+                            }}
+                        >
+                            {" "}
+                            {data.update?.outcome}
+                        </span>
+                    </div>
+                </Col>
+            </Row>
         </Card>
     );
 };
