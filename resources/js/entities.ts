@@ -88,7 +88,14 @@ export type TWallData = {
     day: string;
     month: string;
     year: string;
-    type: "call" | "text" | "note" | "deal" | "update" | "activity log";
+    type:
+        | "call"
+        | "text"
+        | "note"
+        | "deal"
+        | "update"
+        | "activity log"
+        | "files";
     note?: TNote;
     text?: TText;
     deal?: TDeal;
