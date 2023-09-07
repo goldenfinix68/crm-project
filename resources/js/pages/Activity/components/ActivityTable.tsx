@@ -37,7 +37,10 @@ import Search from "antd/es/input/Search";
 import ModalManageColumn from "./ModalManageColumn";
 
 import { TActivities } from "../ActivityEntities";
-import { activitiList } from "../../../api/query/activityQuery";
+import {
+    activitiList,
+    useActivutyCustomField,
+} from "../../../api/query/activityQuery";
 
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -253,7 +256,7 @@ const ActivityTable = () => {
                   width: 350,
                   index: localTableColumn?.find((p: any) => p.title === "Title")
                       ?.id,
-                  sorter: true,
+                  //   sorter: true,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Start Date")?.title
@@ -277,7 +280,7 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Start Date"
                   )?.id,
-                  sorter: true,
+                  //   sorter: true,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Duration")?.title
@@ -287,7 +290,8 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Duration"
                   )?.id,
-                  sorter: true,
+                  //   sorter: true,
+                  width: 350,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Owner")?.title
@@ -296,7 +300,8 @@ const ActivityTable = () => {
                   dataIndex: "owner",
                   index: localTableColumn?.find((p: any) => p.title === "Owner")
                       ?.id,
-                  sorter: true,
+                  //   sorter: true,
+                  width: 350,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Title (Deal)")?.title
@@ -306,7 +311,8 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Title (Deal)"
                   )?.id,
-                  sorter: true,
+                  //   sorter: true,
+                  width: 350,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Name (Contact)")?.title
@@ -316,7 +322,8 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Name (Contact)"
                   )?.id,
-                  sorter: true,
+                  //   sorter: true,
+                  width: 350,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Tags")?.title
@@ -337,7 +344,8 @@ const ActivityTable = () => {
                   },
                   index: localTableColumn?.find((p: any) => p.title === "Tags")
                       ?.id,
-                  sorter: true,
+                  //   sorter: true,
+                  width: 350,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "End Date")?.title
@@ -367,7 +375,7 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "End Date"
                   )?.id,
-                  sorter: true,
+                  //   sorter: true,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Availability")?.title
@@ -377,7 +385,8 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Availability"
                   )?.id,
-                  sorter: true,
+                  //   sorter: true,
+                  width: 350,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Location")?.title
@@ -387,7 +396,8 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Location"
                   )?.id,
-                  sorter: true,
+                  //   sorter: true,
+                  width: 350,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Video Conferencing")
@@ -398,7 +408,8 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Video Conferencing"
                   )?.id,
-                  sorter: true,
+                  //   sorter: true,
+                  width: 350,
               }
             : {},
         // localTableColumn?.find((p: any) => p.title === "Outcome")?.title
@@ -408,7 +419,7 @@ const ActivityTable = () => {
         //           index: localTableColumn?.find(
         //               (p: any) => p.title === "Outcome"
         //           )?.id,
-        //           sorter: true,
+        //   sorter: true,
         //       }
         //     : {},
         localTableColumn?.find((p: any) => p.title === "Id")?.title
@@ -417,7 +428,8 @@ const ActivityTable = () => {
                   dataIndex: "id",
                   index: localTableColumn?.find((p: any) => p.title === "Id")
                       ?.id,
-                  sorter: true,
+                  //   sorter: true,
+                  width: 100,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Created By")?.title
@@ -427,7 +439,8 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Created By"
                   )?.id,
-                  sorter: true,
+                  //   sorter: true,
+                  width: 300,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Completed Date")?.title
@@ -437,7 +450,8 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Completed Date"
                   )?.id,
-                  sorter: true,
+                  //   sorter: true,
+                  width: 300,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Completed Date")?.title
@@ -447,7 +461,8 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Completed Date"
                   )?.id,
-                  sorter: true,
+                  //   sorter: true,
+                  width: 300,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Last Modified By")
@@ -458,7 +473,8 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Last Modified By"
                   )?.id,
-                  sorter: true,
+                  //   sorter: true,
+                  width: 300,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Created At")?.title
@@ -468,7 +484,8 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Created At"
                   )?.id,
-                  sorter: true,
+                  //   sorter: true,
+                  width: 300,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Last Note Added At")
@@ -479,7 +496,8 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Last Note Added At"
                   )?.id,
-                  sorter: true,
+                  //   sorter: true,
+                  width: 300,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Last Modified Date")
@@ -490,7 +508,8 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Last Modified Date"
                   )?.id,
-                  sorter: true,
+                  //   sorter: true,
+                  width: 300,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Last Note Added")?.title
@@ -500,7 +519,8 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Last Note Added"
                   )?.id,
-                  sorter: true,
+                  //   sorter: true,
+                  width: 300,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Last Note Added By")
@@ -511,7 +531,8 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Last Note Added By"
                   )?.id,
-                  sorter: true,
+                  //   sorter: true,
+                  width: 300,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Created Longitude")
@@ -522,7 +543,8 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Created Longitude"
                   )?.id,
-                  sorter: true,
+                  //   sorter: true,
+                  width: 300,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Created Latitude")
@@ -533,7 +555,8 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Created Latitude"
                   )?.id,
-                  sorter: true,
+                  //   sorter: true,
+                  width: 300,
               }
             : {},
         localTableColumn?.find((p: any) => p.title === "Created Address")?.title
@@ -543,28 +566,82 @@ const ActivityTable = () => {
                   index: localTableColumn?.find(
                       (p: any) => p.title === "Created Address"
                   )?.id,
-                  sorter: true,
+                  //   sorter: true,
+                  width: 300,
               }
             : {},
     ];
 
-    const filterColumns = colums.filter((item) => {
-        if (item?.index) {
-            let row = {
-                ...item,
-                index: Number(item.index),
-            };
-            return row;
+    const [stateColumns, setStateColumns] = useState(colums);
+    const { dataCustomField, isLoadingCustomField } = useActivutyCustomField();
+
+    useEffect(() => {
+        if (dataCustomField?.data) {
+            let cols = [...colums];
+            let customCols: any = [];
+
+            dataCustomField?.data.map((item: any) => {
+                customCols.push({
+                    title: item?.label,
+                    dataIndex: item?.name,
+                    index: localTableColumn?.find(
+                        (p: any) => p.title === item?.label
+                    )?.id,
+                    // sorter: true,
+                    width: 250,
+                    render: (text: any, record: any) => {
+                        let val = "";
+
+                        record?.custom_field_values.filter((data: any) => {
+                            if (data.field_name === item?.name) {
+                                // console.log("data.value", data, item?.name);
+                                // if (item?.type === "Text Area") {
+                                //     val = data.value;
+                                // } else {
+                                // }
+                                val = data.value;
+                            }
+                        });
+
+                        return val;
+                    },
+                });
+            });
+
+            let mergeCols = [...cols, ...customCols];
+
+            // filter only selected column
+            let filterColumns = mergeCols.filter((item) => {
+                if (item?.index) {
+                    let row = {
+                        ...item,
+                        index: Number(item.index),
+                    };
+                    return row;
+                }
+            });
+
+            // sort selected columns
+            let sortedColumns = [...filterColumns].sort(
+                (a, b) => Number(a.index) - Number(b.index)
+            );
+
+            // remove index variable
+            sortedColumns.forEach(function (x) {
+                delete x.index;
+            });
+
+            setStateColumns(sortedColumns);
+            // console.log("dataCustomField", customCols);
+            // console.log("dataCustomField", sortedColumns);
+            // console.log("dataCustomField", dataCustomField?.data);
         }
-    });
-
-    const sortedColumns = [...filterColumns].sort(
-        (a, b) => Number(a.index) - Number(b.index)
-    );
-
-    sortedColumns.forEach(function (x) {
-        delete x.index;
-    });
+        // console.log("dataSource", dataSource?.data?.data);
+    }, [
+        dataCustomField,
+        localStorage.activitiesSelectColumn,
+        dataSource?.data?.data,
+    ]);
 
     const [drawerUpdateOpen, setDrawerUpdateOpen] = useState(false);
     const [drawerUpdateData, setDrawerUpdateData] = useState(null);
@@ -583,12 +660,6 @@ const ActivityTable = () => {
             step: 1,
         });
     };
-
-    useEffect(() => {
-        if (dataSource?.data) {
-            console.log("dataSource", dataSource?.data);
-        }
-    }, [dataSource]);
 
     return (
         <>
@@ -709,7 +780,8 @@ const ActivityTable = () => {
                     <Table
                         loading={isLoadingUsers}
                         dataSource={dataSource?.data && dataSource?.data?.data}
-                        columns={sortedColumns}
+                        // columns={sortedColumns}
+                        columns={stateColumns}
                         onChange={onChange}
                         rowKey={(record) => record.id}
                         rowSelection={{ ...rowSelection }}
