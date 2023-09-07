@@ -66,6 +66,9 @@ export type TDeal = {
     sort?: string;
 };
 
+export type TUpdateOwner = {
+    firstName: string;
+};
 export type TUpdate = {
     id: string;
     userId: string;
@@ -73,6 +76,15 @@ export type TUpdate = {
     title: string;
     from: string;
     to: string;
+    type: string;
+    owner: TUpdateOwner;
+    start_date: string;
+    outcome: string;
+    firstName: string;
+    uploaded_by: any;
+    file_url: string;
+    file_size: string;
+    file_name: string;
 };
 
 export type TWallData = {
@@ -80,7 +92,14 @@ export type TWallData = {
     day: string;
     month: string;
     year: string;
-    type: "call" | "text" | "note" | "deal" | "update";
+    type:
+        | "call"
+        | "text"
+        | "note"
+        | "deal"
+        | "update"
+        | "activity log"
+        | "files";
     note?: TNote;
     text?: TText;
     deal?: TDeal;
