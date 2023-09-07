@@ -174,11 +174,13 @@ const ActivityTable = () => {
 
     const [isModalManageColumnOpen, setIsModalManageColumnOpen] =
         useState(false);
+
     const [modalManageColumnField, setModalManageColumnField] = useState({
         show: false,
         title: "Select Field Type",
         step: 1,
     });
+
     const [activitiesSelectColumn, setActivitiesSelectColumn] = useState(
         localStorage.activitiesSelectColumn
             ? JSON.parse(localStorage.activitiesSelectColumn)
@@ -399,22 +401,148 @@ const ActivityTable = () => {
                   sorter: true,
               }
             : {},
-        localTableColumn?.find((p: any) => p.title === "Outcome")?.title
-            ? {
-                  title: "Outcome",
-                  dataIndex: "name",
-                  index: localTableColumn?.find(
-                      (p: any) => p.title === "Outcome"
-                  )?.id,
-                  sorter: true,
-              }
-            : {},
+        // localTableColumn?.find((p: any) => p.title === "Outcome")?.title
+        //     ? {
+        //           title: "Outcome",
+        //           dataIndex: "name",
+        //           index: localTableColumn?.find(
+        //               (p: any) => p.title === "Outcome"
+        //           )?.id,
+        //           sorter: true,
+        //       }
+        //     : {},
         localTableColumn?.find((p: any) => p.title === "Id")?.title
             ? {
                   title: "Id",
                   dataIndex: "id",
                   index: localTableColumn?.find((p: any) => p.title === "Id")
                       ?.id,
+                  sorter: true,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Created By")?.title
+            ? {
+                  title: "Created By",
+                  dataIndex: "created_by",
+                  index: localTableColumn?.find(
+                      (p: any) => p.title === "Created By"
+                  )?.id,
+                  sorter: true,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Completed Date")?.title
+            ? {
+                  title: "Completed Date",
+                  dataIndex: "created_by",
+                  index: localTableColumn?.find(
+                      (p: any) => p.title === "Completed Date"
+                  )?.id,
+                  sorter: true,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Completed Date")?.title
+            ? {
+                  title: "Completed Date",
+                  dataIndex: "created_by",
+                  index: localTableColumn?.find(
+                      (p: any) => p.title === "Completed Date"
+                  )?.id,
+                  sorter: true,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Last Modified By")
+            ?.title
+            ? {
+                  title: "Last Modified By",
+                  dataIndex: "created_by",
+                  index: localTableColumn?.find(
+                      (p: any) => p.title === "Last Modified By"
+                  )?.id,
+                  sorter: true,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Created At")?.title
+            ? {
+                  title: "Created At",
+                  dataIndex: "created_by",
+                  index: localTableColumn?.find(
+                      (p: any) => p.title === "Created At"
+                  )?.id,
+                  sorter: true,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Last Note Added At")
+            ?.title
+            ? {
+                  title: "Last Note Added At",
+                  dataIndex: "created_by",
+                  index: localTableColumn?.find(
+                      (p: any) => p.title === "Last Note Added At"
+                  )?.id,
+                  sorter: true,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Last Modified Date")
+            ?.title
+            ? {
+                  title: "Last Modified Date",
+                  dataIndex: "created_by",
+                  index: localTableColumn?.find(
+                      (p: any) => p.title === "Last Modified Date"
+                  )?.id,
+                  sorter: true,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Last Note Added")?.title
+            ? {
+                  title: "Last Note Added",
+                  dataIndex: "created_by",
+                  index: localTableColumn?.find(
+                      (p: any) => p.title === "Last Note Added"
+                  )?.id,
+                  sorter: true,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Last Note Added By")
+            ?.title
+            ? {
+                  title: "Last Note Added By",
+                  dataIndex: "created_by",
+                  index: localTableColumn?.find(
+                      (p: any) => p.title === "Last Note Added By"
+                  )?.id,
+                  sorter: true,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Created Longitude")
+            ?.title
+            ? {
+                  title: "Created Longitude",
+                  dataIndex: "created_by",
+                  index: localTableColumn?.find(
+                      (p: any) => p.title === "Created Longitude"
+                  )?.id,
+                  sorter: true,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Created Latitude")
+            ?.title
+            ? {
+                  title: "Created Latitude",
+                  dataIndex: "created_by",
+                  index: localTableColumn?.find(
+                      (p: any) => p.title === "Created Latitude"
+                  )?.id,
+                  sorter: true,
+              }
+            : {},
+        localTableColumn?.find((p: any) => p.title === "Created Address")?.title
+            ? {
+                  title: "Created Address",
+                  dataIndex: "created_by",
+                  index: localTableColumn?.find(
+                      (p: any) => p.title === "Created Address"
+                  )?.id,
                   sorter: true,
               }
             : {},
@@ -455,6 +583,12 @@ const ActivityTable = () => {
             step: 1,
         });
     };
+
+    useEffect(() => {
+        if (dataSource?.data) {
+            console.log("dataSource", dataSource?.data);
+        }
+    }, [dataSource]);
 
     return (
         <>
