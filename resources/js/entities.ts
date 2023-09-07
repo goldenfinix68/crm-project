@@ -81,6 +81,10 @@ export type TUpdate = {
     start_date: string;
     outcome: string;
     firstName: string;
+    uploaded_by: any;
+    file_url: string;
+    file_size: string;
+    file_name: string;
 };
 
 export type TWallData = {
