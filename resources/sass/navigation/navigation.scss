@@ -47,6 +47,8 @@
 }
 
 .header-btn {
+    display: flex;
+    justify-content: flex-end;
     .header-btn-plus {
         width: 13px;
         height: 13px;
@@ -120,4 +122,53 @@
 }
 .btn-phone:hover {
     border-color: #09b749 !important;
+}
+
+.profile-dropdown {
+    width: 320px;
+
+    .ant-dropdown-menu {
+        padding: 0px;
+
+        .ant-dropdown-menu-item:hover {
+            background-color: transparent !important;
+        }
+
+        .ant-dropdown-menu-item {
+            padding: 0;
+            cursor: default;
+
+            .card-dropdown {
+                box-shadow: none !important;
+
+                .ant-card-head {
+                    padding: 15px !important;
+
+                    .card-dropdown-space {
+                        .ant-space-item:first-child {
+                            height: 16.5px;
+                        }
+                    }
+                }
+
+                .ant-card-body {
+                    padding: 0;
+                    .dropdowmn-menu {
+                        .ant-menu-item {
+                            padding-inline: 16px;
+                            height: 50px;
+                            display: flex;
+                            align-items: center;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.button-link {
+    .anticon {
+        font-size: 34px !important;
+    }
 }

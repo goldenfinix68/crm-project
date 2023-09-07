@@ -12006,6 +12006,10 @@ textarea.form-control-lg {
   cursor: pointer;
 }
 
+.header-btn {
+  display: flex;
+  justify-content: flex-end;
+}
 .header-btn .header-btn-plus {
   width: 13px;
   height: 13px;
@@ -12067,4 +12071,40 @@ textarea.form-control-lg {
 
 .btn-phone:hover {
   border-color: #09b749 !important;
+}
+
+.profile-dropdown {
+  width: 320px;
+}
+.profile-dropdown .ant-dropdown-menu {
+  padding: 0px;
+}
+.profile-dropdown .ant-dropdown-menu .ant-dropdown-menu-item:hover {
+  background-color: transparent !important;
+}
+.profile-dropdown .ant-dropdown-menu .ant-dropdown-menu-item {
+  padding: 0;
+  cursor: default;
+}
+.profile-dropdown .ant-dropdown-menu .ant-dropdown-menu-item .card-dropdown {
+  box-shadow: none !important;
+}
+.profile-dropdown .ant-dropdown-menu .ant-dropdown-menu-item .card-dropdown .ant-card-head {
+  padding: 15px !important;
+}
+.profile-dropdown .ant-dropdown-menu .ant-dropdown-menu-item .card-dropdown .ant-card-head .card-dropdown-space .ant-space-item:first-child {
+  height: 16.5px;
+}
+.profile-dropdown .ant-dropdown-menu .ant-dropdown-menu-item .card-dropdown .ant-card-body {
+  padding: 0;
+}
+.profile-dropdown .ant-dropdown-menu .ant-dropdown-menu-item .card-dropdown .ant-card-body .dropdowmn-menu .ant-menu-item {
+  padding-inline: 16px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+}
+
+.button-link .anticon {
+  font-size: 34px !important;
 }/*# sourceMappingURL=navigation.css.map */
