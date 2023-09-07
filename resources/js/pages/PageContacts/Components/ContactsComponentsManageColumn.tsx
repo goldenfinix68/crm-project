@@ -1172,17 +1172,29 @@ const ContactsComponentsManageColumn: React.FC<
                     </Row>
                 </div>
                 <div className="modal-footer">
-                    <Button type="link" style={{ marginRight: "646px" }}>
-                        {" "}
-                        <u>Reset to default columns</u>
-                    </Button>
-                    <Button className="m-r-xs" type="primary">
-                        Save
-                    </Button>
+                    <Col
+                        md={12}
+                        style={{
+                            display: "flex",
+                            justifyContent: "flex-start",
+                        }}
+                    >
+                        <Button type="link">
+                            {" "}
+                            <u>Reset to default columns</u>
+                        </Button>
+                    </Col>
+                    <Col md={12}>
+                        <Button className="m-r-xs" type="primary">
+                            Save
+                        </Button>
 
-                    <Button onClick={() => setIsModalManageColumnOpen(false)}>
-                        Cancel
-                    </Button>
+                        <Button
+                            onClick={() => setIsModalManageColumnOpen(false)}
+                        >
+                            Cancel
+                        </Button>
+                    </Col>
                 </div>
 
                 <ContactsComponentsAddCustomField
