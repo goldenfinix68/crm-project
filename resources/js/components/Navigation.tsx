@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import {
     Button,
+    Card,
     Col,
     Dropdown,
     Image,
     Input,
+    Menu,
     Row,
     Space,
     Typography,
@@ -13,14 +15,18 @@ import type { MenuProps } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle, faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
 
-import { Link } from "react-router-dom";
-import { LoadingOutlined } from "@ant-design/icons";
+import { Link, useNavigate } from "react-router-dom";
+import {
+    LoadingOutlined,
+    PoweroffOutlined,
+    SettingOutlined,
+} from "@ant-design/icons";
 import NavigationComponentsQuickAdd from "./NavigationComponents/NavigationComponentsQuickAdd";
 import NavigationComponentsCall from "./NavigationComponents/NavigationComponentsCall";
 
 const Navigation: React.FC = () => {
+    const navigate = useNavigate();
     const [searchLoading, setSearchLoading] = useState(false);
-
     useEffect(() => {
         if (searchLoading) {
             const timeoutId = setTimeout(() => {
@@ -116,13 +122,70 @@ const Navigation: React.FC = () => {
         {
             key: "1",
             label: (
-                <div
-                    onClick={() => {
-                        handleSignOut();
-                    }}
+                <Card
+                    bordered={false}
+                    className="card-dropdown"
+                    title={
+                        <>
+                            <Space>
+                                <Image
+                                    src={
+                                        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                                    }
+                                    style={{
+                                        height: 45,
+                                        width: 45,
+                                        borderRadius: 100,
+                                    }}
+                                    preview={false}
+                                />
+
+                                <Space
+                                    direction="vertical"
+                                    size={0}
+                                    className="card-dropdown-space"
+                                >
+                                    <Typography.Text>Full Name</Typography.Text>
+                                    <Typography.Link
+                                        style={{
+                                            fontWeight: 300,
+                                            fontSize: 12,
+                                        }}
+                                    >
+                                        Go to my account
+                                    </Typography.Link>
+                                </Space>
+                            </Space>
+                        </>
+                    }
                 >
-                    Sign out
-                </div>
+                    <Menu className="dropdowmn-menu">
+                        <Menu.Item
+                            onClick={() => {
+                                navigate("/setup");
+                            }}
+                        >
+                            <Space>
+                                <Button shape="circle">
+                                    <SettingOutlined />
+                                </Button>
+                                Setup
+                            </Space>
+                        </Menu.Item>
+                        <Menu.Item
+                            onClick={() => {
+                                handleSignOut();
+                            }}
+                        >
+                            <Space>
+                                <Button shape="circle">
+                                    <PoweroffOutlined />
+                                </Button>
+                                Sign out
+                            </Space>
+                        </Menu.Item>
+                    </Menu>
+                </Card>
             ),
         },
         // {
@@ -138,38 +201,40 @@ const Navigation: React.FC = () => {
                 <Col span={12}>
                     {/* Right Side  */}
                     <Row gutter={12} justify={"end"}>
-                        <Col md={12} lg={10}>
-                            <Dropdown
-                                menu={{ items }}
-                                placement="bottomRight"
-                                arrow
-                                overlayClassName="header-search-bar"
-                                trigger={["click"]}
-                            >
-                                <Input
-                                    placeholder="Search"
-                                    prefix={<FontAwesomeIcon icon={faSearch} />}
-                                    onClick={() => {
-                                        setSearchLoading(true);
-                                    }}
-                                />
-                            </Dropdown>
-                        </Col>
-                        <Col md={8} lg={8} xl={6} xxl={4}>
+                        <Col md={24} lg={24} xl={24} xxl={24}>
                             <Space
                                 wrap
                                 className="w-100 header-btn m-l-sm"
                                 size={20}
                             >
+                                <Dropdown
+                                    menu={{ items }}
+                                    placement="bottomRight"
+                                    arrow
+                                    overlayClassName="header-search-bar"
+                                    trigger={["click"]}
+                                >
+                                    <Input
+                                        placeholder="Search"
+                                        prefix={
+                                            <FontAwesomeIcon icon={faSearch} />
+                                        }
+                                        onClick={() => {
+                                            setSearchLoading(true);
+                                        }}
+                                    />
+                                </Dropdown>
+
                                 <NavigationComponentsQuickAdd />
 
                                 <NavigationComponentsCall />
                                 <Dropdown
-                                    visible={isDropdownVisible}
-                                    onVisibleChange={setDropdownVisible}
+                                    open={isDropdownVisible}
+                                    onOpenChange={setDropdownVisible}
                                     menu={{ items: profile }}
                                     placement="bottomLeft"
                                     trigger={["click"]}
+                                    overlayClassName="profile-dropdown"
                                 >
                                     <Image
                                         src={

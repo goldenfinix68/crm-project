@@ -109,7 +109,12 @@ const SideMenu = ({ children }) => {
                 />
             </Sider>
             <Layout>
-                <Header style={{ padding: 0, background: colorBgContainer }}>
+                <Header
+                    style={{
+                        padding: "0px 30px",
+                        background: colorBgContainer,
+                    }}
+                >
                     <Navigation />
                 </Header>
                 <Content
