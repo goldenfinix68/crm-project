@@ -6,6 +6,7 @@ import axios from "axios";
 import { useMutation } from "react-query";
 import ContactContext from "../context";
 import Resizer from "react-image-file-resizer";
+import queryClient from "../../../queryClient";
 const { Dragger } = Upload;
 
 function POST_FILE(url: any) {
@@ -105,7 +106,7 @@ const FileTab = () => {
                         message: "Deals",
                         description: "File(s) Successfully Added",
                     });
-
+                    queryClient.invalidateQueries("getContact");
                     setFileList([]);
                 }
             },
