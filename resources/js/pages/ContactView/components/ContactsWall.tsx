@@ -20,6 +20,7 @@ import {
     Button,
     Card,
     Col,
+    Divider,
     Empty,
     Menu,
     Popover,
@@ -29,7 +30,7 @@ import {
     Typography,
 } from "antd";
 import SubMenu from "antd/es/menu/SubMenu";
-import React, { useContext, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import Notestab from "./NotesTab";
 import ContactContext from "../context";
 import { TNote, TUser, TWallData } from "../../../entities";
@@ -39,6 +40,8 @@ import moment from "moment";
 const ContactsWall = () => {
     const { contact } = useContext(ContactContext);
     const [showing, setShowing] = React.useState("");
+
+    const [showingClass, setShowingClass] = React.useState("");
     const filteredData = contact.wall?.filter((data) =>
         data.type.includes(showing)
     );
@@ -48,28 +51,77 @@ const ContactsWall = () => {
             title: "Showing: ",
         },
         {
-            title: <a onClick={() => setShowing("")}>All</a>,
+            title: (
+                <a
+                    onClick={() => {
+                        setShowing("");
+                    }}
+                >
+                    All
+                </a>
+            ),
         },
         {
             title: <a>Activities</a>,
         },
         {
-            title: <a onClick={() => setShowing("deal")}>Deals</a>,
+            title: (
+                <a
+                    onClick={() => {
+                        setShowing("deal");
+                    }}
+                >
+                    Deals
+                </a>
+            ),
         },
         {
-            title: <a onClick={() => setShowing("note")}>Notes</a>,
+            title: (
+                <a
+                    onClick={() => {
+                        setShowing("note");
+                    }}
+                >
+                    Notes
+                </a>
+            ),
         },
         {
             title: <a>Emails</a>,
         },
         {
-            title: <a onClick={() => setShowing("activity log")}>Log</a>,
+            title: (
+                <a
+                    onClick={() => {
+                        setShowing("activity log");
+                    }}
+                >
+                    Log
+                </a>
+            ),
         },
         {
-            title: <a onClick={() => setShowing("text")}>Texts</a>,
+            title: (
+                <a
+                    onClick={() => {
+                        setShowing("text");
+                    }}
+                >
+                    Texts
+                </a>
+            ),
         },
         {
-            title: <a onClick={() => setShowing("files")}> Files</a>,
+            title: (
+                <a
+                    onClick={() => {
+                        setShowing("files");
+                    }}
+                >
+                    {" "}
+                    Files
+                </a>
+            ),
         },
     ];
 
@@ -92,44 +144,81 @@ const ContactsWall = () => {
     };
 
     return (
-        <Space direction="vertical" style={{ width: "100%" }} size={"large"}>
-            <Breadcrumb separator={<span>&nbsp;</span>} items={items} />
-            {filteredData?.length ? (
-                filteredData.map((data, index) => {
-                    const monthYear = data.month + " " + data.year;
+        <>
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-around",
+                    alignItems: "center",
+                }}
+            >
+                {items.map((x: any) => {
+                    return (
+                        <div>
+                            {x.title == "Showing: " ? (
+                                <div>{x.title}</div>
+                            ) : (
+                                <Button
+                                    type={"text"}
+                                    style={{ padding: 5 }}
+                                    className="wall-active-button"
+                                >
+                                    {x.title}
+                                </Button>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+            <Divider />
+            <Space
+                direction="vertical"
+                style={{ width: "100%" }}
+                size={"large"}
+            >
+                {filteredData?.length ? (
+                    filteredData.map((data, index) => {
+                        const monthYear = data.month + " " + data.year;
 
-                    // Check if it's the first item or the monthYear has changed
-                    if (index !== 0) {
-                        const prevData = contact.wall![index - 1];
-                        const prevMonthYear =
-                            prevData.month + " " + prevData.year;
+                        // Check if it's the first item or the monthYear has changed
+                        if (index !== 0) {
+                            const prevData = contact.wall![index - 1];
+                            const prevMonthYear =
+                                prevData.month + " " + prevData.year;
 
-                        // Use a ternary operator directly in the JSX to conditionally render the header
-                        return (
-                            <div key={index}>
-                                {monthYear !== prevMonthYear && (
+                            // Use a ternary operator directly in the JSX to conditionally render the header
+                            return (
+                                <div key={index}>
+                                    {monthYear !== prevMonthYear && (
+                                        <Typography.Text>
+                                            {monthYear}
+                                        </Typography.Text>
+                                    )}
+                                    <div style={{ marginTop: 10 }}>
+                                        {feedBox(data)}
+                                    </div>
+                                </div>
+                            );
+                        } else {
+                            // For the first item, render the header unconditionally
+                            return (
+                                <div key={index}>
                                     <Typography.Text>
                                         {monthYear}
                                     </Typography.Text>
-                                )}
-                                {feedBox(data)}
-                            </div>
-                        );
-                    } else {
-                        // For the first item, render the header unconditionally
-                        return (
-                            <div key={index}>
-                                <Typography.Text>{monthYear}</Typography.Text>
-                                {feedBox(data)}
-                            </div>
-                        );
-                    }
-                })
-            ) : (
-                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-            )}
-            {/* <CallBox /> */}
-        </Space>
+                                    <div style={{ marginTop: 10 }}>
+                                        {feedBox(data)}
+                                    </div>
+                                </div>
+                            );
+                        }
+                    })
+                ) : (
+                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                )}
+                {/* <CallBox /> */}
+            </Space>
+        </>
     );
 };
 

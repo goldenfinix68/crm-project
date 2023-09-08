@@ -385,3 +385,6 @@ $base: 15px;
 .ant-popover.ant-popconfirm {
     z-index: 100000;
 }
+.wall-active-button:focus {
+    background-color: rgba(0, 0, 0, 0.06);
+}
