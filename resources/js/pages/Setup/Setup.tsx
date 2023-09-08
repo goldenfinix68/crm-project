@@ -1,8 +1,12 @@
 import React from "react";
 import { Button, Col, Divider, Row, Space, Typography } from "antd";
 import {
+    AppstoreOutlined,
+    BarChartOutlined,
     CheckCircleOutlined,
+    ClockCircleOutlined,
     DollarOutlined,
+    PhoneOutlined,
     TagsOutlined,
     UserOutlined,
     ZoomInOutlined,
@@ -28,13 +32,33 @@ const Setup: React.FC = () => {
             link: "/setup/activity",
         },
         {
+            icon: <PhoneOutlined />,
+            title: "Calling Configurations",
+            link: "/setup/activity",
+        },
+        {
             icon: <TagsOutlined />,
             title: "Tag Management",
             link: "/setup/tag",
         },
         {
+            icon: <BarChartOutlined />,
+            title: "Deal Pipeline",
+            link: "/setup/tag",
+        },
+        {
             icon: <ZoomInOutlined />,
             title: "Activity Types",
+            link: "/setup/activity-types",
+        },
+        {
+            icon: <AppstoreOutlined />,
+            title: "System Modules",
+            link: "/setup/activity-types",
+        },
+        {
+            icon: <ClockCircleOutlined />,
+            title: "Availability",
             link: "/setup/activity-types",
         },
     ];
@@ -48,7 +72,7 @@ const Setup: React.FC = () => {
             >
                 Customizations
             </Divider>
-            <Row gutter={[12, 15]}>
+            <Row gutter={[12, 20]}>
                 {customizationButtons.map((item: any, key: React.Key) => {
                     return (
                         <Col xs={6} sm={6} md={4} key={key}>
