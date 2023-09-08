@@ -12107,4 +12107,35 @@ textarea.form-control-lg {
 
 .button-link .anticon {
   font-size: 34px !important;
+}
+
+.setup-layout {
+  margin: -24px;
+  min-height: 90vh;
+}
+.setup-layout .ant-layout-sider {
+  background: #ffffff !important;
+  flex: 0 0 280px !important;
+  max-width: 280px !important;
+  min-width: 280px !important;
+  width: 280px !important;
+}
+.setup-layout .ant-layout-sider .ant-menu-root {
+  background: #ffffff !important;
+}
+.setup-layout .ant-layout-sider .ant-menu-root .ant-menu-submenu-arrow,
+.setup-layout .ant-layout-sider .ant-menu-root .ant-menu-item-icon {
+  color: black;
+}
+.setup-layout .ant-layout-sider .ant-menu-root .ant-menu-submenu .ant-menu {
+  background: #ffffff !important;
+}
+.setup-layout .ant-layout-sider .ant-menu-root .ant-menu-item {
+  color: black;
+}
+.setup-layout .ant-layout-sider .ant-menu-root .ant-menu-title-content {
+  color: black;
+}
+.setup-layout .ant-layout .ant-layout-header {
+  background: #ffffff !important;
 }/*# sourceMappingURL=navigation.css.map */

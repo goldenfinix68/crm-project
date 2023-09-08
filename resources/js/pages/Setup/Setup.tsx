@@ -15,27 +15,27 @@ const Setup: React.FC = () => {
         {
             icon: <UserOutlined />,
             title: "Contact",
-            link: "setup/contact",
+            link: "/setup/contact",
         },
         {
             icon: <DollarOutlined />,
             title: "Deal",
-            link: "setup/deal",
+            link: "/setup/deal",
         },
         {
             icon: <CheckCircleOutlined />,
             title: "Activity",
-            link: "setup/activity",
+            link: "/setup/activity",
         },
         {
             icon: <TagsOutlined />,
             title: "Tag Management",
-            link: "setup/tag",
+            link: "/setup/tag",
         },
         {
             icon: <ZoomInOutlined />,
             title: "Activity Types",
-            link: "setup/activity-types",
+            link: "/setup/activity-types",
         },
     ];
 

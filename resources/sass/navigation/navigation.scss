@@ -172,3 +172,46 @@
         font-size: 34px !important;
     }
 }
+
+// setup-layout
+.setup-layout {
+    margin: -24px;
+    min-height: 90vh;
+
+    .ant-layout-sider {
+        background: #ffffff !important;
+        flex: 0 0 280px !important;
+        max-width: 280px !important;
+        min-width: 280px !important;
+        width: 280px !important;
+
+        .ant-menu-root {
+            background: #ffffff !important;
+
+            .ant-menu-submenu-arrow,
+            .ant-menu-item-icon {
+                color: black;
+            }
+
+            .ant-menu-submenu {
+                .ant-menu {
+                    background: #ffffff !important;
+                }
+            }
+
+            .ant-menu-item {
+                color: black;
+            }
+
+            .ant-menu-title-content {
+                color: black;
+            }
+        }
+    }
+
+    .ant-layout {
+        .ant-layout-header {
+            background: #ffffff !important;
+        }
+    }
+}

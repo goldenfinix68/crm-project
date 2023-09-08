@@ -54,6 +54,8 @@ import ForgotPasswordVerifyToken from "./pages/ForgotPasswordVerifyToken";
 import IncomingCallListener from "./pages/Dialer/DialerTab/IncomingCallListener";
 import { CallProvider } from "./context/CallContext";
 import Setup from "./pages/Setup/Setup";
+import SetupLayout from "./pages/Setup/SetupLayout";
+import ComponentTagManagement from "./pages/Setup/Components/ComponentTagManagement";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isForgotPassword = window.location.pathname === "/forgot-password";
@@ -208,6 +210,16 @@ const App: React.FC = () => {
                                 element={
                                     <PrivateRoute>
                                         <Setup />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/setup/tag"
+                                element={
+                                    <PrivateRoute>
+                                        <SetupLayout
+                                            content={<ComponentTagManagement />}
+                                        />
                                     </PrivateRoute>
                                 }
                             />
