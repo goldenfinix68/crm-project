@@ -88,6 +88,11 @@ interface DataType {
     avatar: any;
 }
 
+interface ListItem {
+    id: string;
+    title: string;
+}
+
 const { Option } = Select;
 const { TabPane } = Tabs;
 
@@ -124,6 +129,26 @@ const Contacts = () => {
 
     const [isModalOpenUpdate, setisModalOpenUpdate] = useState(false);
     const [isModalOpenAddList, setisModalOpenAddlist] = useState(false);
+
+    // const initialListData: ListItem[] = [
+    //     { id: "1", title: "Name" },
+    //     { id: "2", title: "Email" },
+    //     { id: "3", title: "Mobile" },
+    //     { id: "4", title: "Country Link" },
+    //     { id: "5", title: "Acres" },
+    //     { id: "6", title: "Tags" },
+    //     { id: "7", title: "Owner" },
+    //     { id: "8", title: "First Name" },
+    //     { id: "9", title: "Last Name" },
+    // ];
+
+    const [listData, setListData] = useState<ListItem[]>([]);
+
+    useEffect(() => {
+        if (listData.length > 0) {
+            console.log("listData", listData);
+        }
+    }, [listData]);
 
     const handleEdit = (record: TContact) => {
         setTContact(record);
@@ -285,25 +310,28 @@ const Contacts = () => {
             dataIndex: "owner",
             width: 200,
         },
-        {
-            key: "firstName",
-            title: "First Name",
-            dataIndex: "firstName",
-            width: 200,
-            render: (text: string, record: TContact) => (
-                <ContactsComponentsTableEditableCell
-                    type="firstName"
-                    setCurrentActiveCell={setCurrentActiveCell}
-                    currentActiveCell={currentActiveCell}
-                    setCurrentBtnActive={setCurrentBtnActive}
-                    currentBtnActive={currentBtnActive}
-                    record={record}
-                    setCurrentActiveType={setCurrentActiveType}
-                    recordType={record.firstName ?? null}
-                    currentActiveType={currentActiveType}
-                />
-            ),
-        },
+
+        listData.find((item) => item.id === "1")
+            ? {
+                  key: "firstName",
+                  title: "First Name",
+                  dataIndex: "firstName",
+                  width: 200,
+                  render: (text: string, record: TContact) => (
+                      <ContactsComponentsTableEditableCell
+                          type="firstName"
+                          setCurrentActiveCell={setCurrentActiveCell}
+                          currentActiveCell={currentActiveCell}
+                          setCurrentBtnActive={setCurrentBtnActive}
+                          currentBtnActive={currentBtnActive}
+                          record={record}
+                          setCurrentActiveType={setCurrentActiveType}
+                          recordType={record.firstName ?? null}
+                          currentActiveType={currentActiveType}
+                      />
+                  ),
+              }
+            : {},
         {
             key: "lastName",
             title: "Last Name",
@@ -1013,13 +1041,60 @@ const Contacts = () => {
                                                                                 className="disableHover"
                                                                                 type="text"
                                                                                 onClick={() => {
+                                                                                    let objkey =
+                                                                                        Object.fromEntries(
+                                                                                            Object.entries(
+                                                                                                favoriteTitle
+                                                                                            ).filter(
+                                                                                                ([
+                                                                                                    key,
+                                                                                                    value,
+                                                                                                ]) =>
+                                                                                                    value.toLocaleLowerCase() ==
+                                                                                                    item.toLocaleLowerCase()
+                                                                                            )
+                                                                                        );
+
+                                                                                    let finalKey =
+                                                                                        Object.keys(
+                                                                                            objkey
+                                                                                        );
+
+                                                                                    console.log(
+                                                                                        "asdasdsa",
+                                                                                        Object.fromEntries(
+                                                                                            Object.entries(
+                                                                                                favoriteTitle
+                                                                                            ).filter(
+                                                                                                ([
+                                                                                                    key,
+                                                                                                    value,
+                                                                                                ]) =>
+                                                                                                    value.toLocaleLowerCase() ==
+                                                                                                    item.toLocaleLowerCase()
+                                                                                            )
+                                                                                        )[0]
+                                                                                    );
                                                                                     handleFavoriteClick(
-                                                                                        "recent-modified-contact"
+                                                                                        finalKey[0]
                                                                                     );
                                                                                 }}
                                                                             >
                                                                                 {isFavorite.includes(
-                                                                                    "recent-modified-contact"
+                                                                                    Object.keys(
+                                                                                        Object.fromEntries(
+                                                                                            Object.entries(
+                                                                                                favoriteTitle
+                                                                                            ).filter(
+                                                                                                ([
+                                                                                                    key,
+                                                                                                    value,
+                                                                                                ]) =>
+                                                                                                    value.toLocaleLowerCase() ==
+                                                                                                    item.toLocaleLowerCase()
+                                                                                            )
+                                                                                        )
+                                                                                    )[0]
                                                                                 ) ? (
                                                                                     <StarFilled />
                                                                                 ) : (
@@ -1160,6 +1235,8 @@ const Contacts = () => {
             <ContactsComponentsManageColumn
                 isModalManageColumnOpen={isModalManageColumnOpen}
                 setIsModalManageColumnOpen={setIsModalManageColumnOpen}
+                listData={listData}
+                setListData={setListData}
             />
 
             <ContactsComponentsUpdate
