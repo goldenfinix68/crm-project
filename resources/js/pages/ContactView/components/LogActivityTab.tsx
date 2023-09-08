@@ -17,6 +17,7 @@ import { useContactAddActivityLog } from "../../../api/mutation/useContactMutati
 import { useMutation } from "react-query";
 import ContactContext from "../context";
 import { useUsersList } from "../../../api/query/activityQuery";
+import queryClient from "../../../queryClient";
 
 const LogActivityTab = () => {
     const { dataUsers, isLoadingUsers } = useUsersList();
@@ -26,12 +27,13 @@ const LogActivityTab = () => {
     const mutation = useMutation(useContactAddActivityLog, {
         onSuccess: (res) => {
             // navigate("/users"); // Redirect to the users list page after successful submission
-            if (res.success) {
-                notification.success({
-                    message: "Contact",
-                    description: "Updated Successfully",
-                });
-            }
+
+            notification.success({
+                message: "Contact",
+                description: "Updated Successfully",
+            });
+            form.resetFields();
+            queryClient.invalidateQueries("getContact");
         },
     });
 
@@ -42,7 +44,6 @@ const LogActivityTab = () => {
             start_date: values.dateTime[0].format("YYYY-MM-DD HH:mm:ss"),
             end_date: values.dateTime[1].format("YYYY-MM-DD HH:mm:ss"),
         });
-        form.resetFields();
     };
     return (
         <Form
@@ -58,6 +59,7 @@ const LogActivityTab = () => {
             }}
             onFinish={handleFinish}
             autoComplete="off"
+            form={form}
         >
             <Form.Item
                 label="Title"
