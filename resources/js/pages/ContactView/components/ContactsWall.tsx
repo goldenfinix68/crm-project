@@ -194,7 +194,9 @@ const ContactsWall = () => {
                                             {monthYear}
                                         </Typography.Text>
                                     )}
-                                    {feedBox(data)}
+                                    <div style={{ marginTop: 10 }}>
+                                        {feedBox(data)}
+                                    </div>
                                 </div>
                             );
                         } else {
@@ -204,7 +206,9 @@ const ContactsWall = () => {
                                     <Typography.Text>
                                         {monthYear}
                                     </Typography.Text>
-                                    {feedBox(data)}
+                                    <div style={{ marginTop: 10 }}>
+                                        {feedBox(data)}
+                                    </div>
                                 </div>
                             );
                         }
