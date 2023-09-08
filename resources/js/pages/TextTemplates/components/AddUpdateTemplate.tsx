@@ -1,0 +1,431 @@
+import React, { useContext, useEffect, useRef, useState } from "react";
+import {
+    Button,
+    Col,
+    Dropdown,
+    Input,
+    Modal,
+    Radio,
+    Row,
+    Space,
+    Table,
+    Tooltip,
+    Typography,
+    Form,
+    Select,
+    DatePicker,
+    Popover,
+    List,
+} from "antd";
+
+import {
+    CaretDownOutlined,
+    CloseOutlined,
+    PlusOutlined,
+} from "@ant-design/icons";
+
+import { useMutation } from "react-query";
+import { sendTextMutation } from "../../../api/mutation/useTextMutation";
+import queryClient from "../../../queryClient";
+import TextForm from "../../Texts/components/TextForm";
+import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
+import { createTextTemplateMutation } from "../../../api/mutation/useTextTemplateMutation";
+import { useTextTemplateFolders } from "../../../api/query/textTemplateQuery";
+import LoadingComponent from "../../../components/LoadingComponent";
+import Search from "antd/es/input/Search";
+import { TTextTemplate } from "../../../entities";
+interface Props {
+    folder?: string;
+    template?: TTextTemplate;
+}
+const AddUpdateTemplateModal = ({ folder, template }: Props) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isAttributePopoverOpen, setIsAttributePopoverOpen] = useState(false);
+    const [form] = Form.useForm();
+    const { folders, isLoading } = useTextTemplateFolders();
+
+    const createTemplate = useMutation(createTextTemplateMutation, {
+        onSuccess: () => {
+            queryClient.invalidateQueries("textTemplates");
+            resetFields();
+        },
+        onError: (e: any) => {
+            console.log(e.message || "An error occurred");
+        },
+    });
+
+    const onFinish = async (values: any) => {
+        await createTemplate.mutate({
+            ...values,
+            id: template?.id ? template.id : "",
+        });
+    };
+    const resetFields = () => {
+        setIsModalOpen(false);
+        form.resetFields();
+    };
+    useEffect(() => {
+        // if (template?.name) {
+        //     form.setFieldValue("name", template.name);
+        // } else {
+        //     form.resetFields();
+        // }
+    }, [template]);
+    if (isLoading) {
+        return <LoadingComponent />;
+    }
+    return (
+        <>
+            <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => setIsModalOpen(true)}
+            >
+                Add Template
+            </Button>
+            <Modal
+                className="modal-activity"
+                open={isModalOpen}
+                onCancel={resetFields}
+                footer={null}
+                title={null}
+                closable={false}
+            >
+                <div className="modal-header">
+                    <Typography.Title level={5} style={{ color: "white" }}>
+                        {template ? "Update" : "Create new"} Template
+                    </Typography.Title>
+
+                    <Button
+                        onClick={resetFields}
+                        style={{
+                            backgroundColor: "rgba(0, 0, 0, 0.5)",
+                            border: "0px",
+                        }}
+                        icon={<CloseOutlined style={{ color: "white" }} />}
+                    />
+                </div>
+                <Space
+                    direction="vertical"
+                    style={{
+                        padding: "20px",
+                        width: "100%",
+                        paddingTop: "30px",
+                    }}
+                    size={0}
+                >
+                    <Form
+                        name="basic"
+                        layout="vertical"
+                        labelWrap
+                        onFinish={onFinish}
+                        autoComplete="off"
+                        form={form}
+                    >
+                        <Row gutter={12}>
+                            <Col span={12}>
+                                <Form.Item
+                                    label="Template name"
+                                    name="name"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "this is required",
+                                        },
+                                    ]}
+                                >
+                                    <Input />
+                                </Form.Item>
+                            </Col>
+                            <Col span={12}>
+                                <Form.Item
+                                    label="Folder"
+                                    name="folderId"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "this is required",
+                                        },
+                                    ]}
+                                >
+                                    <Select style={{ width: "100%" }}>
+                                        {folders?.map((folder, index) => (
+                                            <Select.Option
+                                                value={folder.id}
+                                                key={folder.id}
+                                            >
+                                                {folder.name}
+                                            </Select.Option>
+                                        ))}
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Form.Item
+                            label="Text message"
+                            name="textMessage"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <Input.TextArea
+                                rows={4}
+                                placeholder="Type here ..."
+                            />
+                        </Form.Item>
+
+                        <Space
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                width: "100%",
+                                marginTop: "-20px",
+                                marginBottom: "20px",
+                            }}
+                        >
+                            <Typography.Text>Count: 0</Typography.Text>
+                            <Popover
+                                content={
+                                    <AddAttributeContent
+                                        handleSelect={(value) => {
+                                            const currentMessage =
+                                                form.getFieldValue(
+                                                    "textMessage"
+                                                );
+                                            form.setFieldValue(
+                                                "textMessage",
+                                                `${
+                                                    currentMessage ?? ""
+                                                }${value}`
+                                            );
+                                            setIsAttributePopoverOpen(false);
+                                            console.log(
+                                                `${currentMessage}${value}`
+                                            );
+                                        }}
+                                    />
+                                }
+                                title={
+                                    <Button
+                                        type="link"
+                                        style={{ padding: 0 }}
+                                        onClick={() =>
+                                            setIsAttributePopoverOpen(false)
+                                        }
+                                    >
+                                        Cancel
+                                    </Button>
+                                }
+                                trigger={"click"}
+                                open={isAttributePopoverOpen}
+                            >
+                                <Button
+                                    type="link"
+                                    onClick={() =>
+                                        setIsAttributePopoverOpen(true)
+                                    }
+                                >
+                                    Insert Attribute <CaretDownOutlined />
+                                </Button>
+                            </Popover>
+                        </Space>
+
+                        <Space style={{ paddingTop: "5px" }}>
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                loading={createTemplate.isLoading}
+                            >
+                                Save
+                            </Button>
+
+                            <Button onClick={resetFields}>Cancel</Button>
+                        </Space>
+                    </Form>
+                </Space>
+            </Modal>
+        </>
+    );
+};
+
+const AddAttributeContent = ({ handleSelect }) => {
+    const [menu, setMenu] = useState("contact");
+    const list = [
+        {
+            menu: "contact",
+            label: "Id",
+            value: "{{id}}",
+        },
+        {
+            menu: "contact",
+            label: "First Name",
+            value: "{{firstName}}",
+        },
+        {
+            menu: "contact",
+            label: "Last Name",
+            value: "{{lastName}}",
+        },
+        {
+            menu: "contact",
+            label: "Mobile",
+            value: "{{mobile}}",
+        },
+        {
+            menu: "contact",
+            label: "Country Link",
+            value: "{{countryLink}}",
+        },
+        {
+            menu: "contact",
+            label: "Acres",
+            value: "{{acres}}",
+        },
+        {
+            menu: "contact",
+            label: "Email",
+            value: "{{email}}",
+        },
+        {
+            menu: "contact",
+            label: "Job Title",
+            value: "{{jobTitle}}",
+        },
+        {
+            menu: "contact",
+            label: "Phone",
+            value: "{{phone}}",
+        },
+        {
+            menu: "contact",
+            label: "Other Phone",
+            value: "{{otherPhone}}",
+        },
+        {
+            menu: "contact",
+            label: "Owner Id",
+            value: "{{ownerId}}",
+        },
+        {
+            menu: "contact",
+            label: "Email 2",
+            value: "{{email2}}",
+        },
+        {
+            menu: "contact",
+            label: "Type Id",
+            value: "{{typeId}}",
+        },
+        {
+            menu: "contact",
+            label: "Mailing Street Address",
+            value: "{{mailingStreetAddress}}",
+        },
+        {
+            menu: "contact",
+            label: "Email Opt Out",
+            value: "{{emailOptOut}}",
+        },
+        {
+            menu: "contact",
+            label: "Mailing City",
+            value: "{{mailingCity}}",
+        },
+        {
+            menu: "contact",
+            label: "Mailing Country",
+            value: "{{mailingCountry}}",
+        },
+        {
+            menu: "contact",
+            label: "Subdivision",
+            value: "{{subdivision}}",
+        },
+        {
+            menu: "contact",
+            label: "APN",
+            value: "{{APN}}",
+        },
+        {
+            menu: "contact",
+            label: "Google Map Link",
+            value: "{{gMapLink}}",
+        },
+        {
+            menu: "contact",
+            label: "Road Frontage",
+            value: "{{roadFrontage}}",
+        },
+        {
+            menu: "contact",
+            label: "Redfin Link",
+            value: "{{redfinLink}}",
+        },
+        {
+            menu: "contact",
+            label: "Opening Bid",
+            value: "{{openingBid}}",
+        },
+        {
+            menu: "contact",
+            label: "Assessed Value",
+            value: "{{assessedValue}}",
+        },
+        {
+            menu: "contact",
+            label: "Assessed vs Opening Margin",
+            value: "{{assessedVsOpeningMargin}}",
+        },
+    ];
+
+    return (
+        <Space direction="vertical" size={"large"}>
+            <Radio.Group value={menu} onChange={(e) => setMenu(e.target.value)}>
+                <Radio.Button value="contact">Contact</Radio.Button>
+                <Radio.Button disabled value="activity">
+                    Activity
+                </Radio.Button>
+                <Radio.Button disabled value="deal">
+                    Deal
+                </Radio.Button>
+                <Radio.Button disabled value="owner">
+                    Owner
+                </Radio.Button>
+            </Radio.Group>
+
+            <Search placeholder="Search" />
+
+            <List
+                dataSource={list.filter((e) => e.menu == menu)}
+                style={{ maxHeight: "200px", overflowY: "auto" }}
+                renderItem={(item) => (
+                    <div
+                        style={{
+                            cursor: "pointer", // Add pointer cursor
+                            backgroundColor: "white", // Set the default background color
+                            padding: "8px",
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = "blue";
+                            e.currentTarget.style.color = "white"; // Change background color on hover
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = "white";
+                            e.currentTarget.style.color = "black"; // Restore default background color on hover out
+                        }}
+                        onClick={() => {
+                            handleSelect(item.value);
+                        }}
+                    >
+                        {item.label}
+                    </div>
+                )}
+            />
+        </Space>
+    );
+};
+export default AddUpdateTemplateModal;

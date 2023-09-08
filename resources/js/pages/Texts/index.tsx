@@ -35,6 +35,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getTimeAgo } from "../../helpers";
 import SentBox from "./components/SentBox";
 import TextItem from "./components/textItem";
+import LoadingComponent from "../../components/LoadingComponent";
 
 const Texts = () => {
     const { route } = useParams();
@@ -81,9 +82,13 @@ const Texts = () => {
                             <Menu
                                 mode="vertical"
                                 onClick={(e) => {
-                                    e.key == "all"
-                                        ? navigate("/texts")
-                                        : navigate("/texts/" + e.key);
+                                    if (e.key == "all") {
+                                        navigate("/texts");
+                                    } else if (e.key == "templates") {
+                                        navigate("/text-templates");
+                                    } else {
+                                        navigate("/texts/" + e.key);
+                                    }
                                     setMenu(e.key);
                                 }}
                                 selectedKeys={[menu]}

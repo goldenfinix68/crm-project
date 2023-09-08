@@ -18,6 +18,20 @@ export type TNote = {
     notes: string;
 };
 
+export type TTextTemplateFolder = {
+    id?: string;
+    name: string;
+};
+
+export type TTextTemplate = {
+    id?: string;
+    name: string;
+    folderId: string;
+    folder?: TTextTemplateFolder;
+    user?: TUser;
+    textMessage: string;
+};
+
 export type TCallHistory = {
     telnyxCallSessionId: string;
     isAnswered: boolean;

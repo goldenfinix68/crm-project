@@ -66,6 +66,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::resource('/activity_custome_fields', 'App\Http\Controllers\Api\ActivityCustomFieldController');
     Route::get('/calls/history', 'App\Http\Controllers\Api\CallsController@call_history');
+    Route::resource('/text-template-folders', 'App\Http\Controllers\Api\TextTemplateFoldersController');
+    Route::resource('/text-templates', 'App\Http\Controllers\Api\TextTemplatesController');
 });
 
 Route::post('/telnyx/sms/webhook', 'App\Http\Controllers\Api\TextsController@textReceived');
