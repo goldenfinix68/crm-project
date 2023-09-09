@@ -69,6 +69,13 @@ Route::middleware('auth:api')->group(function () {
 
     // tag_management
     Route::resource('tag_management', 'App\Http\Controllers\Api\TagManagementController');
+    Route::post('tag_management/archive', 'App\Http\Controllers\Api\TagManagementController@archive');
+
+    // activity_type
+    Route::resource('activity_type', 'App\Http\Controllers\Api\ActivityTypeController');
+    Route::post('activity_type/archive', 'App\Http\Controllers\Api\ActivityTypeController@archive');
+
+
     Route::resource('/text-template-folders', 'App\Http\Controllers\Api\TextTemplateFoldersController');
     Route::resource('/text-templates', 'App\Http\Controllers\Api\TextTemplatesController');
 });

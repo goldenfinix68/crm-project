@@ -54,12 +54,12 @@ const Setup: React.FC = () => {
         {
             icon: <AppstoreOutlined />,
             title: "System Modules",
-            link: "/setup/activity-types",
+            link: "/setup/modules",
         },
         {
             icon: <ClockCircleOutlined />,
             title: "Availability",
-            link: "/setup/activity-types",
+            link: "/setup/availability",
         },
     ];
 

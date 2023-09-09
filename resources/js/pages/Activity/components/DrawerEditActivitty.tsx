@@ -47,6 +47,7 @@ import {
     useContactsList,
     useDealsList,
     usePeopleList,
+    useTagList,
     useUsersList,
 } from "../../../api/query/activityQuery";
 import { addActivityMutation } from "../../../api/mutation/useActivityMutation";
@@ -110,6 +111,7 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
     const { dataContacts, isLoadingContacts } = useContactsList();
     const { dataDeals, isLoadingDeals } = useDealsList();
     const { dataPeople, isLoadingPeople } = usePeopleList();
+    const { dataTag, isLoadingTag } = useTagList();
 
     const queryClient = useQueryClient();
     const [form] = Form.useForm();
@@ -706,18 +708,23 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
                                         placeholder="Tags"
                                         showSearch
                                         mode="tags"
+                                        loading={isLoadingTag}
                                     >
-                                        {optionAvailability.map((item, key) => {
-                                            return (
-                                                <Select.Option
-                                                    key={key}
-                                                    value={item.value}
-                                                    search={item.label}
-                                                >
-                                                    {item.label}
-                                                </Select.Option>
-                                            );
-                                        })}
+                                        {dataTag?.data &&
+                                            dataTag?.data.map(
+                                                (item: any, key: React.Key) => {
+                                                    let data = item.tag_name;
+                                                    return (
+                                                        <Select.Option
+                                                            key={key}
+                                                            value={data}
+                                                            search={data}
+                                                        >
+                                                            {data}
+                                                        </Select.Option>
+                                                    );
+                                                }
+                                            )}
                                     </Select>
                                 </Form.Item>
                             </Col>
