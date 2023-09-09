@@ -50,6 +50,7 @@ import {
     useContactsList,
     useDealsList,
     usePeopleList,
+    useTagList,
     useUsersList,
 } from "../../../api/query/activityQuery";
 import { an } from "@fullcalendar/core/internal-common";
@@ -178,6 +179,7 @@ const ModalAddActivity = ({
     const { dataContacts, isLoadingContacts } = useContactsList();
     const { dataDeals, isLoadingDeals } = useDealsList();
     const { dataPeople, isLoadingPeople } = usePeopleList();
+    const { dataTag, isLoadingTag } = useTagList();
 
     const halderAfterClose = () => {
         setCalendarOptions(false);
@@ -903,18 +905,23 @@ const ModalAddActivity = ({
                                         placeholder="Tags"
                                         showSearch
                                         mode="tags"
+                                        loading={isLoadingTag}
                                     >
-                                        {optionAvailability.map((item, key) => {
-                                            return (
-                                                <Select.Option
-                                                    key={key}
-                                                    value={item.value}
-                                                    search={item.label}
-                                                >
-                                                    {item.label}
-                                                </Select.Option>
-                                            );
-                                        })}
+                                        {dataTag?.data &&
+                                            dataTag?.data.map(
+                                                (item: any, key: React.Key) => {
+                                                    let data = item.tag_name;
+                                                    return (
+                                                        <Select.Option
+                                                            key={key}
+                                                            value={data}
+                                                            search={data}
+                                                        >
+                                                            {data}
+                                                        </Select.Option>
+                                                    );
+                                                }
+                                            )}
                                     </Select>
                                 </Form.Item>
                             </Col>

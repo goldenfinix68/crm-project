@@ -57,6 +57,7 @@ import Setup from "./pages/Setup/Setup";
 import SetupLayout from "./pages/Setup/SetupLayout";
 import ComponentTagManagement from "./pages/Setup/Components/ComponentTagManagement";
 import TextTemplates from "./pages/TextTemplates";
+import ComponentActivityType from "./pages/Setup/Components/ComponentActivityType";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isForgotPassword = window.location.pathname === "/forgot-password";
@@ -236,6 +237,18 @@ const App: React.FC = () => {
                                     <PrivateRoute>
                                         <SetupLayout
                                             content={<ComponentTagManagement />}
+                                            title="Tag Management"
+                                        />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/setup/activity-types"
+                                element={
+                                    <PrivateRoute>
+                                        <SetupLayout
+                                            content={<ComponentActivityType />}
+                                            title="Activity Types"
                                         />
                                     </PrivateRoute>
                                 }

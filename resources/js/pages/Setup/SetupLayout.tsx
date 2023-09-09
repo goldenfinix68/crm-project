@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Layout, Menu } from "antd";
+import React, { useEffect, useState } from "react";
+import { Col, Layout, Menu, Row, Typography } from "antd";
 import Sider from "antd/es/layout/Sider";
 import {
     SlidersOutlined,
@@ -10,10 +10,11 @@ import {
 
 interface SetupLayoutProps {
     content: any;
+    title: string;
 }
 
 const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
-    const { content } = props;
+    const { content, title } = props;
     const sideMenuItems: any = [
         {
             key: "customizations",
@@ -83,7 +84,14 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                         padding: 0,
                         // background: colorBgContainer
                     }}
-                />
+                >
+                    <Row gutter={12}>
+                        <Col span={12} className="p-l-md">
+                            <Typography.Text>{title}</Typography.Text>
+                        </Col>
+                        <Col span={12} className="text-right"></Col>
+                    </Row>
+                </Layout.Header>
                 <Layout.Content style={{ margin: "24px 16px 0" }}>
                     {content}
                 </Layout.Content>

@@ -121,6 +121,29 @@ export const usePeopleList = () => {
     };
 };
 
+export const useTagList = () => {
+    const { data, isLoading, isError, refetch } = useQuery(
+        "get_tag",
+        async () => {
+            const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+            const response = await axios.get(`/api/tag_management?status=1`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+
+            return response.data;
+        }
+    );
+
+    return {
+        dataTag: data,
+        isLoadingTag: isLoading,
+        isErrorTag: isError,
+        refetchTag: refetch,
+    };
+};
+
 export const useActivutyCustomField = () => {
     const { data, isLoading, isError, refetch } = useQuery(
         "get_activity_custom_field",

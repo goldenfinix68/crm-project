@@ -20,7 +20,7 @@ import validateRules from "../../../providers/validateRules";
 import { useMutation, useQueryClient } from "react-query";
 import { mutateGet, mutatePost } from "../../../api/mutation/useSetupMutation";
 
-const ComponentTagManagement: React.FC = () => {
+const ComponentActivityType: React.FC = () => {
     const queryClient = useQueryClient();
 
     const [modalTitle, setModalTitle] = useState("Add");
@@ -259,4 +259,4 @@ const ComponentTagManagement: React.FC = () => {
     );
 };
 
-export default ComponentTagManagement;
+export default ComponentActivityType;

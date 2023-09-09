@@ -1,13 +1,13 @@
 <?php
 
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\TagManagement;
+use App\Models\ActivityType;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
-class TagManagementController extends Controller
+class ActivityTypeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,10 +16,10 @@ class TagManagementController extends Controller
      */
     public function index(Request $request)
     {
-        $data = new TagManagement();
+        $data = new ActivityType();
         $data = $data->with([]);
         $data = $data->select([
-            'tag_management.*',
+            'activity_types.*',
         ]);
 
         if ($request->search) {
@@ -69,7 +69,7 @@ class TagManagementController extends Controller
      */
     public function store(Request $request)
     {
-        $data = TagManagement::updateOrCreate([
+        $data = ActivityType::updateOrCreate([
             'id' => $request->id
         ], [
             'tag_name' => isset($request->tag_name) ? $request->tag_name : null,
@@ -84,10 +84,10 @@ class TagManagementController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\TagManagement  $tagManagement
+     * @param  \App\Models\ActivityType  $activityType
      * @return \Illuminate\Http\Response
      */
-    public function show(TagManagement $tagManagement)
+    public function show(ActivityType $activityType)
     {
         //
     }
@@ -96,10 +96,10 @@ class TagManagementController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\TagManagement  $tagManagement
+     * @param  \App\Models\ActivityType  $activityType
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, TagManagement $tagManagement)
+    public function update(Request $request, ActivityType $activityType)
     {
         //
     }
@@ -107,7 +107,7 @@ class TagManagementController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\TagManagement  $tagManagement
+     * @param  \App\Models\ActivityType  $activityType
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, $id)
@@ -117,7 +117,7 @@ class TagManagementController extends Controller
 
     public function archive(Request $request)
     {
-        $find = TagManagement::find($request->id);
+        $find = ActivityType::find($request->id);
 
         if (!$find) {
             return response()->json([
