@@ -9,6 +9,7 @@ import {
     Row,
     Select,
     notification,
+    Typography,
 } from "antd";
 import React, { useContext } from "react";
 import moment from "moment";
@@ -16,12 +17,19 @@ import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
 import { useContactAddActivityLog } from "../../../api/mutation/useContactMutation";
 import { useMutation } from "react-query";
 import ContactContext from "../context";
-import { useUsersList } from "../../../api/query/activityQuery";
+import {
+    useContactsList,
+    useDealsList,
+    useUsersList,
+} from "../../../api/query/activityQuery";
 import queryClient from "../../../queryClient";
+import { DollarOutlined, UserOutlined } from "@ant-design/icons";
 
 const LogActivityTab = () => {
     const { dataUsers, isLoadingUsers } = useUsersList();
     const { contact } = useContext(ContactContext);
+    const { dataContacts, isLoadingContacts } = useContactsList();
+    const { dataDeals, isLoadingDeals } = useDealsList();
     const [form] = Form.useForm();
 
     const mutation = useMutation(useContactAddActivityLog, {
@@ -184,34 +192,64 @@ const LogActivityTab = () => {
                 </Form.Item>
             </Col>
 
-            <Row gutter={12}>
-                <Col md={12}>
-                    <Form.Item
-                        label="Link Records"
-                        name="link_deal"
-                        rules={[
-                            {
-                                required: true,
-                                message: "this is required",
-                            },
-                        ]}
-                    >
-                        <Input placeholder="Deal" />
-                    </Form.Item>
+            <Row gutter={8}>
+                <Col span={6} className="col-label">
+                    <Typography.Text>Link Records</Typography.Text>
                 </Col>
-                <Col md={12}>
-                    <Form.Item
-                        label={null}
-                        name="link_contact"
-                        rules={[
-                            {
-                                required: true,
-                                message: "this is required",
-                            },
-                        ]}
-                    >
-                        <Input placeholder="Contact" />
-                    </Form.Item>
+                <Col span={18}>
+                    <Row gutter={0}>
+                        <Col span={12}>
+                            <Form.Item name={"link_deal"} label={null}>
+                                <Select
+                                    placeholder="Deal"
+                                    showSearch
+                                    suffixIcon={<DollarOutlined />}
+                                    loading={isLoadingDeals}
+                                >
+                                    {dataDeals &&
+                                        dataDeals?.data.map(
+                                            (item: any, key: React.Key) => {
+                                                return (
+                                                    <Select.Option
+                                                        key={key}
+                                                        value={item.id}
+                                                        search={item.title}
+                                                    >
+                                                        {item.title}
+                                                    </Select.Option>
+                                                );
+                                            }
+                                        )}
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item name={"link_contact"} label={null}>
+                                <Select
+                                    placeholder="Contact"
+                                    showSearch
+                                    suffixIcon={<UserOutlined />}
+                                    loading={isLoadingContacts}
+                                >
+                                    {dataContacts &&
+                                        dataContacts?.data &&
+                                        dataContacts?.data.map(
+                                            (item: any, key: React.Key) => {
+                                                return (
+                                                    <Select.Option
+                                                        key={key}
+                                                        value={item.id}
+                                                        search={`${item.firstName} ${item.lastName}`}
+                                                    >
+                                                        {`${item.firstName} ${item.lastName}`}
+                                                    </Select.Option>
+                                                );
+                                            }
+                                        )}
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                    </Row>
                 </Col>
             </Row>
 
