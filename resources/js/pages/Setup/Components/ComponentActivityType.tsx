@@ -48,7 +48,7 @@ const ComponentActivityType: React.FC = () => {
 
                         <Popconfirm
                             title="Warning"
-                            description="Are you sure to archive this tag?"
+                            description="Are you sure to archive this activity type?"
                             onConfirm={() => {
                                 handleArchive(record);
                             }}
@@ -65,7 +65,7 @@ const ComponentActivityType: React.FC = () => {
         },
         {
             dataIndex: "tag_name",
-            title: "Tag name",
+            title: "Activity Type",
             width: 300,
         },
         {
@@ -201,7 +201,7 @@ const ComponentActivityType: React.FC = () => {
                 icon={<PlusCircleOutlined />}
                 onClick={handleOpenCreateMdal}
             >
-                Add Tag
+                Add Activity Type
             </Button>
 
             <Table
@@ -226,7 +226,11 @@ const ComponentActivityType: React.FC = () => {
             <Modal
                 open={createModal}
                 onCancel={handleCloseCreateMdal}
-                title={<Typography.Text>{modalTitle} Tag</Typography.Text>}
+                title={
+                    <Typography.Text>
+                        {modalTitle} Activity Type
+                    </Typography.Text>
+                }
                 className="manage-column-field"
                 footer={[
                     <Space key={"footer"}>
