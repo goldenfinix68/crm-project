@@ -56,6 +56,7 @@ import { CallProvider } from "./context/CallContext";
 import Setup from "./pages/Setup/Setup";
 import SetupLayout from "./pages/Setup/SetupLayout";
 import ComponentTagManagement from "./pages/Setup/Components/ComponentTagManagement";
+import TextTemplates from "./pages/TextTemplates";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isForgotPassword = window.location.pathname === "/forgot-password";
@@ -186,6 +187,22 @@ const App: React.FC = () => {
                                 element={
                                     <PrivateRoute>
                                         <Inbox />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/text-templates"
+                                element={
+                                    <PrivateRoute>
+                                        <TextTemplates />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/text-templates/:route"
+                                element={
+                                    <PrivateRoute>
+                                        <TextTemplates />
                                     </PrivateRoute>
                                 }
                             />

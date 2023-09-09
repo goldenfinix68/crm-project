@@ -69,6 +69,8 @@ Route::middleware('auth:api')->group(function () {
 
     // tag_management
     Route::resource('tag_management', 'App\Http\Controllers\Api\TagManagementController');
+    Route::resource('/text-template-folders', 'App\Http\Controllers\Api\TextTemplateFoldersController');
+    Route::resource('/text-templates', 'App\Http\Controllers\Api\TextTemplatesController');
 });
 
 Route::post('/telnyx/sms/webhook', 'App\Http\Controllers\Api\TextsController@textReceived');

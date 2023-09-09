@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddValuesToIndexOnActivityCustomFieldValues extends Migration
+class AddUserTextTemplates extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class AddValuesToIndexOnActivityCustomFieldValues extends Migration
      */
     public function up()
     {
-        Schema::table('activity_custom_field_values', function (Blueprint $table) {
-            $table->index('values');
+        
+        Schema::table('text_templates', function (Blueprint $table) {
+            $table->integer('userId')->unsigned();
         });
     }
 
@@ -25,8 +26,8 @@ class AddValuesToIndexOnActivityCustomFieldValues extends Migration
      */
     public function down()
     {
-        Schema::table('activity_custom_field_values', function (Blueprint $table) {
-            $table->dropIndex(['values']);
+        Schema::table('text_templates', function (Blueprint $table) {
+            $table->dropColumn("userId");
         });
     }
 }
