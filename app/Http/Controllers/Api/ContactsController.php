@@ -273,7 +273,7 @@ class ContactsController extends Controller
                     $file_name =  $file->getClientOriginalName();
                     $file_size = $this->bytesToHuman($file->getSize());
                     $fileFilePath = Str::random(10)  . '.' . $file->getClientOriginalExtension();
-                    $fileFilePathNew = $file->storeAs('uploads/delivery_requests', $fileFilePath, 'public');
+                    $fileFilePathNew = $file->storeAs('uploads/files', $fileFilePath, 'public');
 
                     $file_url = $file->storeAs(
                         'public/files',
