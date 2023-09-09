@@ -219,6 +219,7 @@ const App: React.FC = () => {
                                     <PrivateRoute>
                                         <SetupLayout
                                             content={<ComponentTagManagement />}
+                                            title="Tag Management"
                                         />
                                     </PrivateRoute>
                                 }

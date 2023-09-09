@@ -66,6 +66,9 @@ Route::middleware('auth:api')->group(function () {
 
     Route::resource('/activity_custome_fields', 'App\Http\Controllers\Api\ActivityCustomFieldController');
     Route::get('/calls/history', 'App\Http\Controllers\Api\CallsController@call_history');
+
+    // tag_management
+    Route::resource('tag_management', 'App\Http\Controllers\Api\TagManagementController');
 });
 
 Route::post('/telnyx/sms/webhook', 'App\Http\Controllers\Api\TextsController@textReceived');
