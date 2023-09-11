@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Col, Divider, Row, Space, Typography } from "antd";
 import {
     AppstoreOutlined,
@@ -13,53 +13,61 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
-const Setup: React.FC = () => {
+const Setup: React.FC = (props) => {
     const navigate = useNavigate();
     const customizationButtons: any = [
-        {
-            icon: <UserOutlined />,
-            title: "Contact",
-            link: "/setup/contact",
-        },
-        {
-            icon: <DollarOutlined />,
-            title: "Deal",
-            link: "/setup/deal",
-        },
-        {
-            icon: <CheckCircleOutlined />,
-            title: "Activity",
-            link: "/setup/activity",
-        },
-        {
-            icon: <PhoneOutlined />,
-            title: "Calling Configurations",
-            link: "/setup/activity",
-        },
+        // {
+        //     icon: <UserOutlined />,
+        //     title: "Contact",
+        //     link: "/setup/customizations/contact",
+        // },
+        // {
+        //     icon: <DollarOutlined />,
+        //     title: "Deal",
+        //     link: "/setup/customizations/deal",
+        // },
+        // {
+        //     icon: <CheckCircleOutlined />,
+        //     title: "Activity",
+        //     link: "/setup/customizations/activity",
+        // },
+        // {
+        //     icon: <PhoneOutlined />,
+        //     title: "Calling Configurations",
+        //     link: "/setup/customizations/activity",
+        // },
         {
             icon: <TagsOutlined />,
             title: "Tag Management",
-            link: "/setup/tag",
+            link: "/setup/customizations/tag",
         },
-        {
-            icon: <BarChartOutlined />,
-            title: "Deal Pipeline",
-            link: "/setup/tag",
-        },
+        // {
+        //     icon: <BarChartOutlined />,
+        //     title: "Deal Pipeline",
+        //     link: "/setup/customizations/tag",
+        // },
         {
             icon: <ZoomInOutlined />,
             title: "Activity Types",
-            link: "/setup/activity-types",
+            link: "/setup/customizations/activity-types",
         },
+        // {
+        //     icon: <AppstoreOutlined />,
+        //     title: "System Modules",
+        //     link: "/setup/customizations/modules",
+        // },
+        // {
+        //     icon: <ClockCircleOutlined />,
+        //     title: "Availability",
+        //     link: "/setup/customizations/availability",
+        // },
+    ];
+
+    const usersAndSecurityButtons: any = [
         {
-            icon: <AppstoreOutlined />,
-            title: "System Modules",
-            link: "/setup/modules",
-        },
-        {
-            icon: <ClockCircleOutlined />,
-            title: "Availability",
-            link: "/setup/availability",
+            icon: <UserOutlined />,
+            title: "Users",
+            link: "/setup/users-and-security/users",
         },
     ];
 
@@ -74,6 +82,47 @@ const Setup: React.FC = () => {
             </Divider>
             <Row gutter={[12, 20]}>
                 {customizationButtons.map((item: any, key: React.Key) => {
+                    return (
+                        <Col xs={6} sm={6} md={4} key={key}>
+                            <Space
+                                direction="vertical"
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <Button
+                                    className="button-link"
+                                    shape="circle"
+                                    size="large"
+                                    icon={item.icon}
+                                    style={{
+                                        height: 80,
+                                        width: 80,
+                                    }}
+                                    onClick={() => navigate(item.link)}
+                                />
+
+                                <Typography.Text style={{ fontSize: 16 }}>
+                                    {item.title}
+                                </Typography.Text>
+                            </Space>
+                        </Col>
+                    );
+                })}
+            </Row>
+
+            <br />
+            <br />
+            <Divider
+                orientation="left"
+                orientationMargin="0"
+                style={{ fontSize: 20 }}
+            >
+                Users & Security
+            </Divider>
+            <Row gutter={[12, 20]}>
+                {usersAndSecurityButtons.map((item: any, key: React.Key) => {
                     return (
                         <Col xs={6} sm={6} md={4} key={key}>
                             <Space
