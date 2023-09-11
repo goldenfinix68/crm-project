@@ -231,17 +231,10 @@ const ComponentActivityType: React.FC = ({}) => {
             >
                 <Form form={form} layout="vertical">
                     <Typography.Text>Select Icon</Typography.Text>
-                    
 
-                    <Form.Item
-                        name={"icon"}
-                        label="Select Icon"
-                    >
-                        <Radio.Group>
-                            <Radin
-                        </Radio.Group>
+                    <Form.Item name={"icon"} label="Select Icon">
+                        <Radio.Group>{/* <Radin */}</Radio.Group>
                     </Form.Item>
-
 
                     <Form.Item
                         name={"type"}
