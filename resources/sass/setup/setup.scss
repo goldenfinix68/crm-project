@@ -1,0 +1,31 @@
+@import "../variables/variables";
+
+.setup-menu {
+    .ant-menu-item-selected {
+        .ant-menu-title-content {
+            color: #ffffff !important;
+        }
+    }
+
+    .ant-menu-item:active {
+        .ant-menu-title-content {
+            color: #ffffff !important;
+        }
+    }
+}
+
+.list-activity-type {
+    .list-item-activity-type {
+        padding: 0px !important;
+
+        .ant-card {
+            border-radius: 0px;
+            border: 0px !important;
+            border-top: 1px solid #f0f0f0 !important;
+
+            .ant-card-body {
+                padding: 10px !important;
+            }
+        }
+    }
+}

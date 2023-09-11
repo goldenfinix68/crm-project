@@ -27,6 +27,7 @@ import "/node_modules/react-grid-layout/css/styles.css";
 import "/node_modules/react-resizable/css/styles.css";
 import "../sass/contacts/contacts.css";
 import "../sass/deals/deals.css";
+import "../sass/setup/setup.css";
 
 // Pages
 import Welcome from "./pages/Welcome";
@@ -232,7 +233,7 @@ const App: React.FC = () => {
                                 }
                             />
                             <Route
-                                path="/setup/tag"
+                                path="/setup/customizations/tag"
                                 element={
                                     <PrivateRoute>
                                         <SetupLayout
@@ -243,7 +244,7 @@ const App: React.FC = () => {
                                 }
                             />
                             <Route
-                                path="/setup/activity-types"
+                                path="/setup/customizations/activity-types"
                                 element={
                                     <PrivateRoute>
                                         <SetupLayout

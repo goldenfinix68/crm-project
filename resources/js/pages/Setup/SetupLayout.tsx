@@ -7,6 +7,7 @@ import {
     UserOutlined,
     VideoCameraOutlined,
 } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 interface SetupLayoutProps {
     content: any;
@@ -15,68 +16,88 @@ interface SetupLayoutProps {
 
 const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
     const { content, title } = props;
+    const navigate = useNavigate();
+
     const sideMenuItems: any = [
         {
-            key: "customizations",
+            key: "/setup/customizations",
             icon: <SlidersOutlined />,
             label: "Customizations",
             children: [
+                // {
+                //     key: "/setup/customizations/contact",
+                //     path: "/setup/customizations/contact",
+                //     label: "Contact",
+                // },
+                // {
+                //     key: "/setup/customizations/deal",
+                //     path: "/setup/customizations/deal",
+                //     label: "Deal",
+                // },
+                // {
+                //     key: "/setup/customizations/activity",
+                //     path: "/setup/customizations/activity",
+                //     label: "Activity",
+                // },
+                // {
+                //     key: "/setup/customizations/calling",
+                //     path: "/setup/customizations/calling",
+                //     label: "Calling Configurations",
+                // },
                 {
-                    key: "customizations/Contacts",
-                    label: "Contact",
-                },
-                {
-                    key: "customizations/Deal",
-                    label: "Deal",
-                },
-                {
-                    key: "customizations/Activity",
-                    label: "Activity",
-                },
-                {
-                    key: "customizations/Calling",
-                    label: "Calling Configurations",
-                },
-                {
-                    key: "customizations/Tag",
+                    key: "/setup/customizations/tag",
+                    path: "/setup/customizations/tag",
                     label: "Tag Management",
-                    path: "/setup/tag",
                 },
+                // {
+                //     key: "/setup/customizations/deal-pipeline",
+                //     path: "/setup/customizations/deal-pipeline",
+                //     label: "Deal Pipeline",
+                // },
                 {
-                    key: "customizations/Pipeline",
-                    label: "Deal Pipeline",
-                },
-                {
-                    key: "customizations/Types",
+                    key: "/setup/customizations/activity-types",
+                    path: "/setup/customizations/activity-types",
                     label: "Activity Types",
                 },
-                {
-                    key: "customizations/System",
-                    label: "System Modules",
-                },
-                {
-                    key: "customizations/Availabity",
-                    label: "Availabity",
-                },
+                // {
+                //     key: "/setup/customizations/modules",
+                //     path: "/setup/customizations/modules",
+                //     label: "System Modules",
+                // },
+                // {
+                //     key: "/setup/customizations/availability",
+                //     path: "/setup/customizations/availability",
+                //     label: "Availabity",
+                // },
             ],
         },
-        {},
     ];
+
+    const removeLastWordSeparatedByBackslash = (str) => {
+        const words = str.split("/"); // Split the string into an array of words using backslash as the separator
+        words.pop(); // Remove the last word from the array
+        return words.join("/"); // Join the remaining words back together using backslash as the separator
+    };
 
     return (
         <Layout className="setup-layout">
-            <Sider
-                breakpoint="lg"
-                collapsedWidth="0"
-                onBreakpoint={(broken) => {
-                    console.log(broken);
-                }}
-                onCollapse={(collapsed, type) => {
-                    console.log(collapsed, type);
-                }}
-            >
+            <Sider breakpoint="lg" collapsedWidth="0">
                 <div className="demo-logo-vertical" />
-                <Menu theme="dark" mode="inline" items={sideMenuItems} />
+                <Menu
+                    className="setup-menu"
+                    theme="dark"
+                    mode="inline"
+                    items={sideMenuItems}
+                    defaultSelectedKeys={[window.location.pathname]}
+                    openKeys={[
+                        removeLastWordSeparatedByBackslash(
+                            window.location.pathname
+                        ),
+                    ]}
+                    onClick={(info) => {
+                        navigate(info?.key);
+                    }}
+                />
             </Sider>
             <Layout>
                 <Layout.Header
@@ -92,7 +113,7 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                         <Col span={12} className="text-right"></Col>
                     </Row>
                 </Layout.Header>
-                <Layout.Content style={{ margin: "24px 16px 0" }}>
+                <Layout.Content style={{ margin: "24px 16px 40px" }}>
                     {content}
                 </Layout.Content>
             </Layout>
