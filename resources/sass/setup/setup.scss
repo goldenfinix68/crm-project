@@ -29,3 +29,22 @@
         }
     }
 }
+
+.selected-icon {
+    color: black !important;
+    border-color: #dfe1e6 !important;
+}
+
+.selected-icon-active {
+    background: #1677ff !important;
+    color: white !important;
+    border-color: #dfe1e6 !important;
+}
+
+:where(
+        .css-dev-only-do-not-override-1m62vyb
+    ).ant-radio-button-wrapper-checked:not(
+        .ant-radio-button-wrapper-disabled
+    )::before {
+    background-color: #dfe1e6 !important;
+}

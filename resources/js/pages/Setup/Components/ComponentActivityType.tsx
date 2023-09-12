@@ -18,8 +18,6 @@ import {
     notification,
 } from "antd";
 import {
-    CloseOutlined,
-    DeleteOutlined,
     EditOutlined,
     HolderOutlined,
     PlusCircleOutlined,
@@ -35,6 +33,34 @@ import {
     DropResult,
     DraggableLocation,
 } from "react-beautiful-dnd";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faBinoculars,
+    faCalendarDays,
+    faCamera,
+    faCar,
+    faChalkboardUser,
+    faCirclePlay,
+    faClipboardCheck,
+    faEnvelope,
+    faFlag,
+    faGem,
+    faGlobe,
+    faImage,
+    faKey,
+    faKitMedical,
+    faMedal,
+    faMugHot,
+    faPhoneVolume,
+    faPlaneDeparture,
+    faStar,
+    faTag,
+    faTrophy,
+    faUsers,
+    faUtensils,
+    faWrench,
+} from "@fortawesome/free-solid-svg-icons";
+import ComponentActivityTypeIcon from "./ComponentActivityTypeIcon";
 
 interface DragEndResult {
     source: DraggableLocation;
@@ -49,12 +75,7 @@ interface ListItem {
 const ComponentActivityType: React.FC = ({}) => {
     const queryClient = useQueryClient();
     const [modalTitle, setModalTitle] = useState("Add");
-    const [activitiesSelectColumn, setActivitiesSelectColumn] = useState([
-        { title: "Title", id: "1" },
-        { title: "Start Date", id: "2" },
-        { title: "Duration", id: "3" },
-        { title: "Owner", id: "4" },
-    ]);
+    const [activitiesSelectColumn, setActivitiesSelectColumn] = useState([]);
 
     const handleDragEnd = (result: DragEndResult) => {
         if (!result.destination) {
@@ -72,6 +93,7 @@ const ComponentActivityType: React.FC = ({}) => {
     const onChangePageValues = (items: any) => {
         let resetID = selectResetID(items);
         setActivitiesSelectColumn(resetID);
+
         // localStorage.setItem(localStorageName, JSON.stringify(resetID));
     };
 
@@ -80,6 +102,8 @@ const ComponentActivityType: React.FC = ({}) => {
             let dataKey = Number(key) + 1;
             return {
                 title: item.title,
+                icon: item.icon,
+                cid: item.cid,
                 id: Number(dataKey).toFixed(),
             };
         });
@@ -89,66 +113,67 @@ const ComponentActivityType: React.FC = ({}) => {
 
     const onChangeCheckbox = (value: any, type: boolean) => {
         let resetID = selectResetID(activitiesSelectColumn);
-        if (type) {
-            let items = [
-                ...resetID,
-                {
-                    title: value,
-                    id: Number(Number(resetID.length) + 1).toFixed(),
-                },
-            ];
-            onChangePageValues(items);
-        } else {
-            let filterArray = activitiesSelectColumn.filter(
-                (item: any) => item.title !== value
-            );
-            onChangePageValues(filterArray);
-        }
+
+        let filterArray = activitiesSelectColumn.filter(
+            (item: any) => item.title !== value
+        );
+        onChangePageValues(filterArray);
     };
 
+    const [dataFilter, setDataFilter] = useState({
+        status: 1,
+        from: "setup-page",
+    });
+
+    const { data, isLoading, refetch, isFetching } = mutateGet(
+        dataFilter,
+        "/api/activity_type",
+        "activity_type"
+    );
+
+    useEffect(() => {
+        if (data?.data && data?.data.length > 0) {
+            let row: any = [];
+            data?.data.map((item: any, key: number) => {
+                row.push({
+                    title: item.type,
+                    icon: item.icon,
+                    cid: item.id,
+                    id: item.index ? item.index : Number(key + 1).toString(),
+                });
+            });
+
+            setActivitiesSelectColumn(row);
+        } else {
+            setActivitiesSelectColumn([]);
+        }
+    }, [data]);
+
     const onChangeTabs = (key: any) => {
-        console.log(key);
+        setDataFilter({
+            ...dataFilter,
+            status: key === "1" ? 1 : 0,
+        });
+
+        setTimeout(() => {
+            refetch();
+        }, 1000);
     };
 
     const itemTabs = [
         {
             key: "1",
             label: "ACTIVE",
-            children: (
-                <>
-                    <Card
-                        style={{
-                            boxShadow: "none",
-                        }}
-                        bodyStyle={{ padding: "5px 19px 19px 19px" }}
-                        bordered={false}
-                        className="m-b-md"
-                    >
-                        <Alert
-                            message="Customize types of activities you want in your company. You can rearrange them by dragging and dropping"
-                            type="info"
-                            showIcon
-                        />
-                    </Card>
-
-                    <DragDropContext onDragEnd={handleDragEnd}>
-                        <DroppableList
-                            items={activitiesSelectColumn}
-                            onChangeCheckbox={onChangeCheckbox}
-                        />
-                    </DragDropContext>
-                </>
-            ),
         },
         {
             key: "2",
             label: "INACTIVE",
-            children: "Content of Tab Pane 2",
         },
     ];
 
     const [form] = Form.useForm();
-    const [createModal, setCreateModal] = useState(true);
+    const [createModal, setCreateModal] = useState(false);
+    const [selectedIconData, setSelectedIconData] = useState("A");
 
     const handleOpenCreateMdal = () => {
         setCreateModal(true);
@@ -156,24 +181,28 @@ const ComponentActivityType: React.FC = ({}) => {
 
     const handleCloseCreateMdal = () => {
         setCreateModal(false);
-        setModalTitle("Add");
+        setSelectedIconData("A");
         form.resetFields();
     };
 
     const handleOnFinish = () => {
         form.validateFields()
             .then((data) => {
-                // let values: any = {
-                //     data: data,
-                //     url: "/api/tag_management",
-                // };
-                // handlePost.mutate(values);
-                // notification.success({
-                //     message: "Success",
-                //     description: `Successfully ${
-                //         modalTitle === "Edit" ? "edited" : "added"
-                //     }.`,
-                // });
+                let values: any = {
+                    data: {
+                        ...data,
+                        icon: selectedIconData,
+                    },
+                    url: "/api/activity_type",
+                };
+
+                handlePost.mutate(values);
+                notification.success({
+                    message: "Success",
+                    description: `Successfully ${
+                        modalTitle === "Edit" ? "edited" : "added"
+                    }.`,
+                });
             })
             .catch((error) => {
                 notification.warning({
@@ -185,11 +214,50 @@ const ComponentActivityType: React.FC = ({}) => {
 
     const handlePost = useMutation(mutatePost, {
         onSuccess: (res) => {
-            queryClient.invalidateQueries("tag_management");
+            queryClient.invalidateQueries("activity_type");
 
             handleCloseCreateMdal();
         },
     });
+
+    const setActiveIcon = (value: string) => {
+        if (value === selectedIconData) {
+            return "selected-icon-active";
+        }
+    };
+
+    const handleEditType = (values: any) => {
+        setCreateModal(true);
+        form.setFieldsValue({
+            type: values.title,
+            id: values.cid,
+        });
+        setSelectedIconData(values.icon);
+    };
+
+    const handleArchive = (record: any) => {
+        form.validateFields()
+            .then((data) => {
+                let values: any = {
+                    data: {
+                        id: record.cid,
+                    },
+                    url: "/api/activity_type/archive",
+                };
+
+                handlePost.mutate(values);
+                notification.success({
+                    message: "Success",
+                    description: `Successfully archived.`,
+                });
+            })
+            .catch((error) => {
+                notification.warning({
+                    message: "Warning",
+                    description: "Please fill-up required fields.",
+                });
+            });
+    };
 
     return (
         <>
@@ -208,6 +276,42 @@ const ComponentActivityType: React.FC = ({}) => {
                     items={itemTabs}
                     onChange={onChangeTabs}
                 />
+
+                <Card
+                    style={{
+                        boxShadow: "none",
+                    }}
+                    bodyStyle={{ padding: "5px 19px 19px 19px" }}
+                    bordered={false}
+                    className="m-b-md"
+                >
+                    <Alert
+                        message="Customize types of activities you want in your company. You can rearrange them by dragging and dropping"
+                        type="info"
+                        showIcon
+                    />
+                </Card>
+
+                <Card
+                    style={{
+                        boxShadow: "none",
+                    }}
+                    bodyStyle={{ padding: "5px 19px 19px 19px" }}
+                    bordered={false}
+                    loading={isLoading}
+                >
+                    <DragDropContext onDragEnd={handleDragEnd}>
+                        <DroppableList
+                            items={activitiesSelectColumn}
+                            onChangeCheckbox={onChangeCheckbox}
+                            ComponentActivityTypeIcon={
+                                ComponentActivityTypeIcon
+                            }
+                            handleEditType={handleEditType}
+                            handleArchive={handleArchive}
+                        />
+                    </DragDropContext>
+                </Card>
             </Card>
 
             <Modal
@@ -230,11 +334,210 @@ const ComponentActivityType: React.FC = ({}) => {
                 ]}
             >
                 <Form form={form} layout="vertical">
-                    <Typography.Text>Select Icon</Typography.Text>
+                    <Space direction="vertical">
+                        <Typography.Text>Select Icon</Typography.Text>
 
-                    <Form.Item name={"icon"} label="Select Icon">
-                        <Radio.Group>{/* <Radin */}</Radio.Group>
-                    </Form.Item>
+                        <Radio.Group>
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "A"
+                                )}`}
+                                onClick={() => setSelectedIconData("A")}
+                            >
+                                <FontAwesomeIcon icon={faPhoneVolume} />
+                            </Radio.Button>
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "B"
+                                )}`}
+                                onClick={() => setSelectedIconData("B")}
+                            >
+                                <FontAwesomeIcon icon={faClipboardCheck} />
+                            </Radio.Button>
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "C"
+                                )}`}
+                                onClick={() => setSelectedIconData("C")}
+                            >
+                                <FontAwesomeIcon icon={faUsers} />
+                            </Radio.Button>
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "D"
+                                )}`}
+                                onClick={() => setSelectedIconData("D")}
+                            >
+                                <FontAwesomeIcon icon={faChalkboardUser} />
+                            </Radio.Button>
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "E"
+                                )}`}
+                                onClick={() => setSelectedIconData("E")}
+                            >
+                                <FontAwesomeIcon icon={faUtensils} />
+                            </Radio.Button>
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "F"
+                                )}`}
+                                onClick={() => setSelectedIconData("F")}
+                            >
+                                <FontAwesomeIcon icon={faCalendarDays} />
+                            </Radio.Button>
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "G"
+                                )}`}
+                                onClick={() => setSelectedIconData("G")}
+                            >
+                                <FontAwesomeIcon icon={faEnvelope} />
+                            </Radio.Button>
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "H"
+                                )}`}
+                                onClick={() => setSelectedIconData("H")}
+                            >
+                                <FontAwesomeIcon icon={faMugHot} />
+                            </Radio.Button>
+                        </Radio.Group>
+
+                        <Radio.Group className="m-t-sm">
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "I"
+                                )}`}
+                                onClick={() => setSelectedIconData("I")}
+                            >
+                                <FontAwesomeIcon icon={faFlag} />
+                            </Radio.Button>
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "J"
+                                )}`}
+                                onClick={() => setSelectedIconData("J")}
+                            >
+                                <FontAwesomeIcon icon={faCamera} />
+                            </Radio.Button>
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "K"
+                                )}`}
+                                onClick={() => setSelectedIconData("K")}
+                            >
+                                <FontAwesomeIcon icon={faImage} />
+                            </Radio.Button>
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "L"
+                                )}`}
+                                onClick={() => setSelectedIconData("L")}
+                            >
+                                <FontAwesomeIcon icon={faCar} />
+                            </Radio.Button>
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "M"
+                                )}`}
+                                onClick={() => setSelectedIconData("M")}
+                            >
+                                <FontAwesomeIcon icon={faMedal} />
+                            </Radio.Button>
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "N"
+                                )}`}
+                                onClick={() => setSelectedIconData("N")}
+                            >
+                                <FontAwesomeIcon icon={faTrophy} />
+                            </Radio.Button>
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "O"
+                                )}`}
+                                onClick={() => setSelectedIconData("O")}
+                            >
+                                <FontAwesomeIcon icon={faStar} />
+                            </Radio.Button>
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "P"
+                                )}`}
+                                onClick={() => setSelectedIconData("P")}
+                            >
+                                <FontAwesomeIcon icon={faPlaneDeparture} />
+                            </Radio.Button>
+                        </Radio.Group>
+
+                        <Radio.Group className="m-t-sm m-b-md">
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "Q"
+                                )}`}
+                                onClick={() => setSelectedIconData("Q")}
+                            >
+                                <FontAwesomeIcon icon={faGlobe} />
+                            </Radio.Button>
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "R"
+                                )}`}
+                                onClick={() => setSelectedIconData("R")}
+                            >
+                                <FontAwesomeIcon icon={faKey} />
+                            </Radio.Button>
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "S"
+                                )}`}
+                                onClick={() => setSelectedIconData("S")}
+                            >
+                                <FontAwesomeIcon icon={faTag} />
+                            </Radio.Button>
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "T"
+                                )}`}
+                                onClick={() => setSelectedIconData("T")}
+                            >
+                                <FontAwesomeIcon icon={faCirclePlay} />
+                            </Radio.Button>
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "W"
+                                )}`}
+                                onClick={() => setSelectedIconData("W")}
+                            >
+                                <FontAwesomeIcon icon={faBinoculars} />
+                            </Radio.Button>
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "X"
+                                )}`}
+                                onClick={() => setSelectedIconData("X")}
+                            >
+                                <FontAwesomeIcon icon={faGem} />
+                            </Radio.Button>
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "Y"
+                                )}`}
+                                onClick={() => setSelectedIconData("Y")}
+                            >
+                                <FontAwesomeIcon icon={faKitMedical} />
+                            </Radio.Button>
+                            <Radio.Button
+                                className={`selected-icon ${setActiveIcon(
+                                    "Z"
+                                )}`}
+                                onClick={() => setSelectedIconData("Z")}
+                            >
+                                <FontAwesomeIcon icon={faWrench} />
+                            </Radio.Button>
+                        </Radio.Group>
+                    </Space>
 
                     <Form.Item
                         name={"type"}
@@ -243,6 +546,7 @@ const ComponentActivityType: React.FC = ({}) => {
                     >
                         <Input size="large" />
                     </Form.Item>
+
                     <Form.Item
                         name={"id"}
                         label="id"
@@ -261,21 +565,32 @@ export default ComponentActivityType;
 interface DroppableListProps {
     items: ListItem[];
     onChangeCheckbox: any;
+    ComponentActivityTypeIcon: any;
+    handleEditType: any;
+    handleArchive: any;
 }
 const DroppableList: React.FC<DroppableListProps> = ({
     items,
     onChangeCheckbox,
+    ComponentActivityTypeIcon,
+    handleEditType,
+    handleArchive,
 }) => (
     <Droppable droppableId="list">
         {(provided) => (
             <div ref={provided.innerRef} {...provided.droppableProps}>
                 <List className="list-activity-type">
-                    {items.map((item, index) => (
+                    {items.map((item: any, index: number) => (
                         <DraggableItem
                             key={index}
                             item={item}
                             index={index}
                             onChangeCheckbox={onChangeCheckbox}
+                            ComponentActivityTypeIcon={
+                                ComponentActivityTypeIcon
+                            }
+                            handleEditType={handleEditType}
+                            handleArchive={handleArchive}
                         />
                     ))}
                     {provided.placeholder}
@@ -286,15 +601,21 @@ const DroppableList: React.FC<DroppableListProps> = ({
 );
 
 interface DraggableItemProps {
-    item: ListItem;
+    item: any;
     index: number;
     onChangeCheckbox: any;
+    ComponentActivityTypeIcon: any;
+    handleEditType: any;
+    handleArchive: any;
 }
 
 const DraggableItem: React.FC<DraggableItemProps> = ({
     item,
     index,
     onChangeCheckbox,
+    ComponentActivityTypeIcon,
+    handleEditType,
+    handleArchive,
 }) => (
     <Draggable draggableId={item.id} index={index}>
         {(provided) => (
@@ -329,17 +650,50 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
                                     alignItems: "center",
                                 }}
                             >
-                                <HolderOutlined className="m-r-sm" />
-                                {item.title}
+                                {/* <HolderOutlined className="m-r-sm" /> */}
+                                {ComponentActivityTypeIcon(item?.icon)}
+                                <Typography.Text className="m-l-xs">
+                                    {item.title}
+                                </Typography.Text>
                             </Col>
                             <Col md={8} xs={2}>
                                 <Space>
-                                    <Button onClick={() => {}}>
+                                    <Button
+                                        onClick={() => {
+                                            handleEditType(item);
+                                        }}
+                                        disabled={
+                                            item.title === "Call" ||
+                                            item.title === "Task"
+                                                ? true
+                                                : false
+                                        }
+                                    >
                                         <EditOutlined />
                                     </Button>
-                                    <Button onClick={() => {}}>
-                                        Deactivate
-                                    </Button>
+
+                                    <Popconfirm
+                                        title="Deactivate the type"
+                                        description="Are you sure to deactivate this type?"
+                                        onConfirm={() => {
+                                            handleArchive(item);
+                                        }}
+                                        // onCancel={cancel}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <Button
+                                            disabled={
+                                                item.title === "Call" ||
+                                                item.title === "Task"
+                                                    ? true
+                                                    : false
+                                            }
+                                        >
+                                            Deactivate
+                                        </Button>
+                                    </Popconfirm>
+
                                     <Button onClick={() => {}}>
                                         Manage Outcomes
                                     </Button>

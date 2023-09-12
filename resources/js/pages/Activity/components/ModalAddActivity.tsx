@@ -46,6 +46,7 @@ import validateRules from "../../../providers/validateRules";
 import { useMutation, useQueryClient } from "react-query";
 import { addActivityMutation } from "../../../api/mutation/useActivityMutation";
 import {
+    useActivityType,
     useActivutyCustomField,
     useContactsList,
     useDealsList,
@@ -55,6 +56,7 @@ import {
 } from "../../../api/query/activityQuery";
 import { an } from "@fullcalendar/core/internal-common";
 import DynamicFields from "./DyNamicFields";
+import ComponentActivityTypeIcon from "../../Setup/Components/ComponentActivityTypeIcon";
 
 const optionRecurrence: SelectProps["options"] = [
     {
@@ -180,6 +182,7 @@ const ModalAddActivity = ({
     const { dataDeals, isLoadingDeals } = useDealsList();
     const { dataPeople, isLoadingPeople } = usePeopleList();
     const { dataTag, isLoadingTag } = useTagList();
+    const { dataType, isLoadingType } = useActivityType();
 
     const halderAfterClose = () => {
         setCalendarOptions(false);
@@ -505,35 +508,29 @@ const ModalAddActivity = ({
                             </Col>
                             <Col span={19}>
                                 <Form.Item name={"type"}>
-                                    <Select className="select-custom-width">
-                                        <Select.Option value="Call">
-                                            <FontAwesomeIcon
-                                                icon={faPhoneVolume}
-                                                className="font-12px m-r-xs"
-                                            />
-                                            Call
-                                        </Select.Option>
-                                        <Select.Option value="Task">
-                                            <FontAwesomeIcon
-                                                icon={faList}
-                                                className="font-12px m-r-xs"
-                                            />
-                                            Task
-                                        </Select.Option>
-                                        <Select.Option value="Meeting">
-                                            <FontAwesomeIcon
-                                                icon={faUsers}
-                                                className="font-12px m-r-xs"
-                                            />
-                                            Meeting
-                                        </Select.Option>
-                                        <Select.Option value="Demo">
-                                            <FontAwesomeIcon
-                                                icon={faVideo}
-                                                className="font-12px m-r-xs"
-                                            />
-                                            Demo
-                                        </Select.Option>
+                                    <Select
+                                        className="select-custom-width"
+                                        loading={isLoadingType}
+                                    >
+                                        {dataType?.data &&
+                                            dataType?.data.map(
+                                                (item: any, key: React.Key) => {
+                                                    return (
+                                                        <Select.Option
+                                                            key={key}
+                                                            value={item?.type}
+                                                            search={item?.type}
+                                                        >
+                                                            {ComponentActivityTypeIcon(
+                                                                item?.icon
+                                                            )}{" "}
+                                                            <Typography.Text className="m-l-xs">
+                                                                {item?.type}
+                                                            </Typography.Text>
+                                                        </Select.Option>
+                                                    );
+                                                }
+                                            )}
                                     </Select>
                                 </Form.Item>
                             </Col>

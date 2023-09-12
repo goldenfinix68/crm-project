@@ -42,6 +42,7 @@ import moment from "moment";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import {
+    useActivityType,
     useActivutyCustomField,
     useActivutyCustomFieldValue,
     useContactsList,
@@ -52,6 +53,7 @@ import {
 } from "../../../api/query/activityQuery";
 import { addActivityMutation } from "../../../api/mutation/useActivityMutation";
 import DynamicFields from "./DyNamicFields";
+import ComponentActivityTypeIcon from "../../Setup/Components/ComponentActivityTypeIcon";
 dayjs.extend(customParseFormat);
 
 interface UpdateProps {
@@ -112,6 +114,7 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
     const { dataDeals, isLoadingDeals } = useDealsList();
     const { dataPeople, isLoadingPeople } = usePeopleList();
     const { dataTag, isLoadingTag } = useTagList();
+    const { dataType, isLoadingType } = useActivityType();
 
     const queryClient = useQueryClient();
     const [form] = Form.useForm();
@@ -308,35 +311,29 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
                             </Col>
                             <Col span={8}>
                                 <Form.Item name={"type"}>
-                                    <Select className="select-custom-width">
-                                        <Select.Option value="Call">
-                                            <FontAwesomeIcon
-                                                icon={faPhoneVolume}
-                                                className="font-12px m-r-xs"
-                                            />
-                                            Call
-                                        </Select.Option>
-                                        <Select.Option value="Task">
-                                            <FontAwesomeIcon
-                                                icon={faList}
-                                                className="font-12px m-r-xs"
-                                            />
-                                            Task
-                                        </Select.Option>
-                                        <Select.Option value="Meeting">
-                                            <FontAwesomeIcon
-                                                icon={faUsers}
-                                                className="font-12px m-r-xs"
-                                            />
-                                            Meeting
-                                        </Select.Option>
-                                        <Select.Option value="Demo">
-                                            <FontAwesomeIcon
-                                                icon={faVideo}
-                                                className="font-12px m-r-xs"
-                                            />
-                                            Demo
-                                        </Select.Option>
+                                    <Select
+                                        className="select-custom-width"
+                                        loading={isLoadingType}
+                                    >
+                                        {dataType?.data &&
+                                            dataType?.data.map(
+                                                (item: any, key: React.Key) => {
+                                                    return (
+                                                        <Select.Option
+                                                            key={key}
+                                                            value={item?.type}
+                                                            search={item?.type}
+                                                        >
+                                                            {ComponentActivityTypeIcon(
+                                                                item?.icon
+                                                            )}{" "}
+                                                            <Typography.Text className="m-l-xs">
+                                                                {item?.type}
+                                                            </Typography.Text>
+                                                        </Select.Option>
+                                                    );
+                                                }
+                                            )}
                                     </Select>
                                 </Form.Item>
                             </Col>

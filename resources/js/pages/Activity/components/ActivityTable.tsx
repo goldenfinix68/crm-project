@@ -228,7 +228,7 @@ const ActivityTable = () => {
                     />
                 );
             },
-            fixed: true,
+            // fixed: true,
             index: "0",
             width: 50,
         },
@@ -236,7 +236,7 @@ const ActivityTable = () => {
             ? {
                   title: "Title",
                   dataIndex: "title",
-                  fixed: true,
+                  //   fixed: true,
                   render: (text: string, record: any) => {
                       return (
                           <Space className="w-100">
