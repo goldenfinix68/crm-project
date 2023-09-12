@@ -41,8 +41,11 @@ import {
     HolderOutlined,
 } from "@ant-design/icons";
 import React, { useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import ContactsComponentsAddCustomField from "./ContactsComponentsAddCustomField";
+import { useContactColumnSetting } from "../../../api/mutation/useContactMutation";
+import { json } from "react-router-dom";
 
 interface ContactsComponentsManageColumnProps {
     isModalManageColumnOpen: boolean;
@@ -156,6 +159,19 @@ const ContactsComponentsManageColumn: React.FC<
         country: "Country",
     };
 
+    const saveColumnSetting = useMutation(useContactColumnSetting, {
+        onSuccess: () => {
+            console.log("success");
+            // queryClient.invalidateQueries("contacts");
+            // //queryClient.invalidateQueries("contactTypesAll");
+            // form.resetFields();
+            // if (!saveAndAdd) {
+            //     setIsModalOpen(false);
+            // }
+            // queryClient.invalidateQueries("contacts");
+        },
+    });
+
     const onChange = (id: Number, value: string, e: CheckboxChangeEvent) => {
         console.log(`checked = ${e.target.checked}`, "id: " + id);
 
@@ -190,6 +206,15 @@ const ContactsComponentsManageColumn: React.FC<
         }
 
         setListData(items);
+    };
+
+    const handleFinish = () => {
+        console.log("asdasda", JSON.stringify(listData));
+        // if (record) {
+        saveColumnSetting.mutate({ table_columns: JSON.stringify(listData) });
+        // } else {
+        //     saveColumnSetting.mutate(values);
+        // }
     };
 
     const DraggableItem: React.FC<DraggableItemProps> = ({ item, index }) => (
@@ -1671,7 +1696,11 @@ const ContactsComponentsManageColumn: React.FC<
                         </Button>
                     </Col>
                     <Col md={12}>
-                        <Button className="m-r-xs" type="primary">
+                        <Button
+                            className="m-r-xs"
+                            type="primary"
+                            onClick={() => handleFinish()}
+                        >
                             Save
                         </Button>
 

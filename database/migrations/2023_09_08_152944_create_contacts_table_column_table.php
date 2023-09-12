@@ -15,7 +15,8 @@ class CreateContactsTableColumnTable extends Migration
     {
         Schema::create('contacts_table_column', function (Blueprint $table) {
             $table->id();
-            $table->longText('description')->nullable()->default('text');
+            $table->longText('table_columns')->nullable();
+            $table->integer('user_id');
             $table->timestamps();
         });
     }
