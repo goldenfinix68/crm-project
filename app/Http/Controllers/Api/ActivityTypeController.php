@@ -52,6 +52,9 @@ class ActivityTypeController extends Controller
                 ->paginate($request->page_size, ['*'], 'page', $request->page)
                 ->toArray();
         } else {
+            if (isset($request->from) && $request->from === 'setup-page') {
+                $data = $data->orderBy("index", "asc");
+            }
             $data = $data->get();
         }
 
@@ -72,7 +75,8 @@ class ActivityTypeController extends Controller
         $data = ActivityType::updateOrCreate([
             'id' => $request->id
         ], [
-            'tag_name' => isset($request->tag_name) ? $request->tag_name : null,
+            'icon' => isset($request->icon) ? $request->icon : null,
+            'type' => isset($request->type) ? $request->type : null,
         ]);
 
         return response()->json([
