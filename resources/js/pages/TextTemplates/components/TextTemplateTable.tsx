@@ -39,10 +39,10 @@ import { useTextTemplates } from "../../../api/query/textTemplateQuery";
 import LoadingComponent from "../../../components/LoadingComponent";
 import moment from "moment";
 interface Props {
-    folders?: TTextTemplateFolder[];
+    handleEditBtnClicked: (template: TTextTemplate) => void;
 }
 
-const TextTemplatesTable = ({ folders }: Props) => {
+const TextTemplatesTable = ({ handleEditBtnClicked }: Props) => {
     const { route } = useParams();
     const folder = route ?? "all";
     const navigate = useNavigate();
@@ -89,7 +89,11 @@ const TextTemplatesTable = ({ folders }: Props) => {
             key: "action",
             render: (_, record) => (
                 <Space size="middle">
-                    <Button type="link" style={{ padding: "0" }}>
+                    <Button
+                        type="link"
+                        style={{ padding: "0" }}
+                        onClick={() => handleEditBtnClicked(record)}
+                    >
                         <EditOutlined />
                     </Button>
                     <Button type="link" style={{ padding: "0" }}>
