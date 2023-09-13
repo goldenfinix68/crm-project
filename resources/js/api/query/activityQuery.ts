@@ -38,6 +38,7 @@ export const activitiList = (dataFilter: any) => {
                     },
                 }
             );
+            console.log("activitiList", dataFilter);
 
             return response.data;
         }

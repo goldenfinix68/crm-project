@@ -48,6 +48,13 @@ class ActivityController extends Controller
             $data = $data->where('status', $request->status);
         }
 
+        if (isset($request->type)) {
+            $type = explode(",", $request->type);
+            if ($type[0] !== 'All') {
+                $data = $data->whereIn('type', explode(",", $request->type));
+            }
+        }
+
         if ($request->sort_field && $request->sort_order) {
             if (
                 $request->sort_field != '' && $request->sort_field != 'undefined' && $request->sort_field != 'null'  &&
@@ -74,6 +81,7 @@ class ActivityController extends Controller
         return response()->json([
             'success' => true,
             'data' => $data,
+            'request' => $request->all(),
         ], 200);
     }
 
