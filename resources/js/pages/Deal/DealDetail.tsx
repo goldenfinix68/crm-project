@@ -892,6 +892,10 @@ const DealDetail = () => {
         <Row className="deal-group-row">
             <Col md={24}>
                 <Card title="Deals">
+                    <div className="pyro hide">
+                        <div className="before"></div>
+                        <div className="after"></div>
+                    </div>
                     <div
                         style={{
                             display: "flex",
