@@ -683,18 +683,28 @@ const ActivityTable = () => {
         if (val === "All") {
             setTypeValue = ["All"];
         } else {
-            if (dataFilter.type.length > 0 && dataFilter.type[0] === "All") {
-                setTypeValue = [val];
+            let findIndex = dataFilter.type.findIndex((item) => item === val);
+            if (findIndex !== -1) {
+                let updatedData = [...dataFilter.type];
+                updatedData.splice(findIndex, 1);
+                setTypeValue = updatedData.length > 0 ? updatedData : ["All"];
             } else {
-                setTypeValue = [...dataFilter.type];
-                setTypeValue.push(val);
+                if (
+                    dataFilter.type.length > 0 &&
+                    dataFilter.type[0] === "All"
+                ) {
+                    setTypeValue = [val];
+                } else {
+                    setTypeValue = [...dataFilter.type];
+                    setTypeValue.push(val);
+                }
             }
 
             if (listType.length === setTypeValue.length) {
                 setTypeValue = ["All"];
             }
         }
-        console.log("onChangeTypeFilter", setTypeValue);
+        // console.log("onChangeTypeFilter", setTypeValue);
 
         let newTypeValue: any = {
             ...dataFilter,
