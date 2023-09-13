@@ -67,7 +67,8 @@ export type TDeal = {
     id?: string;
     title: string;
     contactId?: string;
-    owner: string;
+    owner: any;
+    owner1: any;
     estimated_close_date: string;
     value?: string;
     currency?: string;

@@ -52,6 +52,7 @@ interface ContactsComponentsManageColumnProps {
     setIsModalManageColumnOpen: any;
     listData: ListItem[];
     setListData: any;
+    refetchContactsTable: any;
 }
 
 interface ListItem {
@@ -94,6 +95,7 @@ const ContactsComponentsManageColumn: React.FC<
     setIsModalManageColumnOpen,
     listData,
     setListData,
+    refetchContactsTable,
 }) => {
     const [isModalAddCustomField, setModalAddCustomField] = useState(false);
 
@@ -161,8 +163,9 @@ const ContactsComponentsManageColumn: React.FC<
     };
 
     const saveColumnSetting = useMutation(useContactColumnSetting, {
-        onSuccess: () => {
-            console.log("success");
+        onSuccess: (res) => {
+            console.log("success", res);
+            refetchContactsTable();
             // queryClient.invalidateQueries("contacts");
             // //queryClient.invalidateQueries("contactTypesAll");
             // form.resetFields();
@@ -215,9 +218,12 @@ const ContactsComponentsManageColumn: React.FC<
     };
 
     const handleFinish = () => {
-        console.log("asdasda", JSON.stringify(listData));
         // if (record) {
-        saveColumnSetting.mutate({ table_columns: JSON.stringify(listData) });
+        let acb = saveColumnSetting.mutate({
+            table_columns: JSON.stringify(listData),
+        });
+        console.log("asdasda", JSON.stringify(acb));
+
         // } else {
         //     saveColumnSetting.mutate(values);
         // }
@@ -1706,7 +1712,10 @@ const ContactsComponentsManageColumn: React.FC<
                         <Button
                             className="m-r-xs"
                             type="primary"
-                            onClick={() => handleFinish()}
+                            onClick={() => {
+                                handleFinish();
+                                setIsModalManageColumnOpen(false);
+                            }}
                         >
                             Save
                         </Button>
