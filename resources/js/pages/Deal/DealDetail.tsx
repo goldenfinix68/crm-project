@@ -577,7 +577,7 @@ const DealDetail = () => {
                         <Descriptions.Item label="Last Communication On">
                             16 days ago
                         </Descriptions.Item>
-                        <Descriptions.Item label="Open Deals">
+                        {/* <Descriptions.Item label="Open Deals">
                             0 ($0)
                         </Descriptions.Item>
                         <Descriptions.Item label="Deals Won">
@@ -585,7 +585,7 @@ const DealDetail = () => {
                         </Descriptions.Item>
                         <Descriptions.Item label="Activities">
                             0/3
-                        </Descriptions.Item>
+                        </Descriptions.Item> */}
                     </Descriptions>
                 </>
             ),
