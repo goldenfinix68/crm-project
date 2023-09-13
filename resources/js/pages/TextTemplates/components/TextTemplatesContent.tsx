@@ -27,27 +27,54 @@ import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
 import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import AddUpdateTemplateModal from "./AddUpdateTemplate";
-import { TTextTemplateFolder } from "../../../entities";
+import { TTextTemplate, TTextTemplateFolder } from "../../../entities";
 import TextTemplatesTable from "./TextTemplateTable";
 interface Props {
     folders?: TTextTemplateFolder[];
 }
 const TextTemplatesContent = ({ folders }: Props) => {
     const { route } = useParams();
-    const folder = route ?? "all";
+    const folder = route ?? "All";
     const navigate = useNavigate();
+    const [isAddEditTemplateOpen, setIsAddEditTemplateOpen] = useState(false);
+    const [template, setTemplate] = useState<TTextTemplate | undefined>();
+
+    const openAddEditTemplateModal = () => {
+        setIsAddEditTemplateOpen(true);
+    };
+    const closeAddEditTemplateModal = () => {
+        setIsAddEditTemplateOpen(false);
+        setTemplate(undefined);
+    };
+    const handleEditBtnClicked = (template: TTextTemplate) => {
+        setTemplate(template);
+        openAddEditTemplateModal();
+    };
 
     return (
         <Space direction="vertical" style={{ width: "100%" }}>
-            <TopNav folder={folder} />
+            <TopNav folder={folder} handleAdd={openAddEditTemplateModal} />
             <div style={{ padding: "20px" }}>
-                <TextTemplatesTable />
+                <TextTemplatesTable
+                    handleEditBtnClicked={handleEditBtnClicked}
+                />
             </div>
+
+            <AddUpdateTemplateModal
+                handleClose={closeAddEditTemplateModal}
+                isModalOpen={isAddEditTemplateOpen}
+                template={template}
+            />
         </Space>
     );
 };
 
-const TopNav = ({ folder }) => (
+type TopNavProps = {
+    folder: string;
+    handleAdd: () => void;
+};
+
+const TopNav = ({ folder, handleAdd }: TopNavProps) => (
     <div
         style={{
             display: "flex",
@@ -69,12 +96,15 @@ const TopNav = ({ folder }) => (
                 <Breadcrumb.Item>{folder}</Breadcrumb.Item>
             </Breadcrumb>
         </div>
+
         <div
             style={{
                 marginLeft: "16px",
             }}
         >
-            <AddUpdateTemplateModal />
+            <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
+                Add Template
+            </Button>
         </div>
     </div>
 );

@@ -38,15 +38,33 @@ import { ColumnsType } from "antd/es/table";
 import { useTextTemplates } from "../../../api/query/textTemplateQuery";
 import LoadingComponent from "../../../components/LoadingComponent";
 import moment from "moment";
+import { deleteTextTemplateMutation } from "../../../api/mutation/useTextTemplateMutation";
+import ConfirmModal from "../../../components/ConfirmModal";
 interface Props {
-    folders?: TTextTemplateFolder[];
+    handleEditBtnClicked: (template: TTextTemplate) => void;
 }
 
-const TextTemplatesTable = ({ folders }: Props) => {
+const TextTemplatesTable = ({ handleEditBtnClicked }: Props) => {
     const { route } = useParams();
-    const folder = route ?? "all";
+    const folder = route ?? "All";
     const navigate = useNavigate();
     const { templates, isLoading } = useTextTemplates();
+    const [template, setTemplate] = useState<TTextTemplate | undefined>();
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isDeleteBtnLoading, setIsDeleteBtnLoading] = useState(false);
+
+    const deleteTemplate = useMutation(
+        (id: string) => deleteTextTemplateMutation(id),
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries("textTemplates");
+                setIsDeleteModalOpen(false);
+            },
+            onError: (e: any) => {
+                console.log(e.message || "An error occurred");
+            },
+        }
+    );
     const columns: ColumnsType<TTextTemplate> = [
         {
             title: "Name",
@@ -89,10 +107,21 @@ const TextTemplatesTable = ({ folders }: Props) => {
             key: "action",
             render: (_, record) => (
                 <Space size="middle">
-                    <Button type="link" style={{ padding: "0" }}>
+                    <Button
+                        type="link"
+                        style={{ padding: "0" }}
+                        onClick={() => handleEditBtnClicked(record)}
+                    >
                         <EditOutlined />
                     </Button>
-                    <Button type="link" style={{ padding: "0" }}>
+                    <Button
+                        type="link"
+                        style={{ padding: "0" }}
+                        onClick={() => {
+                            setTemplate(record);
+                            setIsDeleteModalOpen(true);
+                        }}
+                    >
                         <DeleteOutlined />
                     </Button>
                 </Space>
@@ -100,20 +129,37 @@ const TextTemplatesTable = ({ folders }: Props) => {
         },
     ];
 
+    const filteredTemplates = () => {
+        if (folder == "Archived") {
+            return templates?.filter((template) => template.deleted_at);
+        } else if (folder != "All") {
+            return templates?.filter(
+                (template) =>
+                    !template.deleted_at && template.folder?.name == folder
+            );
+        } else {
+            return templates?.filter((template) => !template.deleted_at);
+        }
+    };
+
     if (isLoading) {
         return <LoadingComponent />;
     }
     return (
         <>
-            <Table
-                columns={columns}
-                dataSource={
-                    folder == "All"
-                        ? templates
-                        : templates?.filter(
-                              (template) => template.folder?.name == folder
-                          )
-                }
+            <Table columns={columns} dataSource={filteredTemplates()} />
+
+            <ConfirmModal
+                title="Confirm"
+                message={`Are you sure you want to delete ${template?.name}?`}
+                handleNo={() => setIsDeleteModalOpen(false)}
+                handleYes={async () => {
+                    setIsDeleteBtnLoading(true);
+                    await deleteTemplate.mutate(template!.id!);
+                    setIsDeleteBtnLoading(false);
+                }}
+                isOpen={isDeleteModalOpen}
+                loading={isDeleteBtnLoading}
             />
         </>
     );

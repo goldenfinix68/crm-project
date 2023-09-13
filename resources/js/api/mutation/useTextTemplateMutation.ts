@@ -21,6 +21,22 @@ export const createTextTemplateFolderMutation = async (
 
 export const deleteTextTemplateMutation = async (id: string) => {
     const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+    const response = await fetch("/api/text-templates/" + id, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        },
+    });
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to add contact type");
+    }
+    return data;
+};
+
+export const deleteTextTemplateFolderMutation = async (id: string) => {
+    const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
     const response = await fetch("/api/text-template-folders/" + id, {
         method: "DELETE",
         headers: {

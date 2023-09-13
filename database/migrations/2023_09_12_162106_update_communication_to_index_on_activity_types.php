@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateContactsTableColumnTable extends Migration
+class UpdateCommunicationToIndexOnActivityTypes extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,8 @@ class CreateContactsTableColumnTable extends Migration
      */
     public function up()
     {
-        Schema::create('contacts_table_column', function (Blueprint $table) {
-            $table->id();
-            $table->longText('table_columns')->nullable();
-            $table->integer('user_id');
-            $table->timestamps();
+        Schema::table('activity_types', function (Blueprint $table) {
+            $table->string('index')->nullable();
         });
     }
 
@@ -28,6 +25,8 @@ class CreateContactsTableColumnTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('contacts_table_column');
+        Schema::table('activity_types', function (Blueprint $table) {
+            $table->dropColumn('index');
+        });
     }
 }

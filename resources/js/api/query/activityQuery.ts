@@ -38,6 +38,7 @@ export const activitiList = (dataFilter: any) => {
                     },
                 }
             );
+            console.log("activitiList", dataFilter);
 
             return response.data;
         }
@@ -141,6 +142,29 @@ export const useTagList = () => {
         isLoadingTag: isLoading,
         isErrorTag: isError,
         refetchTag: refetch,
+    };
+};
+
+export const useActivityType = () => {
+    const { data, isLoading, isError, refetch } = useQuery(
+        "activity_type",
+        async () => {
+            const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+            const response = await axios.get(`/api/activity_type?status=1`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+
+            return response.data;
+        }
+    );
+
+    return {
+        dataType: data,
+        isLoadingType: isLoading,
+        isErrorType: isError,
+        refetchType: refetch,
     };
 };
 

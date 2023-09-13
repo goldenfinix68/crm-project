@@ -42,6 +42,7 @@ const LogActivityTab = () => {
             });
             form.resetFields();
             queryClient.invalidateQueries("getContact");
+            queryClient.invalidateQueries("deals_by_id");
         },
     });
 

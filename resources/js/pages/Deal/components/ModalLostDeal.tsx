@@ -84,7 +84,9 @@ const ModalLostDeal = ({
                     message: "Deal",
                     description: "Updated Successfully",
                 });
+                form.resetFields();
                 handleOkAdd1();
+                queryClient.invalidateQueries("deals_by_id");
             }
         },
     });

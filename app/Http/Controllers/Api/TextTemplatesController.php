@@ -17,7 +17,7 @@ class TextTemplatesController extends Controller
      */
     public function index()
     {
-        return TextTemplate::with(['user', 'folder'])->orderBy('created_at', 'desc')->get();
+        return TextTemplate::with(['user', 'folder'])->orderBy('created_at', 'desc')->withTrashed()->get();
     }
 
     /**
@@ -44,9 +44,10 @@ class TextTemplatesController extends Controller
         ]);
 
         $user = Auth::user();
+        $data = $request->all();
         $template = TextTemplate::updateOrCreate(
             ['id' => isset($data['id'])? $data['id'] : null],
-            array_merge($request->all(), [
+            array_merge($data, [
                 'userId' => $user->id, 
             ])
         );
@@ -97,6 +98,6 @@ class TextTemplatesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return TextTemplate::find($id)->delete();
     }
 }

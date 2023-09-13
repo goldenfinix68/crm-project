@@ -30,6 +30,7 @@ export type TTextTemplate = {
     folder?: TTextTemplateFolder;
     user?: TUser;
     textMessage: string;
+    deleted_at?: string;
 };
 
 export type TCallHistory = {

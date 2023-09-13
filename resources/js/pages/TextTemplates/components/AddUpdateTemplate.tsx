@@ -35,11 +35,15 @@ import LoadingComponent from "../../../components/LoadingComponent";
 import Search from "antd/es/input/Search";
 import { TTextTemplate } from "../../../entities";
 interface Props {
-    folder?: string;
     template?: TTextTemplate;
+    isModalOpen: boolean;
+    handleClose: () => void;
 }
-const AddUpdateTemplateModal = ({ folder, template }: Props) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+const AddUpdateTemplateModal = ({
+    template,
+    isModalOpen,
+    handleClose,
+}: Props) => {
     const [isAttributePopoverOpen, setIsAttributePopoverOpen] = useState(false);
     const [form] = Form.useForm();
     const { folders, isLoading } = useTextTemplateFolders();
@@ -61,28 +65,22 @@ const AddUpdateTemplateModal = ({ folder, template }: Props) => {
         });
     };
     const resetFields = () => {
-        setIsModalOpen(false);
+        handleClose();
         form.resetFields();
     };
     useEffect(() => {
-        // if (template?.name) {
-        //     form.setFieldValue("name", template.name);
-        // } else {
-        //     form.resetFields();
-        // }
+        if (template?.name) {
+            form.setFieldsValue(template);
+        } else {
+            form.resetFields();
+        }
     }, [template]);
+
     if (isLoading) {
         return <LoadingComponent />;
     }
     return (
         <>
-            <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => setIsModalOpen(true)}
-            >
-                Add Template
-            </Button>
             <Modal
                 className="modal-activity"
                 open={isModalOpen}
