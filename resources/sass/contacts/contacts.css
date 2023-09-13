@@ -12136,8 +12136,10 @@ textarea.form-control-lg {
 
 .cell-hover .cell-hover-btn {
   display: none !important;
+  line-height: 0;
 }
 
 .cell-hover:hover .cell-hover-btn {
   display: inline !important;
+  line-height: 0;
 }/*# sourceMappingURL=contacts.css.map */
