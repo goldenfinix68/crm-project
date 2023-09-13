@@ -39,6 +39,7 @@ import ModalManageColumn from "./ModalManageColumn";
 import { TActivities } from "../ActivityEntities";
 import {
     activitiList,
+    useActivityType,
     useActivutyCustomField,
 } from "../../../api/query/activityQuery";
 
@@ -48,6 +49,7 @@ import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
 import DrawerUpdateActivity from "./DrawerEditActivitty";
 import ModalManageColumnFIeld from "./ModalManageColumnFIeld";
+import ComponentActivityTypeIcon from "../../Setup/Components/ComponentActivityTypeIcon";
 
 const rowSelection: TableRowSelection<TActivities> = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -136,6 +138,7 @@ const ActivityTable = () => {
         sort_field: "id",
         sort_order: "asc",
         status: "Active",
+        type: ["All"],
     });
 
     const { dataSource, isLoadingUsers, refetchUsers, isFetchingUsers } =
@@ -570,6 +573,16 @@ const ActivityTable = () => {
                   width: 300,
               }
             : {},
+        localTableColumn?.find((p: any) => p.title === "Type")?.title
+            ? {
+                  title: "Type",
+                  dataIndex: "type",
+                  index: localTableColumn?.find((p: any) => p.title === "Type")
+                      ?.id,
+                  //   sorter: true,
+                  width: 100,
+              }
+            : {},
     ];
 
     const [stateColumns, setStateColumns] = useState(colums);
@@ -661,6 +674,46 @@ const ActivityTable = () => {
         });
     };
 
+    const { dataType, isLoadingType } = useActivityType();
+    const onChangeTypeFilter = (val: any) => {
+        let setTypeValue: any = ["All"];
+        let listType = dataType?.data.map((item: any) => {
+            return item.type;
+        });
+        if (val === "All") {
+            setTypeValue = ["All"];
+        } else {
+            if (dataFilter.type.length > 0 && dataFilter.type[0] === "All") {
+                setTypeValue = [val];
+            } else {
+                setTypeValue = [...dataFilter.type];
+                setTypeValue.push(val);
+            }
+
+            if (listType.length === setTypeValue.length) {
+                setTypeValue = ["All"];
+            }
+        }
+        console.log("onChangeTypeFilter", setTypeValue);
+
+        let newTypeValue: any = {
+            ...dataFilter,
+            type: setTypeValue,
+        };
+        setDataFilter(newTypeValue);
+    };
+
+    const setActiveTypeFilter = (val: string) => {
+        let checked = false;
+        dataFilter.type.findIndex((element) => {
+            if (element === val) {
+                checked = true;
+            }
+        });
+
+        return checked ? "ant-radio-button-wrapper-checked-selected" : "";
+    };
+
     return (
         <>
             <Row className="activity-group-row">
@@ -739,31 +792,53 @@ const ActivityTable = () => {
                             marginBottom: 15,
                         }}
                     >
-                        <Radio.Group>
+                        <Radio.Group className="activity-type-filter">
                             <Tooltip title="All" placement="bottom">
-                                <Radio.Button value="all">All</Radio.Button>
+                                <Radio.Button
+                                    value="All"
+                                    onClick={() => onChangeTypeFilter("All")}
+                                    className={`${setActiveTypeFilter("All")}`}
+                                >
+                                    All
+                                </Radio.Button>
                             </Tooltip>
-                            <Tooltip title="Call" placement="bottom">
+                            {/* <Tooltip title="Call" placement="bottom">
                                 <Radio.Button value="default">
                                     <PhoneOutlined />
                                 </Radio.Button>
-                            </Tooltip>
-                            <Tooltip title="Task" placement="bottom">
-                                <Radio.Button value="task">
-                                    <AuditOutlined />
-                                </Radio.Button>
-                            </Tooltip>
-                            <Tooltip title="Meeting" placement="bottom">
-                                <Radio.Button value="meeting">
-                                    <GroupOutlined />
-                                </Radio.Button>
-                            </Tooltip>
-                            <Tooltip title="Demo" placement="bottom">
-                                <Radio.Button value="demo">
-                                    <AuditOutlined />
-                                </Radio.Button>
-                            </Tooltip>
+                            </Tooltip> */}
+
+                            {dataType?.data &&
+                                dataType?.data.map(
+                                    (item: any, key: React.Key) => {
+                                        return (
+                                            <Tooltip
+                                                title={item?.type}
+                                                placement="bottom"
+                                                key={key}
+                                            >
+                                                <Radio.Button
+                                                    // className="ant-radio-button-wrapper-checked"
+                                                    className={`${setActiveTypeFilter(
+                                                        item?.type
+                                                    )}`}
+                                                    value={item?.type}
+                                                    onClick={() =>
+                                                        onChangeTypeFilter(
+                                                            item?.type
+                                                        )
+                                                    }
+                                                >
+                                                    {ComponentActivityTypeIcon(
+                                                        item?.icon
+                                                    )}
+                                                </Radio.Button>
+                                            </Tooltip>
+                                        );
+                                    }
+                                )}
                         </Radio.Group>
+
                         <Radio.Group>
                             <Radio.Button value="Overdue">Overdue</Radio.Button>
                             <Radio.Button value="Today">Today</Radio.Button>
