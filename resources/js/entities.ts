@@ -84,6 +84,7 @@ export type TDeal = {
 
 export type TUpdateOwner = {
     firstName: string;
+    id: any;
 };
 export type TUpdate = {
     id: string;
