@@ -12132,4 +12132,12 @@ textarea.form-control-lg {
   width: 100%;
   display: flex !important;
   justify-content: center !important;
+}
+
+.cell-hover .cell-hover-btn {
+  display: none !important;
+}
+
+.cell-hover:hover .cell-hover-btn {
+  display: inline !important;
 }/*# sourceMappingURL=contacts.css.map */

@@ -57,6 +57,7 @@ interface ContactsComponentsManageColumnProps {
 interface ListItem {
     id: string;
     title: string;
+    key: string;
 }
 
 interface ListProps {
@@ -172,7 +173,12 @@ const ContactsComponentsManageColumn: React.FC<
         },
     });
 
-    const onChange = (id: Number, value: string, e: CheckboxChangeEvent) => {
+    const onChange = (
+        id: Number,
+        value: string,
+        key: string,
+        e: CheckboxChangeEvent
+    ) => {
         console.log(`checked = ${e.target.checked}`, "id: " + id);
 
         let items = Array.from(listData);
@@ -181,7 +187,7 @@ const ContactsComponentsManageColumn: React.FC<
             !items.find((item) => item.id === id.toString()) &&
             e.target.checked
         ) {
-            items.push({ id: id.toString(), title: value });
+            items.push({ id: id.toString(), title: value, key: key });
         } else if (
             items.find((item) => item.id === id.toString()) &&
             !e.target.checked
@@ -347,6 +353,7 @@ const ContactsComponentsManageColumn: React.FC<
                                                         onChange(
                                                             index,
                                                             value[1],
+                                                            value[0],
                                                             e
                                                         );
                                                     }}

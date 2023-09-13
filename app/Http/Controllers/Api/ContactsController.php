@@ -315,4 +315,10 @@ class ContactsController extends Controller
         );
         return response()->json(['success' => true, 'data' => $data], 200);
     }
+
+    public function get_contacts_table_column(Request $request)
+    {
+        $contacts_table_column= ContactTableColumn::where('user_id', auth()->user()->id)->get();
+        return response()->json($contacts_table_column, 200);
+    }
 }

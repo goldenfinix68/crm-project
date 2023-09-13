@@ -163,7 +163,12 @@ export const useContactColumnSetting = async (items: any) => {
     });
     const data = await response.json();
     if (!response.ok) {
-        throw new Error(data.message || "Failed to add deal");
+        throw new Error(data.message || "Failed to save");
     }
+
+    notification.success({
+        message: "Success",
+        description: "Successfully Save",
+    });
     return data;
 };

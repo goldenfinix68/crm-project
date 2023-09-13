@@ -79,11 +79,17 @@ const ContactsComponentsTableEditableCell = ({
         }
     };
 
+    useEffect(() => {
+        console.log("check_data", currentBtnActive, record.id);
+        console.log("check_data", currentActiveType, type);
+        console.log("check_data", currentActiveCell, type + ": " + record.id);
+    }, []);
+
     return (
         <>
             {recordType ? (
                 <div
-                    className="cell"
+                    className="cell cell-hover"
                     style={{
                         display: "flex",
                         justifyContent: "space-between",
@@ -105,56 +111,55 @@ const ContactsComponentsTableEditableCell = ({
                 >
                     {recordType}
 
-                    {((currentBtnActive == record.id &&
+                    {/* {((currentBtnActive == record.id &&
                         currentActiveType == type) ||
-                        currentActiveCell == type + ": " + record.id) && (
-                        <Popconfirm
-                            title={type.charAt(0).toUpperCase() + type.slice(1)}
-                            icon={null}
-                            description={
-                                <Input
-                                    autoFocus
-                                    value={updateVal ?? ""}
-                                    onBlur={(value) => {
-                                        setCurrentBtnActive("");
-                                    }}
-                                    onChange={(e) => {
-                                        console.log("value", e.target.value);
-                                        setUpdateValue(e.target.value);
-                                    }}
-                                />
-                            }
-                            onConfirm={() => {
-                                handleFinish(record, updateVal);
-                            }}
-                            onCancel={() => {
-                                setCurrentActiveCell("");
-                            }}
-                            okText="Save"
-                            cancelText="No"
-                        >
-                            <Button
-                                style={{
-                                    margin: "2px",
-                                    padding: "8px",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    backgroundColor: "white",
-                                }}
-                                type="text"
-                                onClick={() => {
-                                    setCurrentActiveCell(
-                                        type + ": " + record.id
-                                    );
-                                }}
-                                onBlur={() => {
+                        currentActiveCell == type + ": " + record.id) && ( */}
+                    <Popconfirm
+                        title={type.charAt(0).toUpperCase() + type.slice(1)}
+                        icon={null}
+                        description={
+                            <Input
+                                autoFocus
+                                value={updateVal ?? ""}
+                                onBlur={(value) => {
                                     setCurrentBtnActive("");
                                 }}
-                            >
-                                {<FontAwesomeIcon icon={faPen} />}
-                            </Button>
-                        </Popconfirm>
-                    )}
+                                onChange={(e) => {
+                                    console.log("value", e.target.value);
+                                    setUpdateValue(e.target.value);
+                                }}
+                            />
+                        }
+                        onConfirm={() => {
+                            handleFinish(record, updateVal);
+                        }}
+                        onCancel={() => {
+                            setCurrentActiveCell("");
+                        }}
+                        okText="Save"
+                        cancelText="No"
+                    >
+                        <Button
+                            style={{
+                                margin: "2px",
+                                padding: "8px",
+                                display: "flex",
+                                alignItems: "center",
+                                backgroundColor: "white",
+                            }}
+                            className="cell-hover-btn"
+                            type="text"
+                            onClick={() => {
+                                setCurrentActiveCell(type + ": " + record.id);
+                            }}
+                            onBlur={() => {
+                                setCurrentBtnActive("");
+                            }}
+                        >
+                            {<FontAwesomeIcon icon={faPen} />}
+                        </Button>
+                    </Popconfirm>
+                    {/* // )} */}
                 </div>
             ) : (
                 (currentActiveCell != type + ": " + record.id ||
@@ -188,7 +193,7 @@ const ContactsComponentsTableEditableCell = ({
                         cancelText="No"
                     >
                         <div
-                            className="cell"
+                            className="cell cell-hover"
                             style={{
                                 display: "flex",
                                 justifyContent: "flex-end",
@@ -229,12 +234,16 @@ const ContactsComponentsTableEditableCell = ({
                                     );
                                 }}
                             >
-                                {((currentBtnActive == record.id &&
+                                {/* {((currentBtnActive == record.id &&
                                     currentActiveType == type) ||
                                     currentActiveCell ==
-                                        type + ": " + record.id) && (
-                                    <FontAwesomeIcon icon={faPen} />
-                                )}
+                                        type + ": " + record.id) && ( */}
+
+                                <FontAwesomeIcon
+                                    icon={faPen}
+                                    className="cell-hover-btn"
+                                />
+                                {/* )}{" "} */}
                             </Button>
                         </div>
                     </Popconfirm>
