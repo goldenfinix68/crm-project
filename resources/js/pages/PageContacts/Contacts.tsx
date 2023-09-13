@@ -151,7 +151,7 @@ const Contacts = () => {
 
     useEffect(() => {
         if (listData.length > 0) {
-            console.log("listData", listData);
+            console.log("dsfsdfs");
         }
     }, [listData]);
 
@@ -1263,6 +1263,7 @@ const Contacts = () => {
                 setIsModalManageColumnOpen={setIsModalManageColumnOpen}
                 listData={listData}
                 setListData={setListData}
+                refetchContactsTable={refetchContactsTable}
             />
 
             <ContactsComponentsUpdate
