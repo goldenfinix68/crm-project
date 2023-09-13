@@ -338,6 +338,7 @@ const TextBox = ({ data }: { data: TWallData }) => {
 };
 
 const DealBox = ({ data }: { data: TWallData }) => {
+    console.log("deal", data.deal);
     return (
         <Card
             title={
@@ -349,9 +350,9 @@ const DealBox = ({ data }: { data: TWallData }) => {
                         }}
                         size={20}
                     >
-                        {data.deal?.owner.charAt(0)}
+                        {data.deal?.owner1?.firstName.charAt(0)}
                     </Avatar>{" "}
-                    {`Deal created - by you`}
+                    {`Deal created - by ` + data.deal?.owner1?.firstName}
                 </Typography.Text>
             }
             bordered={false}
@@ -405,7 +406,9 @@ const Log = ({ data }: { data: TWallData }) => {
                     >
                         {data.update?.owner?.firstName.charAt(0)}
                     </Avatar>{" "}
-                    {data.update?.type + "  - by you"}
+                    {data.update?.type +
+                        "  - by " +
+                        data.update?.owner?.firstName}
                 </Typography.Text>
             }
             bordered={false}
@@ -481,7 +484,7 @@ const File = ({ data }: { data: TWallData }) => {
                     >
                         {data.update?.uploaded_by?.firstName.charAt(0)}
                     </Avatar>{" "}
-                    {"File Added - by you"}
+                    {"File Added - by " + data.update?.uploaded_by?.firstName}
                 </Typography.Text>
             }
             bordered={false}
