@@ -673,11 +673,14 @@
     border-color: #d9d9d9 !important;
     color: black;
 }
+
 .activity-type-filter .ant-radio-button-wrapper-checked-selected {
     border-color: #d9d9d9 !important;
     background: #1677ff;
     color: white;
 }
+
 .activity-type-filter .ant-radio-button-wrapper-checked-selected:hover {
     color: white !important;
-} /*# sourceMappingURL=activity.css.map */
+}
+/*# sourceMappingURL=activity.css.map */

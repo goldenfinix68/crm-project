@@ -111,14 +111,25 @@ const ModalWonDeal = ({
             open={isModalOpenAdd}
             onCancel={handleCancelAdd}
             width={600}
-            footer={null}
+            // footer={null}
             title={null}
             closable={false}
-            // footer={[
-            //     <Button type="primary">Save</Button>,
-            //     <Button type="primary">Save and add other</Button>,
-            //     <Button>Cancel</Button>,
-            // ]}
+            footer={
+                <>
+                    <Button
+                        className="m-r-xs button-success-solid "
+                        type="primary"
+                        htmlType="submit"
+                        onClick={() => {
+                            form.submit();
+                        }}
+                    >
+                        Save
+                    </Button>
+
+                    <Button onClick={handleCancelAdd}>Cancel</Button>
+                </>
+            }
         >
             <Form
                 form={form}
@@ -129,7 +140,7 @@ const ModalWonDeal = ({
                 onFinish={onFinish}
                 autoComplete="off"
             >
-                <div className="modal-header ">
+                <div className="modal-header">
                     <Typography.Title level={5} style={{ color: "white" }}>
                         Won Deal
                     </Typography.Title>
@@ -181,7 +192,7 @@ const ModalWonDeal = ({
                         </Form.Item>
                     </Col>
                 </Row>
-                <div className="modal-footer">
+                {/* <div className="modal-footer">
                     <Button
                         className="m-r-xs button-success-solid "
                         type="primary"
@@ -191,7 +202,7 @@ const ModalWonDeal = ({
                     </Button>
 
                     <Button onClick={handleCancelAdd}>Cancel</Button>
-                </div>
+                </div> */}
             </Form>
         </Modal>
     );

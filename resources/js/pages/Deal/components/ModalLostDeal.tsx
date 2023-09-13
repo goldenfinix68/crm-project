@@ -97,14 +97,25 @@ const ModalLostDeal = ({
             open={isModalOpenAdd1}
             onCancel={handleCancelAdd1}
             width={600}
-            footer={null}
+            // footer={null}
             title={null}
             closable={false}
-            // footer={[
-            //     <Button type="primary">Save</Button>,
-            //     <Button type="primary">Save and add other</Button>,
-            //     <Button>Cancel</Button>,
-            // ]}
+            footer={
+                <>
+                    {" "}
+                    <Button
+                        className="m-r-xs button-danger-solid "
+                        type="primary"
+                        htmlType="submit"
+                        onClick={() => {
+                            form.submit();
+                        }}
+                    >
+                        Save
+                    </Button>
+                    <Button onClick={handleCancelAdd1}>Cancel</Button>
+                </>
+            }
         >
             <Form
                 form={form}
@@ -196,7 +207,7 @@ const ModalLostDeal = ({
                         </Form.Item>
                     </Col>
                 </Row>
-                <div className="modal-footer">
+                {/* <div className="modal-footer">
                     <Button
                         className="m-r-xs button-danger-solid "
                         type="primary"
@@ -206,7 +217,7 @@ const ModalLostDeal = ({
                     </Button>
 
                     <Button onClick={handleCancelAdd1}>Cancel</Button>
-                </div>
+                </div> */}
             </Form>
         </Modal>
     );
