@@ -113,7 +113,7 @@ class Contact extends Model
 
     public function deals()
     {
-        return $this->hasMany(\App\Models\Deal::class, 'contactId', 'id');
+        return $this->hasMany(\App\Models\Deal::class, 'contactId', 'id')->with('owner1');
     }
 
     public function updates()
