@@ -922,7 +922,3 @@ const ActivityTable = () => {
 };
 
 export default ActivityTable;
-
-const CustomEditableColumn: React.FC = () => {
-    return <></>;
-};
