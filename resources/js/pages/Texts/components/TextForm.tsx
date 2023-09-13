@@ -15,9 +15,10 @@ import {
     Select,
     DatePicker,
     Popover,
+    List,
 } from "antd";
 
-import { CloseOutlined } from "@ant-design/icons";
+import { CaretDownOutlined, CloseOutlined } from "@ant-design/icons";
 import moment from "moment";
 
 import { useMutation } from "react-query";
@@ -25,6 +26,8 @@ import { sendTextMutation } from "../../../api/mutation/useTextMutation";
 import queryClient from "../../../queryClient";
 import ContactContext from "../../ContactView/context";
 import { useLoggedInUser } from "../../../api/query/userQuery";
+import Search from "antd/es/input/Search";
+import { useTextTemplates } from "../../../api/query/textTemplateQuery";
 interface Props {
     handleSubmit: () => void;
     handleCancel: () => void;
@@ -36,6 +39,7 @@ const TextForm = ({ handleSubmit, handleCancel }: Props) => {
     const [isScheduledMessage, setIsScheduledMessage] = useState(false);
     const { user, isLoading } = useLoggedInUser();
     const schedule = Form.useWatch("schedule", form);
+    const [isTemplatePopoverOpen, setIsTemplatePopoverOpen] = useState(false);
     console.log(schedule);
     const resetFields = () => {
         handleCancel();
@@ -134,6 +138,47 @@ const TextForm = ({ handleSubmit, handleCancel }: Props) => {
                 ></Input.TextArea>
             </Form.Item>
 
+            <Space
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    width: "100%",
+                    marginTop: "-20px",
+                    marginBottom: "20px",
+                }}
+            >
+                <Typography.Text>Count: 0</Typography.Text>
+                <Popover
+                    content={
+                        <AddAttributeContent
+                            handleSelect={(value) => {
+                                form.setFieldValue("message", value);
+                                setIsTemplatePopoverOpen(false);
+                            }}
+                        />
+                    }
+                    title={
+                        <Button
+                            type="link"
+                            style={{ padding: 0 }}
+                            onClick={() => setIsTemplatePopoverOpen(false)}
+                        >
+                            Cancel
+                        </Button>
+                    }
+                    trigger={"click"}
+                    open={isTemplatePopoverOpen}
+                >
+                    <Button
+                        type="link"
+                        onClick={() => setIsTemplatePopoverOpen(true)}
+                    >
+                        Use Template <CaretDownOutlined />
+                    </Button>
+                </Popover>
+            </Space>
+
             {error ? (
                 <center>
                     <Typography.Text style={{ color: "red" }}>
@@ -192,6 +237,58 @@ const TextForm = ({ handleSubmit, handleCancel }: Props) => {
                 <Button onClick={resetFields}>Cancel</Button>
             </Space>
         </Form>
+    );
+};
+
+const AddAttributeContent = ({ handleSelect }) => {
+    const { templates, isLoading } = useTextTemplates();
+    return (
+        <Space direction="vertical" size={"large"}>
+            <Search placeholder="Search" />
+
+            <List
+                dataSource={templates?.filter(
+                    (template) => !template.deleted_at
+                )}
+                style={{ maxHeight: "200px", overflowY: "auto" }}
+                renderItem={(item) => (
+                    <div
+                        style={{
+                            cursor: "pointer", // Add pointer cursor
+                            backgroundColor: "white", // Set the default background color
+                            padding: "8px",
+
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = "blue";
+                            e.currentTarget.style.color = "white"; // Change background color on hover
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = "white";
+                            e.currentTarget.style.color = "black"; // Restore default background color on hover out
+                        }}
+                        onClick={() => {
+                            handleSelect(item.textMessage);
+                        }}
+                    >
+                        <Typography.Text strong>{item.name}</Typography.Text>
+                        <Button
+                            type="link"
+                            style={{ padding: 0 }}
+                            onClick={() => {
+                                // setTemplateFolder(undefined);
+                                // setIsCreateFolderModalOpen(true);
+                            }}
+                        >
+                            Preview
+                        </Button>
+                    </div>
+                )}
+            />
+        </Space>
     );
 };
 
