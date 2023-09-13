@@ -34,7 +34,7 @@ interface Props {
 }
 const TextTemplatesContent = ({ folders }: Props) => {
     const { route } = useParams();
-    const folder = route ?? "all";
+    const folder = route ?? "All";
     const navigate = useNavigate();
     const [isAddEditTemplateOpen, setIsAddEditTemplateOpen] = useState(false);
     const [template, setTemplate] = useState<TTextTemplate | undefined>();

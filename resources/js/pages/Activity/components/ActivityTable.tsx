@@ -640,13 +640,13 @@ const ActivityTable = () => {
             );
 
             // remove index variable
-            sortedColumns.forEach(function (x) {
-                delete x.index;
-            });
+            // sortedColumns.forEach(function (x) {
+            //     delete x.index;
+            // });
 
             setStateColumns(sortedColumns);
             // console.log("dataCustomField", customCols);
-            // console.log("dataCustomField", sortedColumns);
+            console.log("dataCustomField", sortedColumns);
             // console.log("dataCustomField", dataCustomField?.data);
         }
         // console.log("dataSource", dataSource?.data?.data);

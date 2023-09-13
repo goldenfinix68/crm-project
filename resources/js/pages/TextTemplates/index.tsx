@@ -31,7 +31,7 @@ import { TContact, TTextTemplateFolder } from "../../entities";
 import { useNavigate, useParams } from "react-router-dom";
 import LoadingComponent from "../../components/LoadingComponent";
 import { useMutation } from "react-query";
-import { deleteTextTemplateMutation } from "../../api/mutation/useTextTemplateMutation";
+import { deleteTextTemplateFolderMutation } from "../../api/mutation/useTextTemplateMutation";
 import ConfirmModal from "../../components/ConfirmModal";
 import queryClient from "../../queryClient";
 import TextTemplatesContent from "./components/TextTemplatesContent";
@@ -41,7 +41,7 @@ import { useTextTemplateFolders } from "../../api/query/textTemplateQuery";
 const TextTemplates = () => {
     const { route } = useParams();
     const navigate = useNavigate();
-    const [menu, setMenu] = useState(route ?? "all");
+    const [menu, setMenu] = useState(route ?? "All");
     const [templateFolder, setTemplateFolder] = useState<
         TTextTemplateFolder | undefined
     >();
@@ -82,7 +82,7 @@ const TextTemplates = () => {
                                 <Menu
                                     mode="vertical"
                                     onClick={(e) => {
-                                        if (e.key == "all") {
+                                        if (e.key == "All") {
                                             navigate("/text-templates");
                                         } else {
                                             navigate(
@@ -150,7 +150,7 @@ const MenuItemHover = ({ template, handleRename }) => {
     const navigate = useNavigate();
 
     const deleteTemplate = useMutation(
-        (id: string) => deleteTextTemplateMutation(template.id),
+        (id: string) => deleteTextTemplateFolderMutation(template.id),
         {
             onSuccess: () => {
                 queryClient.invalidateQueries("textTemplateFolders");

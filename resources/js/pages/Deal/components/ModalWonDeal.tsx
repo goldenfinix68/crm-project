@@ -63,6 +63,7 @@ const ModalWonDeal = ({
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     const { contacts, isLoading } = useContactsAll();
+    const [showFireWorks, setShowFireWorks] = useState(false);
     const [form] = useForm();
     const onFinish = (values: any) => {
         mutation.mutate({
@@ -84,10 +85,25 @@ const ModalWonDeal = ({
                     message: "Deal",
                     description: "Updated Successfully",
                 });
+                form.resetFields();
                 handleOkAdd();
+                queryClient.invalidateQueries("deals_by_id");
+                const elements = document.getElementsByClassName("pyro");
+                elements[0].classList.remove("hide");
+                setShowFireWorks(true);
             }
         },
     });
+
+    React.useEffect(() => {
+        if (showFireWorks) {
+            setTimeout(() => {
+                const elements = document.getElementsByClassName("pyro");
+                elements[0].classList.add("hide");
+                setShowFireWorks(false);
+            }, 1000);
+        }
+    }, [showFireWorks]);
 
     return (
         <Modal

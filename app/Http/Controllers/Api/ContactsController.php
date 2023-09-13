@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Contact;
 use App\Models\ContactUpdate;
 use App\Models\ContactFavorite;
+use App\Models\ContactTableColumn;
 use App\Http\Controllers\Controller;
 use App\Models\ContactFile;
 use App\Models\ContactLog;
@@ -300,5 +301,24 @@ class ContactsController extends Controller
         }
 
         return response()->json($ret, 200);
+    }
+
+    public function save_column_setting(Request $request)
+    {
+        $data = ContactTableColumn::updateOrCreate(['user_id' => auth()->user()->id],
+            [ 
+            'table_columns' => $request->table_columns,
+            // 'user_id' => $request->user_id
+            
+        ],
+           
+        );
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
+
+    public function get_contacts_table_column(Request $request)
+    {
+        $contacts_table_column= ContactTableColumn::where('user_id', auth()->user()->id)->get();
+        return response()->json($contacts_table_column, 200);
     }
 }

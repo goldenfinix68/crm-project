@@ -79,3 +79,28 @@ export const useContactsAll = (filter?: any) => {
         refetch,
     };
 };
+
+export const useContactsTableColumn = () => {
+    const { data, isLoading, isError, refetch } = useQuery(
+        "ContactTableColumn",
+        async () => {
+            const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+            const response = await axios.get(
+                `/api/contacts/get_contacts_table_column`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            );
+            return response.data;
+        }
+    );
+
+    return {
+        contactsTable: data,
+        isLoadingContactsTable: isLoading,
+        isErrorContactsTable: isError,
+        refetchContactsTable: refetch,
+    };
+};

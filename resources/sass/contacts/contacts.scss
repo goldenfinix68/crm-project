@@ -182,3 +182,17 @@
     display: flex !important;
     justify-content: center !important;
 }
+
+.cell-hover {
+    .cell-hover-btn {
+        display: none !important;
+        line-height: 0;
+    }
+}
+
+.cell-hover:hover {
+    .cell-hover-btn {
+        display: inline !important;
+        line-height: 0;
+    }
+}

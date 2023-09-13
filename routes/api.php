@@ -26,6 +26,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/forgotpassword_verify', 'App\Http\Controllers\Api\AuthController@forgotpassword_verify');
     Route::post('/forgot_password_set_password', 'App\Http\Controllers\Api\AuthController@forgot_password_set_password');
     Route::get('/contacts/get_favorite', 'App\Http\Controllers\Api\ContactsController@get_favorite');
+    Route::get('/contacts/get_contacts_table_column', 'App\Http\Controllers\Api\ContactsController@get_contacts_table_column');
     Route::resource('/users', 'App\Http\Controllers\Api\UsersController');
     Route::resource('/contacts', 'App\Http\Controllers\Api\ContactsController');
     Route::post('/contacts/delete', 'App\Http\Controllers\Api\ContactsController@delete_contacts');
@@ -34,6 +35,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/contacts/del_favorite', 'App\Http\Controllers\Api\ContactsController@del_favorite');
     Route::post('/contacts/activity_log', 'App\Http\Controllers\Api\ContactsController@activity_log');
     Route::post('/contacts/add_files', 'App\Http\Controllers\Api\ContactsController@add_files');
+    Route::post('/contacts/save_column_setting', 'App\Http\Controllers\Api\ContactsController@save_column_setting');
+
 
 
     Route::resource('/contact-types', 'App\Http\Controllers\Api\ContactTypesController');

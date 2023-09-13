@@ -55,10 +55,10 @@ const ConfirmModal = ({
                         onClick={() => handleYes()}
                         loading={loading}
                     >
-                        Save
+                        Yes
                     </Button>
 
-                    <Button onClick={handleNo}>Cancel</Button>
+                    <Button onClick={handleNo}>No</Button>
                 </Space>
             </Space>
         </Modal>

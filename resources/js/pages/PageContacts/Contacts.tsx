@@ -57,7 +57,9 @@ import ContactsComponentsAddContacts from "./Components/ContactsComponentsAddCon
 import ContactsComponentsFilter from "./Components/ContactsComponentsFilter";
 import ContactsComponentsManageColumn from "./Components/ContactsComponentsManageColumn";
 import { useContactsAll } from "../../api/query/contactsQuery";
+import { useContactsTableColumn } from "../../api/query/contactsQuery";
 import { useUserFavorites } from "../../api/query/userQuery";
+
 import { useMutation, useQuery } from "react-query";
 import { TContact } from "../../entities";
 import { deleteContactMutation } from "../../api/mutation/useContactMutation";
@@ -91,6 +93,7 @@ interface DataType {
 interface ListItem {
     id: string;
     title: string;
+    key: string;
 }
 
 const { Option } = Select;
@@ -114,6 +117,8 @@ const Contacts = () => {
     const { contacts, isLoading, refetch } = useContactsAll(filter);
     const { favorites, isLoadingFavorites, refetchFavorites } =
         useUserFavorites();
+    const { contactsTable, isLoadingContactsTable, refetchContactsTable } =
+        useContactsTableColumn();
     const [isModalOpen, setisModalOpen] = useState(false);
     const [isModalManageColumnOpen, setIsModalManageColumnOpen] =
         useState(false);
@@ -480,6 +485,26 @@ const Contacts = () => {
             }
         }
     }, [favorites]);
+
+    const [orderedColumns, setOrderedColumns] = useState<any>();
+
+    useEffect(() => {
+        if (contactsTable && contactsTable[0]) {
+            console.log("contactstable", contactsTable);
+
+            let data = JSON.parse(contactsTable[0].table_columns);
+
+            var newOrderedColumns = data.map((item: any) => {
+                return columns.find(
+                    (column) => column.key === Object.values(item)[2]
+                );
+            });
+
+            console.log("newOrderedColumns", newOrderedColumns);
+            console.log("newOrderedColumns", columns);
+            setOrderedColumns(newOrderedColumns);
+        }
+    }, [contactsTable]);
 
     const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -1217,7 +1242,8 @@ const Contacts = () => {
                             ...rowSelection,
                         }}
                         rowKey={(record) => record.id}
-                        columns={columns}
+                        columns={orderedColumns ? orderedColumns : columns}
+                        // columns={columns}
                         dataSource={contacts}
                         scroll={{ x: 1300 }}
                     />

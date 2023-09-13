@@ -41,8 +41,11 @@ import {
     HolderOutlined,
 } from "@ant-design/icons";
 import React, { useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import ContactsComponentsAddCustomField from "./ContactsComponentsAddCustomField";
+import { useContactColumnSetting } from "../../../api/mutation/useContactMutation";
+import { json } from "react-router-dom";
 
 interface ContactsComponentsManageColumnProps {
     isModalManageColumnOpen: boolean;
@@ -54,6 +57,7 @@ interface ContactsComponentsManageColumnProps {
 interface ListItem {
     id: string;
     title: string;
+    key: string;
 }
 
 interface ListProps {
@@ -156,7 +160,25 @@ const ContactsComponentsManageColumn: React.FC<
         country: "Country",
     };
 
-    const onChange = (id: Number, value: string, e: CheckboxChangeEvent) => {
+    const saveColumnSetting = useMutation(useContactColumnSetting, {
+        onSuccess: () => {
+            console.log("success");
+            // queryClient.invalidateQueries("contacts");
+            // //queryClient.invalidateQueries("contactTypesAll");
+            // form.resetFields();
+            // if (!saveAndAdd) {
+            //     setIsModalOpen(false);
+            // }
+            // queryClient.invalidateQueries("contacts");
+        },
+    });
+
+    const onChange = (
+        id: Number,
+        value: string,
+        key: string,
+        e: CheckboxChangeEvent
+    ) => {
         console.log(`checked = ${e.target.checked}`, "id: " + id);
 
         let items = Array.from(listData);
@@ -165,7 +187,7 @@ const ContactsComponentsManageColumn: React.FC<
             !items.find((item) => item.id === id.toString()) &&
             e.target.checked
         ) {
-            items.push({ id: id.toString(), title: value });
+            items.push({ id: id.toString(), title: value, key: key });
         } else if (
             items.find((item) => item.id === id.toString()) &&
             !e.target.checked
@@ -190,6 +212,15 @@ const ContactsComponentsManageColumn: React.FC<
         }
 
         setListData(items);
+    };
+
+    const handleFinish = () => {
+        console.log("asdasda", JSON.stringify(listData));
+        // if (record) {
+        saveColumnSetting.mutate({ table_columns: JSON.stringify(listData) });
+        // } else {
+        //     saveColumnSetting.mutate(values);
+        // }
     };
 
     const DraggableItem: React.FC<DraggableItemProps> = ({ item, index }) => (
@@ -322,6 +353,7 @@ const ContactsComponentsManageColumn: React.FC<
                                                         onChange(
                                                             index,
                                                             value[1],
+                                                            value[0],
                                                             e
                                                         );
                                                     }}
@@ -1671,7 +1703,11 @@ const ContactsComponentsManageColumn: React.FC<
                         </Button>
                     </Col>
                     <Col md={12}>
-                        <Button className="m-r-xs" type="primary">
+                        <Button
+                            className="m-r-xs"
+                            type="primary"
+                            onClick={() => handleFinish()}
+                        >
                             Save
                         </Button>
 
