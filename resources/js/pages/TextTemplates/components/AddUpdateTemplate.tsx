@@ -47,6 +47,7 @@ const AddUpdateTemplateModal = ({
     const [isAttributePopoverOpen, setIsAttributePopoverOpen] = useState(false);
     const [form] = Form.useForm();
     const { folders, isLoading } = useTextTemplateFolders();
+    const textMessage = Form.useWatch("textMessage", form);
 
     const createTemplate = useMutation(createTextTemplateMutation, {
         onSuccess: () => {
@@ -185,7 +186,9 @@ const AddUpdateTemplateModal = ({
                                 marginBottom: "20px",
                             }}
                         >
-                            <Typography.Text>Count: 0</Typography.Text>
+                            <Typography.Text>
+                                Count: {textMessage?.length ?? 0}
+                            </Typography.Text>
                             <Popover
                                 content={
                                     <AddAttributeContent

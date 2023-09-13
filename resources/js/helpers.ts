@@ -42,3 +42,22 @@ export function getTimeAgo(dateString: string) {
 
     return timeAgo;
 }
+
+export function replacePlaceholders(inputString, contact) {
+    // Use a regular expression to find all placeholders in the inputString
+    const regex = /{{(.*?)}}/g;
+
+    // Replace each placeholder with the corresponding value from the contact object
+    const replacedString = inputString.replace(regex, (match, placeholder) => {
+        // Remove any leading/trailing spaces from the placeholder
+        const trimmedPlaceholder = placeholder.trim();
+
+        // Use the trimmed placeholder to access the value from the contact object
+        const value = contact[trimmedPlaceholder];
+
+        // If the value is defined, return it; otherwise, return an empty string
+        return value !== undefined ? value : "";
+    });
+
+    return replacedString;
+}
