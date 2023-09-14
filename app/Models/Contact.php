@@ -143,6 +143,11 @@ class Contact extends Model
         return $this->hasMany(\App\Models\ContactLog::class, 'contact_id', 'id')->with('owner');
     }
 
+    public function activity()
+    {
+        return $this->hasMany(\App\Models\Activity::class, 'contact_id', 'id')->with('owner');
+    }
+
     public function files()
     {
         return $this->hasMany(\App\Models\ContactFile::class, 'contact_id', 'id')->with('uploaded_by');
@@ -208,6 +213,18 @@ class Contact extends Model
             ];
         });
 
+        $activity = $this->activity->map(function ($data) {
+            $createdAt = Carbon::parse($data->created_at);
+            return [
+                'type' => 'activity',
+                'date' => $data->created_at,
+                'day' => $createdAt->format('j'),
+                'month' => $createdAt->format('F'),
+                'year' => $createdAt->format('Y'),
+                'activity' => $data,
+            ];
+        });
+
         $updates = $this->updates->map(function ($data) {
             $createdAt = Carbon::parse($data->created_at);
             return [
@@ -242,7 +259,7 @@ class Contact extends Model
             ];
         });
 
-        $data = $data->merge($notes)->merge($texts)->merge($deals)->merge($updates)->merge($log)->merge($files)->merge($call);
+        $data = $data->merge($notes)->merge($texts)->merge($deals)->merge($updates)->merge($log)->merge($files)->merge($call)->merge($activity);
 
         // Sort the combined data array based on the 'date' in ascending order
         $sortedData = $data->sortByDesc('date')->values()->all();

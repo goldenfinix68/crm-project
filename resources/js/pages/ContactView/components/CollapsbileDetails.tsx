@@ -22,7 +22,7 @@ const CollapsibleDetails = () => {
 
     const [getWon, setGetWon] = useState(0);
     const [getWonTotal, setGetWonTotal] = useState(0);
-
+    const [getActivity, setGetActivity] = useState(0);
     useEffect(() => {
         if (contact) {
             contact.wall?.every((x) => {
@@ -39,7 +39,12 @@ const CollapsibleDetails = () => {
 
             var won = 0;
             var won_total = 0;
+
+            var activity = 0;
             contact.wall?.forEach((x) => {
+                if (x.type == "activity") {
+                    activity++;
+                }
                 if (x.type == "deal") {
                     if (x.deal?.status == "Open") {
                         var a: string | undefined = x.deal?.value;
@@ -58,6 +63,7 @@ const CollapsibleDetails = () => {
 
             setGetWon(won);
             setGetWonTotal(won_total);
+            setGetActivity(activity);
         }
     }, [contact]);
     const onChange = (key: string | string[]) => {
@@ -89,7 +95,7 @@ it can be found as a welcome guest in many households across the world.
                         {getWon} (${getWonTotal})
                     </Descriptions.Item>
                     <Descriptions.Item label="Activities">
-                        0/3
+                        {getActivity}
                     </Descriptions.Item>
                 </Descriptions>
             ),

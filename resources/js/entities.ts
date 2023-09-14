@@ -116,7 +116,8 @@ export type TWallData = {
         | "deal"
         | "update"
         | "activity log"
-        | "files";
+        | "files"
+        | "activity";
     note?: TNote;
     text?: TText;
     deal?: TDeal;
