@@ -111,6 +111,7 @@ const ModalAddActivity = ({
     const [form] = Form.useForm();
     const [formDynamic] = Form.useForm();
     const [calendarOptions, setCalendarOptions] = useState(false);
+    const [setFollowerValue, setSetFollowerValue] = useState([]);
 
     const calendar = useRef();
 
@@ -130,6 +131,7 @@ const ModalAddActivity = ({
                 ? dayjs(values.end_time).format("HH:mm")
                 : undefined,
             custom_fields: customFieldsData,
+            followers: setFollowerValue,
         };
 
         if (type === "Save-Close") {
@@ -167,6 +169,7 @@ const ModalAddActivity = ({
                 end: dayjs(moment().format("YYYY/MM/DD")).format("YYYY-MM-DD"),
             },
         ]);
+        setSetFollowerValue([]);
     };
 
     const addActivity = useMutation(addActivityMutation, {
@@ -186,6 +189,7 @@ const ModalAddActivity = ({
 
     const halderAfterClose = () => {
         setCalendarOptions(false);
+        handleReset();
     };
 
     const [eventCalendarData, setEventCalendarData] = useState([
@@ -351,15 +355,22 @@ const ModalAddActivity = ({
     };
 
     const { dataCustomField, isLoadingCustomField } = useActivutyCustomField();
-
     const [customFieldsData, setCustomFieldsData] = useState([]);
 
-    // useEffect(() => {
-    //     // console.log("customFieldsData", dataCustomField?.data);
-    //     if (customFieldsData.length > 0) {
-    //         console.log("customFieldsData", customFieldsData);
-    //     }
-    // }, [customFieldsData]);
+    const onChangeFollower = (val: any, opt: any) => {
+        if (val.length > 0) {
+            let arr: any = [];
+            opt.map((item: any) => {
+                arr.push({
+                    from_id: item["data-json"].id,
+                    from_table: item["data-json"].from_table,
+                });
+            });
+            setSetFollowerValue(arr);
+        } else {
+            setSetFollowerValue([]);
+        }
+    };
 
     return (
         <Modal
@@ -871,6 +882,9 @@ const ModalAddActivity = ({
                                         showSearch
                                         mode="multiple"
                                         loading={isLoadingPeople}
+                                        onChange={(val, opt) => {
+                                            onChangeFollower(val, opt);
+                                        }}
                                     >
                                         {dataPeople?.data &&
                                             dataPeople?.data.map(
@@ -881,6 +895,7 @@ const ModalAddActivity = ({
                                                             key={key}
                                                             value={data}
                                                             search={data}
+                                                            data-json={item}
                                                         >
                                                             {data}
                                                         </Select.Option>

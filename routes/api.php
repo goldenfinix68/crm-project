@@ -77,6 +77,7 @@ Route::middleware('auth:api')->group(function () {
     // activity_type
     Route::resource('activity_type', 'App\Http\Controllers\Api\ActivityTypeController');
     Route::post('activity_type/archive', 'App\Http\Controllers\Api\ActivityTypeController@archive');
+    Route::post('/activities_update', 'App\Http\Controllers\Api\ActivityController@update_status');
 
 
     Route::resource('/text-template-folders', 'App\Http\Controllers\Api\TextTemplateFoldersController');
@@ -180,9 +181,14 @@ Route::get('/get_people', function (Request $request) {
         'id',
         'firstName',
         'lastName',
-    ])
-        ->union(DB::table('contacts')->select('id', 'firstName', 'lastName'))
-        ->get();
+        DB::raw("(SELECT CONCAT('users')) as `from_table`")
+    ]) ->union(DB::table('contacts')->select(
+        'id',
+        'firstName',
+        'lastName',
+        DB::raw("(SELECT CONCAT('contacts')) as `from_table`")
+    ))
+    ->get();
 
     return response()->json([
         'success' => true,

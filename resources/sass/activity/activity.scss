@@ -587,3 +587,58 @@
         color: white !important;
     }
 }
+
+.favorites-filter {
+    .ant-dropdown-menu {
+        padding: 0px;
+    }
+
+    .ant-dropdown-menu-item {
+        padding: 0px !important;
+    }
+
+    .ant-dropdown-menu-item:hover {
+        background-color: #ffffff0a !important;
+    }
+
+    .ant-card {
+        width: 300px;
+        box-shadow: none !important;
+
+        .ant-card-body {
+            padding: 0px !important;
+
+            .menu-favorite-list {
+                .menu-favorite-list-item {
+                    padding: 6px 18px;
+
+                    .ant-btn {
+                        color: white !important;
+                    }
+                }
+
+                .menu-favorite-list-item:hover {
+                    border-color: #d9d9d9 !important;
+                    background: #1677ff;
+                    color: white;
+
+                    .ant-btn {
+                        color: white !important;
+                    }
+
+                    .icon-selected {
+                        color: white !important;
+                    }
+                }
+
+                .icon-selected {
+                    color: #1677ff !important;
+                }
+            }
+        }
+    }
+}
+
+.set-status {
+    font-size: 20px;
+}
