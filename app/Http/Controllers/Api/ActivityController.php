@@ -20,7 +20,14 @@ class ActivityController extends Controller
         $data = new Activity();
         $data = $data->with([
             'activity_tags',
-            "activity_followers",
+            "activity_followers" => function($query) {
+                $user = "(SELECT CONCAT(users.firstName, ' ', users.lastName) FROM `users` WHERE users.id = activity_followers.from_id AND activity_followers.from_table='users')";
+                $contact = "(SELECT CONCAT(contacts.firstName, ' ', contacts.lastName) FROM `contacts` WHERE contacts.id = activity_followers.from_id AND activity_followers.from_table='contacts')";
+                $query->select([
+                    'activity_followers.*',
+                    DB::raw("IF($user <> '', $user, $contact) as `full_name`"),
+                ]);
+            },
             "activity_invitees",
             "custom_field_values" => function($query) {
                 $query->select([
@@ -130,13 +137,14 @@ class ActivityController extends Controller
         }
 
         if (isset($request->followers) && count($request->followers) > 0) {
-            \App\Models\ActivityTag::where('activity_id', $data->id)->delete();
+            \App\Models\ActivityFollower::where('activity_id', $data->id)->delete();
 
             $followers = $request->followers;
             foreach ($followers as $key => $follower) {
                 \App\Models\ActivityFollower::create([
                     'activity_id' => $data->id,
-                    'full_name' => $follower,
+                    'from_id' => $follower['from_id'],
+                    'from_table' => $follower['from_table'],
                 ]);
             }
         }

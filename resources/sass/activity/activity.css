@@ -491,4 +491,21 @@
 }
 .activity-type-filter .ant-radio-button-wrapper-checked-selected:hover {
   color: white !important;
+}
+
+.favorites-filter .ant-dropdown-menu {
+  padding: 0px;
+}
+.favorites-filter .ant-dropdown-menu-item {
+  padding: 0px !important;
+}
+.favorites-filter .ant-dropdown-menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.0392156863) !important;
+}
+.favorites-filter .ant-card {
+  width: 300px;
+  box-shadow: none !important;
+}
+.favorites-filter .ant-card .ant-card-body {
+  padding: 0px !important;
 }/*# sourceMappingURL=activity.css.map */

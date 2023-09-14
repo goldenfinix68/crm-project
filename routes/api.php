@@ -180,9 +180,14 @@ Route::get('/get_people', function (Request $request) {
         'id',
         'firstName',
         'lastName',
-    ])
-        ->union(DB::table('contacts')->select('id', 'firstName', 'lastName'))
-        ->get();
+        DB::raw("(SELECT CONCAT('users')) as `from_table`")
+    ]) ->union(DB::table('contacts')->select(
+        'id',
+        'firstName',
+        'lastName',
+        DB::raw("(SELECT CONCAT('contacts')) as `from_table`")
+    ))
+    ->get();
 
     return response()->json([
         'success' => true,
