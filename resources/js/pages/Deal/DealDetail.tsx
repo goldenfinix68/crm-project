@@ -562,6 +562,10 @@ const DealDetail = () => {
         setIsModalOpenContact(false);
     };
 
+    const [getLastCommunication, setGetLastCommunication] = useState("SMS");
+    const [getLastCommunicationDate, setGetLastCommunicationDate] =
+        useState("");
+
     const getItems2: (panelStyle: CSSProperties) => CollapseProps["items"] = (
         panelStyle
     ) => [
@@ -572,10 +576,10 @@ const DealDetail = () => {
                 <>
                     <Descriptions column={1}>
                         <Descriptions.Item label="Last Communication">
-                            Call
+                            {getLastCommunication}
                         </Descriptions.Item>
                         <Descriptions.Item label="Last Communication On">
-                            16 days ago
+                            {moment(getLastCommunicationDate).fromNow()}
                         </Descriptions.Item>
                         {/* <Descriptions.Item label="Open Deals">
                             0 ($0)
@@ -815,9 +819,19 @@ const DealDetail = () => {
         fourth: "none",
         fifth: "none",
     });
+
     // const [contact, setContact] = useState();
     useEffect(() => {
         if (deals) {
+            deals.data.contact.wall?.every((x: any) => {
+                if (x.type == "call" || x.type == "text") {
+                    setGetLastCommunication(x.type == "call" ? "Call" : "SMS");
+                    setGetLastCommunicationDate(x.date);
+                    return false;
+                }
+                return true;
+            });
+
             if (deals.data.stage == "Comp & Qualify") {
                 setStagingColor({
                     ...stagingColor,
