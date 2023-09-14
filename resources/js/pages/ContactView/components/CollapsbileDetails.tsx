@@ -40,7 +40,7 @@ const CollapsibleDetails = () => {
             var won = 0;
             var won_total = 0;
             contact.wall?.forEach((x) => {
-                if (x.type == "dealss") {
+                if (x.type == "deal") {
                     if (x.deal?.status == "Open") {
                         var a: string | undefined = x.deal?.value;
                         open++;
