@@ -10,6 +10,7 @@ import {
 } from "antd";
 import ContactContext from "../context";
 import moment from "moment";
+import { TDeal, TWallData } from "../../../entities";
 
 const CollapsibleDetails = () => {
     const { contact } = useContext(ContactContext);
@@ -23,6 +24,7 @@ const CollapsibleDetails = () => {
     const [getWon, setGetWon] = useState(0);
     const [getWonTotal, setGetWonTotal] = useState(0);
     const [getActivity, setGetActivity] = useState(0);
+
     useEffect(() => {
         if (contact) {
             contact.wall?.every((x) => {
@@ -41,6 +43,8 @@ const CollapsibleDetails = () => {
             var won_total = 0;
 
             var activity = 0;
+
+            var deals_all = [];
             contact.wall?.forEach((x) => {
                 if (x.type == "activity") {
                     activity++;
@@ -108,13 +112,34 @@ it can be found as a welcome guest in many households across the world.
         {
             key: "3",
             label: "DEALS (0)",
-            children: <p>No deals found.</p>,
+            children: (
+                <p>
+                    {contact.wall?.map((x) => {
+                        if (x.type == "deal") {
+                            return (
+                                <div>
+                                    <a
+                                        href={
+                                            window.location.origin +
+                                            "/deals/" +
+                                            x.deal?.id
+                                        }
+                                    >
+                                        {x.deal?.title}
+                                        {` (${x.deal?.status})`}
+                                    </a>
+                                </div>
+                            );
+                        }
+                    })}
+                </p>
+            ),
         },
-        {
-            key: "4",
-            label: "ASSOCIATED DEALS (0)",
-            children: <p>No deals found.</p>,
-        },
+        // {
+        //     key: "4",
+        //     label: "ASSOCIATED DEALS (0)",
+        //     children: <p>No deals found.</p>,
+        // },
         {
             key: "5",
             label: "LISTS",
