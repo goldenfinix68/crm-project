@@ -9,6 +9,7 @@ use Carbon\Carbon;
 
 use App\Models\User;
 use App\Models\Text;
+use App\Models\Call;
 
 class Contact extends Model
 {
@@ -97,6 +98,8 @@ class Contact extends Model
         return $this->hasMany(\App\Models\Note::class, 'contactId', 'id');
     }
 
+
+
     public function texts()
     {
         if (empty($this->mobile)) {
@@ -109,6 +112,20 @@ class Contact extends Model
             ->orderBy('id', 'desc')
             ->get();
         return $texts;
+    }
+
+    public function call()
+    {
+        if (empty($this->mobile)) {
+            return [];
+        }
+        $call = Call::where(function ($query) {
+            $query->where('to', $this->mobile)
+                ->orWhere('from', $this->mobile);
+        })
+            ->orderBy('id', 'desc')
+            ->get();
+        return $call;
     }
 
     public function deals()
@@ -124,6 +141,11 @@ class Contact extends Model
     public function log()
     {
         return $this->hasMany(\App\Models\ContactLog::class, 'contact_id', 'id')->with('owner');
+    }
+
+    public function activity()
+    {
+        return $this->hasMany(\App\Models\Activity::class, 'contact_id', 'id')->with('owner');
     }
 
     public function files()
@@ -153,6 +175,19 @@ class Contact extends Model
             ];
         });
 
+        $call = $this->call() ? $this->call()->map(function ($data) {
+            $createdAt = Carbon::parse($data->created_at);
+            return [
+                'type' => 'call',
+                'date' => $data->created_at,
+                'day' => $createdAt->format('j'),
+                'month' => $createdAt->format('F'),
+                'year' => $createdAt->format('Y'),
+                'time' => $createdAt->format('h:i A'),
+                'call' => $data,
+            ];
+        }) : null;
+
         $texts = $this->texts() ? $this->texts()->map(function ($data) {
             $createdAt = Carbon::parse($data->created_at);
             return [
@@ -175,6 +210,18 @@ class Contact extends Model
                 'month' => $createdAt->format('F'),
                 'year' => $createdAt->format('Y'),
                 'deal' => $data,
+            ];
+        });
+
+        $activity = $this->activity->map(function ($data) {
+            $createdAt = Carbon::parse($data->created_at);
+            return [
+                'type' => 'activity',
+                'date' => $data->created_at,
+                'day' => $createdAt->format('j'),
+                'month' => $createdAt->format('F'),
+                'year' => $createdAt->format('Y'),
+                'activity' => $data,
             ];
         });
 
@@ -212,7 +259,7 @@ class Contact extends Model
             ];
         });
 
-        $data = $data->merge($notes)->merge($texts)->merge($deals)->merge($updates)->merge($log)->merge($files);
+        $data = $data->merge($notes)->merge($texts)->merge($deals)->merge($updates)->merge($log)->merge($files)->merge($call)->merge($activity);
 
         // Sort the combined data array based on the 'date' in ascending order
         $sortedData = $data->sortByDesc('date')->values()->all();

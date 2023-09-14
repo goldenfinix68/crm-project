@@ -32,7 +32,7 @@ const ActionsTabs = () => {
         // },
         {
             key: "logActivity",
-            label: <TabLabel label="LOG ACTIVITY" />,
+            label: <TabLabel label="LOG" />,
         },
         {
             key: "file",
