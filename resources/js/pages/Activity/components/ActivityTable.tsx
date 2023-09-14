@@ -45,8 +45,15 @@ import {
 
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
+import {
+    faCheckCircle,
+    faLock,
+    faStar as starSolid,
+} from "@fortawesome/free-solid-svg-icons";
+import {
+    faCircleCheck,
+    faStar as starRegular,
+} from "@fortawesome/free-regular-svg-icons";
 import DrawerUpdateActivity from "./DrawerEditActivitty";
 import ModalManageColumnFIeld from "./ModalManageColumnFIeld";
 import ComponentActivityTypeIcon from "../../Setup/Components/ComponentActivityTypeIcon";
@@ -94,42 +101,6 @@ const action_type: MenuProps["items"] = [
     },
 ];
 
-const activities_type = (
-    <Card>
-        <Search
-            placeholder="input search text"
-            allowClear
-            // onSearch={onSearch}
-            style={{ width: 200 }}
-        />
-        <Tabs
-            defaultActiveKey="tab1"
-            // onChange={handleTabChange}
-        >
-            <Tabs.TabPane tab="FAVORITES" key="tab1">
-                You have no favorties
-            </Tabs.TabPane>
-            <Tabs.TabPane tab="ALL VIEWS" key="tab2">
-                <Menu
-                    style={{
-                        backgroundColor: "none",
-                        boxShadow: "none",
-                    }}
-                    mode="inline"
-                    defaultSelectedKeys={["1"]}
-                    defaultOpenKeys={["sub1"]}
-                >
-                    <Menu.Item key="1">Activites I am following</Menu.Item>
-                    <Menu.Item key="2">All Closed Activities</Menu.Item>
-                    <Menu.Item key="3">All Open Activities</Menu.Item>
-                    <Menu.Item key="4">My Open Activities</Menu.Item>
-                    <Menu.Item key="5">My Overdue Activites</Menu.Item>
-                </Menu>
-            </Tabs.TabPane>
-        </Tabs>
-    </Card>
-);
-
 const ActivityTable = () => {
     const [dataFilter, setDataFilter] = useState({
         page: 1,
@@ -139,6 +110,7 @@ const ActivityTable = () => {
         sort_order: "asc",
         status: "Active",
         type: ["All"],
+        date_filter: "",
     });
 
     const { dataSource, isLoadingUsers, refetchUsers, isFetchingUsers } =
@@ -675,6 +647,7 @@ const ActivityTable = () => {
     };
 
     const { dataType, isLoadingType } = useActivityType();
+
     const onChangeTypeFilter = (val: any) => {
         let setTypeValue: any = ["All"];
         let listType = dataType?.data.map((item: any) => {
@@ -724,6 +697,258 @@ const ActivityTable = () => {
         return checked ? "ant-radio-button-wrapper-checked-selected" : "";
     };
 
+    const setActiveDateFilter = (val: string) => {
+        if (dataFilter.date_filter === val) {
+            return "ant-radio-button-wrapper-checked-selected";
+        }
+    };
+
+    const setChangeDateFilter = (val: string) => {
+        let newValues = {
+            ...dataFilter,
+            date_filter: val,
+        };
+        if (dataFilter.date_filter === val) {
+            newValues = {
+                ...dataFilter,
+                date_filter: "",
+            };
+        }
+
+        setDataFilter(newValues);
+    };
+
+    // const activities_type = (
+    //     // <Card>
+    //     //     <Search
+    //     //         placeholder="input search text"
+    //     //         allowClear
+    //     //         // onSearch={onSearch}
+    //     //         style={{ width: 200 }}
+    //     //     />
+    //     //     <Tabs
+    //     //         defaultActiveKey="tab1"
+    //     //         // onChange={handleTabChange}
+    //     //     >
+    //     //         <Tabs.TabPane tab="FAVORITES" key="tab1">
+    //     //             You have no favorties
+    //     //         </Tabs.TabPane>
+    //     //         <Tabs.TabPane tab="ALL VIEWS" key="tab2">
+    //     //             <Menu
+    //     //                 style={{
+    //     //                     backgroundColor: "none",
+    //     //                     boxShadow: "none",
+    //     //                 }}
+    //     //                 mode="inline"
+    //     //                 defaultSelectedKeys={["1"]}
+    //     //                 defaultOpenKeys={["sub1"]}
+    //     //             >
+    //     //                 <Menu.Item key="1">Activites I am following</Menu.Item>
+    //     //                 <Menu.Item key="2">All Closed Activities</Menu.Item>
+    //     //                 <Menu.Item key="3">All Open Activities</Menu.Item>
+    //     //                 <Menu.Item key="4">My Open Activities</Menu.Item>
+    //     //                 <Menu.Item key="5">My Overdue Activites</Menu.Item>
+    //     //             </Menu>
+    //     //         </Tabs.TabPane>
+    //     //     </Tabs>
+    //     // </Card>
+    // );
+
+    const [isDropdownVisible, setDropdownVisible] = useState(true);
+    const itemsFilter: MenuProps["items"] = [
+        {
+            key: "1",
+            label: (
+                <>
+                    <Card bordered={false}>
+                        <div className="p-sm">
+                            <Search
+                                placeholder="input search text"
+                                allowClear
+                                // onSearch={onSearch}
+                                style={{ width: "100%" }}
+                            />
+                        </div>
+
+                        <Tabs
+                            defaultActiveKey="tab1"
+                            className="m-b-sm"
+                            // onChange={handleTabChange}
+                        >
+                            <Tabs.TabPane tab="FAVORITES" key="tab1">
+                                <div className="p-l-md p-r-sm p-b-xs">
+                                    <Typography.Text>SYSTEM</Typography.Text>
+                                </div>
+
+                                <Menu
+                                    style={{
+                                        backgroundColor: "none",
+                                        boxShadow: "none",
+                                    }}
+                                    mode="inline"
+                                    defaultSelectedKeys={["1"]}
+                                    defaultOpenKeys={["sub1"]}
+                                >
+                                    <Menu.Item
+                                        style={{ paddingLeft: "-13px" }}
+                                        key="1"
+                                    >
+                                        <Space
+                                            className="w-100"
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                            }}
+                                        >
+                                            <Space>
+                                                <FontAwesomeIcon
+                                                    icon={faLock}
+                                                />
+                                                Activites I am following
+                                            </Space>
+
+                                            <FontAwesomeIcon icon={starSolid} />
+                                        </Space>
+                                    </Menu.Item>
+                                </Menu>
+                            </Tabs.TabPane>
+
+                            <Tabs.TabPane tab="ALL VIEWS" key="tab2">
+                                <div className="p-l-md p-r-sm p-b-xs">
+                                    <Typography.Text>SYSTEM</Typography.Text>
+                                </div>
+
+                                <Menu
+                                    style={{
+                                        backgroundColor: "none",
+                                        boxShadow: "none",
+                                    }}
+                                    mode="inline"
+                                    defaultSelectedKeys={["1"]}
+                                    defaultOpenKeys={["sub1"]}
+                                >
+                                    <Menu.Item
+                                        style={{ paddingLeft: "-13px" }}
+                                        key="1"
+                                    >
+                                        <Space
+                                            className="w-100"
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                            }}
+                                        >
+                                            <Space>
+                                                <FontAwesomeIcon
+                                                    icon={faLock}
+                                                />
+                                                Activites I am following
+                                            </Space>
+
+                                            <FontAwesomeIcon icon={starSolid} />
+                                        </Space>
+                                    </Menu.Item>
+                                    <Menu.Item
+                                        style={{ paddingLeft: "-13px" }}
+                                        key="2"
+                                    >
+                                        <Space
+                                            className="w-100"
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                            }}
+                                        >
+                                            <Space>
+                                                <FontAwesomeIcon
+                                                    icon={faLock}
+                                                />
+                                                All Closed Activities
+                                            </Space>
+
+                                            <FontAwesomeIcon
+                                                icon={starRegular}
+                                            />
+                                        </Space>
+                                    </Menu.Item>
+                                    <Menu.Item
+                                        style={{ paddingLeft: "-13px" }}
+                                        key="3"
+                                    >
+                                        <Space
+                                            className="w-100"
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                            }}
+                                        >
+                                            <Space>
+                                                <FontAwesomeIcon
+                                                    icon={faLock}
+                                                />
+                                                All Open Activities
+                                            </Space>
+
+                                            <FontAwesomeIcon
+                                                icon={starRegular}
+                                            />
+                                        </Space>
+                                    </Menu.Item>
+                                    <Menu.Item
+                                        style={{ paddingLeft: "-13px" }}
+                                        key="4"
+                                    >
+                                        <Space
+                                            className="w-100"
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                            }}
+                                        >
+                                            <Space>
+                                                <FontAwesomeIcon
+                                                    icon={faLock}
+                                                />
+                                                My Open Activities
+                                            </Space>
+
+                                            <FontAwesomeIcon
+                                                icon={starRegular}
+                                            />
+                                        </Space>
+                                    </Menu.Item>
+                                    <Menu.Item
+                                        style={{ paddingLeft: "-13px" }}
+                                        key="5"
+                                    >
+                                        <Space
+                                            className="w-100"
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                            }}
+                                        >
+                                            <Space>
+                                                <FontAwesomeIcon
+                                                    icon={faLock}
+                                                />
+                                                My Overdue Activites
+                                            </Space>
+
+                                            <FontAwesomeIcon
+                                                icon={starRegular}
+                                            />
+                                        </Space>
+                                    </Menu.Item>
+                                </Menu>
+                            </Tabs.TabPane>
+                        </Tabs>
+                    </Card>
+                </>
+            ),
+        },
+    ];
+
     return (
         <>
             <Row className="activity-group-row">
@@ -737,8 +962,12 @@ const ActivityTable = () => {
                     >
                         <div>
                             <Dropdown
-                                overlay={activities_type}
+                                open={isDropdownVisible}
+                                onOpenChange={setDropdownVisible}
+                                overlayClassName="favorites-filter"
+                                menu={{ items: itemsFilter }}
                                 placement="bottomLeft"
+                                trigger={["click"]}
                             >
                                 <Button>
                                     <Space>
@@ -751,8 +980,11 @@ const ActivityTable = () => {
 
                         <div>
                             <span style={{ marginRight: 10 }}>
-                                <Radio.Group>
-                                    <Radio.Button value="Overdue">
+                                <Radio.Group className="activity-type-filter">
+                                    <Radio.Button
+                                        value="Overdue"
+                                        className="ant-radio-button-wrapper-checked-selected"
+                                    >
                                         List
                                     </Radio.Button>
                                     <Radio.Button value="Today">
@@ -812,11 +1044,6 @@ const ActivityTable = () => {
                                     All
                                 </Radio.Button>
                             </Tooltip>
-                            {/* <Tooltip title="Call" placement="bottom">
-                                <Radio.Button value="default">
-                                    <PhoneOutlined />
-                                </Radio.Button>
-                            </Tooltip> */}
 
                             {dataType?.data &&
                                 dataType?.data.map(
@@ -849,16 +1076,44 @@ const ActivityTable = () => {
                                 )}
                         </Radio.Group>
 
-                        <Radio.Group>
-                            <Radio.Button value="Overdue">Overdue</Radio.Button>
-                            <Radio.Button value="Today">Today</Radio.Button>
-                            <Radio.Button value="Tomorrow">
+                        <Radio.Group className="activity-type-filter">
+                            <Radio.Button
+                                value="Overdue"
+                                className={`${setActiveDateFilter("Overdue")}`}
+                                onClick={() => setChangeDateFilter("Overdue")}
+                            >
+                                Overdue
+                            </Radio.Button>
+                            <Radio.Button
+                                value="Today"
+                                className={`${setActiveDateFilter("Today")}`}
+                                onClick={() => setChangeDateFilter("Today")}
+                            >
+                                Today
+                            </Radio.Button>
+                            <Radio.Button
+                                value="Tomorrow"
+                                className={`${setActiveDateFilter("Tomorrow")}`}
+                                onClick={() => setChangeDateFilter("Tomorrow")}
+                            >
                                 Tomorrow
                             </Radio.Button>
-                            <Radio.Button value="This Week">
+                            <Radio.Button
+                                value="This Week"
+                                className={`${setActiveDateFilter(
+                                    "This Week"
+                                )}`}
+                                onClick={() => setChangeDateFilter("This Week")}
+                            >
                                 This Week
                             </Radio.Button>
-                            <Radio.Button value="Custom">Custom</Radio.Button>
+                            <Radio.Button
+                                value="Custom"
+                                className={`${setActiveDateFilter("Custom")}`}
+                                onClick={() => setChangeDateFilter("Custom")}
+                            >
+                                Custom
+                            </Radio.Button>
                         </Radio.Group>
                     </div>
 
