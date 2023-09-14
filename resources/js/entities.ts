@@ -67,7 +67,8 @@ export type TDeal = {
     id?: string;
     title: string;
     contactId?: string;
-    owner: string;
+    owner: any;
+    owner1: any;
     estimated_close_date: string;
     value?: string;
     currency?: string;
@@ -83,6 +84,7 @@ export type TDeal = {
 
 export type TUpdateOwner = {
     firstName: string;
+    id: any;
 };
 export type TUpdate = {
     id: string;
@@ -114,7 +116,8 @@ export type TWallData = {
         | "deal"
         | "update"
         | "activity log"
-        | "files";
+        | "files"
+        | "activity";
     note?: TNote;
     text?: TText;
     deal?: TDeal;

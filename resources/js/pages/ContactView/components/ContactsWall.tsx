@@ -46,6 +46,8 @@ const ContactsWall = () => {
         data.type.includes(showing)
     );
     const { user, isLoading } = useLoggedInUser();
+
+    console.log("user", user);
     const items = [
         {
             title: "Showing: ",
@@ -127,17 +129,17 @@ const ContactsWall = () => {
 
     const feedBox = (data: TWallData) => {
         if (data.type === "note") {
-            return <NoteBox data={data} />;
+            return <NoteBox data={data} user={user} />;
         } else if (data.type === "text") {
-            return <TextBox data={data} />;
+            return <TextBox data={data} user={user} />;
         } else if (data.type === "deal") {
-            return <DealBox data={data} />;
+            return <DealBox data={data} user={user} />;
         } else if (data.type === "update") {
             return <UpdateBox data={data} user={user} />;
         } else if (data.type === "activity log") {
-            return <Log data={data} />;
+            return <Log data={data} user={user} />;
         } else if (data.type === "files") {
-            return <File data={data} />;
+            return <File data={data} user={user} />;
         } else {
             return <></>;
         }
@@ -222,7 +224,7 @@ const ContactsWall = () => {
     );
 };
 
-const NoteBox = ({ data }: { data: TWallData }) => {
+const NoteBox = ({ data, user }: { data: TWallData; user: TUser }) => {
     const [expanded, setExpanded] = React.useState(false);
     const contentRef = useRef<HTMLDivElement>(null);
     const [divHeight, setDivHeight] = React.useState(0);
@@ -300,7 +302,7 @@ const NoteBox = ({ data }: { data: TWallData }) => {
     );
 };
 
-const TextBox = ({ data }: { data: TWallData }) => {
+const TextBox = ({ data, user }: { data: TWallData; user: TUser }) => {
     const header = () => {
         if (data.text?.isFromApp) {
         }
@@ -337,7 +339,7 @@ const TextBox = ({ data }: { data: TWallData }) => {
     );
 };
 
-const DealBox = ({ data }: { data: TWallData }) => {
+const DealBox = ({ data, user }: { data: TWallData; user: TUser }) => {
     return (
         <Card
             title={
@@ -349,9 +351,11 @@ const DealBox = ({ data }: { data: TWallData }) => {
                         }}
                         size={20}
                     >
-                        {data.deal?.owner.charAt(0)}
+                        {data.deal?.owner1?.firstName.charAt(0)}
                     </Avatar>{" "}
-                    {`Deal created - by you`}
+                    {user.id == data.deal?.owner1?.id
+                        ? "Deal created - by You"
+                        : "Deal created - by " + data.deal?.owner1?.firstName}
                 </Typography.Text>
             }
             bordered={false}
@@ -390,8 +394,8 @@ const UpdateBox = ({ data, user }: { data: TWallData; user: TUser }) => {
         </Card>
     );
 };
-const Log = ({ data }: { data: TWallData }) => {
-    console.log(data);
+const Log = ({ data, user }: { data: TWallData; user: TUser }) => {
+    // console.log(data);
     return (
         <Card
             title={
@@ -405,7 +409,11 @@ const Log = ({ data }: { data: TWallData }) => {
                     >
                         {data.update?.owner?.firstName.charAt(0)}
                     </Avatar>{" "}
-                    {data.update?.type + "  - by you"}
+                    {user.id == data.update?.owner?.id
+                        ? data.update?.type + "  - by You"
+                        : data.update?.type +
+                          "  - by " +
+                          data.update?.owner?.firstName}
                 </Typography.Text>
             }
             bordered={false}
@@ -466,8 +474,8 @@ const Log = ({ data }: { data: TWallData }) => {
         </Card>
     );
 };
-const File = ({ data }: { data: TWallData }) => {
-    console.log(data);
+const File = ({ data, user }: { data: TWallData; user: TUser }) => {
+    // console.log(data);
     return (
         <Card
             title={
@@ -481,7 +489,10 @@ const File = ({ data }: { data: TWallData }) => {
                     >
                         {data.update?.uploaded_by?.firstName.charAt(0)}
                     </Avatar>{" "}
-                    {"File Added - by you"}
+                    {user.id == data.update?.uploaded_by?.id
+                        ? "File Added - by You"
+                        : "File Added - by " +
+                          data.update?.uploaded_by?.firstName}
                 </Typography.Text>
             }
             bordered={false}

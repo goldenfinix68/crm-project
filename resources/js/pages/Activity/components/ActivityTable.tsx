@@ -14,6 +14,7 @@ import {
     Tag,
     Tooltip,
     Typography,
+    notification,
 } from "antd";
 import { MenuProps, Menu } from "antd";
 import type { ColumnsType, TableProps } from "antd/es/table";
@@ -45,11 +46,22 @@ import {
 
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
+import {
+    faCheck,
+    faCheckCircle,
+    faLock,
+    faStar as starSolid,
+    faCircleCheck as checkSolid,
+} from "@fortawesome/free-solid-svg-icons";
+import {
+    faCircleCheck as checkRegular,
+    faStar as starRegular,
+} from "@fortawesome/free-regular-svg-icons";
 import DrawerUpdateActivity from "./DrawerEditActivitty";
 import ModalManageColumnFIeld from "./ModalManageColumnFIeld";
 import ComponentActivityTypeIcon from "../../Setup/Components/ComponentActivityTypeIcon";
+import { mutatePost } from "../../../api/mutation/useSetupMutation";
+import { useMutation, useQueryClient } from "react-query";
 
 const rowSelection: TableRowSelection<TActivities> = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -94,51 +106,20 @@ const action_type: MenuProps["items"] = [
     },
 ];
 
-const activities_type = (
-    <Card>
-        <Search
-            placeholder="input search text"
-            allowClear
-            // onSearch={onSearch}
-            style={{ width: 200 }}
-        />
-        <Tabs
-            defaultActiveKey="tab1"
-            // onChange={handleTabChange}
-        >
-            <Tabs.TabPane tab="FAVORITES" key="tab1">
-                You have no favorties
-            </Tabs.TabPane>
-            <Tabs.TabPane tab="ALL VIEWS" key="tab2">
-                <Menu
-                    style={{
-                        backgroundColor: "none",
-                        boxShadow: "none",
-                    }}
-                    mode="inline"
-                    defaultSelectedKeys={["1"]}
-                    defaultOpenKeys={["sub1"]}
-                >
-                    <Menu.Item key="1">Activites I am following</Menu.Item>
-                    <Menu.Item key="2">All Closed Activities</Menu.Item>
-                    <Menu.Item key="3">All Open Activities</Menu.Item>
-                    <Menu.Item key="4">My Open Activities</Menu.Item>
-                    <Menu.Item key="5">My Overdue Activites</Menu.Item>
-                </Menu>
-            </Tabs.TabPane>
-        </Tabs>
-    </Card>
-);
-
 const ActivityTable = () => {
+    const queryClient = useQueryClient();
     const [dataFilter, setDataFilter] = useState({
         page: 1,
         page_size: 50,
         search: "",
         sort_field: "id",
         sort_order: "asc",
-        status: "Active",
+        // status: "Open",
         type: ["All"],
+        date_filter: "",
+        favorite_filter: localStorage.activitiesFavorite
+            ? localStorage.activitiesFavorite
+            : "Activites I am following",
     });
 
     const { dataSource, isLoadingUsers, refetchUsers, isFetchingUsers } =
@@ -163,6 +144,7 @@ const ActivityTable = () => {
 
     useEffect(() => {
         refetchUsers();
+        console.log("dataFilter", dataFilter);
     }, [dataFilter]);
 
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
@@ -219,15 +201,17 @@ const ActivityTable = () => {
             dataIndex: "status",
             className: "col-status",
             render: (text: string, record: any) => {
-                return record.status === 1 ? (
+                return record.status === "Open" ? (
                     <FontAwesomeIcon
-                        icon={faCircleCheck}
-                        className="cursor-pointer"
+                        icon={checkRegular}
+                        className="cursor-pointer set-status"
+                        onClick={() => handUpdateStatus(record, "Closed")}
                     />
                 ) : (
                     <FontAwesomeIcon
-                        icon={faCircleCheck}
-                        className="cursor-pointer"
+                        icon={checkSolid}
+                        className="cursor-pointer set-status"
+                        onClick={() => handUpdateStatus(record, "Open")}
                     />
                 );
             },
@@ -415,16 +399,6 @@ const ActivityTable = () => {
                   width: 350,
               }
             : {},
-        // localTableColumn?.find((p: any) => p.title === "Outcome")?.title
-        //     ? {
-        //           title: "Outcome",
-        //           dataIndex: "name",
-        //           index: localTableColumn?.find(
-        //               (p: any) => p.title === "Outcome"
-        //           )?.id,
-        //   sorter: true,
-        //       }
-        //     : {},
         localTableColumn?.find((p: any) => p.title === "Id")?.title
             ? {
                   title: "Id",
@@ -646,7 +620,7 @@ const ActivityTable = () => {
 
             setStateColumns(sortedColumns);
             // console.log("dataCustomField", customCols);
-            console.log("dataCustomField", sortedColumns);
+            // console.log("dataCustomField", sortedColumns);
             // console.log("dataCustomField", dataCustomField?.data);
         }
         // console.log("dataSource", dataSource?.data?.data);
@@ -675,6 +649,7 @@ const ActivityTable = () => {
     };
 
     const { dataType, isLoadingType } = useActivityType();
+
     const onChangeTypeFilter = (val: any) => {
         let setTypeValue: any = ["All"];
         let listType = dataType?.data.map((item: any) => {
@@ -724,6 +699,279 @@ const ActivityTable = () => {
         return checked ? "ant-radio-button-wrapper-checked-selected" : "";
     };
 
+    const setActiveDateFilter = (val: string) => {
+        if (dataFilter.date_filter === val) {
+            return "ant-radio-button-wrapper-checked-selected";
+        }
+    };
+
+    const setChangeDateFilter = (val: string) => {
+        let newValues = {
+            ...dataFilter,
+            date_filter: val,
+        };
+        if (dataFilter.date_filter === val) {
+            newValues = {
+                ...dataFilter,
+                date_filter: "",
+            };
+        }
+
+        setDataFilter(newValues);
+    };
+
+    const favoriteMenuList = [
+        "Activites I am following",
+        "All Closed Activities",
+        "All Open Activities",
+        "My Open Activities",
+        "My Overdue Activites",
+    ];
+    const [isDropdownVisible, setDropdownVisible] = useState(false);
+    const [favoritesList, setFavoritesList] = useState(
+        localStorage.activitiesFavoriteFilter
+            ? JSON.parse(localStorage.activitiesFavoriteFilter)
+            : []
+    );
+
+    const onClickFavorite = (val: any) => {
+        let newValues = {
+            ...dataFilter,
+            favorite_filter: val,
+        };
+        setDataFilter(newValues);
+        localStorage.setItem("activitiesFavorite", val);
+        setDropdownVisible(false);
+    };
+
+    const onClickFavoriteActive = (val: any) => {
+        return val === dataFilter.favorite_filter ? (
+            <FontAwesomeIcon icon={faCheck} className="icon-selected" />
+        ) : (
+            ""
+        );
+    };
+
+    const onClickFavoriteSelected = (val: any) => {
+        let newVal: any = [...favoritesList];
+
+        let findIndex = favoritesList.findIndex((item) => item === val);
+        if (findIndex !== -1) {
+            newVal.splice(findIndex, 1);
+        } else {
+            newVal.push(val);
+        }
+
+        setFavoritesList(newVal);
+        localStorage.setItem(
+            "activitiesFavoriteFilter",
+            JSON.stringify(newVal)
+        );
+    };
+
+    const onClickFavoriteSelectedActive = (val: any) => {
+        const index: any = favoritesList.findIndex(
+            (element: string) => element === val
+        );
+
+        return index !== Number("-1") ? (
+            <FontAwesomeIcon icon={starSolid} className="icon-selected" />
+        ) : (
+            <FontAwesomeIcon icon={starRegular} />
+        );
+    };
+
+    const itemsFilter: MenuProps["items"] = [
+        {
+            key: "1",
+            label: (
+                <>
+                    <Card bordered={false}>
+                        {/* <div className="p-sm">
+                            <Search
+                                placeholder="input search text"
+                                allowClear
+                                // onSearch={onSearch}
+                                style={{ width: "100%" }}
+                            />
+                        </div> */}
+
+                        <Tabs
+                            defaultActiveKey="tab2"
+                            className="m-b-xs"
+                            // onChange={handleTabChange}
+                        >
+                            <Tabs.TabPane tab="FAVORITES" key="tab1">
+                                {favoritesList.length === 0 && (
+                                    <div className="p-md text-center">
+                                        <Typography.Text className="font-16px">
+                                            You have no favorites
+                                        </Typography.Text>
+                                        <br />
+                                        <Typography.Text>
+                                            Select views as favorites to make it
+                                            appear here.
+                                        </Typography.Text>
+                                    </div>
+                                )}
+
+                                <div className="menu-favorite-list">
+                                    {favoritesList.map(
+                                        (item: string, key: number) => {
+                                            return (
+                                                <div
+                                                    className="menu-favorite-list-item"
+                                                    key={key}
+                                                    onClick={() =>
+                                                        onClickFavorite(item)
+                                                    }
+                                                >
+                                                    <Space
+                                                        className="w-100"
+                                                        style={{
+                                                            display: "flex",
+                                                            justifyContent:
+                                                                "space-between",
+                                                        }}
+                                                    >
+                                                        <Space>
+                                                            <FontAwesomeIcon
+                                                                icon={faLock}
+                                                            />
+                                                            {item}
+                                                        </Space>
+
+                                                        <Space
+                                                            style={{
+                                                                width: 36,
+                                                            }}
+                                                        >
+                                                            <Button
+                                                                style={{
+                                                                    padding: 0,
+                                                                }}
+                                                                type="link"
+                                                                onClick={(
+                                                                    event: any
+                                                                ) => {
+                                                                    event.stopPropagation();
+                                                                    onClickFavoriteSelected(
+                                                                        item
+                                                                    );
+                                                                }}
+                                                            >
+                                                                {onClickFavoriteSelectedActive(
+                                                                    item
+                                                                )}
+                                                            </Button>
+
+                                                            {onClickFavoriteActive(
+                                                                item
+                                                            )}
+                                                        </Space>
+                                                    </Space>
+                                                </div>
+                                            );
+                                        }
+                                    )}
+                                </div>
+                            </Tabs.TabPane>
+
+                            <Tabs.TabPane tab="ALL VIEWS" key="tab2">
+                                <div className="p-l-md p-r-sm p-b-xs">
+                                    <Typography.Text>SYSTEM</Typography.Text>
+                                </div>
+
+                                <div className="menu-favorite-list">
+                                    {favoriteMenuList.map(
+                                        (item: string, key: number) => {
+                                            return (
+                                                <div
+                                                    className="menu-favorite-list-item"
+                                                    key={key}
+                                                    onClick={() =>
+                                                        onClickFavorite(item)
+                                                    }
+                                                >
+                                                    <Space
+                                                        className="w-100"
+                                                        style={{
+                                                            display: "flex",
+                                                            justifyContent:
+                                                                "space-between",
+                                                        }}
+                                                    >
+                                                        <Space>
+                                                            <FontAwesomeIcon
+                                                                icon={faLock}
+                                                            />
+                                                            {item}
+                                                        </Space>
+
+                                                        <Space
+                                                            style={{
+                                                                width: 36,
+                                                            }}
+                                                        >
+                                                            <Button
+                                                                style={{
+                                                                    padding: 0,
+                                                                }}
+                                                                type="link"
+                                                                onClick={(
+                                                                    event: any
+                                                                ) => {
+                                                                    event.stopPropagation();
+                                                                    onClickFavoriteSelected(
+                                                                        item
+                                                                    );
+                                                                }}
+                                                            >
+                                                                {onClickFavoriteSelectedActive(
+                                                                    item
+                                                                )}
+                                                            </Button>
+
+                                                            {onClickFavoriteActive(
+                                                                item
+                                                            )}
+                                                        </Space>
+                                                    </Space>
+                                                </div>
+                                            );
+                                        }
+                                    )}
+                                </div>
+                            </Tabs.TabPane>
+                        </Tabs>
+                    </Card>
+                </>
+            ),
+        },
+    ];
+
+    const handUpdateStatus = (record: any, status: string) => {
+        console.log("handUpdateStatus", record);
+        let values = {
+            data: {
+                id: record.id,
+                status: status,
+            },
+            url: "/api/activities_update",
+        };
+        updateStatus.mutate(values);
+    };
+
+    const updateStatus = useMutation(mutatePost, {
+        onSuccess: (res) => {
+            queryClient.invalidateQueries("activities");
+            notification.success({
+                message: "Success",
+                description: "Successfully updated",
+            });
+        },
+    });
+
     return (
         <>
             <Row className="activity-group-row">
@@ -737,12 +985,16 @@ const ActivityTable = () => {
                     >
                         <div>
                             <Dropdown
-                                overlay={activities_type}
+                                open={isDropdownVisible}
+                                onOpenChange={setDropdownVisible}
+                                overlayClassName="favorites-filter"
+                                menu={{ items: itemsFilter }}
                                 placement="bottomLeft"
+                                trigger={["click"]}
                             >
                                 <Button>
                                     <Space>
-                                        My Open Activities
+                                        {dataFilter.favorite_filter}
                                         <DownOutlined />
                                     </Space>
                                 </Button>
@@ -751,8 +1003,11 @@ const ActivityTable = () => {
 
                         <div>
                             <span style={{ marginRight: 10 }}>
-                                <Radio.Group>
-                                    <Radio.Button value="Overdue">
+                                <Radio.Group className="activity-type-filter">
+                                    <Radio.Button
+                                        value="Overdue"
+                                        className="ant-radio-button-wrapper-checked-selected"
+                                    >
                                         List
                                     </Radio.Button>
                                     <Radio.Button value="Today">
@@ -812,11 +1067,6 @@ const ActivityTable = () => {
                                     All
                                 </Radio.Button>
                             </Tooltip>
-                            {/* <Tooltip title="Call" placement="bottom">
-                                <Radio.Button value="default">
-                                    <PhoneOutlined />
-                                </Radio.Button>
-                            </Tooltip> */}
 
                             {dataType?.data &&
                                 dataType?.data.map(
@@ -849,16 +1099,44 @@ const ActivityTable = () => {
                                 )}
                         </Radio.Group>
 
-                        <Radio.Group>
-                            <Radio.Button value="Overdue">Overdue</Radio.Button>
-                            <Radio.Button value="Today">Today</Radio.Button>
-                            <Radio.Button value="Tomorrow">
+                        <Radio.Group className="activity-type-filter">
+                            <Radio.Button
+                                value="Overdue"
+                                className={`${setActiveDateFilter("Overdue")}`}
+                                onClick={() => setChangeDateFilter("Overdue")}
+                            >
+                                Overdue
+                            </Radio.Button>
+                            <Radio.Button
+                                value="Today"
+                                className={`${setActiveDateFilter("Today")}`}
+                                onClick={() => setChangeDateFilter("Today")}
+                            >
+                                Today
+                            </Radio.Button>
+                            <Radio.Button
+                                value="Tomorrow"
+                                className={`${setActiveDateFilter("Tomorrow")}`}
+                                onClick={() => setChangeDateFilter("Tomorrow")}
+                            >
                                 Tomorrow
                             </Radio.Button>
-                            <Radio.Button value="This Week">
+                            <Radio.Button
+                                value="This Week"
+                                className={`${setActiveDateFilter(
+                                    "This Week"
+                                )}`}
+                                onClick={() => setChangeDateFilter("This Week")}
+                            >
                                 This Week
                             </Radio.Button>
-                            <Radio.Button value="Custom">Custom</Radio.Button>
+                            <Radio.Button
+                                value="Custom"
+                                className={`${setActiveDateFilter("Custom")}`}
+                                onClick={() => setChangeDateFilter("Custom")}
+                            >
+                                Custom
+                            </Radio.Button>
                         </Radio.Group>
                     </div>
 
@@ -922,7 +1200,3 @@ const ActivityTable = () => {
 };
 
 export default ActivityTable;
-
-const CustomEditableColumn: React.FC = () => {
-    return <></>;
-};

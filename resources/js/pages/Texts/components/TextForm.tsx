@@ -28,6 +28,7 @@ import ContactContext from "../../ContactView/context";
 import { useLoggedInUser } from "../../../api/query/userQuery";
 import Search from "antd/es/input/Search";
 import { useTextTemplates } from "../../../api/query/textTemplateQuery";
+import { replacePlaceholders } from "../../../helpers";
 interface Props {
     handleSubmit: () => void;
     handleCancel: () => void;
@@ -39,6 +40,7 @@ const TextForm = ({ handleSubmit, handleCancel }: Props) => {
     const [isScheduledMessage, setIsScheduledMessage] = useState(false);
     const { user, isLoading } = useLoggedInUser();
     const schedule = Form.useWatch("schedule", form);
+    const message = Form.useWatch("message", form);
     const [isTemplatePopoverOpen, setIsTemplatePopoverOpen] = useState(false);
     console.log(schedule);
     const resetFields = () => {
@@ -148,12 +150,15 @@ const TextForm = ({ handleSubmit, handleCancel }: Props) => {
                     marginBottom: "20px",
                 }}
             >
-                <Typography.Text>Count: 0</Typography.Text>
+                <Typography.Text>Count: {message?.length}</Typography.Text>
                 <Popover
                     content={
                         <AddAttributeContent
                             handleSelect={(value) => {
-                                form.setFieldValue("message", value);
+                                form.setFieldValue(
+                                    "message",
+                                    replacePlaceholders(value, contact)
+                                );
                                 setIsTemplatePopoverOpen(false);
                             }}
                         />
@@ -242,6 +247,7 @@ const TextForm = ({ handleSubmit, handleCancel }: Props) => {
 
 const AddAttributeContent = ({ handleSelect }) => {
     const { templates, isLoading } = useTextTemplates();
+    const { contact } = useContext(ContactContext);
     return (
         <Space direction="vertical" size={"large"}>
             <Search placeholder="Search" />
@@ -274,17 +280,32 @@ const AddAttributeContent = ({ handleSelect }) => {
                             handleSelect(item.textMessage);
                         }}
                     >
-                        <Typography.Text strong>{item.name}</Typography.Text>
-                        <Button
-                            type="link"
-                            style={{ padding: 0 }}
-                            onClick={() => {
-                                // setTemplateFolder(undefined);
-                                // setIsCreateFolderModalOpen(true);
-                            }}
+                        <Typography.Text strong style={{ color: "inherit" }}>
+                            {item.name}
+                        </Typography.Text>
+
+                        <Popover
+                            content={
+                                <Typography.Text>
+                                    {replacePlaceholders(
+                                        item.textMessage,
+                                        contact
+                                    )}
+                                </Typography.Text>
+                            }
+                            trigger={"hover"}
                         >
-                            Preview
-                        </Button>
+                            <Button
+                                type="link"
+                                style={{ padding: 0, color: "inherit" }}
+                                onClick={() => {
+                                    // setTemplateFolder(undefined);
+                                    // setIsCreateFolderModalOpen(true);
+                                }}
+                            >
+                                Preview
+                            </Button>
+                        </Popover>
                     </div>
                 )}
             />

@@ -226,6 +226,7 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
 
     const { dataCustomField, isLoadingCustomField } =
         useActivutyCustomFieldValue(drawerUpdateData && drawerUpdateData?.id);
+    const [setFollowerValue, setSetFollowerValue] = useState([]);
     const [customFieldsData, setCustomFieldsData] = useState([]);
 
     const handleDrawerClose = () => {
@@ -234,6 +235,7 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
         setCustomFieldsData([]);
         setDrawerUpdateOpen(false);
         setDrawerUpdateData(null);
+        setSetFollowerValue([]);
     };
 
     const handleGetClassName = (val: string) => {
@@ -280,6 +282,21 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
             formDynamic.setFieldsValue(formData);
         }
     }, [drawerUpdateData?.custom_field_values]);
+
+    const onChangeFollower = (val: any, opt: any) => {
+        if (val.length > 0) {
+            let arr: any = [];
+            opt.map((item: any) => {
+                arr.push({
+                    from_id: item["data-json"].id,
+                    from_table: item["data-json"].from_table,
+                });
+            });
+            setSetFollowerValue(arr);
+        } else {
+            setSetFollowerValue([]);
+        }
+    };
 
     const items: TabsProps["items"] = [
         {
@@ -674,6 +691,9 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
                                         showSearch
                                         mode="multiple"
                                         loading={isLoadingPeople}
+                                        onChange={(val, opt) => {
+                                            onChangeFollower(val, opt);
+                                        }}
                                     >
                                         {dataPeople?.data &&
                                             dataPeople?.data.map(
@@ -684,6 +704,7 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
                                                             key={key}
                                                             value={data}
                                                             search={data}
+                                                            data-json={item}
                                                         >
                                                             {data}
                                                         </Select.Option>
@@ -905,6 +926,7 @@ const DrawerUpdateActivity: React.FC<UpdateProps> = (props) => {
                 : undefined,
             id: drawerUpdateData?.id,
             custom_fields: customFieldsData,
+            followers: setFollowerValue,
         };
         addActivity.mutate(values);
         // console.log("handleFinish", values);

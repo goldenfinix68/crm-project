@@ -1,6 +1,7 @@
 import react from "@vitejs/plugin-react-refresh";
 import { defineConfig } from "vite";
 import laravel from "laravel-vite-plugin";
+import sass from "vite-plugin-sass";
 
 const path = require("path");
 
@@ -11,6 +12,7 @@ export default defineConfig({
             refresh: true,
         }),
         react(),
+        sass(),
     ],
     resolve: {
         alias: {
