@@ -182,6 +182,7 @@ const ComponentActivityType: React.FC = ({}) => {
     const handleCloseCreateMdal = () => {
         setCreateModal(false);
         setSelectedIconData("A");
+        setModalTitle("Add");
         form.resetFields();
     };
 
@@ -227,6 +228,7 @@ const ComponentActivityType: React.FC = ({}) => {
     };
 
     const handleEditType = (values: any) => {
+        setModalTitle("Edit");
         setCreateModal(true);
         form.setFieldsValue({
             type: values.title,
@@ -236,27 +238,18 @@ const ComponentActivityType: React.FC = ({}) => {
     };
 
     const handleArchive = (record: any) => {
-        form.validateFields()
-            .then((data) => {
-                let values: any = {
-                    data: {
-                        id: record.cid,
-                    },
-                    url: "/api/activity_type/archive",
-                };
+        let values: any = {
+            data: {
+                id: record.cid,
+            },
+            url: "/api/activity_type/archive",
+        };
 
-                handlePost.mutate(values);
-                notification.success({
-                    message: "Success",
-                    description: `Successfully archived.`,
-                });
-            })
-            .catch((error) => {
-                notification.warning({
-                    message: "Warning",
-                    description: "Please fill-up required fields.",
-                });
-            });
+        handlePost.mutate(values);
+        notification.success({
+            message: "Success",
+            description: `Successfully archived.`,
+        });
     };
 
     return (
