@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
     Button,
     Collapse,
@@ -8,8 +8,26 @@ import {
     Space,
     Typography,
 } from "antd";
+import ContactContext from "../context";
+import moment from "moment";
 
 const CollapsibleDetails = () => {
+    const { contact } = useContext(ContactContext);
+    const [getLastCommunication, setGetLastCommunication] = useState("SMS");
+    const [getLastCommunicationDate, setGetLastCommunicationDate] =
+        useState("");
+    useEffect(() => {
+        if (contact) {
+            contact.wall?.every((x) => {
+                if (x.type == "call" || x.type == "text") {
+                    setGetLastCommunication(x.type == "call" ? "Call" : "SMS");
+                    setGetLastCommunicationDate(x.date);
+                    return false;
+                }
+                return true;
+            });
+        }
+    }, [contact]);
     const onChange = (key: string | string[]) => {
         console.log(key);
     };
@@ -27,10 +45,10 @@ it can be found as a welcome guest in many households across the world.
             children: (
                 <Descriptions column={1}>
                     <Descriptions.Item label="Last Communication">
-                        Call
+                        {getLastCommunication}
                     </Descriptions.Item>
                     <Descriptions.Item label="Last Communication On">
-                        16 days ago
+                        {moment(getLastCommunicationDate).fromNow()}
                     </Descriptions.Item>
                     <Descriptions.Item label="Open Deals">
                         0 ($0)

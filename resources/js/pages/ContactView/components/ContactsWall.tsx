@@ -395,7 +395,7 @@ const UpdateBox = ({ data, user }: { data: TWallData; user: TUser }) => {
     );
 };
 const Log = ({ data, user }: { data: TWallData; user: TUser }) => {
-    console.log(data);
+    // console.log(data);
     return (
         <Card
             title={
@@ -475,7 +475,7 @@ const Log = ({ data, user }: { data: TWallData; user: TUser }) => {
     );
 };
 const File = ({ data, user }: { data: TWallData; user: TUser }) => {
-    console.log(data);
+    // console.log(data);
     return (
         <Card
             title={
