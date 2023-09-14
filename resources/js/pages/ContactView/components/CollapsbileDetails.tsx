@@ -16,6 +16,13 @@ const CollapsibleDetails = () => {
     const [getLastCommunication, setGetLastCommunication] = useState("SMS");
     const [getLastCommunicationDate, setGetLastCommunicationDate] =
         useState("");
+
+    const [getOpen, setGetOpen] = useState(0);
+    const [getOpenTotal, setGetOpenTotal] = useState(0);
+
+    const [getWon, setGetWon] = useState(0);
+    const [getWonTotal, setGetWonTotal] = useState(0);
+
     useEffect(() => {
         if (contact) {
             contact.wall?.every((x) => {
@@ -26,6 +33,31 @@ const CollapsibleDetails = () => {
                 }
                 return true;
             });
+
+            var open = 0;
+            var open_total = 0;
+
+            var won = 0;
+            var won_total = 0;
+            contact.wall?.forEach((x) => {
+                if (x.type == "dealss") {
+                    if (x.deal?.status == "Open") {
+                        var a: string | undefined = x.deal?.value;
+                        open++;
+                        open_total = open_total + (a ? parseFloat(a) : 0);
+                    }
+                    if (x.deal?.status == "Won") {
+                        var a: string | undefined = x.deal?.value;
+                        won++;
+                        won_total = won_total + (a ? parseFloat(a) : 0);
+                    }
+                }
+            });
+            setGetOpen(open);
+            setGetOpen(open_total);
+
+            setGetWon(won);
+            setGetWonTotal(won_total);
         }
     }, [contact]);
     const onChange = (key: string | string[]) => {
@@ -51,10 +83,10 @@ it can be found as a welcome guest in many households across the world.
                         {moment(getLastCommunicationDate).fromNow()}
                     </Descriptions.Item>
                     <Descriptions.Item label="Open Deals">
-                        0 ($0)
+                        {getOpen} (${getOpenTotal})
                     </Descriptions.Item>
                     <Descriptions.Item label="Deals Won">
-                        0 ($0)
+                        {getWon} (${getWonTotal})
                     </Descriptions.Item>
                     <Descriptions.Item label="Activities">
                         0/3
