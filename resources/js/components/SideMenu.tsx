@@ -20,6 +20,8 @@ import Deal from "../pages/Deal";
 import Navigation from "./Navigation";
 import { useCallContext } from "../context/CallContext";
 import { useLoggedInUser } from "../api/query/userQuery";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 
 const { Header, Sider, Content } = Layout;
 
@@ -66,7 +68,7 @@ const SideMenu = ({ children }) => {
                         },
                         {
                             key: "/contacts",
-                            icon: <PhoneOutlined />,
+                            icon: <FontAwesomeIcon icon={faUser} />,
                             label: "Contacts",
                         },
                         {

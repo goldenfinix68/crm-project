@@ -44,6 +44,7 @@ import React, { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import ContactsComponentsAddCustomField from "./ContactsComponentsAddCustomField";
+import { useContactsTableColumn } from "../../../api/query/contactsQuery";
 import { useContactColumnSetting } from "../../../api/mutation/useContactMutation";
 import { json } from "react-router-dom";
 
@@ -53,6 +54,7 @@ interface ContactsComponentsManageColumnProps {
     listData: ListItem[];
     setListData: any;
     refetchContactsTable: any;
+    contactsTable: any;
 }
 
 interface ListItem {
@@ -96,6 +98,7 @@ const ContactsComponentsManageColumn: React.FC<
     listData,
     setListData,
     refetchContactsTable,
+    contactsTable,
 }) => {
     const [isModalAddCustomField, setModalAddCustomField] = useState(false);
 

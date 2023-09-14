@@ -315,28 +315,26 @@ const Contacts = () => {
             dataIndex: "owner",
             width: 200,
         },
+        {
+            key: "firstName",
+            title: "First Name",
+            dataIndex: "firstName",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="firstName"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.firstName ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
 
-        listData.find((item) => item.id === "1")
-            ? {
-                  key: "firstName",
-                  title: "First Name",
-                  dataIndex: "firstName",
-                  width: 200,
-                  render: (text: string, record: TContact) => (
-                      <ContactsComponentsTableEditableCell
-                          type="firstName"
-                          setCurrentActiveCell={setCurrentActiveCell}
-                          currentActiveCell={currentActiveCell}
-                          setCurrentBtnActive={setCurrentBtnActive}
-                          currentBtnActive={currentBtnActive}
-                          record={record}
-                          setCurrentActiveType={setCurrentActiveType}
-                          recordType={record.firstName ?? null}
-                          currentActiveType={currentActiveType}
-                      />
-                  ),
-              }
-            : {},
         {
             key: "lastName",
             title: "Last Name",
@@ -460,12 +458,19 @@ const Contacts = () => {
             LastName: item.lastName,
         }));
 
+        // Get the current timestamp in the user's local time zone
+        const timestamp = new Date().toLocaleString();
+
+        // Format the timestamp to be suitable for a filename
+        const formattedTimestamp = timestamp.replace(/[\s:]/g, "-");
+
+        const fileName = `Speedlead_Export_${formattedTimestamp}.csv`; // Add timestamp to the filename
         const csvData = Papa.unparse(tableData, { header: true });
         const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
         const link = document.createElement("a");
         const url = URL.createObjectURL(blob);
         link.href = url;
-        link.setAttribute("download", "data.csv");
+        link.setAttribute("download", fileName);
         link.click();
     };
 
@@ -503,6 +508,8 @@ const Contacts = () => {
             console.log("newOrderedColumns", newOrderedColumns);
             console.log("newOrderedColumns", columns);
             setOrderedColumns(newOrderedColumns);
+
+            setListData(data);
         }
     }, [contactsTable]);
 
@@ -1264,6 +1271,7 @@ const Contacts = () => {
                 listData={listData}
                 setListData={setListData}
                 refetchContactsTable={refetchContactsTable}
+                contactsTable={contactsTable}
             />
 
             <ContactsComponentsUpdate

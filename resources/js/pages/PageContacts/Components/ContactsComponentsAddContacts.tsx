@@ -754,7 +754,7 @@ const ContactsComponentsAddContacts = ({
                             });
                         }}
                     >
-                        Save
+                        Save and Close
                     </Button>
                     <Button
                         className="m-r-xs"

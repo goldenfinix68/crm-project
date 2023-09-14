@@ -203,8 +203,8 @@ const ContactsComponentsUpdate = ({
                                         label: "County",
                                     },
                                     {
-                                        value: "countyLink",
-                                        label: "County Link",
+                                        value: "countryLink",
+                                        label: "Country Link",
                                     },
                                     {
                                         value: "description",
