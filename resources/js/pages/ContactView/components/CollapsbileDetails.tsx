@@ -111,28 +111,30 @@ it can be found as a welcome guest in many households across the world.
         },
         {
             key: "3",
-            label: "DEALS (0)",
+            label: `DEALS (${getOpen + getWon}) `,
             children: (
-                <p>
-                    {contact.wall?.map((x) => {
-                        if (x.type == "deal") {
-                            return (
-                                <div>
-                                    <a
-                                        href={
-                                            window.location.origin +
-                                            "/deals/" +
-                                            x.deal?.id
-                                        }
-                                    >
-                                        {x.deal?.title}
-                                        {` (${x.deal?.status})`}
-                                    </a>
-                                </div>
-                            );
-                        }
-                    })}
-                </p>
+                <>
+                    <ul>
+                        {contact.wall?.map((x) => {
+                            if (x.type == "deal") {
+                                return (
+                                    <li style={{ marginBottom: 10 }}>
+                                        <a
+                                            href={
+                                                window.location.origin +
+                                                "/deals/" +
+                                                x.deal?.id
+                                            }
+                                        >
+                                            {x.deal?.title}
+                                            {` (${x.deal?.status})`}
+                                        </a>
+                                    </li>
+                                );
+                            }
+                        })}
+                    </ul>
+                </>
             ),
         },
         // {
