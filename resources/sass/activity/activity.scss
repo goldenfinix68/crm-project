@@ -607,6 +607,38 @@
 
         .ant-card-body {
             padding: 0px !important;
+
+            .menu-favorite-list {
+                .menu-favorite-list-item {
+                    padding: 6px 18px;
+
+                    .ant-btn {
+                        color: white !important;
+                    }
+                }
+
+                .menu-favorite-list-item:hover {
+                    border-color: #d9d9d9 !important;
+                    background: #1677ff;
+                    color: white;
+
+                    .ant-btn {
+                        color: white !important;
+                    }
+
+                    .icon-selected {
+                        color: white !important;
+                    }
+                }
+
+                .icon-selected {
+                    color: #1677ff !important;
+                }
+            }
         }
     }
+}
+
+.set-status {
+    font-size: 20px;
 }

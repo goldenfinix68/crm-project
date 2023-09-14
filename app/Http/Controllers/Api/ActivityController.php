@@ -62,6 +62,20 @@ class ActivityController extends Controller
             }
         }
 
+        if (isset($request->favorite_filter)) {
+            if ($request->favorite_filter == 'Activites I am following') {
+               $data = $data->where(DB::raw("(SELECT `from_id` FROM `activity_followers` WHERE activity_followers.activity_id=activities.id AND activity_followers.from_table='users')"), auth()->user()->id);
+            } else if ($request->favorite_filter == 'All Closed Activities') {
+                $data = $data->where("status", "Closed");
+            } else if ($request->favorite_filter == 'All Open Activities') {
+                $data = $data->where("status", "Open");
+            } else if ($request->favorite_filter == 'My Open Activities') {
+                $data = $data->where("status", "Open")->where('owner_id', auth()->user()->id);
+            } else if ($request->favorite_filter == 'My Overdue Activites') {
+                // $data = $data->where("status", "Open")->where('owner_id', auth()->user()->id);
+            }
+        }
+
         if ($request->sort_field && $request->sort_order) {
             if (
                 $request->sort_field != '' && $request->sort_field != 'undefined' && $request->sort_field != 'null'  &&
@@ -119,7 +133,7 @@ class ActivityController extends Controller
             'deal_id' => isset($request->deal_id) ? $request->deal_id : 0,
             'contact_id' => isset($request->contact_id) ? $request->contact_id : 0,
             // 'follower_id' => isset($request->follower_id) ? $request->follower_id : 0,
-            'status' => "Active",
+            'status' => "Open",
         ]);
 
 
@@ -211,23 +225,28 @@ class ActivityController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $update_query = Activity::find($id);
+        // $update_query = Activity::find($id);
 
-        $updated_result = $update_query->fill($request->all());
-        $updated_result = $updated_result->save();
+        // $updated_result = $update_query->fill($request->all());
+        // $updated_result = $updated_result->save();
 
-        if ($updated_result)
-            return response()->json([
-                'success'       => true,
-                'message'       => 'Success',
-                'description'   => 'Data updated successfully'
-            ], 200);
-        else
-            return response()->json([
-                'success'       => false,
-                'message'       => 'Error',
-                'description'   => 'Data not updated'
-            ], 200);
+        // if ($updated_result)
+        //     return response()->json([
+        //         'success'       => true,
+        //         'message'       => 'Success',
+        //         'description'   => 'Data updated successfully'
+        //     ], 200);
+        // else
+        //     return response()->json([
+        //         'success'       => false,
+        //         'message'       => 'Error',
+        //         'description'   => 'Data not updated'
+        //     ], 200);
+
+        return response()->json([
+            'success' => true,
+            'request' => $request->all(),
+        ], 200);
     }
 
     /**
@@ -293,6 +312,32 @@ class ActivityController extends Controller
         return response()->json([
             'success' => true,
             'data' => $data,
+        ], 20);
+    }
+
+    public function update_status(Request $request)
+    {
+        $update_query = Activity::find($request->id);
+
+        $updated_result = $update_query->fill($request->all());
+        $updated_result = $updated_result->save();
+
+        // if ($updated_result)
+        //     return response()->json([
+        //         'success'       => true,
+        //         'message'       => 'Success',
+        //         'description'   => 'Data updated successfully'
+        //     ], 200);
+        // else
+        //     return response()->json([
+        //         'success'       => false,
+        //         'message'       => 'Error',
+        //         'description'   => 'Data not updated'
+        //     ], 200);
+
+        return response()->json([
+            'success' => true,
+            'request' => $request->all(),
         ], 200);
     }
 }

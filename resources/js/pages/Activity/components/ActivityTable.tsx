@@ -14,6 +14,7 @@ import {
     Tag,
     Tooltip,
     Typography,
+    notification,
 } from "antd";
 import { MenuProps, Menu } from "antd";
 import type { ColumnsType, TableProps } from "antd/es/table";
@@ -46,17 +47,21 @@ import {
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+    faCheck,
     faCheckCircle,
     faLock,
     faStar as starSolid,
+    faCircleCheck as checkSolid,
 } from "@fortawesome/free-solid-svg-icons";
 import {
-    faCircleCheck,
+    faCircleCheck as checkRegular,
     faStar as starRegular,
 } from "@fortawesome/free-regular-svg-icons";
 import DrawerUpdateActivity from "./DrawerEditActivitty";
 import ModalManageColumnFIeld from "./ModalManageColumnFIeld";
 import ComponentActivityTypeIcon from "../../Setup/Components/ComponentActivityTypeIcon";
+import { mutatePost } from "../../../api/mutation/useSetupMutation";
+import { useMutation, useQueryClient } from "react-query";
 
 const rowSelection: TableRowSelection<TActivities> = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -102,15 +107,19 @@ const action_type: MenuProps["items"] = [
 ];
 
 const ActivityTable = () => {
+    const queryClient = useQueryClient();
     const [dataFilter, setDataFilter] = useState({
         page: 1,
         page_size: 50,
         search: "",
         sort_field: "id",
         sort_order: "asc",
-        status: "Active",
+        // status: "Open",
         type: ["All"],
         date_filter: "",
+        favorite_filter: localStorage.activitiesFavorite
+            ? localStorage.activitiesFavorite
+            : "Activites I am following",
     });
 
     const { dataSource, isLoadingUsers, refetchUsers, isFetchingUsers } =
@@ -135,6 +144,7 @@ const ActivityTable = () => {
 
     useEffect(() => {
         refetchUsers();
+        console.log("dataFilter", dataFilter);
     }, [dataFilter]);
 
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
@@ -191,15 +201,17 @@ const ActivityTable = () => {
             dataIndex: "status",
             className: "col-status",
             render: (text: string, record: any) => {
-                return record.status === 1 ? (
+                return record.status === "Open" ? (
                     <FontAwesomeIcon
-                        icon={faCircleCheck}
-                        className="cursor-pointer"
+                        icon={checkRegular}
+                        className="cursor-pointer set-status"
+                        onClick={() => handUpdateStatus(record, "Closed")}
                     />
                 ) : (
                     <FontAwesomeIcon
-                        icon={faCircleCheck}
-                        className="cursor-pointer"
+                        icon={checkSolid}
+                        className="cursor-pointer set-status"
+                        onClick={() => handUpdateStatus(record, "Open")}
                     />
                 );
             },
@@ -387,16 +399,6 @@ const ActivityTable = () => {
                   width: 350,
               }
             : {},
-        // localTableColumn?.find((p: any) => p.title === "Outcome")?.title
-        //     ? {
-        //           title: "Outcome",
-        //           dataIndex: "name",
-        //           index: localTableColumn?.find(
-        //               (p: any) => p.title === "Outcome"
-        //           )?.id,
-        //   sorter: true,
-        //       }
-        //     : {},
         localTableColumn?.find((p: any) => p.title === "Id")?.title
             ? {
                   title: "Id",
@@ -618,7 +620,7 @@ const ActivityTable = () => {
 
             setStateColumns(sortedColumns);
             // console.log("dataCustomField", customCols);
-            console.log("dataCustomField", sortedColumns);
+            // console.log("dataCustomField", sortedColumns);
             // console.log("dataCustomField", dataCustomField?.data);
         }
         // console.log("dataSource", dataSource?.data?.data);
@@ -718,99 +720,161 @@ const ActivityTable = () => {
         setDataFilter(newValues);
     };
 
-    // const activities_type = (
-    //     // <Card>
-    //     //     <Search
-    //     //         placeholder="input search text"
-    //     //         allowClear
-    //     //         // onSearch={onSearch}
-    //     //         style={{ width: 200 }}
-    //     //     />
-    //     //     <Tabs
-    //     //         defaultActiveKey="tab1"
-    //     //         // onChange={handleTabChange}
-    //     //     >
-    //     //         <Tabs.TabPane tab="FAVORITES" key="tab1">
-    //     //             You have no favorties
-    //     //         </Tabs.TabPane>
-    //     //         <Tabs.TabPane tab="ALL VIEWS" key="tab2">
-    //     //             <Menu
-    //     //                 style={{
-    //     //                     backgroundColor: "none",
-    //     //                     boxShadow: "none",
-    //     //                 }}
-    //     //                 mode="inline"
-    //     //                 defaultSelectedKeys={["1"]}
-    //     //                 defaultOpenKeys={["sub1"]}
-    //     //             >
-    //     //                 <Menu.Item key="1">Activites I am following</Menu.Item>
-    //     //                 <Menu.Item key="2">All Closed Activities</Menu.Item>
-    //     //                 <Menu.Item key="3">All Open Activities</Menu.Item>
-    //     //                 <Menu.Item key="4">My Open Activities</Menu.Item>
-    //     //                 <Menu.Item key="5">My Overdue Activites</Menu.Item>
-    //     //             </Menu>
-    //     //         </Tabs.TabPane>
-    //     //     </Tabs>
-    //     // </Card>
-    // );
+    const favoriteMenuList = [
+        "Activites I am following",
+        "All Closed Activities",
+        "All Open Activities",
+        "My Open Activities",
+        "My Overdue Activites",
+    ];
+    const [isDropdownVisible, setDropdownVisible] = useState(false);
+    const [favoritesList, setFavoritesList] = useState(
+        localStorage.activitiesFavoriteFilter
+            ? JSON.parse(localStorage.activitiesFavoriteFilter)
+            : []
+    );
 
-    const [isDropdownVisible, setDropdownVisible] = useState(true);
+    const onClickFavorite = (val: any) => {
+        let newValues = {
+            ...dataFilter,
+            favorite_filter: val,
+        };
+        setDataFilter(newValues);
+        localStorage.setItem("activitiesFavorite", val);
+        setDropdownVisible(false);
+    };
+
+    const onClickFavoriteActive = (val: any) => {
+        return val === dataFilter.favorite_filter ? (
+            <FontAwesomeIcon icon={faCheck} className="icon-selected" />
+        ) : (
+            ""
+        );
+    };
+
+    const onClickFavoriteSelected = (val: any) => {
+        let newVal: any = [...favoritesList];
+
+        let findIndex = favoritesList.findIndex((item) => item === val);
+        if (findIndex !== -1) {
+            newVal.splice(findIndex, 1);
+        } else {
+            newVal.push(val);
+        }
+
+        setFavoritesList(newVal);
+        localStorage.setItem(
+            "activitiesFavoriteFilter",
+            JSON.stringify(newVal)
+        );
+    };
+
+    const onClickFavoriteSelectedActive = (val: any) => {
+        const index: any = favoritesList.findIndex(
+            (element: string) => element === val
+        );
+
+        return index !== Number("-1") ? (
+            <FontAwesomeIcon icon={starSolid} className="icon-selected" />
+        ) : (
+            <FontAwesomeIcon icon={starRegular} />
+        );
+    };
+
     const itemsFilter: MenuProps["items"] = [
         {
             key: "1",
             label: (
                 <>
                     <Card bordered={false}>
-                        <div className="p-sm">
+                        {/* <div className="p-sm">
                             <Search
                                 placeholder="input search text"
                                 allowClear
                                 // onSearch={onSearch}
                                 style={{ width: "100%" }}
                             />
-                        </div>
+                        </div> */}
 
                         <Tabs
-                            defaultActiveKey="tab1"
-                            className="m-b-sm"
+                            defaultActiveKey="tab2"
+                            className="m-b-xs"
                             // onChange={handleTabChange}
                         >
                             <Tabs.TabPane tab="FAVORITES" key="tab1">
-                                <div className="p-l-md p-r-sm p-b-xs">
-                                    <Typography.Text>SYSTEM</Typography.Text>
+                                {favoritesList.length === 0 && (
+                                    <div className="p-md text-center">
+                                        <Typography.Text className="font-16px">
+                                            You have no favorites
+                                        </Typography.Text>
+                                        <br />
+                                        <Typography.Text>
+                                            Select views as favorites to make it
+                                            appear here.
+                                        </Typography.Text>
+                                    </div>
+                                )}
+
+                                <div className="menu-favorite-list">
+                                    {favoritesList.map(
+                                        (item: string, key: number) => {
+                                            return (
+                                                <div
+                                                    className="menu-favorite-list-item"
+                                                    key={key}
+                                                    onClick={() =>
+                                                        onClickFavorite(item)
+                                                    }
+                                                >
+                                                    <Space
+                                                        className="w-100"
+                                                        style={{
+                                                            display: "flex",
+                                                            justifyContent:
+                                                                "space-between",
+                                                        }}
+                                                    >
+                                                        <Space>
+                                                            <FontAwesomeIcon
+                                                                icon={faLock}
+                                                            />
+                                                            {item}
+                                                        </Space>
+
+                                                        <Space
+                                                            style={{
+                                                                width: 36,
+                                                            }}
+                                                        >
+                                                            <Button
+                                                                style={{
+                                                                    padding: 0,
+                                                                }}
+                                                                type="link"
+                                                                onClick={(
+                                                                    event: any
+                                                                ) => {
+                                                                    event.stopPropagation();
+                                                                    onClickFavoriteSelected(
+                                                                        item
+                                                                    );
+                                                                }}
+                                                            >
+                                                                {onClickFavoriteSelectedActive(
+                                                                    item
+                                                                )}
+                                                            </Button>
+
+                                                            {onClickFavoriteActive(
+                                                                item
+                                                            )}
+                                                        </Space>
+                                                    </Space>
+                                                </div>
+                                            );
+                                        }
+                                    )}
                                 </div>
-
-                                <Menu
-                                    style={{
-                                        backgroundColor: "none",
-                                        boxShadow: "none",
-                                    }}
-                                    mode="inline"
-                                    defaultSelectedKeys={["1"]}
-                                    defaultOpenKeys={["sub1"]}
-                                >
-                                    <Menu.Item
-                                        style={{ paddingLeft: "-13px" }}
-                                        key="1"
-                                    >
-                                        <Space
-                                            className="w-100"
-                                            style={{
-                                                display: "flex",
-                                                justifyContent: "space-between",
-                                            }}
-                                        >
-                                            <Space>
-                                                <FontAwesomeIcon
-                                                    icon={faLock}
-                                                />
-                                                Activites I am following
-                                            </Space>
-
-                                            <FontAwesomeIcon icon={starSolid} />
-                                        </Space>
-                                    </Menu.Item>
-                                </Menu>
                             </Tabs.TabPane>
 
                             <Tabs.TabPane tab="ALL VIEWS" key="tab2">
@@ -818,129 +882,66 @@ const ActivityTable = () => {
                                     <Typography.Text>SYSTEM</Typography.Text>
                                 </div>
 
-                                <Menu
-                                    style={{
-                                        backgroundColor: "none",
-                                        boxShadow: "none",
-                                    }}
-                                    mode="inline"
-                                    defaultSelectedKeys={["1"]}
-                                    defaultOpenKeys={["sub1"]}
-                                >
-                                    <Menu.Item
-                                        style={{ paddingLeft: "-13px" }}
-                                        key="1"
-                                    >
-                                        <Space
-                                            className="w-100"
-                                            style={{
-                                                display: "flex",
-                                                justifyContent: "space-between",
-                                            }}
-                                        >
-                                            <Space>
-                                                <FontAwesomeIcon
-                                                    icon={faLock}
-                                                />
-                                                Activites I am following
-                                            </Space>
+                                <div className="menu-favorite-list">
+                                    {favoriteMenuList.map(
+                                        (item: string, key: number) => {
+                                            return (
+                                                <div
+                                                    className="menu-favorite-list-item"
+                                                    key={key}
+                                                    onClick={() =>
+                                                        onClickFavorite(item)
+                                                    }
+                                                >
+                                                    <Space
+                                                        className="w-100"
+                                                        style={{
+                                                            display: "flex",
+                                                            justifyContent:
+                                                                "space-between",
+                                                        }}
+                                                    >
+                                                        <Space>
+                                                            <FontAwesomeIcon
+                                                                icon={faLock}
+                                                            />
+                                                            {item}
+                                                        </Space>
 
-                                            <FontAwesomeIcon icon={starSolid} />
-                                        </Space>
-                                    </Menu.Item>
-                                    <Menu.Item
-                                        style={{ paddingLeft: "-13px" }}
-                                        key="2"
-                                    >
-                                        <Space
-                                            className="w-100"
-                                            style={{
-                                                display: "flex",
-                                                justifyContent: "space-between",
-                                            }}
-                                        >
-                                            <Space>
-                                                <FontAwesomeIcon
-                                                    icon={faLock}
-                                                />
-                                                All Closed Activities
-                                            </Space>
+                                                        <Space
+                                                            style={{
+                                                                width: 36,
+                                                            }}
+                                                        >
+                                                            <Button
+                                                                style={{
+                                                                    padding: 0,
+                                                                }}
+                                                                type="link"
+                                                                onClick={(
+                                                                    event: any
+                                                                ) => {
+                                                                    event.stopPropagation();
+                                                                    onClickFavoriteSelected(
+                                                                        item
+                                                                    );
+                                                                }}
+                                                            >
+                                                                {onClickFavoriteSelectedActive(
+                                                                    item
+                                                                )}
+                                                            </Button>
 
-                                            <FontAwesomeIcon
-                                                icon={starRegular}
-                                            />
-                                        </Space>
-                                    </Menu.Item>
-                                    <Menu.Item
-                                        style={{ paddingLeft: "-13px" }}
-                                        key="3"
-                                    >
-                                        <Space
-                                            className="w-100"
-                                            style={{
-                                                display: "flex",
-                                                justifyContent: "space-between",
-                                            }}
-                                        >
-                                            <Space>
-                                                <FontAwesomeIcon
-                                                    icon={faLock}
-                                                />
-                                                All Open Activities
-                                            </Space>
-
-                                            <FontAwesomeIcon
-                                                icon={starRegular}
-                                            />
-                                        </Space>
-                                    </Menu.Item>
-                                    <Menu.Item
-                                        style={{ paddingLeft: "-13px" }}
-                                        key="4"
-                                    >
-                                        <Space
-                                            className="w-100"
-                                            style={{
-                                                display: "flex",
-                                                justifyContent: "space-between",
-                                            }}
-                                        >
-                                            <Space>
-                                                <FontAwesomeIcon
-                                                    icon={faLock}
-                                                />
-                                                My Open Activities
-                                            </Space>
-
-                                            <FontAwesomeIcon
-                                                icon={starRegular}
-                                            />
-                                        </Space>
-                                    </Menu.Item>
-                                    <Menu.Item
-                                        style={{ paddingLeft: "-13px" }}
-                                        key="5"
-                                    >
-                                        <Space
-                                            className="w-100"
-                                            style={{
-                                                display: "flex",
-                                                justifyContent: "space-between",
-                                            }}
-                                        >
-                                            <Space>
-                                                <FontAwesomeIcon
-                                                    icon={faLock}
-                                                />
-                                                My Overdue Activites
-                                            </Space>
-
-                                            <FontAwesomeIcon
-                                                icon={starRegular}
-                                            />
-                                        </Space>
-                                    </Menu.Item>
-                                </Menu>
+                                                            {onClickFavoriteActive(
+                                                                item
+                                                            )}
+                                                        </Space>
+                                                    </Space>
+                                                </div>
+                                            );
+                                        }
+                                    )}
+                                </div>
                             </Tabs.TabPane>
                         </Tabs>
                     </Card>
@@ -948,6 +949,28 @@ const ActivityTable = () => {
             ),
         },
     ];
+
+    const handUpdateStatus = (record: any, status: string) => {
+        console.log("handUpdateStatus", record);
+        let values = {
+            data: {
+                id: record.id,
+                status: status,
+            },
+            url: "/api/activities_update",
+        };
+        updateStatus.mutate(values);
+    };
+
+    const updateStatus = useMutation(mutatePost, {
+        onSuccess: (res) => {
+            queryClient.invalidateQueries("activities");
+            notification.success({
+                message: "Success",
+                description: "Successfully updated",
+            });
+        },
+    });
 
     return (
         <>
@@ -971,7 +994,7 @@ const ActivityTable = () => {
                             >
                                 <Button>
                                     <Space>
-                                        My Open Activities
+                                        {dataFilter.favorite_filter}
                                         <DownOutlined />
                                     </Space>
                                 </Button>
