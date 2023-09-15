@@ -117,11 +117,12 @@ export type TWallData = {
         | "update"
         | "activity log"
         | "files"
-        | "activity";
+        | "activities";
     note?: TNote;
     text?: TText;
     deal?: TDeal;
     update?: TUpdate;
+    activity?: TUpdate;
 };
 
 export type TContact = {

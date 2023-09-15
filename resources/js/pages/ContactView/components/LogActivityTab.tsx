@@ -80,7 +80,7 @@ const LogActivityTab = () => {
                     },
                 ]}
             >
-                <Input placeholder="Write Activity Title" />
+                <Input placeholder="Write Title" />
             </Form.Item>
             <Form.Item
                 label="Type"

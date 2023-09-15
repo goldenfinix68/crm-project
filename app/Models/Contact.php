@@ -216,7 +216,7 @@ class Contact extends Model
         $activity = $this->activity->map(function ($data) {
             $createdAt = Carbon::parse($data->created_at);
             return [
-                'type' => 'activity',
+                'type' => 'activities',
                 'date' => $data->created_at,
                 'day' => $createdAt->format('j'),
                 'month' => $createdAt->format('F'),
