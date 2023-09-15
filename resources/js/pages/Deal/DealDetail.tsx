@@ -937,7 +937,11 @@ const DealDetail = () => {
             if (dayjs(value).isValid()) {
                 setText(value.format("YYYY-MM-DD HH:mm:ss"));
             } else {
-                setText(value);
+                if (column == "value") {
+                    setText("$" + toCurrency(value));
+                } else {
+                    setText(value);
+                }
             }
         };
 
@@ -1035,7 +1039,11 @@ const DealDetail = () => {
                         onMouseLeave={() => setTextBackgroundColor("")}
                     >
                         {type != "date-time" ? (
-                            text
+                            column == "value" ? (
+                                <>{"$" + toCurrency(text)}</>
+                            ) : (
+                                <>{text}</>
+                            )
                         ) : (
                             <div>
                                 <CalendarOutlined /> {text}{" "}
