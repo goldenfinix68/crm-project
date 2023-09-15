@@ -987,9 +987,10 @@ const DealDetail = () => {
                 case "date-time":
                     return (
                         <DatePicker
-                            onChange={handleSelectChange}
+                            onChange={(e: any) => {
+                                console.log(e);
+                            }}
                             onBlur={handleInputBlur}
-                            autoFocus
                             style={{ width: "120px" }}
                             showTime
                             format="YYYY-MM-DD HH:mm:ss"
@@ -1052,8 +1053,14 @@ const DealDetail = () => {
     });
 
     const handleFinishTitleForm = (values: any) => {
-        console.log(values);
-        addType.mutate({ ...values, id: dealId });
+        if (dayjs(values).isValid()) {
+            let _values = values.estimated_close_date.format(
+                "YYYY-MM-DD h:mm:ss "
+            );
+            addType.mutate({ ..._values, id: dealId });
+        } else {
+            addType.mutate({ ...values, id: dealId });
+        }
     };
 
     return (
@@ -1132,82 +1139,96 @@ const DealDetail = () => {
                             marginBottom: 15,
                         }}
                     >
-                        <Form
-                            form={form_title}
-                            onFinish={handleFinishTitleForm}
-                            layout="vertical"
-                        >
-                            {" "}
-                            <div
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    marginBottom: 15,
+                        {deals && (
+                            <Form
+                                form={form_title}
+                                onFinish={handleFinishTitleForm}
+                                layout="vertical"
+                                initialValues={{
+                                    estimated_close_date: dayjs(
+                                        deals &&
+                                            deals.data.estimated_close_date,
+                                        "YYYY-MM-DD HH:mm:ss"
+                                    ),
                                 }}
                             >
-                                <span style={{ marginRight: 15 }}>
-                                    <span>
-                                        <div>Value</div>
-                                        <EditableText
-                                            type="input"
-                                            value={deals && deals.data.value}
-                                            column="value"
-                                            form={form_title}
-                                        />
+                                {" "}
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        marginBottom: 15,
+                                    }}
+                                >
+                                    <span style={{ marginRight: 15 }}>
+                                        <span>
+                                            <div>Value</div>
+                                            <EditableText
+                                                type="input"
+                                                value={
+                                                    deals && deals.data.value
+                                                }
+                                                column="value"
+                                                form={form_title}
+                                            />
+                                        </span>
                                     </span>
-                                </span>
-                                <span style={{ marginRight: 15 }}>
-                                    <span>
-                                        <div>Pipleline</div>
+                                    <span style={{ marginRight: 15 }}>
+                                        <span>
+                                            <div>Pipleline</div>
 
-                                        <EditableText
-                                            type="select"
-                                            value={deals && deals.data.pipeline}
-                                            column="pipeline"
-                                            form={form_title}
-                                            options={[
-                                                {
-                                                    value: "ACQ",
-                                                    label: "ACQ",
-                                                },
-                                                {
-                                                    value: "Marketing",
-                                                    label: "Marketing",
-                                                },
-                                            ]}
-                                        />
+                                            <EditableText
+                                                type="select"
+                                                value={
+                                                    deals && deals.data.pipeline
+                                                }
+                                                column="pipeline"
+                                                form={form_title}
+                                                options={[
+                                                    {
+                                                        value: "ACQ",
+                                                        label: "ACQ",
+                                                    },
+                                                    {
+                                                        value: "Marketing",
+                                                        label: "Marketing",
+                                                    },
+                                                ]}
+                                            />
+                                        </span>
                                     </span>
-                                </span>
-                                <span style={{ marginRight: 15 }}>
-                                    <div>
-                                        <div>Estimated Close Date</div>
-                                        <EditableText
-                                            type="date-time"
-                                            value={
-                                                deals &&
-                                                deals.data.estimated_close_date
-                                            }
-                                            column="estimated_close_date"
-                                            form={form_title}
-                                        />
-                                        {/* <div>
+                                    <span style={{ marginRight: 15 }}>
+                                        <div>
+                                            <div>Estimated Close Date</div>
+                                            <EditableText
+                                                type="date-time"
+                                                value={
+                                                    deals &&
+                                                    deals.data
+                                                        .estimated_close_date
+                                                }
+                                                column="estimated_close_date"
+                                                form={form_title}
+                                            />
+                                            {/* <div>
                                         <CalendarOutlined />{" "}
                                         {deals &&
                                             deals.data.estimated_close_date}
                                     </div> */}
-                                    </div>
-                                </span>
-                                <span style={{ marginRight: 15 }}>
-                                    <div>
-                                        <div>Win Probability</div>
-                                        {deals && deals.data.win_probabilty
-                                            ? deals.data.win_probabilty
-                                            : 0}
-                                    </div>
-                                </span>
-                            </div>
-                            <div></div>
-                        </Form>
+                                        </div>
+                                    </span>
+                                    <span style={{ marginRight: 15 }}>
+                                        <div>
+                                            <div>Win Probability</div>
+                                            {deals && deals.data.win_probabilty
+                                                ? deals.data.win_probabilty
+                                                : 0}
+                                        </div>
+                                    </span>
+                                </div>
+                                <div></div>
+                            </Form>
+                        )}
                     </div>
 
                     <div style={{ marginTop: 30 }}>
