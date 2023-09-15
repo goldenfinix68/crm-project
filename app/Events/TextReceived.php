@@ -9,6 +9,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use App\Business\Pusher;
 
 class TextReceived implements ShouldBroadcast
 {
@@ -23,15 +24,24 @@ class TextReceived implements ShouldBroadcast
     public function __construct($message)
     {
         $this->message = $message;
+        
+		$pusher = new Pusher();
+		$pusher->trigger('text-channel', 'text-received', [
+			'message' => 'New message received',
+		]);
     }
 
     public function broadcastOn()
     {
-        return ['text-received'];
+		return new PrivateChannel('text-channel');
     }
   
-    public function broadcastAs()
+	public function broadcastWith(): array
     {
-        return 'text-received';
+		$pusher = new Pusher();
+		$pusher->trigger('my-channel', 'my-event', [
+			'message' => 'created',
+		]);
+		return ['my-event' => []];
     }
 }

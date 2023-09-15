@@ -312,7 +312,7 @@ class ActivityController extends Controller
         return response()->json([
             'success' => true,
             'data' => $data,
-        ], 20);
+        ], 200);
     }
 
     public function update_status(Request $request)

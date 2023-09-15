@@ -7,6 +7,9 @@
     <script>
         window.TELNYX_USERNAME = "{{ env('TELNYX_USERNAME') }}";
         window.TELNYX_PASSWORD = "{{ env('TELNYX_PASSWORD') }}";
+        
+        window.PUSHER_APP_KEY = "{{ env('PUSHER_APP_KEY') }}";
+        window.PUSHER_APP_CLUSTER = "{{ env('PUSHER_APP_CLUSTER') }}";
     </script>
 </head>
 <body style="margin: 0">
