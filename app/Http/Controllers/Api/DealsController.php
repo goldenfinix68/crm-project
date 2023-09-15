@@ -396,4 +396,13 @@ class DealsController extends Controller
         $data = DealFavorite::where('user_id', auth()->user()->id)->where('name', $request->name)->delete();
         return response()->json(['success' => true, 'data' => $data], 200);
     }
+
+    public function update_title_form(Request $request)
+    {
+        $data = Deal::updateOrCreate(
+            ['id' => $request->id],
+            $request->all()
+        );
+        return response()->json(['success' => true, 'data' => $data], 200);
+    }
 }

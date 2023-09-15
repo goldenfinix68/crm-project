@@ -53,6 +53,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/deals/multi_update', 'App\Http\Controllers\Api\DealsController@multi_update');
     Route::post('/deals/favorite', 'App\Http\Controllers\Api\DealsController@favorite');
     Route::post('/deals/del_favorite', 'App\Http\Controllers\Api\DealsController@del_favorite');
+    Route::post('/deals/update_title_form', 'App\Http\Controllers\Api\DealsController@update_title_form');
     Route::resource('/notes', 'App\Http\Controllers\Api\NotesController');
     Route::resource('/texts', 'App\Http\Controllers\Api\TextsController');
     Route::post('/deals/useDealUpdateBoardMutation', 'App\Http\Controllers\Api\DealsController@useDealUpdateBoardMutation');

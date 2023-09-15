@@ -47,7 +47,7 @@ const ContactsWall = () => {
     );
     const { user, isLoading } = useLoggedInUser();
 
-    console.log("user", user);
+    // console.log("user", user);
     const items = [
         {
             title: "Showing: ",
@@ -485,7 +485,7 @@ const Log = ({ data, user }: { data: TWallData; user: TUser }) => {
     );
 };
 const Activities = ({ data, user }: { data: TWallData; user: TUser }) => {
-    console.log("data", data);
+    // console.log("data", data);
     return (
         <Card
             title={

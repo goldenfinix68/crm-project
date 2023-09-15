@@ -92,6 +92,7 @@ import {
     useDealMutationDeleteTeammate,
     useDealMutationUpdateStage,
     useDealMutationDeleteDeal,
+    useDealUpdateTitleForm,
 } from "../../api/mutation/useDealMutation";
 import moment from "moment";
 import DealsTable from "./components/DealsTable";
@@ -255,7 +256,7 @@ const DealDetail = () => {
     ];
     const [form] = Form.useForm();
     const [form_notes] = Form.useForm();
-    const [form_tile] = Form.useForm();
+    const [form_title] = Form.useForm();
     function toCurrency(number: any) {
         return new Intl.NumberFormat("en-US", {
             style: "decimal",
@@ -1043,6 +1044,18 @@ const DealDetail = () => {
         );
     };
 
+    const addType = useMutation(useDealUpdateTitleForm, {
+        onSuccess: (res) => {
+            console.log(res);
+            refetch();
+        },
+    });
+
+    const handleFinishTitleForm = (values: any) => {
+        console.log(values);
+        addType.mutate({ ...values, id: dealId });
+    };
+
     return (
         <Row className="deal-group-row">
             <Col md={24}>
@@ -1119,83 +1132,82 @@ const DealDetail = () => {
                             marginBottom: 15,
                         }}
                     >
-                        <div
-                            style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                marginBottom: 15,
-                            }}
+                        <Form
+                            form={form_title}
+                            onFinish={handleFinishTitleForm}
+                            layout="vertical"
                         >
-                            <span style={{ marginRight: 15 }}>
-                                <span>
-                                    <div>Value</div>
-                                    <EditableText
-                                        type="input"
-                                        value={deals && deals.data.value}
-                                        column="value"
-                                        form={form_tile}
-                                    />
+                            {" "}
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    marginBottom: 15,
+                                }}
+                            >
+                                <span style={{ marginRight: 15 }}>
+                                    <span>
+                                        <div>Value</div>
+                                        <EditableText
+                                            type="input"
+                                            value={deals && deals.data.value}
+                                            column="value"
+                                            form={form_title}
+                                        />
+                                    </span>
                                 </span>
-                            </span>
-                            <span style={{ marginRight: 15 }}>
-                                <span>
-                                    <div>Pipleline</div>
+                                <span style={{ marginRight: 15 }}>
+                                    <span>
+                                        <div>Pipleline</div>
 
-                                    <EditableText
-                                        type="select"
-                                        value={deals && deals.data.pipeline}
-                                        column="pipeline"
-                                        form={form_tile}
-                                        options={[
-                                            {
-                                                value: "ACQ",
-                                                label: "ACQ",
-                                            },
-                                            {
-                                                value: "Marketing",
-                                                label: "Marketing",
-                                            },
-                                        ]}
-                                    />
+                                        <EditableText
+                                            type="select"
+                                            value={deals && deals.data.pipeline}
+                                            column="pipeline"
+                                            form={form_title}
+                                            options={[
+                                                {
+                                                    value: "ACQ",
+                                                    label: "ACQ",
+                                                },
+                                                {
+                                                    value: "Marketing",
+                                                    label: "Marketing",
+                                                },
+                                            ]}
+                                        />
+                                    </span>
                                 </span>
-                            </span>
-                            <span style={{ marginRight: 15 }}>
-                                <div>
-                                    <div>Estimated Close Date</div>
-                                    <EditableText
-                                        type="date-time"
-                                        value={
-                                            deals &&
-                                            deals.data.estimated_close_date
-                                        }
-                                        column="estimated_close_date"
-                                        form={form_tile}
-                                    />
-                                    {/* <div>
+                                <span style={{ marginRight: 15 }}>
+                                    <div>
+                                        <div>Estimated Close Date</div>
+                                        <EditableText
+                                            type="date-time"
+                                            value={
+                                                deals &&
+                                                deals.data.estimated_close_date
+                                            }
+                                            column="estimated_close_date"
+                                            form={form_title}
+                                        />
+                                        {/* <div>
                                         <CalendarOutlined />{" "}
                                         {deals &&
                                             deals.data.estimated_close_date}
                                     </div> */}
-                                </div>
-                            </span>
-                            <span style={{ marginRight: 15 }}>
-                                <div>
-                                    <div>Win Probability</div>
-                                    <EditableText
-                                        type="inputNumber"
-                                        value={
-                                            deals && deals.data.win_probabilty
-                                                ? deals.data.win_probabilty
-                                                : 0
-                                        }
-                                        column="win_probabilty"
-                                        form={form_tile}
-                                    />
-                                </div>
-                            </span>
-                        </div>
-
-                        <div></div>
+                                    </div>
+                                </span>
+                                <span style={{ marginRight: 15 }}>
+                                    <div>
+                                        <div>Win Probability</div>
+                                        {deals && deals.data.win_probabilty
+                                            ? deals.data.win_probabilty
+                                            : 0}
+                                    </div>
+                                </span>
+                            </div>
+                            <div></div>
+                        </Form>
                     </div>
 
                     <div style={{ marginTop: 30 }}>
