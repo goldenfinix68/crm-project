@@ -934,7 +934,11 @@ const DealDetail = () => {
         };
 
         const handleSelectChange = (value) => {
-            setText(value);
+            if (dayjs(value).isValid()) {
+                setText(value.format("YYYY-MM-DD HH:mm:ss"));
+            } else {
+                setText(value);
+            }
         };
 
         const handleInputBlur = () => {
@@ -987,9 +991,7 @@ const DealDetail = () => {
                 case "date-time":
                     return (
                         <DatePicker
-                            onChange={(e: any) => {
-                                console.log(e);
-                            }}
+                            onChange={handleSelectChange}
                             onBlur={handleInputBlur}
                             style={{ width: "120px" }}
                             showTime
@@ -1053,11 +1055,12 @@ const DealDetail = () => {
     });
 
     const handleFinishTitleForm = (values: any) => {
-        if (dayjs(values).isValid()) {
-            let _values = values.estimated_close_date.format(
-                "YYYY-MM-DD h:mm:ss "
-            );
-            addType.mutate({ ..._values, id: dealId });
+        if (values.estimated_close_date) {
+            addType.mutate({
+                estimated_close_date:
+                    values.estimated_close_date.format("YYYY-MM-DD h:mm:ss"),
+                id: dealId,
+            });
         } else {
             addType.mutate({ ...values, id: dealId });
         }
