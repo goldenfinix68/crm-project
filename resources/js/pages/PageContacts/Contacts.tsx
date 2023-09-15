@@ -149,6 +149,27 @@ const Contacts = () => {
 
     const [listData, setListData] = useState<ListItem[]>([]);
 
+    const initialColumns = [
+        { id: "50", title: "Name", key: "name" },
+        { id: "51", title: "Email", key: "email" },
+        { id: "2", title: "Mobile", key: "mobile" },
+        { id: "3", title: "Country Link", key: "countryLink" },
+        { id: "4", title: "Acres", key: "acres" },
+        { id: "44", title: "Tags", key: "tags" },
+        { id: "6", title: "Owner", key: "owner" },
+        { id: "0", title: "First Name", key: "firstName" },
+        { id: "1", title: "Last Name", key: "lastName" },
+    ];
+
+    const resetFields = () => {
+        setListData(initialColumns);
+    };
+
+    const cancelFields = () => {
+        console.log(";asdasdsads", columnData);
+        setListData(columnData);
+    };
+
     useEffect(() => {
         if (listData.length > 0) {
             console.log("dsfsdfs");
@@ -175,7 +196,7 @@ const Contacts = () => {
 
     const columns: ColumnsType<TContact> = [
         {
-            key: "firstName",
+            key: "name",
             title: "Name",
             dataIndex: "name",
             render: (text: string, record: TContact) => (
@@ -396,17 +417,8 @@ const Contacts = () => {
     });
 
     const handleDelete = () => {
-        deleteContact.mutate({ contactId: selectedRowsData });
+        deleteContact.mutate({ userId: selectedRowsData });
     };
-
-    // getCheckboxProps: (record: TContact) => ({
-    //     disabled: record.name === "Disabled User", // Column configuration not to be checked
-    //     name: record.name,
-    // }),
-
-    // useEffect(() => {
-    //     console.log("selectionType", selectionType);
-    // }, [selectionType]);
 
     const [isFavorite, setIsFavorite] = useState<string[]>([]);
 
@@ -492,6 +504,7 @@ const Contacts = () => {
     }, [favorites]);
 
     const [orderedColumns, setOrderedColumns] = useState<any>();
+    const [columnData, setColumnData] = useState<any>();
 
     useEffect(() => {
         if (contactsTable && contactsTable[0]) {
@@ -505,11 +518,19 @@ const Contacts = () => {
                 );
             });
 
-            console.log("newOrderedColumns", newOrderedColumns);
-            console.log("newOrderedColumns", columns);
             setOrderedColumns(newOrderedColumns);
-
+            setColumnData(data);
             setListData(data);
+        } else {
+            var newOrderedColumns: any = initialColumns.map((item: any) => {
+                return columns.find(
+                    (column) => column.key === Object.values(item)[2]
+                );
+            });
+            setOrderedColumns(newOrderedColumns);
+            setColumnData(initialColumns);
+            setListData(initialColumns);
+            console.log("aweawe");
         }
     }, [contactsTable]);
 
@@ -1272,6 +1293,8 @@ const Contacts = () => {
                 setListData={setListData}
                 refetchContactsTable={refetchContactsTable}
                 contactsTable={contactsTable}
+                resetFields={resetFields}
+                cancelFields={cancelFields}
             />
 
             <ContactsComponentsUpdate

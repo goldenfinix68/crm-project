@@ -321,4 +321,17 @@ class ContactsController extends Controller
         $contacts_table_column= ContactTableColumn::where('user_id', auth()->user()->id)->get();
         return response()->json($contacts_table_column, 200);
     }
+
+    public function delete_contacts_table_column(Request $request)
+    {
+    
+
+      
+        $data = ContactTableColumn::where('user_id',auth()->user()->id)->delete();
+    
+        return response()->json([
+            'success' => true,
+            'data' => $data 
+        ]);
+    }
 }

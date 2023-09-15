@@ -40,12 +40,14 @@ import {
     CloseOutlined,
     HolderOutlined,
 } from "@ant-design/icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import ContactsComponentsAddCustomField from "./ContactsComponentsAddCustomField";
 import { useContactsTableColumn } from "../../../api/query/contactsQuery";
+
 import { useContactColumnSetting } from "../../../api/mutation/useContactMutation";
+import { useDeleteContactColumn } from "../../../api/mutation/useContactMutation";
 import { json } from "react-router-dom";
 
 interface ContactsComponentsManageColumnProps {
@@ -55,6 +57,8 @@ interface ContactsComponentsManageColumnProps {
     setListData: any;
     refetchContactsTable: any;
     contactsTable: any;
+    resetFields: any;
+    cancelFields: any;
 }
 
 interface ListItem {
@@ -99,6 +103,8 @@ const ContactsComponentsManageColumn: React.FC<
     setListData,
     refetchContactsTable,
     contactsTable,
+    resetFields,
+    cancelFields,
 }) => {
     const [isModalAddCustomField, setModalAddCustomField] = useState(false);
 
@@ -153,6 +159,7 @@ const ContactsComponentsManageColumn: React.FC<
         city: "City",
         county: "County",
         state: "State",
+        name: "Name",
         email: "Email",
         jobTitle: "Job Title",
         otherPhone: "Other Phone",
@@ -222,14 +229,29 @@ const ContactsComponentsManageColumn: React.FC<
 
     const handleFinish = () => {
         // if (record) {
-        let acb = saveColumnSetting.mutate({
+        saveColumnSetting.mutate({
             table_columns: JSON.stringify(listData),
         });
-        console.log("asdasda", JSON.stringify(acb));
 
         // } else {
         //     saveColumnSetting.mutate(values);
         // }
+    };
+
+    useEffect(() => {
+        setListData;
+    }, []);
+
+    const deleteContactColumn = useMutation(useDeleteContactColumn, {
+        onSuccess: () => {
+            console.log("success");
+            refetchContactsTable();
+        },
+    });
+
+    const handleReset = () => {
+        // deleteContactColumn.mutate({});
+        resetFields();
     };
 
     const DraggableItem: React.FC<DraggableItemProps> = ({ item, index }) => (
@@ -357,6 +379,15 @@ const ContactsComponentsManageColumn: React.FC<
                                             (value: any, index: number) => (
                                                 <Checkbox
                                                     key={index} // Make sure to add a unique key when rendering a list of components.
+                                                    checked={
+                                                        listData.find(
+                                                            (x) =>
+                                                                x.id ===
+                                                                index.toString()
+                                                        )
+                                                            ? true
+                                                            : false
+                                                    }
                                                     onChange={(e) => {
                                                         console.log(e);
                                                         onChange(
@@ -1706,7 +1737,12 @@ const ContactsComponentsManageColumn: React.FC<
                             justifyContent: "flex-start",
                         }}
                     >
-                        <Button type="link">
+                        <Button
+                            type="link"
+                            onClick={() => {
+                                handleReset();
+                            }}
+                        >
                             {" "}
                             <u>Reset to default columns</u>
                         </Button>
@@ -1724,7 +1760,11 @@ const ContactsComponentsManageColumn: React.FC<
                         </Button>
 
                         <Button
-                            onClick={() => setIsModalManageColumnOpen(false)}
+                            onClick={() => {
+                                // refetchContactsTable();
+                                cancelFields();
+                                setIsModalManageColumnOpen(false);
+                            }}
                         >
                             Cancel
                         </Button>
