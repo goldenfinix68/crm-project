@@ -102,6 +102,7 @@ export type TUpdate = {
     file_url: string;
     file_size: string;
     file_name: string;
+    availability: string;
 };
 
 export type TWallData = {

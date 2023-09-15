@@ -532,7 +532,7 @@ const Activities = ({ data, user }: { data: TWallData; user: TUser }) => {
                             }}
                         >
                             {" "}
-                            {moment(data.update?.start_date).format("LLL")}
+                            {moment(data.activity?.start_date).format("LLL")}
                         </span>
                     </div>
                 </Col>
@@ -556,7 +556,7 @@ const Activities = ({ data, user }: { data: TWallData; user: TUser }) => {
                             }}
                         >
                             {" "}
-                            {data.update?.outcome}
+                            {data.activity?.availability}
                         </span>
                     </div>
                 </Col>
