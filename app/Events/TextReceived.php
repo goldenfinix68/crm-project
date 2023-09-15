@@ -14,16 +14,16 @@ use App\Business\Pusher;
 class TextReceived implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $message;
+    public $text;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($message)
+    public function __construct($text)
     {
-        $this->message = $message;
+        $this->text = $text;
         
 		$pusher = new Pusher();
 		$pusher->trigger('text-channel', 'text-received', [
