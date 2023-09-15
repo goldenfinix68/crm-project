@@ -46,7 +46,7 @@ const CollapsibleDetails = () => {
 
             var deals_all = [];
             contact.wall?.forEach((x) => {
-                if (x.type == "activity") {
+                if (x.type == "activities") {
                     activity++;
                 }
                 if (x.type == "deal") {
