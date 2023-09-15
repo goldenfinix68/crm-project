@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\TextTemplate;
 use Illuminate\Support\Facades\Validator;
 use Auth;
+use App\Events\TextReceived;
 
 class TextTemplatesController extends Controller
 {
@@ -37,6 +38,8 @@ class TextTemplatesController extends Controller
      */
     public function store(Request $request)
     {
+        event(new TextReceived('hello world'));
+
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'folderId' => 'required',
