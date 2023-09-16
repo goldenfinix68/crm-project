@@ -31,7 +31,7 @@ import {
     PhoneOutlined,
     PlusCircleOutlined,
 } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Title from "antd/es/skeleton/Title";
 import ModalAddActivity from "./ModalAddActivity";
 import Search from "antd/es/input/Search";
@@ -107,6 +107,7 @@ const action_type: MenuProps["items"] = [
 ];
 
 const ActivityTable = () => {
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [dataFilter, setDataFilter] = useState({
         page: 1,
@@ -1010,7 +1011,12 @@ const ActivityTable = () => {
                                     >
                                         List
                                     </Radio.Button>
-                                    <Radio.Button value="Today">
+                                    <Radio.Button
+                                        value="Today"
+                                        onClick={() =>
+                                            navigate("/activities/calendar")
+                                        }
+                                    >
                                         Calendar
                                     </Radio.Button>
                                 </Radio.Group>

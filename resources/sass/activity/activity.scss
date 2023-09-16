@@ -642,3 +642,16 @@
 .set-status {
     font-size: 20px;
 }
+
+.calendar-btn {
+    .ant-radio-button-wrapper {
+        border-color: #dddddd !important;
+        color: #000 !important;
+    }
+
+    .calendar-btn-title {
+        cursor: default;
+        min-width: 120px;
+        text-align: center;
+    }
+}
