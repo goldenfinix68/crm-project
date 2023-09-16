@@ -60,6 +60,7 @@ import ComponentTagManagement from "./pages/Setup/Components/ComponentTagManagem
 import TextTemplates from "./pages/TextTemplates";
 import ComponentActivityType from "./pages/Setup/Components/ComponentActivityType";
 import Pusher from "pusher-js";
+import ActivityCalendar from "./pages/Activity/ActivityCalendar";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isForgotPassword = window.location.pathname === "/forgot-password";
@@ -186,6 +187,14 @@ const App: React.FC = () => {
                                 element={
                                     <PrivateRoute>
                                         <Activity />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/activities/calendar"
+                                element={
+                                    <PrivateRoute>
+                                        <ActivityCalendar />
                                     </PrivateRoute>
                                 }
                             />
