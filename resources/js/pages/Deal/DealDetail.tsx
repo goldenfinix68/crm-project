@@ -25,6 +25,7 @@ import {
     Upload,
     Popconfirm,
     Tag,
+    InputNumber,
     Descriptions,
 } from "antd";
 import axios from "axios";
@@ -91,6 +92,7 @@ import {
     useDealMutationDeleteTeammate,
     useDealMutationUpdateStage,
     useDealMutationDeleteDeal,
+    useDealUpdateTitleForm,
 } from "../../api/mutation/useDealMutation";
 import moment from "moment";
 import DealsTable from "./components/DealsTable";
@@ -254,6 +256,7 @@ const DealDetail = () => {
     ];
     const [form] = Form.useForm();
     const [form_notes] = Form.useForm();
+    const [form_title] = Form.useForm();
     function toCurrency(number: any) {
         return new Intl.NumberFormat("en-US", {
             style: "decimal",
@@ -902,6 +905,175 @@ const DealDetail = () => {
         updateStage.mutate({ stage: val, id: "" + dealId });
     };
 
+    const [onShowInputValue, setOnShowInputValue] = useState(false);
+
+    const EditableText = ({
+        type,
+        options,
+        value,
+        column,
+        form,
+    }: {
+        type: "select" | "inputNumber" | "input" | "selectTags" | "date-time";
+        options?: { label: string; value: string }[];
+        value?: string | number | string[];
+        column: string;
+        form: any;
+    }) => {
+        const [editing, setEditing] = React.useState(false);
+        const [text, setText] = React.useState(value ?? "-");
+        const [textBackgroundColor, setTextBackgroundColor] =
+            React.useState("");
+
+        const handleTextClick = () => {
+            setEditing(true);
+        };
+
+        const handleInputChange = (e) => {
+            setText(e.target.value);
+        };
+
+        const handleSelectChange = (value) => {
+            if (dayjs(value).isValid()) {
+                setText(value.format("YYYY-MM-DD HH:mm:ss"));
+            } else {
+                if (column == "value") {
+                    setText("$" + toCurrency(value));
+                } else {
+                    setText(value);
+                }
+            }
+        };
+
+        const handleInputBlur = () => {
+            setTextBackgroundColor("");
+            setEditing(false);
+            form.submit();
+        };
+
+        const renderInputComponent = () => {
+            switch (type) {
+                case "input":
+                    return (
+                        <Input
+                            value={text}
+                            onChange={handleInputChange}
+                            onBlur={handleInputBlur}
+                            autoFocus
+                            style={{ width: "100px" }}
+                        />
+                    );
+                case "inputNumber":
+                    return (
+                        <InputNumber
+                            value={text}
+                            onChange={handleInputChange}
+                            onBlur={handleInputBlur}
+                            autoFocus
+                            style={{ width: "100px" }}
+                        />
+                    );
+                case "select":
+                    return (
+                        <Select
+                            value={text}
+                            onChange={handleSelectChange}
+                            onBlur={handleInputBlur}
+                            autoFocus
+                            style={{ width: "100px" }}
+                        >
+                            {options?.map((option) => (
+                                <Select.Option
+                                    key={option.value}
+                                    value={option.value}
+                                >
+                                    {option.label}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    );
+                case "date-time":
+                    return (
+                        <DatePicker
+                            onChange={handleSelectChange}
+                            onBlur={handleInputBlur}
+                            style={{ width: "120px" }}
+                            showTime
+                            format="YYYY-MM-DD HH:mm:ss"
+                        />
+                    );
+                case "selectTags":
+                    return (
+                        <Select
+                            mode="tags"
+                            style={{ width: "100px" }}
+                            tokenSeparators={[","]}
+                            onChange={handleSelectChange}
+                            onBlur={handleInputBlur}
+                            // options={options}
+                        />
+                    );
+                default:
+                    return null;
+            }
+        };
+
+        return (
+            <>
+                {editing ? (
+                    <Form.Item
+                        name={[column]}
+                        style={{ width: "100%", marginBottom: 0 }}
+                        initialValue={text}
+                    >
+                        {renderInputComponent()}
+                    </Form.Item>
+                ) : (
+                    <span
+                        onClick={handleTextClick}
+                        style={{
+                            width: "100%",
+                            backgroundColor: textBackgroundColor,
+                        }}
+                        onMouseEnter={() => setTextBackgroundColor("#ADD8E6")}
+                        onMouseLeave={() => setTextBackgroundColor("")}
+                    >
+                        {type != "date-time" ? (
+                            column == "value" ? (
+                                <>{"$" + toCurrency(text)}</>
+                            ) : (
+                                <>{text}</>
+                            )
+                        ) : (
+                            <div>
+                                <CalendarOutlined /> {text}{" "}
+                            </div>
+                        )}
+                    </span>
+                )}
+            </>
+        );
+    };
+
+    const addType = useMutation(useDealUpdateTitleForm, {
+        onSuccess: (res) => {
+            console.log(res);
+            refetch();
+        },
+    });
+
+    const handleFinishTitleForm = (values: any) => {
+        if (values.estimated_close_date) {
+            addType.mutate({
+                estimated_close_date:
+                    values.estimated_close_date.format("YYYY-MM-DD h:mm:ss"),
+                id: dealId,
+            });
+        } else {
+            addType.mutate({ ...values, id: dealId });
+        }
+    };
+
     return (
         <Row className="deal-group-row">
             <Col md={24}>
@@ -978,48 +1150,96 @@ const DealDetail = () => {
                             marginBottom: 15,
                         }}
                     >
-                        <div
-                            style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                marginBottom: 15,
-                            }}
-                        >
-                            <span style={{ marginRight: 15 }}>
-                                <span>
-                                    <div>Value</div>
-                                    <div>
-                                        {" "}
-                                        {deals &&
-                                            "$" + toCurrency(deals.data.value)}
-                                    </div>
-                                </span>
-                            </span>
-                            <span style={{ marginRight: 15 }}>
-                                <span>
-                                    <div>Pipleline</div>
-                                    <div>{deals && deals.data.pipeline}</div>
-                                </span>
-                            </span>
-                            <span style={{ marginRight: 15 }}>
-                                <div>
-                                    <div>Estimated Close Date</div>
-                                    <div>
+                        {deals && (
+                            <Form
+                                form={form_title}
+                                onFinish={handleFinishTitleForm}
+                                layout="vertical"
+                                initialValues={{
+                                    estimated_close_date: dayjs(
+                                        deals &&
+                                            deals.data.estimated_close_date,
+                                        "YYYY-MM-DD HH:mm:ss"
+                                    ),
+                                }}
+                            >
+                                {" "}
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        marginBottom: 15,
+                                    }}
+                                >
+                                    <span style={{ marginRight: 15 }}>
+                                        <span>
+                                            <div>Value</div>
+                                            <EditableText
+                                                type="input"
+                                                value={
+                                                    deals && deals.data.value
+                                                }
+                                                column="value"
+                                                form={form_title}
+                                            />
+                                        </span>
+                                    </span>
+                                    <span style={{ marginRight: 15 }}>
+                                        <span>
+                                            <div>Pipleline</div>
+
+                                            <EditableText
+                                                type="select"
+                                                value={
+                                                    deals && deals.data.pipeline
+                                                }
+                                                column="pipeline"
+                                                form={form_title}
+                                                options={[
+                                                    {
+                                                        value: "ACQ",
+                                                        label: "ACQ",
+                                                    },
+                                                    {
+                                                        value: "Marketing",
+                                                        label: "Marketing",
+                                                    },
+                                                ]}
+                                            />
+                                        </span>
+                                    </span>
+                                    <span style={{ marginRight: 15 }}>
+                                        <div>
+                                            <div>Estimated Close Date</div>
+                                            <EditableText
+                                                type="date-time"
+                                                value={
+                                                    deals &&
+                                                    deals.data
+                                                        .estimated_close_date
+                                                }
+                                                column="estimated_close_date"
+                                                form={form_title}
+                                            />
+                                            {/* <div>
                                         <CalendarOutlined />{" "}
                                         {deals &&
                                             deals.data.estimated_close_date}
-                                    </div>
+                                    </div> */}
+                                        </div>
+                                    </span>
+                                    <span style={{ marginRight: 15 }}>
+                                        <div>
+                                            <div>Win Probability</div>
+                                            {deals && deals.data.win_probabilty
+                                                ? deals.data.win_probabilty
+                                                : 0}
+                                        </div>
+                                    </span>
                                 </div>
-                            </span>
-                            <span style={{ marginRight: 15 }}>
-                                <div>
-                                    <div>Win Probability</div>
-                                    <div>0</div>
-                                </div>
-                            </span>
-                        </div>
-
-                        <div></div>
+                                <div></div>
+                            </Form>
+                        )}
                     </div>
 
                     <div style={{ marginTop: 30 }}>

@@ -9,6 +9,7 @@ use App\Models\Text;
 use Auth;
 use Carbon\Carbon;
 use App\Jobs\SendText;
+use App\Events\TextReceived;
 
 class TextsController extends Controller
 {
@@ -188,6 +189,8 @@ class TextsController extends Controller
             $text->type = $payload['type'];
             $text->status = 'received';
             $text->save();
+            
+            event(new TextReceived($text));
         }
 
         

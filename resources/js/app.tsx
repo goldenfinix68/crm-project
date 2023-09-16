@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import {
     BrowserRouter as Router,
@@ -59,11 +59,32 @@ import SetupLayout from "./pages/Setup/SetupLayout";
 import ComponentTagManagement from "./pages/Setup/Components/ComponentTagManagement";
 import TextTemplates from "./pages/TextTemplates";
 import ComponentActivityType from "./pages/Setup/Components/ComponentActivityType";
+import Pusher from "pusher-js";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isForgotPassword = window.location.pathname === "/forgot-password";
     const isForgotPasswordVerify =
         window.location.pathname === "/forgot-password-verify";
+
+    const pusher = new Pusher((window as any).PUSHER_APP_KEY, {
+        cluster: (window as any).PUSHER_APP_CLUSTER,
+    });
+
+    useEffect(() => {
+        // Subscribe to the Pusher channel and bind to the event
+        const channel = pusher.subscribe("text-channel");
+        channel.bind("text-received", (data) => {
+            console.log("Received a text:", data);
+            queryClient.invalidateQueries("contacts");
+            queryClient.invalidateQueries("getContact");
+        });
+
+        // Clean up the subscription when the component unmounts
+        return () => {
+            channel.unbind("text-received");
+            pusher.unsubscribe("text-channel");
+        };
+    }, []);
 
     return (
         <CallProvider>

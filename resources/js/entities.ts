@@ -102,6 +102,7 @@ export type TUpdate = {
     file_url: string;
     file_size: string;
     file_name: string;
+    availability: string;
 };
 
 export type TWallData = {
@@ -117,11 +118,12 @@ export type TWallData = {
         | "update"
         | "activity log"
         | "files"
-        | "activity";
+        | "activities";
     note?: TNote;
     text?: TText;
     deal?: TDeal;
     update?: TUpdate;
+    activity?: TUpdate;
 };
 
 export type TContact = {
