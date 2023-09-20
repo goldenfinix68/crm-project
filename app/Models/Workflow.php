@@ -23,6 +23,7 @@ class Workflow extends Model
         'message',
         'contactIds',
         'timezone',
+        'userId',
     ];
 
     // Mutator: Serialize array to JSON before saving to the database
