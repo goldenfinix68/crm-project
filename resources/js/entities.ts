@@ -86,6 +86,7 @@ export type TUpdateOwner = {
     firstName: string;
     id: any;
 };
+
 export type TUpdate = {
     id: string;
     userId: string;
@@ -103,6 +104,22 @@ export type TUpdate = {
     file_size: string;
     file_name: string;
     availability: string;
+};
+
+export type TWorkflow = {
+    id: any;
+    type: string;
+    action: string;
+    startOn: string;
+    batchQuantity: number;
+    repeatAfter: string;
+    repeatAfterType: "days" | "hours" | "minutes" | "seconds";
+    sendOn: string;
+    startFrom: string;
+    endsAt: string;
+    message: string;
+    timezone: string;
+    contactIds?: string[];
 };
 
 export type TWallData = {

@@ -53,6 +53,7 @@
         "force": "^0.0.3",
         "jquery": "^3.7.0",
         "moment": "^2.29.4",
+        "moment-timezone": "^0.5.43",
         "papaparse": "^5.4.1",
         "pusher-js": "^8.3.0",
         "react-beautiful-dnd": "^13.1.1",

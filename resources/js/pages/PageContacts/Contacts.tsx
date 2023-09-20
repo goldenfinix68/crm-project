@@ -77,6 +77,7 @@ import {
     useContactDeleteFavorite,
 } from "../../api/mutation/useContactMutation";
 import ContactsComponentsAddtoList from "./Components/ContactsComponentsAddtoList";
+import SendToManyModal from "../../components/SentToManyModal";
 
 interface DataType {
     key: React.Key;
@@ -134,6 +135,8 @@ const Contacts = () => {
 
     const [isModalOpenUpdate, setisModalOpenUpdate] = useState(false);
     const [isModalOpenAddList, setisModalOpenAddlist] = useState(false);
+
+    const [isSendToManyModalOpen, setIsSendToManyModalOpen] = useState(false);
 
     // const initialListData: ListItem[] = [
     //     { id: "1", title: "Name" },
@@ -591,7 +594,11 @@ const Contacts = () => {
                     <Button icon={<MailOutlined />} className="m-r-sm">
                         Email
                     </Button>
-                    <Button icon={<MobileOutlined />} className="m-r-sm">
+                    <Button
+                        icon={<MobileOutlined />}
+                        className="m-r-sm"
+                        onClick={() => setIsSendToManyModalOpen(true)}
+                    >
                         Text
                     </Button>
                     <Button icon={<CheckCircleOutlined />} className="m-r-sm">
@@ -1281,6 +1288,12 @@ const Contacts = () => {
                 title={isTitle}
                 selectedData={selectedData}
                 setTContact={setTContact}
+            />
+
+            <SendToManyModal
+                isModalOpen={isSendToManyModalOpen}
+                closeModal={() => setIsSendToManyModalOpen(false)}
+                contacts={(selectedData as any) ?? []}
             />
         </Card>
     );

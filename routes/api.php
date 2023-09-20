@@ -83,6 +83,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::resource('/text-template-folders', 'App\Http\Controllers\Api\TextTemplateFoldersController');
     Route::resource('/text-templates', 'App\Http\Controllers\Api\TextTemplatesController');
+    Route::resource('/workflows', 'App\Http\Controllers\Api\WorkflowsController');
 });
 
 Route::post('/telnyx/sms/webhook', 'App\Http\Controllers\Api\TextsController@textReceived');
