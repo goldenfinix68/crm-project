@@ -13,6 +13,7 @@ import {
     MessageOutlined,
     MobileOutlined,
     PhoneFilled,
+    UsergroupAddOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Button, theme } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +21,8 @@ import Deal from "../pages/Deal";
 import Navigation from "./Navigation";
 import { useCallContext } from "../context/CallContext";
 import { useLoggedInUser } from "../api/query/userQuery";
+import { faPhone } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const { Header, Sider, Content } = Layout;
 
@@ -66,7 +69,7 @@ const SideMenu = ({ children }) => {
                         },
                         {
                             key: "/contacts",
-                            icon: <PhoneOutlined />,
+                            icon: <UsergroupAddOutlined />,
                             label: "Contacts",
                         },
                         {
@@ -91,7 +94,7 @@ const SideMenu = ({ children }) => {
                         },
                         {
                             key: "/dialer",
-                            icon: <i className="bi bi-newspaper"></i>,
+                            icon: <PhoneOutlined />,
                             label: "Dialer",
                         },
                     ]}

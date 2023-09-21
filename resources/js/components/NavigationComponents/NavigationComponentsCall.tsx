@@ -21,7 +21,15 @@ import validataRules from "../../providers/validateRules";
 
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import { LoadingOutlined } from "@ant-design/icons";
+import {
+    LoadingOutlined,
+    PhoneFilled,
+    PhoneOutlined,
+    PhoneTwoTone,
+} from "@ant-design/icons";
+
+import { useCallContext } from "../../context/CallContext";
+import { useLoggedInUser } from "../../api/query/userQuery";
 
 const optionsFrom: SelectProps["options"] = [
     {
@@ -439,9 +447,14 @@ const NavigationComponentsCall: React.FC = () => {
         },
     ];
 
+    const { setIsModalOpen, setCallerNumber, setDestinationNumber } =
+        useCallContext();
+
+    const { user, isLoading: isLogginUserLoading } = useLoggedInUser();
+
     return (
         <>
-            <Dropdown
+            {/* <Dropdown
                 arrow
                 menu={{ items }}
                 placement="bottomRight"
@@ -451,11 +464,21 @@ const NavigationComponentsCall: React.FC = () => {
                 open={showCall}
                 onOpenChange={() => setShowCall(!showCall)}
             >
-                <FontAwesomeIcon
-                    icon={faPhone}
+                <PhoneOutlined
                     onClick={() => setShowCall(true)}
+                    style={{ fontSize: 17, marginBottom: 4 }}
                 />
-            </Dropdown>
+            </Dropdown> */}
+
+            <PhoneOutlined
+                onClick={(e) => {
+                    setCallerNumber(
+                        user.numbers?.length ? user.numbers[0] : ""
+                    );
+                    setDestinationNumber("");
+                    setIsModalOpen(true);
+                }}
+            />
         </>
     );
 };
