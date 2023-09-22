@@ -29,6 +29,7 @@ import { useLoggedInUser } from "../../../api/query/userQuery";
 import Search from "antd/es/input/Search";
 import { useTextTemplates } from "../../../api/query/textTemplateQuery";
 import { replacePlaceholders } from "../../../helpers";
+import UseTemplatePopover from "../../../components/UseTemplatePopover";
 interface Props {
     handleSubmit: () => void;
     handleCancel: () => void;
@@ -153,7 +154,7 @@ const TextForm = ({ handleSubmit, handleCancel }: Props) => {
                 <Typography.Text>Count: {message?.length}</Typography.Text>
                 <Popover
                     content={
-                        <AddAttributeContent
+                        <UseTemplatePopover
                             handleSelect={(value) => {
                                 form.setFieldValue(
                                     "message",
@@ -161,6 +162,7 @@ const TextForm = ({ handleSubmit, handleCancel }: Props) => {
                                 );
                                 setIsTemplatePopoverOpen(false);
                             }}
+                            contact={contact}
                         />
                     }
                     title={
@@ -242,74 +244,6 @@ const TextForm = ({ handleSubmit, handleCancel }: Props) => {
                 <Button onClick={resetFields}>Cancel</Button>
             </Space>
         </Form>
-    );
-};
-
-const AddAttributeContent = ({ handleSelect }) => {
-    const { templates, isLoading } = useTextTemplates();
-    const { contact } = useContext(ContactContext);
-    return (
-        <Space direction="vertical" size={"large"}>
-            <Search placeholder="Search" />
-
-            <List
-                dataSource={templates?.filter(
-                    (template) => !template.deleted_at
-                )}
-                style={{ maxHeight: "200px", overflowY: "auto" }}
-                renderItem={(item) => (
-                    <div
-                        style={{
-                            cursor: "pointer", // Add pointer cursor
-                            backgroundColor: "white", // Set the default background color
-                            padding: "8px",
-
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = "blue";
-                            e.currentTarget.style.color = "white"; // Change background color on hover
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = "white";
-                            e.currentTarget.style.color = "black"; // Restore default background color on hover out
-                        }}
-                        onClick={() => {
-                            handleSelect(item.textMessage);
-                        }}
-                    >
-                        <Typography.Text strong style={{ color: "inherit" }}>
-                            {item.name}
-                        </Typography.Text>
-
-                        <Popover
-                            content={
-                                <Typography.Text>
-                                    {replacePlaceholders(
-                                        item.textMessage,
-                                        contact
-                                    )}
-                                </Typography.Text>
-                            }
-                            trigger={"hover"}
-                        >
-                            <Button
-                                type="link"
-                                style={{ padding: 0, color: "inherit" }}
-                                onClick={() => {
-                                    // setTemplateFolder(undefined);
-                                    // setIsCreateFolderModalOpen(true);
-                                }}
-                            >
-                                Preview
-                            </Button>
-                        </Popover>
-                    </div>
-                )}
-            />
-        </Space>
     );
 };
 
