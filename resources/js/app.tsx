@@ -61,6 +61,7 @@ import TextTemplates from "./pages/TextTemplates";
 import ComponentActivityType from "./pages/Setup/Components/ComponentActivityType";
 import Pusher from "pusher-js";
 import ActivityCalendar from "./pages/Activity/ActivityCalendar";
+import BulkAction from "./pages/PageContacts/BulkAction";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isForgotPassword = window.location.pathname === "/forgot-password";
@@ -159,7 +160,6 @@ const App: React.FC = () => {
                                     </PrivateRoute>
                                 }
                             />
-
                             <Route
                                 path="/contacts/:contactId"
                                 element={
@@ -203,6 +203,14 @@ const App: React.FC = () => {
                                 element={
                                     <PrivateRoute>
                                         <Deal />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/bulk-action"
+                                element={
+                                    <PrivateRoute>
+                                        <BulkAction />
                                     </PrivateRoute>
                                 }
                             />

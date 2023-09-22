@@ -120,6 +120,21 @@ export type TWorkflow = {
     message: string;
     timezone: string;
     contactIds?: string[];
+    user?: TUser;
+    items?: TWorkflowItem[];
+    total: number;
+    completedAt?: string;
+};
+
+export type TWorkflowItem = {
+    id: any;
+    workflowId: string;
+    contactIds?: string[];
+    trigger_at: string;
+    queue_lock: boolean;
+    success: number;
+    failed: number;
+    total: number;
 };
 
 export type TWallData = {

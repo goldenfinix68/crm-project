@@ -25,6 +25,20 @@ class Workflow extends Model
         'timezone',
         'userId',
     ];
+    protected $appends = [
+        'total',
+        'completedAt'
+    ];
+    
+    public function user()
+    {
+        return $this->belongsTo('\App\Models\User', 'userId', 'id');
+    }
+
+    public function items()
+    {
+        return $this->hasMany('\App\Models\WorkflowItem', 'workflowId', 'id')->orderBy('id', 'desc');
+    }
 
     // Mutator: Serialize array to JSON before saving to the database
     public function setSendOnAttribute($value)
@@ -48,5 +62,19 @@ class Workflow extends Model
     public function getContactIdsAttribute($value)
     {
         return json_decode($value, true);
+    }
+    
+    public function getTotalAttribute()
+    {
+        return count($this->contactIds);
+    }
+    
+    public function getCompletedAtAttribute()
+    {
+        // $texts = $this->load('items.texts');
+        $ids = $this->items->pluck('id');
+        $text = Text::whereIn('workflowItemId', $ids)->orderBy('id', 'desc')->first();
+       
+        return !empty($text) ? $text->created_at : "";
     }
 }

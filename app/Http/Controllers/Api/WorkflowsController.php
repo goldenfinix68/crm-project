@@ -9,6 +9,7 @@ use App\Models\WorkflowItem;
 use Illuminate\Support\Facades\Validator;
 use Auth;
 use Carbon\Carbon;
+use DB;
 
 class WorkflowsController extends Controller
 {
@@ -19,7 +20,17 @@ class WorkflowsController extends Controller
      */
     public function index()
     {
-        //
+        $workflows = Workflow::with(['items', 'user'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // foreach($workflows as $workflow){
+        //     foreach($workflow->items as $item){
+        //         $item->related_texts = $item->texts;
+        //     }
+        // }
+
+        return json_encode($workflows);
     }
 
     /**

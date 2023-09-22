@@ -54,6 +54,7 @@ class CheckWorkflow extends Command
                 $workflow = $workflowItem->workflow;
                 $timeStartSeconds = Carbon::parse($workflowItem->trigger_at)->diffInSeconds($now);
                 foreach($workflowItem->contactIds as $id){
+                    $sum++;
                     $contact = Contact::find($id);
                     $user = User::find($workflow->userId);
                     if(!empty($contact)){
@@ -69,7 +70,7 @@ class CheckWorkflow extends Command
                         $text->workflowItemId = $workflowItem->id;
                         $text->save();
 
-                        SendText::dispatch($text)->delay(now()->addSeconds($timeStartSeconds + 1));
+                        SendText::dispatch($text, ($sum == $workflowItems))->delay(now()->addSeconds($timeStartSeconds + 1));
                     }
                 }
                 $workflowItem->queue_lock = true;
