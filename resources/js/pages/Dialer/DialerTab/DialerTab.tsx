@@ -108,7 +108,7 @@ const DialerTab = ({
             onValuesChange={handleFormChange}
         >
             <Form.Item
-                style={{ marginBottom: 0 }}
+                style={{ marginBottom: 10 }}
                 name="callerNumber"
                 label="From"
                 rules={[
