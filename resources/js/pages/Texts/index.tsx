@@ -36,7 +36,7 @@ import TextContent from "./components/TextContent";
 import { useNavigate, useParams } from "react-router-dom";
 import { getTimeAgo } from "../../helpers";
 import SentBox from "./components/SentBox";
-import TextItem from "./components/textItem";
+import TextItem from "./components/TextItem";
 import LoadingComponent from "../../components/LoadingComponent";
 import AddUpdateTextLabelModal from "../PageContacts/Components/AddUpdateTextLabelModal";
 import { useTextLabels } from "../../api/query/textQuery";
@@ -108,7 +108,7 @@ const Texts = () => {
     return (
         <Card bodyStyle={{ padding: 0 }}>
             <Row gutter={0} style={{ height: "85vh" }}>
-                <Col span={isChatBox ? 6 : 3} style={{ padding: "24px" }}>
+                <Col span={isChatBox ? 10 : 3} style={{ padding: "24px" }}>
                     <Row>
                         <Col span={isChatBox ? 9 : 24}>
                             <Menu
@@ -262,7 +262,7 @@ const Texts = () => {
                     </Row>
                 </Col>
                 <Col
-                    span={isChatBox ? 18 : 21}
+                    span={isChatBox ? 14 : 21}
                     style={{
                         backgroundColor: "#F5F5F5",
                         margin: 0,
