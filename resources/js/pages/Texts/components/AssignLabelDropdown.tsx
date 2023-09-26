@@ -44,7 +44,8 @@ const AssignLabelDropdown = () => {
     const [tagSearchKey, setTagSearchKey] = React.useState("");
     const assignLabelContact = useMutation(assignLabelContactMutation, {
         onSuccess: () => {
-            queryClient.invalidateQueries("useContactsAll");
+            queryClient.invalidateQueries("contacts");
+            queryClient.invalidateQueries("getContact");
         },
     });
 

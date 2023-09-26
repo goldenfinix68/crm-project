@@ -11,7 +11,6 @@ const TextItem = ({
     text: TText;
     label?: string;
 }) => {
-    console.log(label);
     return (
         <Space direction="vertical" style={{ width: "100%" }}>
             <div
