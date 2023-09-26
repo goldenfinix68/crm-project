@@ -22,10 +22,12 @@ import {
     SendOutlined,
     SettingOutlined,
     EllipsisOutlined,
+    PlusCircleOutlined,
+    TagFilled,
 } from "@ant-design/icons";
 import { Divider } from "rc-menu";
 import { useContactsAll } from "../../api/query/contactsQuery";
-import { TContact, TText } from "../../entities";
+import { TContact, TText, TTextLabel } from "../../entities";
 import DropdownComponent from "../../components/DropdownComponent";
 import ChatBoxItem from "./components/ChatBoxItem";
 import ContactInfo from "../ContactView/components/ContactInfo";
@@ -36,6 +38,8 @@ import { getTimeAgo } from "../../helpers";
 import SentBox from "./components/SentBox";
 import TextItem from "./components/textItem";
 import LoadingComponent from "../../components/LoadingComponent";
+import AddUpdateTextLabelModal from "../PageContacts/Components/AddUpdateTextLabelModal";
+import { useTextLabels } from "../../api/query/textQuery";
 
 const Texts = () => {
     const { route } = useParams();
@@ -48,6 +52,11 @@ const Texts = () => {
     );
     const [searchKey, setSearchKey] = useState("");
     const { contacts, isLoading } = useContactsAll();
+    const { labels, isLoading: isLabelsLoading } = useTextLabels();
+    const [isCreateLabelModalOpen, setIsCreateLabelModalOpen] = useState(false);
+    const [selectedTextLabel, setSelectedTextLabel] = useState<
+        TTextLabel | undefined
+    >(undefined);
 
     const filteredContacts = (): TContact[] | undefined => {
         let data = contacts;
@@ -59,15 +68,38 @@ const Texts = () => {
             );
         }
         if (searchKey) {
-            return data?.filter(
-                (contact) =>
-                    contact.firstName
-                        .toLowerCase()
-                        .includes(searchKey.toLowerCase()) ||
-                    contact.lastName
-                        .toLowerCase()
-                        .includes(searchKey.toLowerCase())
-            );
+            let searchWord = searchKey;
+            let label = "";
+            const match = searchKey.match(/\{\{label:(.*?)\}\}/);
+
+            if (match) {
+                label = match[1];
+                searchWord = searchWord.replace(/\{\{.*?\}\}\s*/g, "");
+            }
+
+            return data?.filter((contact) => {
+                let bool = false;
+                if (label) {
+                    bool =
+                        (contact.firstName
+                            .toLowerCase()
+                            .includes(searchWord.toLowerCase()) ||
+                            contact.lastName
+                                .toLowerCase()
+                                .includes(searchWord.toLowerCase())) &&
+                        contact.label?.name == label;
+                } else if (searchWord != "") {
+                    bool =
+                        contact.firstName
+                            .toLowerCase()
+                            .includes(searchWord.toLowerCase()) ||
+                        contact.lastName
+                            .toLowerCase()
+                            .includes(searchWord.toLowerCase());
+                }
+
+                return bool;
+            });
         }
 
         return data;
@@ -129,6 +161,50 @@ const Texts = () => {
                                 >
                                     Templates
                                 </Menu.Item>
+
+                                <Divider />
+                                <Space
+                                    direction="vertical"
+                                    size={"large"}
+                                    style={{
+                                        padding: "15px",
+                                    }}
+                                >
+                                    <Space>
+                                        <Typography.Text strong>
+                                            Labels
+                                        </Typography.Text>
+                                        <Button
+                                            type="link"
+                                            style={{ padding: 0 }}
+                                            onClick={() => {
+                                                setIsCreateLabelModalOpen(true);
+                                                setSelectedTextLabel(undefined);
+                                            }}
+                                        >
+                                            <PlusCircleOutlined />
+                                        </Button>
+                                    </Space>
+
+                                    {labels?.map((label) => (
+                                        <Space
+                                            style={{ cursor: "pointer" }}
+                                            onClick={() => {
+                                                setSearchKey(
+                                                    `{{label:${label.name}}} `
+                                                );
+                                                console.log("implement filter");
+                                            }}
+                                        >
+                                            <TagFilled
+                                                style={{
+                                                    transform: "rotate(45deg)",
+                                                }}
+                                            />{" "}
+                                            {label.name}
+                                        </Space>
+                                    ))}
+                                </Space>
                             </Menu>
                         </Col>
                         {isChatBox ? (
@@ -141,9 +217,10 @@ const Texts = () => {
                                         suffix={<SearchOutlined />}
                                         placeholder="Search"
                                         style={{ marginBottom: "20px" }}
-                                        onKeyUp={(e: any) =>
+                                        onChange={(e: any) =>
                                             setSearchKey(e.target.value)
                                         }
+                                        value={searchKey}
                                     />
                                     {filteredContacts()?.length ? (
                                         filteredContacts()?.map((contact) => {
@@ -163,6 +240,10 @@ const Texts = () => {
                                                             name={`${contact.firstName} ${contact.lastName}`}
                                                             text={
                                                                 contact?.texts![0]
+                                                            }
+                                                            label={
+                                                                contact.label
+                                                                    ?.name
                                                             }
                                                         />
                                                     </div>
@@ -201,6 +282,12 @@ const Texts = () => {
                     ) : null}
                 </Col>
             </Row>
+
+            <AddUpdateTextLabelModal
+                isModalOpen={isCreateLabelModalOpen}
+                closeModal={() => setIsCreateLabelModalOpen(false)}
+                textLabel={selectedTextLabel}
+            />
         </Card>
     );
 };

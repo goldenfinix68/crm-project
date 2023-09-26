@@ -23,6 +23,7 @@ import queryClient from "../../../queryClient";
 import { useMutation } from "react-query";
 import { sendTextMutation } from "../../../api/mutation/useTextMutation";
 import TextForm from "./TextForm";
+import AssignLabelDropdown from "./AssignLabelDropdown";
 
 const TextContent = ({
     menu,
@@ -93,7 +94,8 @@ const TextContent = ({
                             {contact.firstName.charAt(0)}
                         </Avatar>{" "}
                         {`${contact.firstName} ${contact.lastName}`}
-                        <span style={{ marginLeft: "auto" }}>
+                        <Space style={{ marginLeft: "auto" }}>
+                            <AssignLabelDropdown />
                             <DropdownComponent
                                 menuList={[
                                     {
@@ -122,7 +124,7 @@ const TextContent = ({
                                     />
                                 }
                             />
-                        </span>
+                        </Space>
                     </div>
 
                     <div style={{ paddingTop: "50px", height: "85%" }}>

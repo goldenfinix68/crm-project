@@ -38,7 +38,8 @@ class ContactsController extends Controller
             'contacts.*',
             \DB::raw("(SELECT CONCAT(users.firstName, ' ', users.lastName)) as `owner`"),
         ])
-            ->leftJoin('users', 'users.id', '=', 'contacts.ownerId');
+            ->leftJoin('users', 'users.id', '=', 'contacts.ownerId')
+            ->with(['type', 'label']);
 
         if (isset($request->filter)) {
             if ($request->filter == "new-last-week") {
@@ -128,7 +129,7 @@ class ContactsController extends Controller
      */
     public function show($id)
     {
-        $contact = Contact::with(['type', 'deals'])->find($id);
+        $contact = Contact::with(['type', 'deals', 'label'])->find($id);
 
         if (empty($contact)) {
             abort(404);
@@ -320,5 +321,14 @@ class ContactsController extends Controller
     {
         $contacts_table_column= ContactTableColumn::where('user_id', auth()->user()->id)->get();
         return response()->json($contacts_table_column, 200);
+    }
+
+    public function assign_label($id, Request $request)
+    {
+        $contact = Contact::find($id);
+        $contact->textLabelId = $request->textLabelId;
+        $contact->save();
+
+        return $contact;
     }
 }

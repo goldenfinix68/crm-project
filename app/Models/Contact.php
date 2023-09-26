@@ -93,6 +93,11 @@ class Contact extends Model
         return $this->hasOne(\App\Models\ContactType::class, 'id', 'typeId');
     }
 
+    public function label()
+    {
+        return $this->hasOne(\App\Models\TextLabel::class, 'id', 'textLabelId');
+    }
+
     public function notes()
     {
         return $this->hasMany(\App\Models\Note::class, 'contactId', 'id');

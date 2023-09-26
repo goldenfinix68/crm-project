@@ -23,6 +23,11 @@ export type TTextTemplateFolder = {
     name: string;
 };
 
+export type TTextLabel = {
+    id?: string;
+    name: string;
+};
+
 export type TTextTemplate = {
     id?: string;
     name: string;
@@ -218,4 +223,6 @@ export type TContact = {
     owner?: string;
     wall?: TWallData[];
     texts?: TText[];
+    textLabelId?: string;
+    label?: TTextLabel;
 };
