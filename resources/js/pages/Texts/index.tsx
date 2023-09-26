@@ -110,7 +110,7 @@ const Texts = () => {
             <Row gutter={0} style={{ height: "85vh" }}>
                 <Col span={isChatBox ? 10 : 3} style={{ padding: "24px" }}>
                     <Row>
-                        <Col span={isChatBox ? 9 : 24}>
+                        <Col span={isChatBox ? 7 : 24}>
                             <Menu
                                 mode="vertical"
                                 onClick={(e) => {
@@ -208,7 +208,7 @@ const Texts = () => {
                             </Menu>
                         </Col>
                         {isChatBox ? (
-                            <Col span={15}>
+                            <Col span={17}>
                                 <Space
                                     direction="vertical"
                                     style={{ padding: "10px", width: "100%" }}
