@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Avatar,
     Button,
     Card,
     Col,
+    Dropdown,
     Empty,
     Input,
     Menu,
     Row,
     Space,
+    Tag,
     Typography,
 } from "antd";
 import {
@@ -40,6 +42,7 @@ import TextItem from "./components/TextItem";
 import LoadingComponent from "../../components/LoadingComponent";
 import AddUpdateTextLabelModal from "../PageContacts/Components/AddUpdateTextLabelModal";
 import { useTextLabels } from "../../api/query/textQuery";
+import TextsHeaderMenu from "./components/TextsHeaderMenu";
 
 const Texts = () => {
     const { route } = useParams();
@@ -106,190 +109,110 @@ const Texts = () => {
     };
 
     return (
-        <Card bodyStyle={{ padding: 0 }}>
-            <Row gutter={0} style={{ height: "85vh" }}>
-                <Col span={isChatBox ? 10 : 3} style={{ padding: "24px" }}>
-                    <Row>
-                        <Col span={isChatBox ? 7 : 24}>
-                            <Menu
-                                mode="vertical"
-                                onClick={(e) => {
-                                    if (e.key == "all") {
-                                        navigate("/texts");
-                                    } else if (e.key == "templates") {
-                                        navigate("/text-templates");
-                                    } else {
-                                        navigate("/texts/" + e.key);
-                                    }
-                                    setMenu(e.key);
-                                }}
-                                selectedKeys={[menu]}
-                                style={{ height: "80vh" }}
-                            >
-                                {/* Set mode to 'vertical' for a vertical menu */}
-                                <Menu.Item key="all" icon={<MailOutlined />}>
-                                    All
-                                </Menu.Item>
-                                <Menu.Item key="inbox" icon={<InboxOutlined />}>
-                                    Inbox
-                                </Menu.Item>
-                                <Menu.Item
-                                    key="scheduled"
-                                    icon={<ClockCircleOutlined />}
-                                >
-                                    Scheduled
-                                </Menu.Item>
-                                <Menu.Item key="sent" icon={<SendOutlined />}>
-                                    Sent
-                                </Menu.Item>
-                                <Menu.Item
-                                    key="outbox"
-                                    icon={<InboxOutlined />}
-                                >
-                                    Outbox
-                                </Menu.Item>
-                                <Menu.Item
-                                    key="failed"
-                                    icon={<DeleteOutlined />}
-                                >
-                                    Failed
-                                </Menu.Item>
-                                <Divider />
-                                <Menu.Item
-                                    key="templates"
-                                    icon={<FolderOutlined />}
-                                >
-                                    Templates
-                                </Menu.Item>
-
-                                <Divider />
-                                <Space
-                                    direction="vertical"
-                                    size={"large"}
-                                    style={{
-                                        padding: "15px",
-                                    }}
-                                >
-                                    <Space>
-                                        <Typography.Text strong>
-                                            Labels
-                                        </Typography.Text>
-                                        <Button
-                                            type="link"
-                                            style={{ padding: 0 }}
-                                            onClick={() => {
-                                                setIsCreateLabelModalOpen(true);
-                                                setSelectedTextLabel(undefined);
-                                            }}
-                                        >
-                                            <PlusCircleOutlined />
-                                        </Button>
-                                    </Space>
-
-                                    {labels?.map((label) => (
-                                        <Space
-                                            style={{ cursor: "pointer" }}
-                                            onClick={() => {
-                                                setSearchKey(
-                                                    `{{label:${label.name}}} `
-                                                );
-                                                console.log("implement filter");
-                                            }}
-                                        >
-                                            <TagFilled
-                                                style={{
-                                                    transform: "rotate(45deg)",
-                                                }}
-                                            />{" "}
-                                            {label.name}
-                                        </Space>
-                                    ))}
-                                </Space>
-                            </Menu>
-                        </Col>
-                        {isChatBox ? (
-                            <Col span={17}>
-                                <Space
-                                    direction="vertical"
-                                    style={{ padding: "10px", width: "100%" }}
-                                >
-                                    <Input
-                                        suffix={<SearchOutlined />}
-                                        placeholder="Search"
-                                        style={{ marginBottom: "20px" }}
-                                        onChange={(e: any) =>
-                                            setSearchKey(e.target.value)
-                                        }
-                                        value={searchKey}
-                                    />
-                                    {filteredContacts()?.length ? (
-                                        filteredContacts()?.map((contact) => {
-                                            if (contact.texts?.length) {
-                                                return (
-                                                    <div
-                                                        style={{
-                                                            cursor: "pointer",
-                                                        }}
-                                                        onClick={() =>
-                                                            setSelectedContact(
-                                                                contact
-                                                            )
-                                                        }
-                                                    >
-                                                        <TextItem
-                                                            name={`${contact.firstName} ${contact.lastName}`}
-                                                            text={
-                                                                contact?.texts![0]
-                                                            }
-                                                            label={
-                                                                contact.label
-                                                                    ?.name
-                                                            }
-                                                        />
-                                                    </div>
-                                                );
-                                            }
-                                            return null;
-                                        })
-                                    ) : (
-                                        <Typography.Text>
-                                            No converstation found.
-                                        </Typography.Text>
-                                    )}
-                                </Space>
-                            </Col>
-                        ) : null}
-                    </Row>
-                </Col>
-                <Col
-                    span={isChatBox ? 14 : 21}
-                    style={{
-                        backgroundColor: "#F5F5F5",
-                        margin: 0,
-                        height: "85vh",
-                        overflowY: "auto",
-                    }}
-                >
-                    {selectedContact && isChatBox ? (
-                        <div key={selectedContact.id}>
-                            <TextContent
-                                contactId={selectedContact.id}
-                                menu={menu}
-                            />
-                        </div>
-                    ) : isSentBox ? (
-                        <SentBox menu={menu} />
-                    ) : null}
-                </Col>
-            </Row>
-
-            <AddUpdateTextLabelModal
-                isModalOpen={isCreateLabelModalOpen}
-                closeModal={() => setIsCreateLabelModalOpen(false)}
-                textLabel={selectedTextLabel}
+        <Space direction="vertical" style={{ width: "100%" }}>
+            <TextsHeaderMenu
+                handleClick={(e) => {
+                    if (e.key == "all") {
+                        navigate("/texts");
+                    } else if (e.key == "templates") {
+                        navigate("/text-templates");
+                    } else {
+                        navigate("/texts/" + e.key);
+                    }
+                    setMenu(e.key);
+                }}
+                handleLabelChange={(e) => {
+                    console.log(e);
+                    setSearchKey(`{{label:${e.key}}} `);
+                }}
+                handleCreateNewLabel={() => setIsCreateLabelModalOpen(true)}
             />
-        </Card>
+            <Card bodyStyle={{ padding: 0 }}>
+                <Row gutter={0} style={{ height: "85vh" }}>
+                    {isChatBox && (
+                        <Col span={6} style={{ padding: "24px" }}>
+                            <Space
+                                direction="vertical"
+                                style={{
+                                    padding: "10px",
+                                    width: "100%",
+                                }}
+                            >
+                                <Input
+                                    suffix={<SearchOutlined />}
+                                    placeholder="Search"
+                                    style={{ marginBottom: "20px" }}
+                                    onChange={(e: any) =>
+                                        setSearchKey(e.target.value)
+                                    }
+                                    value={searchKey}
+                                />
+                                {filteredContacts()?.length ? (
+                                    filteredContacts()?.map((contact) => {
+                                        if (contact.texts?.length) {
+                                            return (
+                                                <div
+                                                    style={{
+                                                        cursor: "pointer",
+                                                    }}
+                                                    onClick={() =>
+                                                        setSelectedContact(
+                                                            contact
+                                                        )
+                                                    }
+                                                >
+                                                    <TextItem
+                                                        name={`${contact.firstName} ${contact.lastName}`}
+                                                        text={
+                                                            contact?.texts![0]
+                                                        }
+                                                        label={
+                                                            contact.label?.name
+                                                        }
+                                                    />
+                                                </div>
+                                            );
+                                        }
+                                        return null;
+                                    })
+                                ) : (
+                                    <Typography.Text>
+                                        No converstation found.
+                                    </Typography.Text>
+                                )}
+                            </Space>
+                        </Col>
+                    )}
+
+                    <Col
+                        span={isChatBox ? 18 : 24}
+                        style={{
+                            backgroundColor: "#F5F5F5",
+                            margin: 0,
+                            height: "85vh",
+                            overflowY: "auto",
+                        }}
+                    >
+                        {selectedContact && isChatBox ? (
+                            <div key={selectedContact.id}>
+                                <TextContent
+                                    contactId={selectedContact.id}
+                                    menu={menu}
+                                />
+                            </div>
+                        ) : isSentBox ? (
+                            <SentBox menu={menu} />
+                        ) : null}
+                    </Col>
+                </Row>
+
+                <AddUpdateTextLabelModal
+                    isModalOpen={isCreateLabelModalOpen}
+                    closeModal={() => setIsCreateLabelModalOpen(false)}
+                    textLabel={selectedTextLabel}
+                />
+            </Card>
+        </Space>
     );
 };
-
 export default Texts;
