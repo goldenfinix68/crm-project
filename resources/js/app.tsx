@@ -62,6 +62,7 @@ import ComponentActivityType from "./pages/Setup/Components/ComponentActivityTyp
 import Pusher from "pusher-js";
 import ActivityCalendar from "./pages/Activity/ActivityCalendar";
 import BulkAction from "./pages/PageContacts/BulkAction";
+import TextBoxView from "./pages/Texts/components/TextBoxView";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isForgotPassword = window.location.pathname === "/forgot-password";
@@ -251,6 +252,14 @@ const App: React.FC = () => {
                                 element={
                                     <PrivateRoute>
                                         <Texts />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/texts/contact/:contactId"
+                                element={
+                                    <PrivateRoute>
+                                        <TextBoxView />
                                     </PrivateRoute>
                                 }
                             />

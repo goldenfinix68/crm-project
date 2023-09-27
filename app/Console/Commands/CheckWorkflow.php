@@ -62,7 +62,7 @@ class CheckWorkflow extends Command
 
                         $text = new Text();
                         $text->from = $user->mobileNumbers->first();
-                        $text->to = '[' . $contact->mobile . ']';
+                        $text->to = $contact->mobile;
                         $text->message = $message;
                         $text->type = 'SMS';
                         $text->status = 'queued';

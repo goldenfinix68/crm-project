@@ -67,28 +67,29 @@ class Text extends Model
 
     public function getReceiversAttribute()
     {
-        $to = json_decode($this->to);
-        
+        $to = $this->to;
         if($this->isFromApp){
-            $receivers = Contact::whereIn('mobile', $to)->pluck('firstName', 'lastName');
-        }
-        else{           
-            $receivers = User::whereHas('mobileNumbers', function ($query) use ($to) {
-                $query->whereIn('mobileNumber', $to);
-            })->get()->pluck('firstName', 'lastName');
-        }
-        if(empty($receivers)){
-            return "Unknown";
+
+            $sender = Contact::where('mobile', $this->to)->first();
+            if(!empty($sender)){
+                return $sender->firstName . ' ' . $sender->lastName;
+            }
+            return $this->to;
         }
         else{
-            $names = $receivers->map(function ($lastName, $firstName) {
+            
+            $senders = User::whereHas('mobileNumbers', function ($query) use ($to) {
+                $query->where('mobileNumber', $to);
+            })->get()->pluck('firstName', 'lastName');
+            
+            $names = $senders->map(function ($lastName, $firstName) {
                 return "$lastName $firstName";
             })->implode(', ');
-        
+            
             return $names;
         }
-        
     }
+
     
     public function getDayAttribute()
     {

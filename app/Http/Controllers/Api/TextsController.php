@@ -67,7 +67,7 @@ class TextsController extends Controller
                     'status' => 'queued',
                     'isFromApp' => true,
                     'telnyxResponse' => json_encode($response),
-                    "to" => '["' . $request->to . '"]',
+                    "to" => $request->to,
                 ]));
             }
             else{
@@ -81,7 +81,7 @@ class TextsController extends Controller
                         'status' => 'scheduled',
                         'isFromApp' => true,
                         'queueLock' => true,
-                        "to" => '["' . $request->to . '"]',
+                        "to" => $request->to,
                     ]));
                     $timeStartSeconds = $givenTime - $currentTime;
                     $delayInSeconds = $timeStartSeconds + 1;
@@ -92,7 +92,7 @@ class TextsController extends Controller
                         'type'=> 'SMS', 
                         'status' => 'scheduled',
                         'isFromApp' => true,
-                        "to" => '["' . $request->to . '"]',
+                        "to" => $request->to,
                     ]));
                 }
             }
@@ -180,15 +180,18 @@ class TextsController extends Controller
                 }
             }
 
-            $text = new Text();
-            $text->telnyxId = $json['data']['id'];
-            $text->from = $payload['from']['phone_number'];
-            $text->to = '[' . implode (", ", $recepients) . ']';
-            $text->message = $payload['text'];
-            $text->telnyxResponse = json_encode($json);
-            $text->type = $payload['type'];
-            $text->status = 'received';
-            $text->save();
+            foreach($recepients as $recepient){
+                $text = new Text();
+                $text->telnyxId = $json['data']['id'];
+                $text->from = $payload['from']['phone_number'];
+                $text->to = $recepient;
+                $text->message = $payload['text'];
+                $text->telnyxResponse = json_encode($json);
+                $text->type = $payload['type'];
+                $text->status = 'received';
+                $text->save();
+            }
+            
             
             event(new TextReceived($text));
         }

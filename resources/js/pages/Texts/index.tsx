@@ -7,6 +7,7 @@ import {
     Dropdown,
     Empty,
     Input,
+    List,
     Menu,
     Row,
     Space,
@@ -47,29 +48,15 @@ import TextsHeaderMenu from "./components/TextsHeaderMenu";
 const Texts = () => {
     const { route } = useParams();
     const navigate = useNavigate();
-    const [menu, setMenu] = useState(route ?? "all");
-    const isChatBox = ["all", "inbox"].includes(menu);
-    const isSentBox = ["sent", "outbox", "failed", "scheduled"].includes(menu);
-    const [selectedContact, setSelectedContact] = useState<TContact | null>(
-        null
-    );
     const [searchKey, setSearchKey] = useState("");
     const { contacts, isLoading } = useContactsAll();
-    const { labels, isLoading: isLabelsLoading } = useTextLabels();
-    const [isCreateLabelModalOpen, setIsCreateLabelModalOpen] = useState(false);
-    const [selectedTextLabel, setSelectedTextLabel] = useState<
-        TTextLabel | undefined
-    >(undefined);
+    const isChatBox = ["all", "inbox"].includes(route ?? "all");
 
     const filteredContacts = (): TContact[] | undefined => {
         let data = contacts;
 
         data = data?.filter((contact) => contact.texts?.length);
-        if (menu == "inbox") {
-            data = data?.filter((contact) =>
-                contact.texts?.some((text) => !text.isFromApp)
-            );
-        }
+
         if (searchKey) {
             let searchWord = searchKey;
             let label = "";
@@ -107,112 +94,81 @@ const Texts = () => {
 
         return data;
     };
-
     return (
         <Space direction="vertical" style={{ width: "100%" }}>
             <TextsHeaderMenu
-                handleClick={(e) => {
-                    if (e.key == "all") {
-                        navigate("/texts");
-                    } else if (e.key == "templates") {
-                        navigate("/text-templates");
-                    } else {
-                        navigate("/texts/" + e.key);
-                    }
-                    setMenu(e.key);
-                }}
-                handleLabelChange={(e) => {
-                    console.log(e);
-                    setSearchKey(`{{label:${e.key}}} `);
-                }}
-                handleCreateNewLabel={() => setIsCreateLabelModalOpen(true)}
+                handleLabelChange={(e) => setSearchKey(`{{label:${e.key}}} `)}
             />
-            <Card bodyStyle={{ padding: 0 }}>
-                <Row gutter={0} style={{ height: "85vh" }}>
-                    {isChatBox && (
-                        <Col span={6} style={{ padding: "24px" }}>
-                            <Space
-                                direction="vertical"
-                                style={{
-                                    padding: "10px",
-                                    width: "100%",
-                                }}
+            <Card>
+                {isChatBox ? (
+                    <List
+                        itemLayout="horizontal"
+                        dataSource={filteredContacts()}
+                        renderItem={(contact) => (
+                            <List.Item
+                                style={{ cursor: "pointer" }}
+                                onClick={() =>
+                                    navigate("/texts/contact/" + contact.id)
+                                }
                             >
-                                <Input
-                                    suffix={<SearchOutlined />}
-                                    placeholder="Search"
-                                    style={{ marginBottom: "20px" }}
-                                    onChange={(e: any) =>
-                                        setSearchKey(e.target.value)
-                                    }
-                                    value={searchKey}
-                                />
-                                {filteredContacts()?.length ? (
-                                    filteredContacts()?.map((contact) => {
-                                        if (contact.texts?.length) {
-                                            return (
-                                                <div
-                                                    style={{
-                                                        cursor: "pointer",
-                                                    }}
-                                                    onClick={() =>
-                                                        setSelectedContact(
-                                                            contact
-                                                        )
-                                                    }
-                                                >
-                                                    <TextItem
-                                                        name={`${contact.firstName} ${contact.lastName}`}
-                                                        text={
-                                                            contact?.texts![0]
-                                                        }
-                                                        label={
-                                                            contact.label?.name
-                                                        }
-                                                    />
-                                                </div>
-                                            );
-                                        }
-                                        return null;
-                                    })
-                                ) : (
-                                    <Typography.Text>
-                                        No converstation found.
-                                    </Typography.Text>
-                                )}
-                            </Space>
-                        </Col>
-                    )}
-
-                    <Col
-                        span={isChatBox ? 18 : 24}
-                        style={{
-                            backgroundColor: "#F5F5F5",
-                            margin: 0,
-                            height: "85vh",
-                            overflowY: "auto",
-                        }}
-                    >
-                        {selectedContact && isChatBox ? (
-                            <div key={selectedContact.id}>
-                                <TextContent
-                                    contactId={selectedContact.id}
-                                    menu={menu}
-                                />
-                            </div>
-                        ) : isSentBox ? (
-                            <SentBox menu={menu} />
-                        ) : null}
-                    </Col>
-                </Row>
-
-                <AddUpdateTextLabelModal
-                    isModalOpen={isCreateLabelModalOpen}
-                    closeModal={() => setIsCreateLabelModalOpen(false)}
-                    textLabel={selectedTextLabel}
-                />
+                                <Row gutter={12} style={{ width: "100%" }}>
+                                    <Col span={3}>
+                                        <TextEllipsis
+                                            style={{ fontWeight: "bold" }}
+                                        >
+                                            {`${contact.firstName} ${contact.lastName}`}
+                                        </TextEllipsis>
+                                    </Col>
+                                    <Col span={19}>
+                                        <TextEllipsis>
+                                            <Space>
+                                                {contact.label?.name ? (
+                                                    <Tag
+                                                        style={{
+                                                            float: "right",
+                                                        }}
+                                                    >
+                                                        {contact.label?.name}
+                                                    </Tag>
+                                                ) : null}
+                                                {contact?.texts![0].message}
+                                            </Space>
+                                        </TextEllipsis>
+                                    </Col>
+                                    <Col span={2}>
+                                        <TextEllipsis
+                                            style={{ textAlign: "right" }}
+                                        >
+                                            {contact?.texts![0].day +
+                                                " " +
+                                                contact?.texts![0].month}
+                                        </TextEllipsis>
+                                    </Col>
+                                </Row>
+                            </List.Item>
+                        )}
+                    />
+                ) : (
+                    <SentBox menu={route} />
+                )}
             </Card>
         </Space>
     );
+};
+
+const TextEllipsis = ({
+    children,
+    style,
+}: {
+    children: any;
+    style?: React.CSSProperties;
+}) => {
+    const defaultStyles: React.CSSProperties = {
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+    };
+    const combinedStyles = { ...defaultStyles, ...style };
+    return <div style={combinedStyles}>{children}</div>;
 };
 export default Texts;

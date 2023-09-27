@@ -11,7 +11,7 @@ import {
     Space,
     Typography,
 } from "antd";
-import { TText } from "../../../entities";
+import { TContact, TText } from "../../../entities";
 import { EllipsisOutlined } from "@ant-design/icons";
 import DropdownComponent from "../../../components/DropdownComponent";
 import ContactInfo from "../../ContactView/components/ContactInfo";
@@ -27,21 +27,14 @@ import AssignLabelDropdown from "./AssignLabelDropdown";
 
 const TextContent = ({
     menu,
-    contactId,
+    contact,
 }: {
     menu: string;
-    contactId: string;
+    contact: TContact;
 }) => {
     const [form] = Form.useForm();
     const [isFocused, setIsFocused] = React.useState(false);
-    const [isLoading, setIsLoading] = React.useState(false);
     const chatBoxRef = React.useRef<HTMLDivElement>(null);
-    const { contact, refetch } = useGetContact(contactId ?? "", (data) => {
-        // Do something with the fetched data when it's successful
-        console.log("Data fetched successfully:", data);
-        setIsLoading(false);
-        scrollToBottom();
-    });
 
     const scrollToBottom = () => {
         if (chatBoxRef.current) {
@@ -50,21 +43,12 @@ const TextContent = ({
     };
 
     React.useEffect(() => {
-        setIsLoading(true);
-        refetch();
-    }, [contactId]);
-
-    React.useEffect(() => {
         scrollToBottom();
     }, [contact]);
 
-    if (isLoading || !contact) {
-        return <LoadingComponent />;
-    }
-
     return ["all", "inbox", "scheduled"].includes(menu) ? (
         <ContactContext.Provider value={{ contact: contact }}>
-            <Row key={contactId}>
+            <Row key={contact.id}>
                 <Col
                     span={16}
                     style={{ height: "85vh", overflowY: "auto" }}

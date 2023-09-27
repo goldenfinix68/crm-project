@@ -131,9 +131,9 @@ class ContactsController extends Controller
     {
         $contact = Contact::with(['type', 'deals', 'label'])->find($id);
 
-        if (empty($contact)) {
-            abort(404);
-        }
+        // if (empty($contact)) {
+        //     abort(404);
+        // }
 
         return response()->json($contact, 200);
     }

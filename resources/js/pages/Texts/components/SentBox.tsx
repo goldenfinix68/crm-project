@@ -7,12 +7,16 @@ import moment from "moment";
 
 const SentBox = ({ menu }) => {
     const { texts, isLoading } = useTexts();
+    console.log(texts);
     const getFilteredTexts = () => {
         if (menu == "sent") {
             return texts?.filter((text) => text?.isFromApp);
         }
         if (menu == "scheduled") {
-            return texts?.filter((text) => text?.status == "scheduled");
+            return texts?.filter((text) => text?.schedule);
+        }
+        if (menu == "failed") {
+            return texts?.filter((text) => text?.status == "failed");
         }
         return [];
     };
@@ -64,7 +68,7 @@ const SentBox = ({ menu }) => {
 const SentBoxItem = ({ text }: { text: TText }) => {
     return (
         <Card>
-            <Avatar
+            {/* <Avatar
                 className="avatarText m-r-sm"
                 size={32}
                 style={{
@@ -73,7 +77,7 @@ const SentBoxItem = ({ text }: { text: TText }) => {
                 }}
             >
                 {text.receivers.charAt(0)}
-            </Avatar>
+            </Avatar> */}
             <Space direction="vertical" size={0} style={{ width: "95%" }}>
                 <div>
                     <Typography.Text strong>{text.receivers}</Typography.Text>

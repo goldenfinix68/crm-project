@@ -111,7 +111,7 @@ class Contact extends Model
             return [];
         }
         $texts = Text::where(function ($query) {
-            $query->whereRaw('JSON_CONTAINS(`to`, ?)', ['"' . $this->mobile . '"'])
+            $query->orWhere('to', $this->mobile)
                 ->orWhere('from', $this->mobile);
         })
             ->orderBy('id', 'desc')
