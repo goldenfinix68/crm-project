@@ -16,6 +16,7 @@ import { TContact, TText } from "../../../entities";
 import { SearchOutlined } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import { useContactsAll } from "../../../api/query/contactsQuery";
+import { getTimeAgo } from "../../../helpers";
 
 const TextList = ({ label }) => {
     const [searchKey, setSearchKey] = useState("");
@@ -127,9 +128,9 @@ const TextList = ({ label }) => {
                                             fontSize: "12px", // Adjust font size
                                         }}
                                     >
-                                        {contact?.texts![0].day +
-                                            " " +
-                                            contact?.texts![0].month}
+                                        {getTimeAgo(
+                                            contact?.texts![0].created_at
+                                        )}
                                     </TextEllipsis>
                                 </Col>
                             </Row>

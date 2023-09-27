@@ -15,11 +15,13 @@ export function getTimeAgo(dateString: string) {
         timeAgo = `${timeDiffInMinutes}m ago`;
     } else if (timeDiffInHours < 24) {
         timeAgo = `${timeDiffInHours}h ago`;
-    } else if (timeDiffInDays < 7) {
-        timeAgo = `${timeDiffInDays}d ago`;
-    } else if (timeDiffInWeeks < 4) {
-        timeAgo = `${timeDiffInWeeks}w ago`;
-    } else {
+    }
+    // else if (timeDiffInDays < 7) {
+    //     timeAgo = `${timeDiffInDays}d ago`;
+    // } else if (timeDiffInWeeks < 4) {
+    //     timeAgo = `${timeDiffInWeeks}w ago`;
+    // }
+    else {
         const monthNames = [
             "Jan",
             "Feb",
