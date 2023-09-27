@@ -3,6 +3,7 @@ import {
     Avatar,
     Button,
     Col,
+    Divider,
     Empty,
     Input,
     List,
@@ -68,6 +69,8 @@ const TextList = ({ label }) => {
         setSearchKey(label);
     }, [label]);
 
+    const contactsList = filteredContacts();
+
     return (
         <>
             <Input
@@ -79,43 +82,59 @@ const TextList = ({ label }) => {
             />
             <List
                 itemLayout="horizontal"
-                dataSource={filteredContacts()}
-                renderItem={(contact) => (
-                    <List.Item
-                        style={{ cursor: "pointer" }}
-                        onClick={() => navigate("/texts/contact/" + contact.id)}
-                    >
-                        <Row gutter={12} style={{ width: "100%" }}>
-                            <Col span={3}>
-                                <TextEllipsis style={{ fontWeight: "bold" }}>
-                                    {`${contact.firstName} ${contact.lastName}`}
-                                </TextEllipsis>
-                            </Col>
-                            <Col span={18}>
-                                <TextEllipsis>
-                                    <Space>
-                                        {contact.label?.name ? (
-                                            <Tag
-                                                style={{
-                                                    float: "right",
-                                                }}
-                                            >
-                                                {contact.label?.name}
-                                            </Tag>
-                                        ) : null}
-                                        {contact?.texts![0].message}
-                                    </Space>
-                                </TextEllipsis>
-                            </Col>
-                            <Col span={3}>
-                                <TextEllipsis style={{ textAlign: "right" }}>
-                                    {contact?.texts![0].day +
-                                        " " +
-                                        contact?.texts![0].month}
-                                </TextEllipsis>
-                            </Col>
-                        </Row>
-                    </List.Item>
+                dataSource={contactsList}
+                style={{ marginTop: 0 }}
+                renderItem={(contact, index) => (
+                    <>
+                        {index === 0 && <Divider style={{ margin: "5px" }} />}
+                        <List.Item
+                            style={{ cursor: "pointer", padding: "3px 0" }} // Adjust padding for thinner list items
+                            onClick={() =>
+                                navigate("/texts/contact/" + contact.id)
+                            }
+                        >
+                            <Row gutter={12} style={{ width: "100%" }}>
+                                <Col span={3}>
+                                    <TextEllipsis
+                                        style={{
+                                            fontWeight: "bold",
+                                            fontSize: "16px", // Adjust font size
+                                        }}
+                                    >
+                                        {`${contact.firstName} ${contact.lastName}`}
+                                    </TextEllipsis>
+                                </Col>
+                                <Col span={18}>
+                                    <TextEllipsis>
+                                        <Space>
+                                            {contact.label?.name ? (
+                                                <Tag
+                                                    style={{
+                                                        float: "right",
+                                                    }}
+                                                >
+                                                    {contact.label?.name}
+                                                </Tag>
+                                            ) : null}
+                                            {contact?.texts![0].message}
+                                        </Space>
+                                    </TextEllipsis>
+                                </Col>
+                                <Col span={3}>
+                                    <TextEllipsis
+                                        style={{
+                                            textAlign: "right",
+                                            fontSize: "12px", // Adjust font size
+                                        }}
+                                    >
+                                        {contact?.texts![0].day +
+                                            " " +
+                                            contact?.texts![0].month}
+                                    </TextEllipsis>
+                                </Col>
+                            </Row>
+                        </List.Item>
+                    </>
                 )}
             />
         </>
