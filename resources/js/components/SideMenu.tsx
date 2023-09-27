@@ -25,6 +25,8 @@ import { faPhone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import IncomingCallListenerPopOver from "../pages/Dialer/DialerTab/IncomingCallListenerPopOver";
 
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+
 const { Header, Sider, Content } = Layout;
 
 const SideMenu = ({ children }) => {
@@ -70,7 +72,7 @@ const SideMenu = ({ children }) => {
                         },
                         {
                             key: "/contacts",
-                            icon: <UsergroupAddOutlined />,
+                            icon: <FontAwesomeIcon icon={faUser} />,
                             label: "Contacts",
                         },
                         {

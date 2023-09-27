@@ -196,3 +196,8 @@
         line-height: 0;
     }
 }
+.upload {
+    .ant-upload {
+        width: 100% !important;
+    }
+}

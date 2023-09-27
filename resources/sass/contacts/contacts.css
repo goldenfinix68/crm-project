@@ -12142,4 +12142,8 @@ textarea.form-control-lg {
 .cell-hover:hover .cell-hover-btn {
   display: inline !important;
   line-height: 0;
+}
+
+.upload .ant-upload {
+  width: 100% !important;
 }/*# sourceMappingURL=contacts.css.map */

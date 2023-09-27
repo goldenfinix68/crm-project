@@ -39,6 +39,7 @@ class ContactsController extends Controller
             \DB::raw("(SELECT CONCAT(users.firstName, ' ', users.lastName)) as `owner`"),
         ])
             ->leftJoin('users', 'users.id', '=', 'contacts.ownerId')
+            ->leftJoin('contact_types', 'contact_types.id', '=', 'contacts.typeId')
             ->with(['type', 'label']);
 
         if (isset($request->filter)) {
@@ -330,5 +331,18 @@ class ContactsController extends Controller
         $contact->save();
 
         return $contact;
+
+    }
+    public function delete_contacts_table_column(Request $request)
+    {
+    
+
+      
+        $data = ContactTableColumn::where('user_id',auth()->user()->id)->delete();
+    
+        return response()->json([
+            'success' => true,
+            'data' => $data 
+        ]);
     }
 }

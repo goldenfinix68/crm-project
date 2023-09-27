@@ -225,4 +225,9 @@ export type TContact = {
     texts?: TText[];
     textLabelId?: string;
     label?: TTextLabel;
+    mailingState?: string;
+    smsOptOut?: boolean;
+    emailOptOutReason?: string;
+    mailingZip?: string;
+    county?: string;
 };

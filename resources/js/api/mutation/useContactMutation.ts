@@ -189,3 +189,24 @@ export const useContactColumnSetting = async (items: any) => {
     });
     return data;
 };
+
+export const useDeleteContactColumn = async (contactId: any) => {
+    const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+    const response = await fetch("/api/contacts/delete_contacts_table_column", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(contactId),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to delete");
+    }
+    notification.success({
+        message: "Success",
+        description: "Successfully Deleted",
+    });
+    return data;
+};

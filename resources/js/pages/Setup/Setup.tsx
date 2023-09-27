@@ -10,6 +10,7 @@ import {
     TagsOutlined,
     UserOutlined,
     ZoomInOutlined,
+    DatabaseOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -36,6 +37,7 @@ const Setup: React.FC = (props) => {
         //     title: "Calling Configurations",
         //     link: "/setup/customizations/activity",
         // },
+
         {
             icon: <TagsOutlined />,
             title: "Tag Management",
@@ -71,6 +73,14 @@ const Setup: React.FC = (props) => {
         },
     ];
 
+    const dataAdministration: any = [
+        {
+            icon: <DatabaseOutlined />,
+            title: "Import Data",
+            link: "/setup/data-administration/import-file",
+        },
+    ];
+
     return (
         <>
             <Divider
@@ -82,6 +92,47 @@ const Setup: React.FC = (props) => {
             </Divider>
             <Row gutter={[12, 20]}>
                 {customizationButtons.map((item: any, key: React.Key) => {
+                    return (
+                        <Col xs={6} sm={6} md={4} key={key}>
+                            <Space
+                                direction="vertical"
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <Button
+                                    className="button-link"
+                                    shape="circle"
+                                    size="large"
+                                    icon={item.icon}
+                                    style={{
+                                        height: 80,
+                                        width: 80,
+                                    }}
+                                    onClick={() => navigate(item.link)}
+                                />
+
+                                <Typography.Text style={{ fontSize: 16 }}>
+                                    {item.title}
+                                </Typography.Text>
+                            </Space>
+                        </Col>
+                    );
+                })}
+            </Row>
+
+            <br />
+            <br />
+            <Divider
+                orientation="left"
+                orientationMargin="0"
+                style={{ fontSize: 20 }}
+            >
+                Data Administration
+            </Divider>
+            <Row gutter={[12, 20]}>
+                {dataAdministration.map((item: any, key: React.Key) => {
                     return (
                         <Col xs={6} sm={6} md={4} key={key}>
                             <Space

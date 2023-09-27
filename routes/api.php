@@ -27,6 +27,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/forgot_password_set_password', 'App\Http\Controllers\Api\AuthController@forgot_password_set_password');
     Route::get('/contacts/get_favorite', 'App\Http\Controllers\Api\ContactsController@get_favorite');
     Route::get('/contacts/get_contacts_table_column', 'App\Http\Controllers\Api\ContactsController@get_contacts_table_column');
+    Route::post('/contacts/delete_contacts_table_column', 'App\Http\Controllers\Api\ContactsController@delete_contacts_table_column');
     Route::resource('/users', 'App\Http\Controllers\Api\UsersController');
     Route::resource('/contacts', 'App\Http\Controllers\Api\ContactsController');
     Route::post('/contacts/delete', 'App\Http\Controllers\Api\ContactsController@delete_contacts');
