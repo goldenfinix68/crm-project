@@ -92,7 +92,7 @@ const ContactsComponentsTableEditableCellTags = ({
         <>
             {recordType ? (
                 <div
-                    className="cell"
+                    className="cell cell-hover"
                     style={{
                         display: "flex",
                         // justifyContent: "space-between",
@@ -129,73 +129,72 @@ const ContactsComponentsTableEditableCellTags = ({
                             ))}
                     </div>
                     <div style={{ width: "17%" }}>
-                        {((currentBtnActive == record.id &&
+                        {/* {((currentBtnActive == record.id &&
                             currentActiveType == type) ||
-                            currentActiveCell == type + ": " + record.id) && (
-                            <Popconfirm
-                                title={
-                                    type.charAt(0).toUpperCase() + type.slice(1)
-                                }
-                                icon={null}
-                                description={
-                                    <Space
-                                        style={{
-                                            width: "250px",
-                                        }}
-                                    >
-                                        <Select
-                                            value={clearSelect}
-                                            // defaultValue={updateVal ?? []}
-                                            mode="tags"
-                                            style={{ width: "250px" }}
-                                            tokenSeparators={[","]}
-                                            onChange={(values) => {
-                                                setClearSelect(values);
-                                                setUpdateValue(values);
-                                            }}
-                                        />
-                                    </Space>
-                                }
-                                onConfirm={() => {
-                                    handleFinish(record, updateVal);
-                                }}
-                                onCancel={() => {
-                                    setCurrentActiveCell("");
-                                    setClearSelect(updateVal ?? []);
-                                }}
-                                okText="Save"
-                                cancelText="No"
-                            >
-                                <Button
+                            currentActiveCell == type + ": " + record.id) && ( */}
+                        <Popconfirm
+                            title={type.charAt(0).toUpperCase() + type.slice(1)}
+                            icon={null}
+                            description={
+                                <Space
                                     style={{
-                                        margin: "2px",
-                                        padding: "8px",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        backgroundColor: "white",
-                                    }}
-                                    type="text"
-                                    onClick={() => {
-                                        setCurrentActiveCell(
-                                            type + ": " + record.id
-                                        );
-                                        setClearSelect(updateVal ?? []);
-                                    }}
-                                    onBlur={() => {
-                                        setCurrentBtnActive("");
+                                        width: "250px",
                                     }}
                                 >
-                                    {<FontAwesomeIcon icon={faPen} />}
-                                </Button>
-                            </Popconfirm>
-                        )}
+                                    <Select
+                                        value={clearSelect}
+                                        // defaultValue={updateVal ?? []}
+                                        mode="tags"
+                                        style={{ width: "250px" }}
+                                        tokenSeparators={[","]}
+                                        onChange={(values) => {
+                                            setClearSelect(values);
+                                            setUpdateValue(values);
+                                        }}
+                                    />
+                                </Space>
+                            }
+                            onConfirm={() => {
+                                handleFinish(record, updateVal);
+                            }}
+                            onCancel={() => {
+                                setCurrentActiveCell("");
+                                setClearSelect(updateVal ?? []);
+                            }}
+                            okText="Save"
+                            cancelText="No"
+                        >
+                            <Button
+                                style={{
+                                    margin: "2px",
+                                    padding: "8px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    backgroundColor: "white",
+                                }}
+                                className="cell-hover-btn"
+                                type="text"
+                                onClick={() => {
+                                    setCurrentActiveCell(
+                                        type + ": " + record.id
+                                    );
+                                    setClearSelect(updateVal ?? []);
+                                }}
+                                onBlur={() => {
+                                    setCurrentBtnActive("");
+                                }}
+                            >
+                                {<FontAwesomeIcon icon={faPen} />}
+                            </Button>
+                        </Popconfirm>
+                        {/* )} */}
                     </div>
                 </div>
             ) : (
                 (currentActiveCell != type + ": " + record.id ||
                     currentActiveCell == type + ": " + record.id) && (
                     <div
-                        className="cell"
+                        className="cell cell-hover"
                         style={{
                             display: "flex",
                             // justifyContent: "space-between",
@@ -273,12 +272,15 @@ const ContactsComponentsTableEditableCellTags = ({
                                         setClearSelect([]);
                                     }}
                                 >
-                                    {((currentBtnActive == record.id &&
+                                    {/* {((currentBtnActive == record.id &&
                                         currentActiveType == type) ||
                                         currentActiveCell ==
-                                            type + ": " + record.id) && (
-                                        <FontAwesomeIcon icon={faPen} />
-                                    )}
+                                            type + ": " + record.id) && ( */}
+                                    <FontAwesomeIcon
+                                        icon={faPen}
+                                        className="cell-hover-btn"
+                                    />
+                                    {/* )} */}
                                 </Button>
                             </Popconfirm>
                         </div>

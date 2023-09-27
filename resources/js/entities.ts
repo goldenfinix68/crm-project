@@ -184,4 +184,9 @@ export type TContact = {
     owner?: string;
     wall?: TWallData[];
     texts?: TText[];
+    mailingState?: string;
+    smsOptOut?: boolean;
+    emailOptOutReason?: string;
+    mailingZip?: string;
+    county?: string;
 };

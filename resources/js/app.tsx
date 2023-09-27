@@ -57,6 +57,7 @@ import { CallProvider } from "./context/CallContext";
 import Setup from "./pages/Setup/Setup";
 import SetupLayout from "./pages/Setup/SetupLayout";
 import ComponentTagManagement from "./pages/Setup/Components/ComponentTagManagement";
+import ComponentImportData from "./pages/Setup/Components/ComponentImportData";
 import TextTemplates from "./pages/TextTemplates";
 import ComponentActivityType from "./pages/Setup/Components/ComponentActivityType";
 const App: React.FC = () => {
@@ -250,6 +251,17 @@ const App: React.FC = () => {
                                         <SetupLayout
                                             content={<ComponentActivityType />}
                                             title="Activity Types"
+                                        />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/setup/data-administration/import-file"
+                                element={
+                                    <PrivateRoute>
+                                        <SetupLayout
+                                            content={<ComponentImportData />}
+                                            title="Import Data"
                                         />
                                     </PrivateRoute>
                                 }

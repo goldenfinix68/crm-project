@@ -38,7 +38,8 @@ class ContactsController extends Controller
             'contacts.*',
             \DB::raw("(SELECT CONCAT(users.firstName, ' ', users.lastName)) as `owner`"),
         ])
-            ->leftJoin('users', 'users.id', '=', 'contacts.ownerId');
+            ->leftJoin('users', 'users.id', '=', 'contacts.ownerId')
+            ->leftJoin('contact_types', 'contact_types.id', '=', 'contacts.typeId');
 
         if (isset($request->filter)) {
             if ($request->filter == "new-last-week") {

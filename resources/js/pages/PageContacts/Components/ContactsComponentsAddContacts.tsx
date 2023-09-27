@@ -104,6 +104,7 @@ const ContactsComponentsAddContacts = ({
             addContact.mutate(values);
         }
     };
+
     return (
         <>
             <Modal
@@ -331,7 +332,10 @@ const ContactsComponentsAddContacts = ({
                                 </Form.Item>
                             </Col>
                             <Col md={12} xs={12}>
-                                <Form.Item name="emailOptOut">
+                                <Form.Item
+                                    name="emailOptOut"
+                                    valuePropName="checked"
+                                >
                                     <Checkbox
                                         className={"m-t-lg"}
                                         onChange={onChange}
@@ -361,7 +365,10 @@ const ContactsComponentsAddContacts = ({
                         </Row>
                         <Row gutter={24}>
                             <Col md={12} xs={12}>
-                                <Form.Item name="smsOptOut">
+                                <Form.Item
+                                    name="smsOptOut"
+                                    valuePropName="checked"
+                                >
                                     <Checkbox className={"m-t-lg"}>
                                         SMS Opt Out
                                     </Checkbox>

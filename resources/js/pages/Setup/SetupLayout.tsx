@@ -6,8 +6,11 @@ import {
     UploadOutlined,
     UserOutlined,
     VideoCameraOutlined,
+    DatabaseOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+
+const { SubMenu } = Menu;
 
 interface SetupLayoutProps {
     content: any;
@@ -71,6 +74,19 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                 // },
             ],
         },
+
+        {
+            key: "/setup/data-administration",
+            icon: <DatabaseOutlined />,
+            label: "Data Administration",
+            children: [
+                {
+                    key: "/setup/data-administration/import-file",
+                    path: "/setup/data-administration/import-file",
+                    label: "Import Data",
+                },
+            ],
+        },
     ];
 
     const removeLastWordSeparatedByBackslash = (str) => {
@@ -87,17 +103,39 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                     className="setup-menu"
                     theme="dark"
                     mode="inline"
-                    items={sideMenuItems}
                     defaultSelectedKeys={[window.location.pathname]}
-                    openKeys={[
-                        removeLastWordSeparatedByBackslash(
-                            window.location.pathname
-                        ),
-                    ]}
-                    onClick={(info) => {
-                        navigate(info?.key);
+                    defaultOpenKeys={["/setup/customizations"]} // Set the default open keys here
+                    onSelect={(info) => {
+                        navigate(info.key);
                     }}
-                />
+                >
+                    {sideMenuItems.map((item) => {
+                        if (item.children) {
+                            return (
+                                <SubMenu
+                                    key={item.key}
+                                    icon={item.icon}
+                                    title={item.label}
+                                >
+                                    {item.children.map((child) => (
+                                        <Menu.Item
+                                            key={child.key}
+                                            icon={child.icon}
+                                        >
+                                            {child.label}
+                                        </Menu.Item>
+                                    ))}
+                                </SubMenu>
+                            );
+                        } else {
+                            return (
+                                <Menu.Item key={item.key} icon={item.icon}>
+                                    {item.label}
+                                </Menu.Item>
+                            );
+                        }
+                    })}
+                </Menu>
             </Sider>
             <Layout>
                 <Layout.Header

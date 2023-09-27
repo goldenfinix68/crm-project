@@ -375,6 +375,1034 @@ const Contacts = () => {
                 />
             ),
         },
+
+        {
+            key: "jobTitle",
+            title: "Job Title",
+            dataIndex: "jobTitle",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="jobTitle"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.jobTitle ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "phone",
+            title: "Phone",
+            dataIndex: "phone",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="phone"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.phone ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+
+        {
+            key: "otherPhone",
+            title: "Other Phone",
+            dataIndex: "otherPhone",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="otherPhone"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.otherPhone ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "email2",
+            title: "Email2",
+            dataIndex: "email2",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="email2"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.email2 ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "typeId",
+            title: "Type",
+            dataIndex: "typeId",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="typeId"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.typeId ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "mailingStreetAddress",
+            title: "Mailing Street Address",
+            dataIndex: "mailingStreetAddress",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="mailingStreetAddress"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.mailingStreetAddress ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "emailOptOut",
+            title: "Email Opt Out",
+            dataIndex: "emailOptOut",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="emailOptOut"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.emailOptOut ? "Yes" : "No"}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "mailingCity",
+            title: "Mailing City",
+            dataIndex: "mailingCity",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="mailingCity"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.mailingCity ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "mailingCountry",
+            title: "Mailing Country",
+            dataIndex: "mailingCountry",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="mailingCountry"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.mailingCountry ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "subdivision",
+            title: "Subdivision",
+            dataIndex: "subdivision",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="subdivision"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.subdivision ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "subdivision",
+            title: "Subdivision",
+            dataIndex: "subdivision",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="subdivision"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.subdivision ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "APN",
+            title: "APN",
+            dataIndex: "APN",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="APN"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.APN ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "gMapLink",
+            title: "Google Map Link",
+            dataIndex: "gMapLink",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="gMapLink"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.gMapLink ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "roadFrontage",
+            title: "Road Frontage",
+            dataIndex: "roadFrontage",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="roadFrontage"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.roadFrontage ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "redfinLink",
+            title: "Redfin Quick Link",
+            dataIndex: "redfinLink",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="redfinLink"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.redfinLink ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "redfinLink",
+            title: "Redfin Quick Link",
+            dataIndex: "redfinLink",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="redfinLink"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.redfinLink ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "openingBid",
+            title: "Opening Bid",
+            dataIndex: "openingBid",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="openingBid"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.openingBid ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "assessedValue",
+            title: "Assessed Value",
+            dataIndex: "assessedValue",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="assessedValue"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.assessedValue ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "assessedVsOpeningMargin",
+            title: "Assessed vs. Opening Bid Margin (manual)",
+            dataIndex: "assessedVsOpeningMargin",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="assessedVsOpeningMargin"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.assessedVsOpeningMargin ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "assessedVsOpeningMargin",
+            title: "Assessed vs. Opening Bid Margin (manual)",
+            dataIndex: "assessedVsOpeningMargin",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="assessedVsOpeningMargin"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.assessedVsOpeningMargin ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "assessedVsOpeningMultiple",
+            title: "Assessed vs. Opening Bid Multiple (manual)",
+            dataIndex: "assessedVsOpeningMultiple",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="assessedVsOpeningMultiple"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.assessedVsOpeningMultiple ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "legalDescription",
+            title: "Legal Description",
+            dataIndex: "legalDescription",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="legalDescription"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.legalDescription ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "legalSubdivision",
+            title: "Subdivision",
+            dataIndex: "legalSubdivision",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="legalSubdivision"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.legalSubdivision ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "floodzone",
+            title: "Flood Zone",
+            dataIndex: "floodzone",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="floodzone"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.floodzone ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "topography",
+            title: "Topography",
+            dataIndex: "topography",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="topography"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.topography ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "wireless1",
+            title: "Wireless 1",
+            dataIndex: "wireless1",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="wireless1"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.wireless1 ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "wireless2",
+            title: "Wireless 2",
+            dataIndex: "wireless2",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="wireless2"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.wireless2 ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "wireless3",
+            title: "Wireless 3",
+            dataIndex: "wireless3",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="wireless3"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.wireless3 ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "wireless4",
+            title: "Wireless 4",
+            dataIndex: "wireless4",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="wireless4"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.wireless4 ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "landline1",
+            title: "Landline 1",
+            dataIndex: "landline1",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="landline1"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.landline1 ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "landline2",
+            title: "Landline 2",
+            dataIndex: "landline2",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="landline2"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.landline2 ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "landline3",
+            title: "Landline 3",
+            dataIndex: "landline3",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="landline3"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.landline3 ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "landline4",
+            title: "Landline 4",
+            dataIndex: "landline4",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="landline4"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.landline4 ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "marketAreaName",
+            title: "MarketAreaName",
+            dataIndex: "marketAreaName",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="marketAreaName"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.marketAreaName ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "skype",
+            title: "Skype",
+            dataIndex: "skype",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="skype"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.skype ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "website",
+            title: "Website",
+            dataIndex: "website",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="website"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.website ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "facebook",
+            title: "Facebook",
+            dataIndex: "facebook",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="facebook"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.facebook ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "linkedIn",
+            title: "LinkedIn",
+            dataIndex: "linkedIn",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="linkedIn"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.linkedIn ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "twitter",
+            title: "Twitter",
+            dataIndex: "twitter",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="twitter"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.twitter ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "instagram",
+            title: "Instagram",
+            dataIndex: "instagram",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="instagram"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.instagram ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "detailsDescription",
+            title: "Details Description",
+            dataIndex: "detailsDescription",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="detailsDescription"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.detailsDescription ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "detailsLegalDescription",
+            title: "Legal Description",
+            dataIndex: "detailsLegalDescription",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="detailsLegalDescription"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.detailsLegalDescription ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "addressLine1",
+            title: "Address Line 1",
+            dataIndex: "addressLine1",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="addressLine1"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.addressLine1 ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "addressLine2",
+            title: "Address Line 2",
+            dataIndex: "addressLine2",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="addressLine2"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.addressLine2 ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "city",
+            title: "City",
+            dataIndex: "city",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="city"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.city ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "country",
+            title: "Country",
+            dataIndex: "country",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="country"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.country ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "zipCode",
+            title: "Zip Code",
+            dataIndex: "zipCode",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="zipCode"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.zipCode ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "state",
+            title: "State",
+            dataIndex: "state",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="state"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.state ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "mailingState",
+            title: "Mailing State",
+            dataIndex: "mailingState",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="mailingState"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.mailingState ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "smsOptOut",
+            title: "SMS Opt Out",
+            dataIndex: "smsOptOut",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="smsOptOut"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.smsOptOut ? "Yes" : "No"}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "emailOptOutReason",
+            title: "Email Opt Out Reason",
+            dataIndex: "emailOptOutReason",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="emailOptOutReason"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.emailOptOutReason ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "mailingZip",
+            title: "Mailing Zip",
+            dataIndex: "mailingZip",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="mailingZip"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.mailingZip ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "wetlandsStatus",
+            title: "Wetlands Status",
+            dataIndex: "wetlandsStatus",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="wetlandsStatus"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.wetlandsStatus ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
+        {
+            key: "county",
+            title: "County",
+            dataIndex: "county",
+            width: 200,
+            render: (text: string, record: TContact) => (
+                <ContactsComponentsTableEditableCell
+                    type="county"
+                    setCurrentActiveCell={setCurrentActiveCell}
+                    currentActiveCell={currentActiveCell}
+                    setCurrentBtnActive={setCurrentBtnActive}
+                    currentBtnActive={currentBtnActive}
+                    record={record}
+                    setCurrentActiveType={setCurrentActiveType}
+                    recordType={record.county ?? null}
+                    currentActiveType={currentActiveType}
+                />
+            ),
+        },
     ];
 
     const [selectionType, setSelectionType] = useState<"checkbox" | "radio">(
@@ -508,14 +1536,25 @@ const Contacts = () => {
 
     useEffect(() => {
         if (contactsTable && contactsTable[0]) {
-            console.log("contactstable", contactsTable);
-
             let data = JSON.parse(contactsTable[0].table_columns);
 
             var newOrderedColumns = data.map((item: any) => {
-                return columns.find(
+                let findColumn = columns.find(
                     (column) => column.key === Object.values(item)[2]
                 );
+
+                if (findColumn) {
+                    console.log("findColumn 1213123", findColumn);
+                    return findColumn;
+                }
+            });
+
+            // newOrderedColumns.forEach((element) => {
+            //     console.log("asdasd", element);
+            // });
+
+            newOrderedColumns = newOrderedColumns.filter((item) => {
+                return item != undefined;
             });
 
             setOrderedColumns(newOrderedColumns);
