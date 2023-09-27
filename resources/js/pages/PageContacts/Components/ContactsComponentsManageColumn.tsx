@@ -193,6 +193,9 @@ const ContactsComponentsManageColumn: React.FC<
         e: CheckboxChangeEvent
     ) => {
         console.log(`checked = ${e.target.checked}`, "id: " + id);
+        console.log("id", id);
+        console.log("value", value);
+        console.log("key", key);
 
         let items = Array.from(listData);
 
@@ -208,6 +211,14 @@ const ContactsComponentsManageColumn: React.FC<
             items = items.filter((item) => item.id !== id.toString());
             console.log(items);
         }
+
+        setListData(items);
+    };
+
+    const removeField = (id: Number, value: string, key: string) => {
+        let items = Array.from(listData);
+
+        items = items.filter((item) => item.id !== id.toString());
 
         setListData(items);
     };
@@ -283,7 +294,16 @@ const ContactsComponentsManageColumn: React.FC<
                                     {item.title}
                                 </Col>
                                 <Col md={2} xs={2}>
-                                    <Button type="text">
+                                    <Button
+                                        type="text"
+                                        onClick={() => {
+                                            removeField(
+                                                Number(item.id),
+                                                item.title,
+                                                item.key
+                                            );
+                                        }}
+                                    >
                                         <CloseOutlined />
                                     </Button>
                                 </Col>
