@@ -50,7 +50,7 @@ const TextContent = ({
         <ContactContext.Provider value={{ contact: contact }}>
             <Row key={contact.id}>
                 <Col
-                    span={16}
+                    span={12}
                     style={{ height: "85vh", overflowY: "auto" }}
                     ref={chatBoxRef}
                 >
@@ -165,7 +165,7 @@ const TextContent = ({
                         </div>
                     </div>
                 </Col>
-                <Col span={8} style={{ height: "85vh", overflowY: "auto" }}>
+                <Col span={12} style={{ height: "85vh", overflowY: "auto" }}>
                     <Space
                         direction="vertical"
                         size={0}
