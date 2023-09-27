@@ -48,6 +48,9 @@ import { useTextLabels } from "../../../api/query/textQuery";
 import TextsHeaderMenu from "./../components/TextsHeaderMenu";
 import Texts from "..";
 import TextList from "./TextList";
+import { useMutation } from "react-query";
+import { useMarkContactTextSeen } from "../../../api/mutation/useContactMutation";
+import queryClient from "../../../queryClient";
 
 const TextBoxView = () => {
     const { contactId } = useParams();
@@ -68,6 +71,12 @@ const TextBoxView = () => {
         TTextLabel | undefined
     >(undefined);
 
+    const markAsSeen = useMutation(useMarkContactTextSeen, {
+        onSuccess: () => {
+            queryClient.invalidateQueries("contacts");
+        },
+    });
+
     useEffect(() => {
         // Check if the contact exists and has no value
         if (!contactId) {
@@ -75,6 +84,7 @@ const TextBoxView = () => {
         } else {
             setIsLoading(true);
             refetch();
+            markAsSeen.mutate({ contactId });
         }
     }, [contactId]);
 

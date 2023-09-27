@@ -89,6 +89,7 @@ Route::middleware('auth:api')->group(function () {
 
 
     Route::post('/assign-label-contact/{id}', 'App\Http\Controllers\Api\ContactsController@assign_label');
+    Route::post('/contact/mark-texts-seen', 'App\Http\Controllers\Api\ContactsController@mark_texts_seen');
 });
 
 Route::post('/telnyx/sms/webhook', 'App\Http\Controllers\Api\TextsController@textReceived');

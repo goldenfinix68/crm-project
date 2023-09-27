@@ -9,6 +9,7 @@ use App\Models\ContactTableColumn;
 use App\Http\Controllers\Controller;
 use App\Models\ContactFile;
 use App\Models\ContactLog;
+use App\Models\Text;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -345,4 +346,26 @@ class ContactsController extends Controller
             'data' => $data 
         ]);
     }
+
+    public function mark_texts_seen(Request $request)
+    {
+        $contact = Contact::find($request->contactId);
+
+        if (!$contact) {
+            return response()->json(['error' => 'Contact not found'], 404);
+        }
+
+        $mobile = $contact->mobile;
+
+        // Update all texts for the contact where seen_at is null
+        Text::where(function ($query) use ($mobile) {
+                $query->where('to', $mobile)
+                    ->orWhere('from', $mobile);
+            })
+            ->whereNull('seen_at')
+            ->update(['seen_at' => now()]); // Set seen_at to the current timestamp
+
+        return response()->json(['success' => true]);
+    }
+
 }

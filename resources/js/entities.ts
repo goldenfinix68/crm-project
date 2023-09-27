@@ -66,6 +66,7 @@ export type TText = {
     status?: string;
     telnyxResponse?: string;
     schedule?: string;
+    seen_at?: string;
 };
 
 export type TDeal = {

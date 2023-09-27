@@ -106,12 +106,20 @@ const TextList = ({ label }) => {
                                     </TextEllipsis>
                                 </Col>
                                 <Col span={18}>
-                                    <TextEllipsis>
+                                    <TextEllipsis
+                                        style={{
+                                            fontWeight: !contact?.texts![0]
+                                                .seen_at
+                                                ? "bold"
+                                                : "",
+                                        }}
+                                    >
                                         <Space>
                                             {contact.label?.name ? (
                                                 <Tag
                                                     style={{
                                                         float: "right",
+                                                        fontWeight: "normal",
                                                     }}
                                                 >
                                                     {contact.label?.name}
@@ -125,7 +133,6 @@ const TextList = ({ label }) => {
                                     <TextEllipsis
                                         style={{
                                             textAlign: "right",
-                                            fontSize: "12px", // Adjust font size
                                         }}
                                     >
                                         {getTimeAgo(
