@@ -33,6 +33,7 @@ import { createTextTemplateFolderMutation } from "../../../api/mutation/useTextT
 import { useTextLabels } from "../../../api/query/textQuery";
 interface Props {
     isModalOpen: boolean;
+    isViaMultiple?: boolean;
     closeModal: () => void;
     threadIds: string[];
     defaultChecked?: string[];
@@ -42,9 +43,11 @@ const AssignLabelModal = ({
     closeModal,
     threadIds,
     defaultChecked,
+    isViaMultiple,
 }: Props) => {
     const [form] = Form.useForm();
     const { labels, isLoading: isLabelsLoading } = useTextLabels();
+    const [action, setAction] = useState("add");
 
     const assignLabel = useMutation(assignLabelMutation, {
         onSuccess: () => {
@@ -57,7 +60,7 @@ const AssignLabelModal = ({
         console.log(values);
         await assignLabel.mutate({
             ...values,
-            threadIds: threadIds,
+            ...{ threadIds: threadIds, action: isViaMultiple ? action : "" },
         });
     };
     const resetFields = () => {
@@ -107,6 +110,20 @@ const AssignLabelModal = ({
                     autoComplete="off"
                     form={form}
                 >
+                    {isViaMultiple && (
+                        <center>
+                            <Radio.Group
+                                value={action}
+                                onChange={(e) => setAction(e.target.value)}
+                            >
+                                <Radio.Button value="add">Add</Radio.Button>
+                                <Radio.Button value="remove">
+                                    Remove
+                                </Radio.Button>
+                            </Radio.Group>
+                        </center>
+                    )}
+
                     <Form.Item
                         name="labels"
                         labelCol={{ span: 24 }} // Ensures the label takes the full width
@@ -135,7 +152,7 @@ const AssignLabelModal = ({
                         <Button
                             type="primary"
                             htmlType="submit"
-                            // loading={createTemplate.isLoading}
+                            loading={assignLabel.isLoading}
                         >
                             Save
                         </Button>

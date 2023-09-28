@@ -72,33 +72,37 @@ const TextList = ({ label }) => {
 
         data = data?.filter((contact) => contact.texts?.length);
 
-        // if (searchKey) {
-        //     let searchWord = searchKey;
-        //     let label = "";
-        //     const match = searchKey.match(/\{\{label:(.*?)\}\}/);
+        if (searchKey) {
+            let searchWord = searchKey;
+            let labelKey = "";
+            const match = searchKey.match(/\{\{label:(.*?)\}\}/);
 
-        //     if (match) {
-        //         label = match[1];
-        //         searchWord = searchWord.replace(/\{\{.*?\}\}\s*/g, "");
-        //     }
+            if (match) {
+                labelKey = match[1];
+                searchWord = searchWord.replace(/\{\{.*?\}\}\s*/g, "");
+            }
 
-        //     return data?.filter((thread) => {
-        //         let bool = false;
-        //         if (label) {
-        //             bool =
-        //                 thread.contactName
-        //                     .toLowerCase()
-        //                     .includes(searchWord.toLowerCase()) &&
-        //                 thread.label?.name == label;
-        //         } else if (searchWord != "") {
-        //             bool = thread.contactName
-        //                 .toLowerCase()
-        //                 .includes(searchWord.toLowerCase());
-        //         }
+            if (labelKey) {
+                data = data?.filter((item) =>
+                    item?.labels?.some((label) => label.name === labelKey)
+                );
+            }
+            if (searchWord != "") {
+                data = data?.filter(
+                    (thread) =>
+                        thread.contactName
+                            .toLowerCase()
+                            .includes(searchWord.toLowerCase()) ||
+                        thread?.texts?.some((text) =>
+                            text.message
+                                .toLowerCase()
+                                .includes(searchWord.toLowerCase())
+                        )
+                );
+            }
 
-        //         return bool;
-        //     });
-        // }
+            return data;
+        }
 
         return data;
     };
@@ -108,6 +112,16 @@ const TextList = ({ label }) => {
     }, [label]);
 
     const threadList = filteredContacts();
+
+    // const selectedThreads = () => {
+    //     const threads = threadList?.filter((thread) =>
+    //         selectedThreadIds.includes(thread.id)
+    //     );
+    //     const allLabelIds = threads?.flatMap((item) =>
+    //         item.labels?.map((label) => label.id)
+    //     );
+    //     return [...new Set(allLabelIds)]
+    // };
 
     return (
         <>
@@ -159,11 +173,8 @@ const TextList = ({ label }) => {
                     </Button>
                 </Space>
             ) : null}
-            <List
-                itemLayout="horizontal"
-                dataSource={threadList}
-                style={{ marginTop: 0 }}
-                renderItem={(thread, index) => (
+            <List itemLayout="horizontal" style={{ marginTop: 0 }}>
+                {threadList?.map((thread, index) => (
                     <>
                         {index === 0 && <Divider style={{ margin: "5px" }} />}
                         <List.Item
@@ -303,8 +314,8 @@ const TextList = ({ label }) => {
                             </Row>
                         </List.Item>
                     </>
-                )}
-            />
+                ))}
+            </List>
 
             <ConfirmModal
                 title="Confirm"
@@ -343,6 +354,7 @@ const TextList = ({ label }) => {
                         ? selectedThread?.labels?.map((label) => label.id ?? "")
                         : undefined
                 }
+                isViaMultiple={isViaMultiple}
             />
         </>
     );

@@ -104,7 +104,15 @@ class TextThreadsController extends Controller
         
         foreach($request->threadIds as $id){
             $thread = TextThread::find($id);
-            $thread->labels()->sync($request->labels);
+            if($request->action == "add"){
+                $thread->labels()->syncWithoutDetaching($request->labels);
+            }
+            else if($request->action == "remove"){
+                $thread->labels()->detach($request->labels);
+            }
+            else {
+                $thread->labels()->sync($request->labels);
+            }
         }
 
         return response()->json(['success' => true]);
