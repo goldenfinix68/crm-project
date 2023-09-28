@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 use App\Models\Contact;
 use App\Models\User;
+use App\Models\TextThread;
 
 class Text extends Model
 {
@@ -24,6 +25,7 @@ class Text extends Model
         'userId',
         'isFromApp',
         'schedule',
+        'is_seen',
         'queueLock',
     ];
 
@@ -117,5 +119,31 @@ class Text extends Model
         $createdAt = Carbon::parse($this->created_at);
 
         return $createdAt->format('h:i A');
+    }
+
+    protected static function booted()
+    {
+        parent::booted();
+
+        static::created(function ($text) {
+            $thread = TextThread::where(function ($query) use ($text) {
+                if ($text->isFromApp) {
+                    $query->where('userNumber', $text->from)->where('contactNumber', $text->to);
+                } else {
+                    $query->where('userNumber', $text->to)->where('contactNumber', $text->from);
+                }
+            })->first();
+
+            if (!$thread) {
+                $thread = new TextThread();
+                $thread->userNumber = $text->isFromApp ? $text->from : $text->to;
+                $thread->contactNumber = $text->isFromApp ? $text->to : $text->from;
+                $thread->save();
+            }
+
+            $text->threadId = $thread->id;
+            $text->seen_at =  $text->isFromApp ? now() : "";
+            $text->save();
+        });
     }
 }

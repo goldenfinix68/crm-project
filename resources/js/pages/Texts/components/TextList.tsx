@@ -3,6 +3,7 @@ import {
     Avatar,
     Button,
     Col,
+    Divider,
     Empty,
     Input,
     List,
@@ -11,18 +12,51 @@ import {
     Tag,
     Typography,
 } from "antd";
-import { TContact, TText } from "../../../entities";
-import { SearchOutlined } from "@ant-design/icons";
+import {
+    SearchOutlined,
+    DeleteOutlined,
+    EllipsisOutlined,
+} from "@ant-design/icons"; // Step 1
 import { useNavigate, useParams } from "react-router-dom";
 import { useContactsAll } from "../../../api/query/contactsQuery";
+import { getTimeAgo } from "../../../helpers";
+import { TContact, TTextThread } from "../../../entities";
+import ConfirmModal from "../../../components/ConfirmModal";
+import { useMutation } from "react-query";
+import queryClient from "../../../queryClient";
+import { useTextThreads } from "../../../api/query/textQuery";
+import { useDeleteThread } from "../../../api/mutation/useTextMutation";
+import DropdownComponent from "../../../components/DropdownComponent";
 
 const TextList = ({ label }) => {
     const [searchKey, setSearchKey] = useState("");
-    const { contacts, isLoading } = useContactsAll();
+    const { textThreads, isLoading } = useTextThreads();
     const navigate = useNavigate();
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isDeleteBtnLoading, setIsDeleteBtnLoading] = useState(false);
+    const [selectedThread, setSelectedThread] = useState<
+        TTextThread | undefined
+    >(undefined);
 
-    const filteredContacts = (): TContact[] | undefined => {
-        let data = contacts;
+    const archiveThread = useMutation((id: string) => useDeleteThread(id), {
+        onSuccess: () => {
+            queryClient.invalidateQueries("threads");
+            setIsDeleteModalOpen(false);
+            setIsDeleteBtnLoading(false);
+            navigate("/text-threads");
+        },
+        onError: (e: any) => {
+            console.log(e.message || "An error occurred");
+        },
+    });
+
+    // Step 2: Add hover state tracking
+    const [hoveredItemIndex, setHoveredItemIndex] = useState<number | null>(
+        null
+    );
+
+    const filteredContacts = (): TTextThread[] | undefined => {
+        let data = textThreads;
 
         data = data?.filter((contact) => contact.texts?.length);
 
@@ -36,25 +70,18 @@ const TextList = ({ label }) => {
                 searchWord = searchWord.replace(/\{\{.*?\}\}\s*/g, "");
             }
 
-            return data?.filter((contact) => {
+            return data?.filter((thread) => {
                 let bool = false;
                 if (label) {
                     bool =
-                        (contact.firstName
+                        thread.contactName
                             .toLowerCase()
-                            .includes(searchWord.toLowerCase()) ||
-                            contact.lastName
-                                .toLowerCase()
-                                .includes(searchWord.toLowerCase())) &&
-                        contact.label?.name == label;
+                            .includes(searchWord.toLowerCase()) &&
+                        thread.label?.name == label;
                 } else if (searchWord != "") {
-                    bool =
-                        contact.firstName
-                            .toLowerCase()
-                            .includes(searchWord.toLowerCase()) ||
-                        contact.lastName
-                            .toLowerCase()
-                            .includes(searchWord.toLowerCase());
+                    bool = thread.contactName
+                        .toLowerCase()
+                        .includes(searchWord.toLowerCase());
                 }
 
                 return bool;
@@ -68,6 +95,8 @@ const TextList = ({ label }) => {
         setSearchKey(label);
     }, [label]);
 
+    const threadList = filteredContacts();
+
     return (
         <>
             <Input
@@ -79,46 +108,139 @@ const TextList = ({ label }) => {
             />
             <List
                 itemLayout="horizontal"
-                dataSource={filteredContacts()}
-                renderItem={(contact) => (
-                    <List.Item
-                        style={{ cursor: "pointer" }}
-                        onClick={() => navigate("/texts/contact/" + contact.id)}
-                    >
-                        <Row gutter={12} style={{ width: "100%" }}>
-                            <Col span={3}>
-                                <TextEllipsis style={{ fontWeight: "bold" }}>
-                                    {`${contact.firstName} ${contact.lastName}`}
-                                </TextEllipsis>
-                            </Col>
-                            <Col span={18}>
-                                <TextEllipsis>
-                                    <Space>
-                                        {contact.label?.name ? (
-                                            <Tag
-                                                style={{
-                                                    float: "right",
+                dataSource={threadList}
+                style={{ marginTop: 0 }}
+                renderItem={(thread, index) => (
+                    <>
+                        {index === 0 && <Divider style={{ margin: "5px" }} />}
+                        <List.Item
+                            style={{
+                                cursor: "pointer",
+                                padding: "3px 0",
+                                // Step 3: Conditionally display timestamp or delete icon
+                                position: "relative",
+                            }}
+                            onClick={() =>
+                                navigate("/text-threads/" + thread.id)
+                            }
+                            onMouseEnter={() => setHoveredItemIndex(index)} // Step 4: Handle mouse enter
+                            onMouseLeave={() => setHoveredItemIndex(null)} // Step 4: Handle mouse leave
+                        >
+                            <Row gutter={12} style={{ width: "100%" }}>
+                                <Col span={3}>
+                                    <TextEllipsis
+                                        style={{
+                                            fontWeight: "bold",
+                                            fontSize: "16px",
+                                        }}
+                                    >
+                                        {`${thread.contactName}`}
+                                    </TextEllipsis>
+                                </Col>
+                                <Col span={18}>
+                                    <TextEllipsis
+                                        style={{
+                                            fontWeight: !thread?.texts![0]
+                                                .seen_at
+                                                ? "bold"
+                                                : "",
+                                        }}
+                                    >
+                                        <Space>
+                                            {thread.label?.name ? (
+                                                <Tag
+                                                    style={{
+                                                        float: "right",
+                                                        fontWeight: "normal",
+                                                    }}
+                                                >
+                                                    {thread.label?.name}
+                                                </Tag>
+                                            ) : null}
+                                            {thread?.texts![0].message}
+                                        </Space>
+                                    </TextEllipsis>
+                                </Col>
+                                <Col span={3}>
+                                    <TextEllipsis
+                                        style={{
+                                            textAlign: "right",
+                                        }}
+                                    >
+                                        {hoveredItemIndex === index ? ( // Step 3: Conditional rendering
+                                            <Space
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setSelectedThread(thread);
                                                 }}
                                             >
-                                                {contact.label?.name}
-                                            </Tag>
-                                        ) : null}
-                                        {contact?.texts![0].message}
-                                    </Space>
-                                </TextEllipsis>
-                            </Col>
-                            <Col span={3}>
-                                <TextEllipsis style={{ textAlign: "right" }}>
-                                    {contact?.texts![0].day +
-                                        " " +
-                                        contact?.texts![0].month}
-                                </TextEllipsis>
-                            </Col>
-                        </Row>
-                    </List.Item>
+                                                <DeleteOutlined
+                                                    onClick={(e) => {
+                                                        setIsDeleteModalOpen(
+                                                            true
+                                                        );
+                                                    }}
+                                                />
+                                                <EllipsisMenu />
+                                            </Space>
+                                        ) : (
+                                            getTimeAgo(
+                                                thread?.texts![0].created_at
+                                            )
+                                        )}
+                                    </TextEllipsis>
+                                </Col>
+                            </Row>
+                        </List.Item>
+                    </>
                 )}
             />
+
+            <ConfirmModal
+                title="Confirm"
+                message={`Are you sure you want to archive this thread?`}
+                handleNo={() => setIsDeleteModalOpen(false)}
+                handleYes={async () => {
+                    setIsDeleteBtnLoading(true);
+                    await archiveThread.mutate(selectedThread!.id!);
+                }}
+                isOpen={isDeleteModalOpen}
+                loading={isDeleteBtnLoading}
+            />
         </>
+    );
+};
+
+const EllipsisMenu = () => {
+    return (
+        <DropdownComponent
+            menuList={[
+                {
+                    label: (
+                        <Typography.Text onClick={() => {}}>
+                            Assign Label
+                        </Typography.Text>
+                    ),
+                    key: "1",
+                },
+                // {
+                //     label: (
+                //         <Typography.Text onClick={() => {}}>
+                //             Block number
+                //         </Typography.Text>
+                //     ),
+                //     key: "2",
+                // },
+            ]}
+            showCarret={false}
+            label={
+                <EllipsisOutlined
+                    style={{
+                        transform: "rotate(90deg)",
+                    }}
+                />
+            }
+        />
     );
 };
 

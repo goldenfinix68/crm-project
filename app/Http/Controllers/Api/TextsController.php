@@ -99,6 +99,7 @@ class TextsController extends Controller
 
             
         } catch (\Exception $e) {
+            dd($e);
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
@@ -181,6 +182,11 @@ class TextsController extends Controller
             }
 
             foreach($recepients as $recepient){
+                $contact = Contact::where('mobile', $payload['from']['phone_number'])->first();
+                $user = User::whereHas('mobileNumbers', function ($query) use ($recepient) {
+                    $query->where('mobileNumber', $recepient);
+                })->first();
+
                 $text = new Text();
                 $text->telnyxId = $json['data']['id'];
                 $text->from = $payload['from']['phone_number'];

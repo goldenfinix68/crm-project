@@ -91,9 +91,9 @@ const SideMenu = ({ children }) => {
                             label: "Inbox",
                         },
                         {
-                            key: "/texts",
+                            key: "/text-threads",
                             icon: <MobileOutlined />,
-                            label: "Text",
+                            label: "Text Threads",
                         },
                         {
                             key: "/dialer",

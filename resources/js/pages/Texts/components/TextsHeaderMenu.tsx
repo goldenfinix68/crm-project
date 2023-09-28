@@ -34,8 +34,8 @@ const TextsHeaderMenu = ({
             <Menu
                 onClick={(e) => {
                     if (e.key != "labels") {
-                        if (e.key == "all") {
-                            navigate("/texts");
+                        if (e.key == "inbox") {
+                            navigate("/text-threads");
                         } else if (e.key == "templates") {
                             navigate("/text-templates");
                         } else {
@@ -47,9 +47,6 @@ const TextsHeaderMenu = ({
                 }}
                 mode="horizontal"
             >
-                <Menu.Item key="all" icon={<MailOutlined />}>
-                    All
-                </Menu.Item>
                 <Menu.Item key="inbox" icon={<InboxOutlined />}>
                     Inbox
                 </Menu.Item>

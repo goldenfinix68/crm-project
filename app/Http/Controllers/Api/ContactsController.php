@@ -9,6 +9,7 @@ use App\Models\ContactTableColumn;
 use App\Http\Controllers\Controller;
 use App\Models\ContactFile;
 use App\Models\ContactLog;
+use App\Models\Text;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -40,7 +41,7 @@ class ContactsController extends Controller
         ])
             ->leftJoin('users', 'users.id', '=', 'contacts.ownerId')
             ->leftJoin('contact_types', 'contact_types.id', '=', 'contacts.typeId')
-            ->with(['type', 'label']);
+            ->with(['type']);
 
         if (isset($request->filter)) {
             if ($request->filter == "new-last-week") {
@@ -130,7 +131,7 @@ class ContactsController extends Controller
      */
     public function show($id)
     {
-        $contact = Contact::with(['type', 'deals', 'label'])->find($id);
+        $contact = Contact::with(['type', 'deals'])->find($id);
 
         // if (empty($contact)) {
         //     abort(404);
@@ -324,15 +325,6 @@ class ContactsController extends Controller
         return response()->json($contacts_table_column, 200);
     }
 
-    public function assign_label($id, Request $request)
-    {
-        $contact = Contact::find($id);
-        $contact->textLabelId = $request->textLabelId;
-        $contact->save();
-
-        return $contact;
-
-    }
     public function delete_contacts_table_column(Request $request)
     {
     
@@ -345,4 +337,24 @@ class ContactsController extends Controller
             'data' => $data 
         ]);
     }
+
+    public function delete_texts(Request $request)
+    {
+        $contact = Contact::find($request->contactId);
+        dd($request->all());
+        if (!$contact) {
+            return response()->json(['error' => 'Contact not found'], 404);
+        }
+
+        $mobile = $contact->mobile;
+
+        Text::where(function ($query) use ($mobile) {
+                $query->where('to', $mobile)
+                    ->orWhere('from', $mobile);
+            })
+            ->delete();
+
+        return response()->json(['success' => true]);
+    }
+
 }
