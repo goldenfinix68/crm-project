@@ -12,7 +12,11 @@ import {
     Tag,
     Typography,
 } from "antd";
-import { SearchOutlined, DeleteOutlined } from "@ant-design/icons"; // Step 1
+import {
+    SearchOutlined,
+    DeleteOutlined,
+    EllipsisOutlined,
+} from "@ant-design/icons"; // Step 1
 import { useNavigate, useParams } from "react-router-dom";
 import { useContactsAll } from "../../../api/query/contactsQuery";
 import { getTimeAgo } from "../../../helpers";
@@ -22,6 +26,7 @@ import { useMutation } from "react-query";
 import queryClient from "../../../queryClient";
 import { useTextThreads } from "../../../api/query/textQuery";
 import { useDeleteThread } from "../../../api/mutation/useTextMutation";
+import DropdownComponent from "../../../components/DropdownComponent";
 
 const TextList = ({ label }) => {
     const [searchKey, setSearchKey] = useState("");
@@ -163,13 +168,21 @@ const TextList = ({ label }) => {
                                         }}
                                     >
                                         {hoveredItemIndex === index ? ( // Step 3: Conditional rendering
-                                            <DeleteOutlined
+                                            <Space
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     setSelectedThread(thread);
-                                                    setIsDeleteModalOpen(true);
                                                 }}
-                                            />
+                                            >
+                                                <DeleteOutlined
+                                                    onClick={(e) => {
+                                                        setIsDeleteModalOpen(
+                                                            true
+                                                        );
+                                                    }}
+                                                />
+                                                <EllipsisMenu />
+                                            </Space>
                                         ) : (
                                             getTimeAgo(
                                                 thread?.texts![0].created_at
@@ -195,6 +208,39 @@ const TextList = ({ label }) => {
                 loading={isDeleteBtnLoading}
             />
         </>
+    );
+};
+
+const EllipsisMenu = () => {
+    return (
+        <DropdownComponent
+            menuList={[
+                {
+                    label: (
+                        <Typography.Text onClick={() => {}}>
+                            Assign Label
+                        </Typography.Text>
+                    ),
+                    key: "1",
+                },
+                // {
+                //     label: (
+                //         <Typography.Text onClick={() => {}}>
+                //             Block number
+                //         </Typography.Text>
+                //     ),
+                //     key: "2",
+                // },
+            ]}
+            showCarret={false}
+            label={
+                <EllipsisOutlined
+                    style={{
+                        transform: "rotate(90deg)",
+                    }}
+                />
+            }
+        />
     );
 };
 

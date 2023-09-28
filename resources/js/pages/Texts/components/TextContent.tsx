@@ -77,37 +77,6 @@ const TextContent = ({
                         {thread.contactName.charAt(0)}
                     </Avatar>{" "}
                     {`${thread.contactName}`}
-                    <Space style={{ marginLeft: "auto" }}>
-                        {/* <AssignLabelDropdown /> */}
-                        <DropdownComponent
-                            menuList={[
-                                {
-                                    label: (
-                                        <Typography.Text onClick={() => {}}>
-                                            Delete all
-                                        </Typography.Text>
-                                    ),
-                                    key: "1",
-                                },
-                                {
-                                    label: (
-                                        <Typography.Text onClick={() => {}}>
-                                            Block number
-                                        </Typography.Text>
-                                    ),
-                                    key: "2",
-                                },
-                            ]}
-                            showCarret={false}
-                            label={
-                                <EllipsisOutlined
-                                    style={{
-                                        transform: "rotate(90deg)",
-                                    }}
-                                />
-                            }
-                        />
-                    </Space>
                 </div>
 
                 <div style={{ paddingTop: "50px", height: "85%" }}>
