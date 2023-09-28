@@ -368,4 +368,23 @@ class ContactsController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function delete_texts(Request $request)
+    {
+        $contact = Contact::find($request->contactId);
+        dd($request->all());
+        if (!$contact) {
+            return response()->json(['error' => 'Contact not found'], 404);
+        }
+
+        $mobile = $contact->mobile;
+
+        Text::where(function ($query) use ($mobile) {
+                $query->where('to', $mobile)
+                    ->orWhere('from', $mobile);
+            })
+            ->delete();
+
+        return response()->json(['success' => true]);
+    }
+
 }

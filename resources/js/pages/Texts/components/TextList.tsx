@@ -12,16 +12,41 @@ import {
     Tag,
     Typography,
 } from "antd";
-import { TContact, TText } from "../../../entities";
-import { SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined, DeleteOutlined } from "@ant-design/icons"; // Step 1
 import { useNavigate, useParams } from "react-router-dom";
 import { useContactsAll } from "../../../api/query/contactsQuery";
 import { getTimeAgo } from "../../../helpers";
+import { TContact } from "../../../entities";
+import ConfirmModal from "../../../components/ConfirmModal";
+import { useDeleteContactTexts } from "../../../api/mutation/useContactMutation";
+import { useMutation } from "react-query";
+import queryClient from "../../../queryClient";
 
 const TextList = ({ label }) => {
     const [searchKey, setSearchKey] = useState("");
     const { contacts, isLoading } = useContactsAll();
     const navigate = useNavigate();
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isDeleteBtnLoading, setIsDeleteBtnLoading] = useState(false);
+
+    const archiveTexts = useMutation(
+        (id: string) => useDeleteContactTexts(id),
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries("contacts");
+                setIsDeleteModalOpen(false);
+                navigate("/texts");
+            },
+            onError: (e: any) => {
+                console.log(e.message || "An error occurred");
+            },
+        }
+    );
+
+    // Step 2: Add hover state tracking
+    const [hoveredItemIndex, setHoveredItemIndex] = useState<number | null>(
+        null
+    );
 
     const filteredContacts = (): TContact[] | undefined => {
         let data = contacts;
@@ -89,17 +114,24 @@ const TextList = ({ label }) => {
                     <>
                         {index === 0 && <Divider style={{ margin: "5px" }} />}
                         <List.Item
-                            style={{ cursor: "pointer", padding: "3px 0" }} // Adjust padding for thinner list items
+                            style={{
+                                cursor: "pointer",
+                                padding: "3px 0",
+                                // Step 3: Conditionally display timestamp or delete icon
+                                position: "relative",
+                            }}
                             onClick={() =>
                                 navigate("/texts/contact/" + contact.id)
                             }
+                            onMouseEnter={() => setHoveredItemIndex(index)} // Step 4: Handle mouse enter
+                            onMouseLeave={() => setHoveredItemIndex(null)} // Step 4: Handle mouse leave
                         >
                             <Row gutter={12} style={{ width: "100%" }}>
                                 <Col span={3}>
                                     <TextEllipsis
                                         style={{
                                             fontWeight: "bold",
-                                            fontSize: "16px", // Adjust font size
+                                            fontSize: "16px",
                                         }}
                                     >
                                         {`${contact.firstName} ${contact.lastName}`}
@@ -135,8 +167,16 @@ const TextList = ({ label }) => {
                                             textAlign: "right",
                                         }}
                                     >
-                                        {getTimeAgo(
-                                            contact?.texts![0].created_at
+                                        {hoveredItemIndex === index ? ( // Step 3: Conditional rendering
+                                            <DeleteOutlined
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                }}
+                                            />
+                                        ) : (
+                                            getTimeAgo(
+                                                contact?.texts![0].created_at
+                                            )
                                         )}
                                     </TextEllipsis>
                                 </Col>
@@ -145,6 +185,19 @@ const TextList = ({ label }) => {
                     </>
                 )}
             />
+
+            {/* <ConfirmModal
+                title="Confirm"
+                message={`Are you sure you want to archive this texts?`}
+                handleNo={() => setIsDeleteModalOpen(false)}
+                handleYes={async () => {
+                    setIsDeleteBtnLoading(true);
+                    await archiveTexts.mutate(template!.id!);
+                    setIsDeleteBtnLoading(false);
+                }}
+                isOpen={isDeleteModalOpen}
+                loading={isDeleteBtnLoading}
+            /> */}
         </>
     );
 };
