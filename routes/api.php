@@ -89,7 +89,7 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('/text-threads', 'App\Http\Controllers\Api\TextThreadsController');
 
 
-    Route::post('/assign-label-text-thread/{id}', 'App\Http\Controllers\Api\TextThreadsController@assign_label');
+    Route::post('/assign-label-thread', 'App\Http\Controllers\Api\TextThreadsController@assign_label');
     Route::post('/text-threads/mark-texts-seen', 'App\Http\Controllers\Api\TextThreadsController@mark_texts_seen');
     Route::post('/contact/delete-texts', 'App\Http\Controllers\Api\ContactsController@delete_texts');
 });

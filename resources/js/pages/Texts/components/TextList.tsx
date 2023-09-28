@@ -4,9 +4,12 @@ import {
     Button,
     Col,
     Divider,
+    Dropdown,
     Empty,
     Input,
     List,
+    Menu,
+    Popover,
     Row,
     Space,
     Tag,
@@ -16,6 +19,7 @@ import {
     SearchOutlined,
     DeleteOutlined,
     EllipsisOutlined,
+    CaretDownFilled,
 } from "@ant-design/icons"; // Step 1
 import { useNavigate, useParams } from "react-router-dom";
 import { useContactsAll } from "../../../api/query/contactsQuery";
@@ -27,6 +31,8 @@ import queryClient from "../../../queryClient";
 import { useTextThreads } from "../../../api/query/textQuery";
 import { useDeleteThread } from "../../../api/mutation/useTextMutation";
 import DropdownComponent from "../../../components/DropdownComponent";
+import AssignLabelDropdown from "./AssignLabelDropdown";
+import AssignLabelModal from "./AssignLabelModal";
 
 const TextList = ({ label }) => {
     const [searchKey, setSearchKey] = useState("");
@@ -37,6 +43,7 @@ const TextList = ({ label }) => {
     const [selectedThread, setSelectedThread] = useState<
         TTextThread | undefined
     >(undefined);
+    const [isAssignLabelModalOpen, setIsAssignLabelModalOpen] = useState(false);
 
     const archiveThread = useMutation((id: string) => useDeleteThread(id), {
         onSuccess: () => {
@@ -60,33 +67,33 @@ const TextList = ({ label }) => {
 
         data = data?.filter((contact) => contact.texts?.length);
 
-        if (searchKey) {
-            let searchWord = searchKey;
-            let label = "";
-            const match = searchKey.match(/\{\{label:(.*?)\}\}/);
+        // if (searchKey) {
+        //     let searchWord = searchKey;
+        //     let label = "";
+        //     const match = searchKey.match(/\{\{label:(.*?)\}\}/);
 
-            if (match) {
-                label = match[1];
-                searchWord = searchWord.replace(/\{\{.*?\}\}\s*/g, "");
-            }
+        //     if (match) {
+        //         label = match[1];
+        //         searchWord = searchWord.replace(/\{\{.*?\}\}\s*/g, "");
+        //     }
 
-            return data?.filter((thread) => {
-                let bool = false;
-                if (label) {
-                    bool =
-                        thread.contactName
-                            .toLowerCase()
-                            .includes(searchWord.toLowerCase()) &&
-                        thread.label?.name == label;
-                } else if (searchWord != "") {
-                    bool = thread.contactName
-                        .toLowerCase()
-                        .includes(searchWord.toLowerCase());
-                }
+        //     return data?.filter((thread) => {
+        //         let bool = false;
+        //         if (label) {
+        //             bool =
+        //                 thread.contactName
+        //                     .toLowerCase()
+        //                     .includes(searchWord.toLowerCase()) &&
+        //                 thread.label?.name == label;
+        //         } else if (searchWord != "") {
+        //             bool = thread.contactName
+        //                 .toLowerCase()
+        //                 .includes(searchWord.toLowerCase());
+        //         }
 
-                return bool;
-            });
-        }
+        //         return bool;
+        //     });
+        // }
 
         return data;
     };
@@ -146,17 +153,17 @@ const TextList = ({ label }) => {
                                                 : "",
                                         }}
                                     >
-                                        <Space>
-                                            {thread.label?.name ? (
+                                        <Space size={0}>
+                                            {thread.labels?.map((label) => (
                                                 <Tag
                                                     style={{
                                                         float: "right",
                                                         fontWeight: "normal",
                                                     }}
                                                 >
-                                                    {thread.label?.name}
+                                                    {label?.name}
                                                 </Tag>
-                                            ) : null}
+                                            ))}
                                             {thread?.texts![0].message}
                                         </Space>
                                     </TextEllipsis>
@@ -167,7 +174,8 @@ const TextList = ({ label }) => {
                                             textAlign: "right",
                                         }}
                                     >
-                                        {hoveredItemIndex === index ? ( // Step 3: Conditional rendering
+                                        {hoveredItemIndex === index ||
+                                        selectedThread ? ( // Step 3: Conditional rendering
                                             <Space
                                                 onClick={(e) => {
                                                     e.stopPropagation();
@@ -181,7 +189,30 @@ const TextList = ({ label }) => {
                                                         );
                                                     }}
                                                 />
-                                                <EllipsisMenu />
+                                                <Dropdown
+                                                    overlay={
+                                                        <Menu>
+                                                            <Menu.Item
+                                                                key="assignLabel"
+                                                                onClick={() =>
+                                                                    setIsAssignLabelModalOpen(
+                                                                        true
+                                                                    )
+                                                                }
+                                                            >
+                                                                Assign Label
+                                                            </Menu.Item>
+                                                        </Menu>
+                                                    }
+                                                    trigger={["click"]}
+                                                >
+                                                    <EllipsisOutlined
+                                                        style={{
+                                                            transform:
+                                                                "rotate(90deg)",
+                                                        }}
+                                                    />
+                                                </Dropdown>
                                             </Space>
                                         ) : (
                                             getTimeAgo(
@@ -199,48 +230,31 @@ const TextList = ({ label }) => {
             <ConfirmModal
                 title="Confirm"
                 message={`Are you sure you want to archive this thread?`}
-                handleNo={() => setIsDeleteModalOpen(false)}
+                handleNo={() => {
+                    setIsDeleteModalOpen(false);
+                    setSelectedThread(undefined);
+                }}
                 handleYes={async () => {
                     setIsDeleteBtnLoading(true);
                     await archiveThread.mutate(selectedThread!.id!);
+                    setSelectedThread(undefined);
                 }}
                 isOpen={isDeleteModalOpen}
                 loading={isDeleteBtnLoading}
             />
-        </>
-    );
-};
 
-const EllipsisMenu = () => {
-    return (
-        <DropdownComponent
-            menuList={[
-                {
-                    label: (
-                        <Typography.Text onClick={() => {}}>
-                            Assign Label
-                        </Typography.Text>
-                    ),
-                    key: "1",
-                },
-                // {
-                //     label: (
-                //         <Typography.Text onClick={() => {}}>
-                //             Block number
-                //         </Typography.Text>
-                //     ),
-                //     key: "2",
-                // },
-            ]}
-            showCarret={false}
-            label={
-                <EllipsisOutlined
-                    style={{
-                        transform: "rotate(90deg)",
-                    }}
-                />
-            }
-        />
+            <AssignLabelModal
+                isModalOpen={isAssignLabelModalOpen}
+                closeModal={() => {
+                    setIsAssignLabelModalOpen(false);
+                    setSelectedThread(undefined);
+                }}
+                threadIds={[selectedThread?.id ?? ""]}
+                defaultChecked={selectedThread?.labels?.map(
+                    (label) => label.id ?? ""
+                )}
+            />
+        </>
     );
 };
 

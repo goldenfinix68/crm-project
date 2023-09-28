@@ -12,4 +12,9 @@ class TextLabel extends Model
     protected $fillable = [
         'name',
     ];
+
+    public function threads()
+    {
+        return $this->belongsToMany(\App\Models\TextThread::class, 'thread_labels_pivot', 'textLabelId', 'textThreadId');
+    }
 }

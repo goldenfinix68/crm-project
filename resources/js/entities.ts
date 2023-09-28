@@ -75,8 +75,7 @@ export type TTextThread = {
     userNumber?: string;
     contactName: string;
     texts: TText[];
-    textLabelId?: string;
-    label?: TTextLabel;
+    labels?: TTextLabel[];
     contact?: TContact;
 };
 

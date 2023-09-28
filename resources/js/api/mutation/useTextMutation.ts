@@ -34,14 +34,15 @@ export const createTextLabelMutation = async (label: TTextLabel) => {
     return data;
 };
 
-export const assignLabelMutation = async (thread: TTextThread) => {
+export const assignLabelMutation = async (values: any) => {
     const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
-    const response = await fetch("/api/assign-label-contact/" + thread.id, {
+    const response = await fetch("/api/assign-label-thread", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
         },
+        body: JSON.stringify(values),
     });
     const data = await response.json();
     if (!response.ok) {

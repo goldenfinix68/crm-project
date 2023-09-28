@@ -24,7 +24,7 @@ class TextThreadsController extends Controller
             abort(401, 'Unauthorized');
         }
 
-        return TextThread::with(['texts'])->whereIn('userNumber', $user->numbers)->orderBy('id', 'desc')->get();
+        return TextThread::with(['texts', 'labels'])->whereIn('userNumber', $user->numbers)->orderBy('id', 'desc')->get();
     }
 
     /**
@@ -56,7 +56,7 @@ class TextThreadsController extends Controller
      */
     public function show($id)
     {
-        return TextThread::with(['texts'])->where('id', $id)->first();
+        return TextThread::with(['texts', 'labels'])->where('id', $id)->first();
     }
 
     /**
@@ -101,13 +101,15 @@ class TextThreadsController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function assign_label($id, Request $request)
+    public function assign_label(Request $request)
     {
-        $thread = TextThread::find($id);
-        $thread->textLabelId = $request->textLabelId;
-        $thread->save();
+        
+        foreach($request->threadIds as $id){
+            $thread = TextThread::find($id);
+            $thread->labels()->sync($request->labels);
+        }
 
-        return $thread;
+        return response()->json(['success' => true]);
 
     }
     
