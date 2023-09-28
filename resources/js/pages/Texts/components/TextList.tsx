@@ -18,10 +18,10 @@ import { useContactsAll } from "../../../api/query/contactsQuery";
 import { getTimeAgo } from "../../../helpers";
 import { TContact, TTextThread } from "../../../entities";
 import ConfirmModal from "../../../components/ConfirmModal";
-import { useDeleteContactTexts } from "../../../api/mutation/useContactMutation";
 import { useMutation } from "react-query";
 import queryClient from "../../../queryClient";
 import { useTextThreads } from "../../../api/query/textQuery";
+import { useDeleteThread } from "../../../api/mutation/useTextMutation";
 
 const TextList = ({ label }) => {
     const [searchKey, setSearchKey] = useState("");
@@ -29,20 +29,21 @@ const TextList = ({ label }) => {
     const navigate = useNavigate();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleteBtnLoading, setIsDeleteBtnLoading] = useState(false);
+    const [selectedThread, setSelectedThread] = useState<
+        TTextThread | undefined
+    >(undefined);
 
-    const archiveTexts = useMutation(
-        (id: string) => useDeleteContactTexts(id),
-        {
-            onSuccess: () => {
-                queryClient.invalidateQueries("contacts");
-                setIsDeleteModalOpen(false);
-                navigate("/texts");
-            },
-            onError: (e: any) => {
-                console.log(e.message || "An error occurred");
-            },
-        }
-    );
+    const archiveThread = useMutation((id: string) => useDeleteThread(id), {
+        onSuccess: () => {
+            queryClient.invalidateQueries("threads");
+            setIsDeleteModalOpen(false);
+            setIsDeleteBtnLoading(false);
+            navigate("/text-threads");
+        },
+        onError: (e: any) => {
+            console.log(e.message || "An error occurred");
+        },
+    });
 
     // Step 2: Add hover state tracking
     const [hoveredItemIndex, setHoveredItemIndex] = useState<number | null>(
@@ -165,6 +166,8 @@ const TextList = ({ label }) => {
                                             <DeleteOutlined
                                                 onClick={(e) => {
                                                     e.stopPropagation();
+                                                    setSelectedThread(thread);
+                                                    setIsDeleteModalOpen(true);
                                                 }}
                                             />
                                         ) : (
@@ -180,18 +183,17 @@ const TextList = ({ label }) => {
                 )}
             />
 
-            {/* <ConfirmModal
+            <ConfirmModal
                 title="Confirm"
-                message={`Are you sure you want to archive this texts?`}
+                message={`Are you sure you want to archive this thread?`}
                 handleNo={() => setIsDeleteModalOpen(false)}
                 handleYes={async () => {
                     setIsDeleteBtnLoading(true);
-                    await archiveTexts.mutate(template!.id!);
-                    setIsDeleteBtnLoading(false);
+                    await archiveThread.mutate(selectedThread!.id!);
                 }}
                 isOpen={isDeleteModalOpen}
                 loading={isDeleteBtnLoading}
-            /> */}
+            />
         </>
     );
 };

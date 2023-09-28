@@ -89,7 +89,15 @@ class TextThreadsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $thread = TextThread::find($id);
+
+        if(empty($thread)){
+            abort(404, 'Thread not found');
+        }
+
+        $thread->delete();
+        
+        return response()->json(['success' => true]);
     }
 
     public function assign_label($id, Request $request)
