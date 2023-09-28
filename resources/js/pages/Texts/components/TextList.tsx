@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
     Avatar,
     Button,
+    Checkbox,
     Col,
     Divider,
     Dropdown,
@@ -20,6 +21,8 @@ import {
     DeleteOutlined,
     EllipsisOutlined,
     CaretDownFilled,
+    CloseOutlined,
+    TagFilled,
 } from "@ant-design/icons"; // Step 1
 import { useNavigate, useParams } from "react-router-dom";
 import { useContactsAll } from "../../../api/query/contactsQuery";
@@ -43,7 +46,9 @@ const TextList = ({ label }) => {
     const [selectedThread, setSelectedThread] = useState<
         TTextThread | undefined
     >(undefined);
+    const [selectedThreadIds, setSelectedThreadIds] = useState<string[]>([]);
     const [isAssignLabelModalOpen, setIsAssignLabelModalOpen] = useState(false);
+    const [isViaMultiple, setIsViaMultiple] = useState(false);
 
     const archiveThread = useMutation((id: string) => useDeleteThread(id), {
         onSuccess: () => {
@@ -113,6 +118,47 @@ const TextList = ({ label }) => {
                 onChange={(e: any) => setSearchKey(e.target.value)}
                 value={searchKey}
             />
+            {selectedThreadIds.length ? (
+                <Space style={{ width: "100%" }} size={0}>
+                    <Button
+                        icon={<CloseOutlined />}
+                        type="text"
+                        onClick={() => {
+                            setSelectedThreadIds([]);
+                        }}
+                    />
+                    <Typography.Text>
+                        {selectedThreadIds?.length + " Selected"}
+                    </Typography.Text>
+                    <Button
+                        icon={<DeleteOutlined />}
+                        type="text"
+                        onClick={() => {
+                            setIsViaMultiple(true);
+                            setIsDeleteModalOpen(true);
+                        }}
+                    >
+                        Delete
+                    </Button>
+
+                    <Button
+                        onClick={() => {
+                            setIsViaMultiple(true);
+                            setIsAssignLabelModalOpen(true);
+                        }}
+                        type="text"
+                        icon={
+                            <TagFilled
+                                style={{
+                                    transform: "rotate(45deg)",
+                                }}
+                            />
+                        }
+                    >
+                        Labels
+                    </Button>
+                </Space>
+            ) : null}
             <List
                 itemLayout="horizontal"
                 dataSource={threadList}
@@ -134,17 +180,49 @@ const TextList = ({ label }) => {
                             onMouseLeave={() => setHoveredItemIndex(null)} // Step 4: Handle mouse leave
                         >
                             <Row gutter={12} style={{ width: "100%" }}>
-                                <Col span={3}>
+                                <Col span={4}>
                                     <TextEllipsis
                                         style={{
                                             fontWeight: "bold",
                                             fontSize: "16px",
                                         }}
                                     >
-                                        {`${thread.contactName}`}
+                                        <Checkbox
+                                            checked={selectedThreadIds.includes(
+                                                thread.id
+                                            )}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                const isChecked = (
+                                                    e.target as HTMLInputElement
+                                                ).checked;
+                                                if (isChecked) {
+                                                    setSelectedThreadIds(
+                                                        (
+                                                            prevSelectedThreadIds
+                                                        ) => [
+                                                            ...prevSelectedThreadIds,
+                                                            thread.id,
+                                                        ]
+                                                    );
+                                                } else {
+                                                    setSelectedThreadIds(
+                                                        (
+                                                            prevSelectedThreadIds
+                                                        ) =>
+                                                            prevSelectedThreadIds.filter(
+                                                                (id) =>
+                                                                    id !==
+                                                                    thread.id
+                                                            )
+                                                    );
+                                                }
+                                            }}
+                                        />
+                                        {` ${thread.contactName}`}
                                     </TextEllipsis>
                                 </Col>
-                                <Col span={18}>
+                                <Col span={17}>
                                     <TextEllipsis
                                         style={{
                                             fontWeight: !thread?.texts![0]
@@ -180,6 +258,7 @@ const TextList = ({ label }) => {
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     setSelectedThread(thread);
+                                                    setIsViaMultiple(false);
                                                 }}
                                             >
                                                 <DeleteOutlined
@@ -248,11 +327,18 @@ const TextList = ({ label }) => {
                 closeModal={() => {
                     setIsAssignLabelModalOpen(false);
                     setSelectedThread(undefined);
+                    setSelectedThreadIds([]);
                 }}
-                threadIds={[selectedThread?.id ?? ""]}
-                defaultChecked={selectedThread?.labels?.map(
-                    (label) => label.id ?? ""
-                )}
+                threadIds={
+                    isViaMultiple
+                        ? selectedThreadIds
+                        : [selectedThread?.id ?? ""]
+                }
+                defaultChecked={
+                    !isViaMultiple
+                        ? selectedThread?.labels?.map((label) => label.id ?? "")
+                        : undefined
+                }
             />
         </>
     );

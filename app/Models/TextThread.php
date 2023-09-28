@@ -25,7 +25,7 @@ class TextThread extends Model
 
     public function labels()
     {
-        return $this->belongsToMany(\App\Models\TextLabel::class, 'thread_labels_pivot', 'textThreadId', 'textLabelId');
+        return $this->belongsToMany(\App\Models\TextLabel::class, 'thread_labels_pivot', 'textThreadId', 'textLabelId')->orderBy('name');
     }
 
     public function getContactAttribute()
