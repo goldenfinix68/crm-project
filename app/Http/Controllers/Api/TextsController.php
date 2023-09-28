@@ -10,8 +10,6 @@ use Auth;
 use Carbon\Carbon;
 use App\Jobs\SendText;
 use App\Events\TextReceived;
-use App\Models\Contact;
-use App\Models\User;
 
 class TextsController extends Controller
 {
@@ -184,15 +182,10 @@ class TextsController extends Controller
             }
 
             foreach($recepients as $recepient){
-                $contact = Contact::where('mobile', $payload['from']['phone_number'])->first();
-                $user = User::whereHas('mobileNumbers', function ($query) use ($recepient) {
-                    $query->where('mobileNumber', $recepient);
-                })->first();
-
                 $text = new Text();
                 $text->telnyxId = $json['data']['id'];
                 $text->from = $payload['from']['phone_number'];
-                $text->to = $recepient;
+                $text->to = str_replace('"', '', $recepient);
                 $text->message = $payload['text'];
                 $text->telnyxResponse = json_encode($json);
                 $text->type = $payload['type'];
