@@ -169,6 +169,8 @@ const ActionMenu = () => {
             <TextModal
                 closeModal={() => setTextModalOpen(false)}
                 isModalOpen={textModalOpen}
+                to={contact.mobile}
+                contact={contact}
             />
 
             <ModalAddActivity

@@ -114,6 +114,8 @@ const TextContent = ({
                                 handleCancel={() => {
                                     setIsFocused(false);
                                 }}
+                                to={thread.contactNumber}
+                                contact={thread.contact ?? undefined}
                             />
                         ) : (
                             <Input.TextArea

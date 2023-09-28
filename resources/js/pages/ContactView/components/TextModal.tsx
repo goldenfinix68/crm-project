@@ -23,11 +23,14 @@ import { sendTextMutation } from "../../../api/mutation/useTextMutation";
 import ContactContext from "../context";
 import queryClient from "../../../queryClient";
 import TextForm from "../../Texts/components/TextForm";
+import { TContact } from "../../../entities";
 interface Props {
     isModalOpen: boolean;
     closeModal: () => void;
+    to?: string;
+    contact?: TContact;
 }
-const TextModal = ({ isModalOpen, closeModal }: Props) => {
+const TextModal = ({ isModalOpen, closeModal, to, contact }: Props) => {
     return (
         <Modal
             className="modal-activity"
@@ -61,6 +64,8 @@ const TextModal = ({ isModalOpen, closeModal }: Props) => {
                         queryClient.invalidateQueries("getContact");
                     }}
                     handleCancel={closeModal}
+                    to={to}
+                    contact={contact}
                 />
             </Space>
         </Modal>
