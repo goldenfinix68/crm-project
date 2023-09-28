@@ -79,8 +79,8 @@ const App: React.FC = () => {
         const channel = pusher.subscribe("text-channel");
         channel.bind("text-received", (data) => {
             console.log("Received a text:", data);
-            queryClient.invalidateQueries("contacts");
-            queryClient.invalidateQueries("getContact");
+            queryClient.invalidateQueries("threads");
+            queryClient.invalidateQueries("thread");
         });
 
         // Clean up the subscription when the component unmounts
