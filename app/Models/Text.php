@@ -142,7 +142,7 @@ class Text extends Model
             }
 
             $text->threadId = $thread->id;
-            $text->seen_at =  $text->isFromApp ? now() : "";
+            $text->seen_at =  $text->isFromApp ? Carbon::now() : "";
             $text->save();
         });
     }

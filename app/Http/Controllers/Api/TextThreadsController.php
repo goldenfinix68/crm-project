@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\TextThread;
 use App\Models\Text;
 use Auth;
+use Carbon\Carbon;
 
 class TextThreadsController extends Controller
 {
@@ -96,7 +97,7 @@ class TextThreadsController extends Controller
         }
 
         $thread->delete();
-        
+
         return response()->json(['success' => true]);
     }
 
@@ -121,7 +122,7 @@ class TextThreadsController extends Controller
         // Update all texts for the contact where seen_at is null
         Text::where('threadId', $thread->id)
             ->whereNull('seen_at')
-            ->update(['seen_at' => now()]); // Set seen_at to the current timestamp
+            ->update(['seen_at' => Carbon::now()]); // Set seen_at to the current timestamp
 
         return response()->json(['success' => true]);
     }
