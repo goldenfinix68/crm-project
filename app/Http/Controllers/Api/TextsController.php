@@ -10,6 +10,7 @@ use Auth;
 use Carbon\Carbon;
 use App\Jobs\SendText;
 use App\Events\TextReceived;
+use App\Events\Contact;
 
 class TextsController extends Controller
 {
