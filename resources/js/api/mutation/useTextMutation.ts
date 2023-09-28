@@ -68,14 +68,15 @@ export const useMarkThreadSeen = async (threadId: any) => {
     return data;
 };
 
-export const useDeleteThread = async (threadId: any) => {
+export const useDeleteThread = async (threadIds: any) => {
     const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
-    const response = await fetch("/api/text-threads/" + threadId, {
+    const response = await fetch("/api/text-threads/delete", {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
         },
+        body: JSON.stringify(threadIds),
     });
     const data = await response.json();
     if (!response.ok) {

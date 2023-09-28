@@ -88,15 +88,13 @@ class TextThreadsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $thread = TextThread::find($id);
-
-        if(empty($thread)){
-            abort(404, 'Thread not found');
+        
+        foreach($request->threadIds as $id){
+            $thread = TextThread::find($id);
+            $thread->delete();
         }
-
-        $thread->delete();
 
         return response()->json(['success' => true]);
     }

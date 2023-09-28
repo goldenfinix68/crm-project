@@ -91,7 +91,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::post('/assign-label-thread', 'App\Http\Controllers\Api\TextThreadsController@assign_label');
     Route::post('/text-threads/mark-texts-seen', 'App\Http\Controllers\Api\TextThreadsController@mark_texts_seen');
-    Route::post('/contact/delete-texts', 'App\Http\Controllers\Api\ContactsController@delete_texts');
+    Route::post('/text-threads/delete', 'App\Http\Controllers\Api\TextThreadsController@destroy');
 });
 
 Route::post('/telnyx/sms/webhook', 'App\Http\Controllers\Api\TextsController@textReceived');

@@ -50,7 +50,7 @@ const TextList = ({ label }) => {
     const [isAssignLabelModalOpen, setIsAssignLabelModalOpen] = useState(false);
     const [isViaMultiple, setIsViaMultiple] = useState(false);
 
-    const archiveThread = useMutation((id: string) => useDeleteThread(id), {
+    const archiveThread = useMutation(useDeleteThread, {
         onSuccess: () => {
             queryClient.invalidateQueries("threads");
             setIsDeleteModalOpen(false);
@@ -315,7 +315,11 @@ const TextList = ({ label }) => {
                 }}
                 handleYes={async () => {
                     setIsDeleteBtnLoading(true);
-                    await archiveThread.mutate(selectedThread!.id!);
+                    await archiveThread.mutate(
+                        isViaMultiple
+                            ? { threadIds: selectedThreadIds }
+                            : { threadIds: [selectedThread!.id!] }
+                    );
                     setSelectedThread(undefined);
                 }}
                 isOpen={isDeleteModalOpen}
