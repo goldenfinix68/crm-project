@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use App\Jobs\SendText;
 use App\Events\TextReceived;
 use App\Models\Contact;
+use App\Models\User;
 
 class TextsController extends Controller
 {
