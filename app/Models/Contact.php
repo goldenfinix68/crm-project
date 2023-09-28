@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 
 use App\Models\User;
@@ -13,7 +14,7 @@ use App\Models\Call;
 
 class Contact extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
 
     protected $fillable = [
         'firstName',
@@ -91,11 +92,6 @@ class Contact extends Model
     public function type()
     {
         return $this->hasOne(\App\Models\ContactType::class, 'id', 'typeId');
-    }
-
-    public function label()
-    {
-        return $this->hasOne(\App\Models\TextLabel::class, 'id', 'textLabelId');
     }
 
     public function notes()

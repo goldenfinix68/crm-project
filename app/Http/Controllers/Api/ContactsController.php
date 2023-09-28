@@ -41,7 +41,7 @@ class ContactsController extends Controller
         ])
             ->leftJoin('users', 'users.id', '=', 'contacts.ownerId')
             ->leftJoin('contact_types', 'contact_types.id', '=', 'contacts.typeId')
-            ->with(['type', 'label']);
+            ->with(['type']);
 
         if (isset($request->filter)) {
             if ($request->filter == "new-last-week") {
@@ -131,7 +131,7 @@ class ContactsController extends Controller
      */
     public function show($id)
     {
-        $contact = Contact::with(['type', 'deals', 'label'])->find($id);
+        $contact = Contact::with(['type', 'deals'])->find($id);
 
         // if (empty($contact)) {
         //     abort(404);
@@ -325,15 +325,6 @@ class ContactsController extends Controller
         return response()->json($contacts_table_column, 200);
     }
 
-    public function assign_label($id, Request $request)
-    {
-        $contact = Contact::find($id);
-        $contact->textLabelId = $request->textLabelId;
-        $contact->save();
-
-        return $contact;
-
-    }
     public function delete_contacts_table_column(Request $request)
     {
     
@@ -345,27 +336,6 @@ class ContactsController extends Controller
             'success' => true,
             'data' => $data 
         ]);
-    }
-
-    public function mark_texts_seen(Request $request)
-    {
-        $contact = Contact::find($request->contactId);
-
-        if (!$contact) {
-            return response()->json(['error' => 'Contact not found'], 404);
-        }
-
-        $mobile = $contact->mobile;
-
-        // Update all texts for the contact where seen_at is null
-        Text::where(function ($query) use ($mobile) {
-                $query->where('to', $mobile)
-                    ->orWhere('from', $mobile);
-            })
-            ->whereNull('seen_at')
-            ->update(['seen_at' => now()]); // Set seen_at to the current timestamp
-
-        return response()->json(['success' => true]);
     }
 
     public function delete_texts(Request $request)

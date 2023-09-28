@@ -91,7 +91,7 @@ const TopNav = ({ folder, handleAdd }: TopNavProps) => (
         >
             <Breadcrumb style={{ fontSize: "20px" }}>
                 <Breadcrumb.Item>
-                    <Link to="/texts">Text</Link>
+                    <Link to="/inbox">Text</Link>
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>{folder}</Breadcrumb.Item>
             </Breadcrumb>

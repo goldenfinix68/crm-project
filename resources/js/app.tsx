@@ -249,7 +249,7 @@ const App: React.FC = () => {
                                 }
                             />
                             <Route
-                                path="/texts"
+                                path="/text-threads"
                                 element={
                                     <PrivateRoute>
                                         <Texts />
@@ -257,7 +257,7 @@ const App: React.FC = () => {
                                 }
                             />
                             <Route
-                                path="/texts/contact/:contactId"
+                                path="/text-threads/:threadId"
                                 element={
                                     <PrivateRoute>
                                         <TextBoxView />

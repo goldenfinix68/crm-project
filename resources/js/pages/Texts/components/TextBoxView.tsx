@@ -44,23 +44,23 @@ import SentBox from "./../components/SentBox";
 import TextItem from "./TextList";
 import LoadingComponent from "../../../components/LoadingComponent";
 import AddUpdateTextLabelModal from "../../PageContacts/Components/AddUpdateTextLabelModal";
-import { useTextLabels } from "../../../api/query/textQuery";
+import { useTextLabels, useTextThread } from "../../../api/query/textQuery";
 import TextsHeaderMenu from "./../components/TextsHeaderMenu";
 import Texts from "..";
 import TextList from "./TextList";
 import { useMutation } from "react-query";
-import { useMarkContactTextSeen } from "../../../api/mutation/useContactMutation";
 import queryClient from "../../../queryClient";
+import { useMarkThreadSeen } from "../../../api/mutation/useTextMutation";
 
 const TextBoxView = () => {
-    const { contactId } = useParams();
+    const { threadId } = useParams();
     const navigate = useNavigate();
 
     const {
-        contact,
+        thread,
         refetch,
-        isLoading: isContactLoading,
-    } = useGetContact(contactId ?? "", (data) => {
+        isLoading: isThreadLoading,
+    } = useTextThread(threadId ?? "", (data) => {
         setIsLoading(false);
     });
 
@@ -71,24 +71,24 @@ const TextBoxView = () => {
         TTextLabel | undefined
     >(undefined);
 
-    const markAsSeen = useMutation(useMarkContactTextSeen, {
+    const markAsSeen = useMutation(useMarkThreadSeen, {
         onSuccess: () => {
-            queryClient.invalidateQueries("contacts");
+            queryClient.invalidateQueries("threads");
         },
     });
 
     useEffect(() => {
         // Check if the contact exists and has no value
-        if (!contactId) {
+        if (!threadId) {
             navigate("/texts");
         } else {
             setIsLoading(true);
             refetch();
-            markAsSeen.mutate({ contactId });
+            markAsSeen.mutate({ threadId });
         }
-    }, [contactId]);
+    }, [threadId]);
 
-    if (isLoading || isContactLoading) {
+    if (isLoading || isThreadLoading) {
         return <LoadingComponent />;
     }
 
@@ -112,7 +112,7 @@ const TextBoxView = () => {
                             overflowY: "auto",
                         }}
                     >
-                        <TextContent contact={contact!} menu={"all"} />
+                        <TextContent thread={thread!} menu={"all"} />
                     </Col>
                 </Row>
 

@@ -16,15 +16,16 @@ import { SearchOutlined, DeleteOutlined } from "@ant-design/icons"; // Step 1
 import { useNavigate, useParams } from "react-router-dom";
 import { useContactsAll } from "../../../api/query/contactsQuery";
 import { getTimeAgo } from "../../../helpers";
-import { TContact } from "../../../entities";
+import { TContact, TTextThread } from "../../../entities";
 import ConfirmModal from "../../../components/ConfirmModal";
 import { useDeleteContactTexts } from "../../../api/mutation/useContactMutation";
 import { useMutation } from "react-query";
 import queryClient from "../../../queryClient";
+import { useTextThreads } from "../../../api/query/textQuery";
 
 const TextList = ({ label }) => {
     const [searchKey, setSearchKey] = useState("");
-    const { contacts, isLoading } = useContactsAll();
+    const { textThreads, isLoading } = useTextThreads();
     const navigate = useNavigate();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleteBtnLoading, setIsDeleteBtnLoading] = useState(false);
@@ -48,8 +49,8 @@ const TextList = ({ label }) => {
         null
     );
 
-    const filteredContacts = (): TContact[] | undefined => {
-        let data = contacts;
+    const filteredContacts = (): TTextThread[] | undefined => {
+        let data = textThreads;
 
         data = data?.filter((contact) => contact.texts?.length);
 
@@ -63,25 +64,18 @@ const TextList = ({ label }) => {
                 searchWord = searchWord.replace(/\{\{.*?\}\}\s*/g, "");
             }
 
-            return data?.filter((contact) => {
+            return data?.filter((thread) => {
                 let bool = false;
                 if (label) {
                     bool =
-                        (contact.firstName
+                        thread.contactName
                             .toLowerCase()
-                            .includes(searchWord.toLowerCase()) ||
-                            contact.lastName
-                                .toLowerCase()
-                                .includes(searchWord.toLowerCase())) &&
-                        contact.label?.name == label;
+                            .includes(searchWord.toLowerCase()) &&
+                        thread.label?.name == label;
                 } else if (searchWord != "") {
-                    bool =
-                        contact.firstName
-                            .toLowerCase()
-                            .includes(searchWord.toLowerCase()) ||
-                        contact.lastName
-                            .toLowerCase()
-                            .includes(searchWord.toLowerCase());
+                    bool = thread.contactName
+                        .toLowerCase()
+                        .includes(searchWord.toLowerCase());
                 }
 
                 return bool;
@@ -95,7 +89,7 @@ const TextList = ({ label }) => {
         setSearchKey(label);
     }, [label]);
 
-    const contactsList = filteredContacts();
+    const threadList = filteredContacts();
 
     return (
         <>
@@ -108,9 +102,9 @@ const TextList = ({ label }) => {
             />
             <List
                 itemLayout="horizontal"
-                dataSource={contactsList}
+                dataSource={threadList}
                 style={{ marginTop: 0 }}
-                renderItem={(contact, index) => (
+                renderItem={(thread, index) => (
                     <>
                         {index === 0 && <Divider style={{ margin: "5px" }} />}
                         <List.Item
@@ -121,7 +115,7 @@ const TextList = ({ label }) => {
                                 position: "relative",
                             }}
                             onClick={() =>
-                                navigate("/texts/contact/" + contact.id)
+                                navigate("/text-threads/" + thread.id)
                             }
                             onMouseEnter={() => setHoveredItemIndex(index)} // Step 4: Handle mouse enter
                             onMouseLeave={() => setHoveredItemIndex(null)} // Step 4: Handle mouse leave
@@ -134,30 +128,30 @@ const TextList = ({ label }) => {
                                             fontSize: "16px",
                                         }}
                                     >
-                                        {`${contact.firstName} ${contact.lastName}`}
+                                        {`${thread.contactName}`}
                                     </TextEllipsis>
                                 </Col>
                                 <Col span={18}>
                                     <TextEllipsis
                                         style={{
-                                            fontWeight: !contact?.texts![0]
+                                            fontWeight: !thread?.texts![0]
                                                 .seen_at
                                                 ? "bold"
                                                 : "",
                                         }}
                                     >
                                         <Space>
-                                            {contact.label?.name ? (
+                                            {thread.label?.name ? (
                                                 <Tag
                                                     style={{
                                                         float: "right",
                                                         fontWeight: "normal",
                                                     }}
                                                 >
-                                                    {contact.label?.name}
+                                                    {thread.label?.name}
                                                 </Tag>
                                             ) : null}
-                                            {contact?.texts![0].message}
+                                            {thread?.texts![0].message}
                                         </Space>
                                     </TextEllipsis>
                                 </Col>
@@ -175,7 +169,7 @@ const TextList = ({ label }) => {
                                             />
                                         ) : (
                                             getTimeAgo(
-                                                contact?.texts![0].created_at
+                                                thread?.texts![0].created_at
                                             )
                                         )}
                                     </TextEllipsis>

@@ -69,6 +69,17 @@ export type TText = {
     seen_at?: string;
 };
 
+export type TTextThread = {
+    id: string;
+    contactNumber: string;
+    userNumber?: string;
+    contactName: string;
+    texts: TText[];
+    textLabelId?: string;
+    label?: TTextLabel;
+    contact?: TContact;
+};
+
 export type TDeal = {
     id?: string;
     title: string;
@@ -224,8 +235,6 @@ export type TContact = {
     owner?: string;
     wall?: TWallData[];
     texts?: TText[];
-    textLabelId?: string;
-    label?: TTextLabel;
     mailingState?: string;
     smsOptOut?: boolean;
     emailOptOutReason?: string;
