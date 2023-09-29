@@ -66,13 +66,8 @@ const SideMenu = ({ children }) => {
                             label: "Dashboard",
                         },
                         {
-                            key: "/users",
-                            icon: <UserOutlined />,
-                            label: "Users",
-                        },
-                        {
                             key: "/contacts",
-                            icon: <FontAwesomeIcon icon={faUser} />,
+                            icon: <UsergroupAddOutlined />,
                             label: "Contacts",
                         },
                         {

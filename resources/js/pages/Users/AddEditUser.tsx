@@ -9,6 +9,7 @@ import { addUserMutation } from "../../api/mutation/useUserMutation";
 import { TUser } from "../../entities";
 import { useForm } from "antd/es/form/Form";
 import { usefindUser } from "../../api/query/userQuery";
+import LoadingComponent from "../../components/LoadingComponent";
 
 const layout = {
     labelCol: { span: 8 },
@@ -41,7 +42,7 @@ const AddEditUser = () => {
     }, [user]);
 
     if (isLoading) {
-        return <h1>Loading...</h1>;
+        return <LoadingComponent />;
     }
 
     return (

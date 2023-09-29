@@ -26,7 +26,7 @@ const columns: ColumnsType<TUser> = [
         key: "action",
         render: (key: any, record: any) => {
             return (
-                <Link to={`/users/${record.id}`}>
+                <Link to={`/setup/users/${record.id}`}>
                     <Button type="link">
                         <EditOutlined />
                     </Button>

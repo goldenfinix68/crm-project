@@ -139,7 +139,7 @@ const App: React.FC = () => {
                                 }
                             />
                             <Route
-                                path="/users"
+                                path="/setup/users"
                                 element={
                                     <PrivateRoute>
                                         <Users />
@@ -147,7 +147,7 @@ const App: React.FC = () => {
                                 }
                             />
                             <Route
-                                path="/users/new"
+                                path="/setup/users/new"
                                 element={
                                     <PrivateRoute>
                                         <AddEditUser />
@@ -155,7 +155,7 @@ const App: React.FC = () => {
                                 }
                             />
                             <Route
-                                path="/users/:userId"
+                                path="/setup/users/:userId"
                                 element={
                                     <PrivateRoute>
                                         <AddEditUser />

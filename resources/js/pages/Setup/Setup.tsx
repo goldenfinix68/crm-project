@@ -69,7 +69,7 @@ const Setup: React.FC = (props) => {
         {
             icon: <UserOutlined />,
             title: "Users",
-            link: "/setup/users-and-security/users",
+            link: "/setup/users",
         },
     ];
 
