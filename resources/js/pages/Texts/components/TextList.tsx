@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
 import {
-    Avatar,
     Button,
     Checkbox,
     Col,
     Divider,
     Dropdown,
-    Empty,
     Input,
     List,
     Menu,
-    Popover,
     Row,
     Space,
     Tag,
@@ -20,21 +17,17 @@ import {
     SearchOutlined,
     DeleteOutlined,
     EllipsisOutlined,
-    CaretDownFilled,
     CloseOutlined,
     TagFilled,
 } from "@ant-design/icons"; // Step 1
-import { useNavigate, useParams } from "react-router-dom";
-import { useContactsAll } from "../../../api/query/contactsQuery";
+import { useNavigate } from "react-router-dom";
 import { getTimeAgo } from "../../../helpers";
-import { TContact, TTextThread } from "../../../entities";
+import { TTextThread } from "../../../entities";
 import ConfirmModal from "../../../components/ConfirmModal";
 import { useMutation } from "react-query";
 import queryClient from "../../../queryClient";
 import { useTextThreads } from "../../../api/query/textQuery";
 import { useDeleteThread } from "../../../api/mutation/useTextMutation";
-import DropdownComponent from "../../../components/DropdownComponent";
-import AssignLabelDropdown from "./AssignLabelDropdown";
 import AssignLabelModal from "./AssignLabelModal";
 
 const TextList = ({ label }) => {

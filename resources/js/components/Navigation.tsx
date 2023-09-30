@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+    Avatar,
     Button,
     Card,
     Col,
@@ -23,94 +24,13 @@ import {
 } from "@ant-design/icons";
 import NavigationComponentsQuickAdd from "./NavigationComponents/NavigationComponentsQuickAdd";
 import NavigationComponentsCall from "./NavigationComponents/NavigationComponentsCall";
+import { useAppContextProvider } from "../context/AppContext";
 
 const Navigation: React.FC = () => {
     const navigate = useNavigate();
-    const [searchLoading, setSearchLoading] = useState(false);
-    useEffect(() => {
-        if (searchLoading) {
-            const timeoutId = setTimeout(() => {
-                setSearchLoading(false);
-            }, 1000);
+    const [searchKeyword, setSearchKey] = useState("");
 
-            return () => {
-                clearTimeout(timeoutId);
-            };
-        }
-    }, [searchLoading]);
-
-    const items: MenuProps["items"] = searchLoading
-        ? [
-              // loading
-              {
-                  key: "1",
-                  label: (
-                      <div className="list-data">
-                          <div
-                              style={{
-                                  height: 44,
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                              }}
-                              className="w-100"
-                          >
-                              <LoadingOutlined style={{ fontSize: 28 }} />
-                          </div>
-                      </div>
-                  ),
-              },
-          ]
-        : [
-              // main data
-              {
-                  key: "1",
-                  label: (
-                      <div className="list-data">
-                          <img src="https://files.salesmate.io/clinkup.salesmate.io/profilepic/9bfff1ff-8021-4f0b-a1c1-2c614882ac6b.jpg" />
-                          <Space
-                              direction="vertical"
-                              size={0}
-                              className="m-l-xs"
-                          >
-                              <Typography.Text>
-                                  AL Sedevic Rome Twp Zonin
-                              </Typography.Text>
-                              <Typography.Text className="list-data-info">
-                                  <Space
-                                      split={
-                                          <FontAwesomeIcon
-                                              icon={faCircle}
-                                              style={{
-                                                  fontSize: 4,
-                                                  verticalAlign: 3,
-                                              }}
-                                          />
-                                      }
-                                  >
-                                      <Typography.Text
-                                          className="list-data-info"
-                                          style={{
-                                              fontWeight: 300,
-                                          }}
-                                      >
-                                          Mobile: +14405633236
-                                      </Typography.Text>
-                                      <Typography.Text
-                                          className="list-data-info"
-                                          style={{
-                                              fontWeight: 300,
-                                          }}
-                                      >
-                                          Phone: (440) 487-8277
-                                      </Typography.Text>
-                                  </Space>
-                              </Typography.Text>
-                          </Space>
-                      </div>
-                  ),
-              },
-          ];
+    const { contacts } = useAppContextProvider();
 
     const [isDropdownVisible, setDropdownVisible] = useState(false);
     const handleSignOut = () => {
@@ -208,20 +128,123 @@ const Navigation: React.FC = () => {
                                 size={20}
                             >
                                 <Dropdown
-                                    menu={{ items }}
+                                    // menu={{ items }}
                                     placement="bottomRight"
                                     arrow
                                     overlayClassName="header-search-bar"
                                     trigger={["click"]}
+                                    overlay={
+                                        <Menu
+                                            onClick={(e) => {
+                                                navigate("/contacts/" + e.key);
+                                            }}
+                                        >
+                                            {contacts
+                                                ?.filter(
+                                                    (contact) =>
+                                                        contact.firstName
+                                                            .toLowerCase()
+                                                            .includes(
+                                                                searchKeyword.toLowerCase()
+                                                            ) ||
+                                                        contact.lastName
+                                                            .toLowerCase()
+                                                            .includes(
+                                                                searchKeyword.toLowerCase()
+                                                            ) ||
+                                                        (contact.mobile &&
+                                                            contact.mobile
+                                                                .toLowerCase()
+                                                                .includes(
+                                                                    searchKeyword.toLowerCase()
+                                                                )) ||
+                                                        (contact.phone &&
+                                                            contact.phone
+                                                                .toLowerCase()
+                                                                .includes(
+                                                                    searchKeyword.toLowerCase()
+                                                                ))
+                                                )
+                                                ?.map((contact) => (
+                                                    <Menu.Item key={contact.id}>
+                                                        <div className="list-data">
+                                                            <Avatar
+                                                                className="avatarText m-r-sm"
+                                                                // src={record.avatar}
+                                                                size={32}
+                                                                style={{
+                                                                    backgroundColor:
+                                                                        "#1677FF",
+                                                                    verticalAlign:
+                                                                        "middle",
+                                                                }}
+                                                            >
+                                                                {contact.firstName.charAt(
+                                                                    0
+                                                                )}
+                                                            </Avatar>
+                                                            {/* <img src="https://files.salesmate.io/clinkup.salesmate.io/profilepic/9bfff1ff-8021-4f0b-a1c1-2c614882ac6b.jpg" /> */}
+                                                            <Space
+                                                                direction="vertical"
+                                                                size={0}
+                                                                className="m-l-xs"
+                                                            >
+                                                                <Typography.Text>
+                                                                    {`${contact.firstName} ${contact.lastName}`}
+                                                                </Typography.Text>
+                                                                <Typography.Text className="list-data-info">
+                                                                    <Space
+                                                                        split={
+                                                                            <FontAwesomeIcon
+                                                                                icon={
+                                                                                    faCircle
+                                                                                }
+                                                                                style={{
+                                                                                    fontSize: 4,
+                                                                                    verticalAlign: 3,
+                                                                                }}
+                                                                            />
+                                                                        }
+                                                                    >
+                                                                        <Typography.Text
+                                                                            className="list-data-info"
+                                                                            style={{
+                                                                                fontWeight: 300,
+                                                                            }}
+                                                                        >
+                                                                            {`Mobile: ${
+                                                                                contact.mobile ??
+                                                                                "Not set"
+                                                                            }`}
+                                                                        </Typography.Text>
+                                                                        <Typography.Text
+                                                                            className="list-data-info"
+                                                                            style={{
+                                                                                fontWeight: 300,
+                                                                            }}
+                                                                        >
+                                                                            {`Phone: ${
+                                                                                contact.phone ??
+                                                                                "Not set"
+                                                                            }`}
+                                                                        </Typography.Text>
+                                                                    </Space>
+                                                                </Typography.Text>
+                                                            </Space>
+                                                        </div>
+                                                    </Menu.Item>
+                                                ))}
+                                        </Menu>
+                                    }
                                 >
                                     <Input
                                         placeholder="Search"
                                         prefix={
                                             <FontAwesomeIcon icon={faSearch} />
                                         }
-                                        onClick={() => {
-                                            setSearchLoading(true);
-                                        }}
+                                        onChange={(e) =>
+                                            setSearchKey(e.target.value)
+                                        }
                                     />
                                 </Dropdown>
 

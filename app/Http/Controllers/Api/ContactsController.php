@@ -39,6 +39,7 @@ class ContactsController extends Controller
             'contacts.*',
             \DB::raw("(SELECT CONCAT(users.firstName, ' ', users.lastName)) as `owner`"),
         ])
+            ->where('ownerId', Auth::id())
             ->leftJoin('users', 'users.id', '=', 'contacts.ownerId')
             ->leftJoin('contact_types', 'contact_types.id', '=', 'contacts.typeId')
             ->with(['type']);
@@ -108,6 +109,7 @@ class ContactsController extends Controller
         $validator = Validator::make($request->all(), [
             'firstName' => 'required',
             'lastName' => 'required',
+            'ownerId' => 'required',
         ]);
 
         $data = $request->all();
