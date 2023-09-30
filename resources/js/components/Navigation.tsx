@@ -245,6 +245,8 @@ const Navigation: React.FC = () => {
                                         onChange={(e) =>
                                             setSearchKey(e.target.value)
                                         }
+                                        size="large"
+                                        style={{ width: "400px" }}
                                     />
                                 </Dropdown>
 
