@@ -16,6 +16,7 @@ import {
     DatePicker,
     Popover,
     List,
+    AutoComplete,
 } from "antd";
 
 import { CaretDownOutlined, CloseOutlined } from "@ant-design/icons";
@@ -31,6 +32,7 @@ import { useTextTemplates } from "../../../api/query/textTemplateQuery";
 import { replacePlaceholders } from "../../../helpers";
 import UseTemplatePopover from "../../../components/UseTemplatePopover";
 import { TContact } from "../../../entities";
+import { useAppContextProvider } from "../../../context/AppContext";
 interface Props {
     handleSubmit: () => void;
     handleCancel: () => void;
@@ -44,8 +46,11 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
     const { user, isLoading } = useLoggedInUser();
     const schedule = Form.useWatch("schedule", form);
     const message = Form.useWatch("message", form);
+    const toFormValue = Form.useWatch("to", form);
     const [isTemplatePopoverOpen, setIsTemplatePopoverOpen] = useState(false);
-    console.log(schedule);
+
+    const { contacts } = useAppContextProvider();
+
     const resetFields = () => {
         handleCancel();
         form.resetFields();
@@ -78,6 +83,12 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
     const scheduleLabel = schedule
         ? moment(schedule.$d).format("MMM D, YYYY h:mm a")
         : "";
+
+    const filteredOptions = contacts?.filter((contact) =>
+        contact?.mobile?.includes(
+            toFormValue ? toFormValue.replace(/[-\s+_]/g, "") : ""
+        )
+    );
     return (
         <Form
             name="basic"
@@ -103,7 +114,32 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
                             },
                         ]}
                     >
-                        <Input disabled />
+                        {to ? (
+                            <Input disabled />
+                        ) : (
+                            <AutoComplete
+                                options={filteredOptions?.map((option) => ({
+                                    value: option.mobile,
+                                    label: (
+                                        <Space direction="vertical">
+                                            <Typography.Text strong>
+                                                {`${option.firstName} ${option.lastName}`}
+                                            </Typography.Text>
+                                            <Typography.Text>
+                                                {option.mobile}
+                                            </Typography.Text>
+                                        </Space>
+                                    ),
+                                }))}
+                                style={{ width: "100%" }}
+                                value={toFormValue}
+                            >
+                                <Input
+                                    // mask="+1 000-000-0000"
+                                    value={toFormValue}
+                                />
+                            </AutoComplete>
+                        )}
                     </Form.Item>
                 </Col>
                 <Col span={12}>

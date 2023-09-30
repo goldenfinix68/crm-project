@@ -19,28 +19,33 @@ import ContactsComponentsAddContacts from "../../pages/PageContacts/Components/C
 import ModalAddActivity from "../../pages/Activity/components/ModalAddActivity";
 import ModalAddDeal from "../../pages/Deal/components/ModalAddDeal";
 import queryClient from "../../queryClient";
+import TextModal from "../../pages/ContactView/components/TextModal";
 
 const NavigationComponentsQuickAdd: React.FC = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isAddModalContactOpen, setIsAddModalContactOpen] = useState(false);
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
-    const [isModalDealOpenAdd, setIsModalDealOpenAdd] = useState(false);
+    const [isAddDealModalOpen, setIsAddDealModalOpen] = useState(false);
+    const [isTextModalOpen, setIsTextModalOpen] = useState(false);
 
     const handleOkAdd = () => {
-        queryClient.invalidateQueries("deals");
-        setIsModalOpenAdd(false);
-        setIsModalDealOpenAdd(false);
+        // queryClient.invalidateQueries("deals");
+        // setIsModalOpenAdd(false);
+        // setIsModalDealOpenAdd(false);
     };
 
     const handleCancelAdd = () => {
-        setIsModalOpenAdd(false);
-        setIsModalDealOpenAdd(false);
+        // setIsModalOpenAdd(false);
+        // setIsModalDealOpenAdd(false);
     };
 
     const items: MenuProps["items"] = [
         {
             key: "1",
             label: (
-                <div className="list-data" onClick={() => setIsModalOpen(true)}>
+                <div
+                    className="list-data"
+                    onClick={() => setIsAddModalContactOpen(true)}
+                >
                     <Space>
                         <FontAwesomeIcon icon={faUser} />
                         <Typography.Text>Add Contact</Typography.Text>
@@ -71,7 +76,7 @@ const NavigationComponentsQuickAdd: React.FC = () => {
             label: (
                 <div
                     className="list-data"
-                    onClick={() => setIsModalDealOpenAdd(true)}
+                    onClick={() => setIsAddDealModalOpen(true)}
                 >
                     <Space>
                         <FontAwesomeIcon icon={faCircleDollarToSlot} />
@@ -82,23 +87,26 @@ const NavigationComponentsQuickAdd: React.FC = () => {
                 </div>
             ),
         },
-        {
-            key: "4",
-            label: (
-                <div className="list-data">
-                    <Space>
-                        <FontAwesomeIcon icon={faEnvelope} />
-                        <Typography.Text>Email</Typography.Text>
-                    </Space>
+        // {
+        //     key: "4",
+        //     label: (
+        //         <div className="list-data">
+        //             <Space>
+        //                 <FontAwesomeIcon icon={faEnvelope} />
+        //                 <Typography.Text>Email</Typography.Text>
+        //             </Space>
 
-                    <Typography.Text>ce</Typography.Text>
-                </div>
-            ),
-        },
+        //             <Typography.Text>ce</Typography.Text>
+        //         </div>
+        //     ),
+        // },
         {
             key: "5",
             label: (
-                <div className="list-data">
+                <div
+                    className="list-data"
+                    onClick={() => setIsTextModalOpen(true)}
+                >
                     <Space>
                         <FontAwesomeIcon icon={faMessage} />
                         <Typography.Text>Text</Typography.Text>
@@ -108,19 +116,19 @@ const NavigationComponentsQuickAdd: React.FC = () => {
                 </div>
             ),
         },
-        {
-            key: "6",
-            label: (
-                <div className="list-data">
-                    <Space>
-                        <FontAwesomeIcon icon={faNoteSticky} />
-                        <Typography.Text>Add Note</Typography.Text>
-                    </Space>
+        // {
+        //     key: "6",
+        //     label: (
+        //         <div className="list-data">
+        //             <Space>
+        //                 <FontAwesomeIcon icon={faNoteSticky} />
+        //                 <Typography.Text>Add Note</Typography.Text>
+        //             </Space>
 
-                    <Typography.Text>cn</Typography.Text>
-                </div>
-            ),
-        },
+        //             <Typography.Text>cn</Typography.Text>
+        //         </div>
+        //     ),
+        // },
     ];
 
     return (
@@ -132,13 +140,18 @@ const NavigationComponentsQuickAdd: React.FC = () => {
                 overlayClassName="header-quick-add"
                 trigger={["click"]}
             >
-                <FontAwesomeIcon icon={faPlus} className="header-btn-plus" />
+                <FontAwesomeIcon
+                    style={{ cursor: "pointer" }}
+                    icon={faPlus}
+                    className="header-btn-plus"
+                />
             </Dropdown>
 
-            {/* <ContactsComponentsAddContacts
-                isModalOpen={isModalOpen}
-                setIsModalOpen={setIsModalOpen}
-            /> */}
+            <ContactsComponentsAddContacts
+                isModalOpen={isAddModalContactOpen}
+                setIsModalOpen={setIsAddModalContactOpen}
+                title="Add Contact"
+            />
 
             <ModalAddActivity
                 isModalOpenAdd={isModalOpenAdd}
@@ -146,6 +159,18 @@ const NavigationComponentsQuickAdd: React.FC = () => {
                 handleCancelAdd={handleCancelAdd}
             />
 
+            <ModalAddDeal
+                isModalOpenAdd={isAddDealModalOpen}
+                handleOkAdd={() => {
+                    setIsAddDealModalOpen(false);
+                }}
+                handleCancelAdd={() => setIsAddDealModalOpen(false)}
+            />
+
+            <TextModal
+                closeModal={() => setIsTextModalOpen(false)}
+                isModalOpen={isTextModalOpen}
+            />
             {/* <ModalAddDeal
                 isModalOpenAdd={isModalDealOpenAdd}
                 handleOkAdd={handleOkAdd}

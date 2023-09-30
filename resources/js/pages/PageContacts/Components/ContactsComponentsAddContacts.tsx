@@ -42,9 +42,9 @@ import { TContact } from "../../../entities";
 interface ContactsComponentsAddContactsProps {
     isModalOpen: boolean;
     setIsModalOpen: any;
-    record: any;
+    record?: any;
     title: any;
-    setTContact: any;
+    setTContact?: any;
 }
 
 const handleChange = (value: string) => {
@@ -105,6 +105,15 @@ const ContactsComponentsAddContacts = ({
         }
     };
 
+    const clearFields = () => {
+        setSaveAndAdd(false);
+        if (setTContact) {
+            setTContact(null);
+        }
+        form.resetFields();
+        setIsModalOpen(false);
+    };
+
     return (
         <>
             <Modal
@@ -146,12 +155,7 @@ const ContactsComponentsAddContacts = ({
                             backgroundColor: "rgba(0, 0, 0, 0.5)",
                             border: "0px",
                         }}
-                        onClick={() => {
-                            setSaveAndAdd(false);
-                            setTContact(null);
-                            form.resetFields();
-                            setIsModalOpen(false);
-                        }}
+                        onClick={clearFields}
                         icon={<CloseOutlined style={{ color: "white" }} />}
                     />
                 </div>
@@ -775,16 +779,7 @@ const ContactsComponentsAddContacts = ({
                     >
                         Save and add other
                     </Button>
-                    <Button
-                        onClick={() => {
-                            setSaveAndAdd(false);
-                            setTContact(null);
-                            form.resetFields();
-                            setIsModalOpen(false);
-                        }}
-                    >
-                        Cancel
-                    </Button>
+                    <Button onClick={clearFields}>Cancel</Button>
                 </div>
             </Modal>
         </>
