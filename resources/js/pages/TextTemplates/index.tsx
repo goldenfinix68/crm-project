@@ -1,33 +1,16 @@
 import React, { useState } from "react";
 import {
-    Avatar,
     Button,
     Card,
     Col,
     Dropdown,
-    Empty,
-    Input,
     Menu,
     Row,
     Space,
     Typography,
 } from "antd";
-import {
-    AppstoreOutlined,
-    ClockCircleOutlined,
-    DeleteOutlined,
-    FolderOutlined,
-    InboxOutlined,
-    MailOutlined,
-    SearchOutlined,
-    SendOutlined,
-    SettingOutlined,
-    EllipsisOutlined,
-    PlusCircleOutlined,
-} from "@ant-design/icons";
-import { Divider } from "rc-menu";
-import { useContactsAll } from "../../api/query/contactsQuery";
-import { TContact, TTextTemplateFolder } from "../../entities";
+import { EllipsisOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { TTextTemplateFolder } from "../../entities";
 import { useNavigate, useParams } from "react-router-dom";
 import LoadingComponent from "../../components/LoadingComponent";
 import { useMutation } from "react-query";

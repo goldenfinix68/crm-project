@@ -2,14 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import {
     Button,
     Col,
-    Dropdown,
     Input,
     Modal,
-    Radio,
     Row,
-    Space,
-    Table,
-    Tooltip,
     Typography,
     Form,
     Select,
@@ -19,20 +14,8 @@ import {
     Tag,
 } from "antd";
 
-import {
-    AuditOutlined,
-    CloseOutlined,
-    ContainerOutlined,
-    DownOutlined,
-    FilterOutlined,
-    GroupOutlined,
-    InsertRowBelowOutlined,
-    MobileOutlined,
-    PhoneOutlined,
-    PlusCircleOutlined,
-} from "@ant-design/icons";
+import { CloseOutlined } from "@ant-design/icons";
 
-import Title from "antd/es/skeleton/Title";
 import TextArea from "antd/es/input/TextArea";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "antd/es/form/Form";
@@ -44,14 +27,9 @@ import {
     useDealMutationDeleteParticipants,
     useDealMutationDeleteTeammate,
 } from "../../../api/mutation/useDealMutation";
-import { useContactsAll } from "../../../api/query/contactsQuery";
-import {
-    useContactsList,
-    useDealsList,
-    useUsersList,
-} from "../../../api/query/activityQuery";
+import { useUsersList } from "../../../api/query/activityQuery";
 import moment from "moment";
-import { TContact } from "../../../entities";
+import { useAppContextProvider } from "../../../context/AppContext";
 interface Teamate {
     id: number;
     firstName: string;
@@ -78,7 +56,7 @@ const ModalAddDeal = ({
     const { dataUsers, isLoadingUsers } = useUsersList();
     const queryClient = useQueryClient();
     const navigate = useNavigate();
-    const { contacts, isLoading } = useContactsAll("All");
+    const { contacts } = useAppContextProvider();
     const [form] = useForm();
     const onFinish = (values: any) => {
         mutation.mutate({

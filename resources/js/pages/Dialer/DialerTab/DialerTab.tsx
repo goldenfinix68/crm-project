@@ -1,4 +1,4 @@
-import { CloseOutlined, PhoneOutlined } from "@ant-design/icons";
+import { PhoneOutlined } from "@ant-design/icons";
 import {
     AutoComplete,
     Button,
@@ -8,27 +8,16 @@ import {
     Space,
     Typography,
 } from "antd";
-import { MaskedInput } from "antd-mask-input";
-import React, { useContext, useEffect, useState } from "react";
-import {
-    useNotification,
-    Audio,
-    useCallbacks,
-    useTelnyxRTC,
-} from "@telnyx/react-client";
-import { TelnyxRTCProvider, TelnyxRTCContext } from "@telnyx/react-client";
-import { ICall, INotification } from "@telnyx/webrtc";
-import { TContact, TUser } from "../../../entities";
+import React, { useEffect } from "react";
+import { ICall } from "@telnyx/webrtc";
 import { useParams } from "react-router-dom";
-import {
-    useContactsAll,
-    useGetContact,
-} from "../../../api/query/contactsQuery";
+import { useGetContact } from "../../../api/query/contactsQuery";
 import LoadingComponent from "../../../components/LoadingComponent";
 import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
 import DialerKeyPad from "./DialerKeyPad";
 import { useLoggedInUser } from "../../../api/query/userQuery";
 import { useCallContext } from "../../../context/CallContext";
+import { useAppContextProvider } from "../../../context/AppContext";
 
 interface CallNotificationData {
     type: string | undefined;
@@ -46,7 +35,7 @@ const DialerTab = ({
     const { contactId } = useParams();
     const { contact, isLoading } = useGetContact(contactId ?? "");
     const { user, isLoading: isLogginUserLoading } = useLoggedInUser();
-    const { contacts, isLoading: isContactsLoading } = useContactsAll("All");
+    const { contacts } = useAppContextProvider();
 
     const [form] = Form.useForm();
 
@@ -91,7 +80,7 @@ const DialerTab = ({
         });
     }, [callerNumber, destinationNumber]);
 
-    if (isLoading || isLogginUserLoading || isContactsLoading) {
+    if (isLoading || isLogginUserLoading) {
         return <LoadingComponent />;
     }
 

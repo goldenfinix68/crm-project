@@ -1,46 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { PullRequestOutlined, UploadOutlined } from "@ant-design/icons";
 import {
     Button,
     Popconfirm,
     Space,
-    Upload,
     Row,
     Card,
-    Divider,
-    Radio,
     Table,
-    Checkbox,
     Col,
     Select,
-    Tag,
-    Avatar,
     Tabs,
     Typography,
     Menu,
     Dropdown,
     Input,
     notification,
-    message,
 } from "antd";
 import {
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
-    UserOutlined,
-    VideoCameraOutlined,
     CheckCircleOutlined,
     FunnelPlotOutlined,
-    PhoneOutlined,
-    FileDoneOutlined,
-    TeamOutlined,
-    PlaySquareOutlined,
     TableOutlined,
     PlusCircleOutlined,
-    DownOutlined,
     LockOutlined,
     CaretDownOutlined,
-    EditOutlined,
     CloseOutlined,
     SaveOutlined,
     ExportOutlined,
@@ -48,25 +29,21 @@ import {
     MailOutlined,
     MobileOutlined,
     UnorderedListOutlined,
-    EyeOutlined,
     StarFilled,
     StarOutlined,
 } from "@ant-design/icons";
-import type { ColumnsType, TableProps, ColumnGroupType } from "antd/es/table";
+import type { ColumnsType } from "antd/es/table";
 import ContactsComponentsAddContacts from "./Components/ContactsComponentsAddContacts";
 import ContactsComponentsFilter from "./Components/ContactsComponentsFilter";
 import ContactsComponentsManageColumn from "./Components/ContactsComponentsManageColumn";
-import { useContactsAll } from "../../api/query/contactsQuery";
 import { useContactsTableColumn } from "../../api/query/contactsQuery";
 import { useUserFavorites } from "../../api/query/userQuery";
 
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { TContact } from "../../entities";
 import { deleteContactMutation } from "../../api/mutation/useContactMutation";
 import queryClient from "../../queryClient";
 import { useNavigate } from "react-router";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPen } from "@fortawesome/free-solid-svg-icons";
 import ContactsComponentsTableEditableCell from "./Components/ContactsComponentsTableEditableCell";
 import ContactsComponentsTableEditableCellTags from "./Components/ContactsComponentsTableEditableCellTags";
 import ContactsComponentsTableEditableCellName from "./Components/ContactsComponentsTableEditableCellName";
@@ -79,6 +56,7 @@ import {
 import ContactsComponentsAddtoList from "./Components/ContactsComponentsAddtoList";
 import SendToManyModal from "../../components/SentToManyModal";
 import HeaderMenu from "./Components/HeaderMenu";
+import { useAppContextProvider } from "../../context/AppContext";
 
 interface DataType {
     key: React.Key;
@@ -106,7 +84,6 @@ const handleTabChange = (key) => {
     console.log("Selected tab:", key);
 };
 const { Search } = Input;
-const onSearch = (value: string) => console.log(value);
 
 // const menu = (
 
@@ -116,7 +93,8 @@ const Contacts = () => {
     const navigate = useNavigate();
     const [filter, setFilter] = useState("All");
     const [isTContact, setTContact] = useState<TContact | null>(null);
-    const { contacts, isLoading, refetch } = useContactsAll(filter);
+
+    const { contacts, refetchContacts } = useAppContextProvider();
     const { favorites, isLoadingFavorites, refetchFavorites } =
         useUserFavorites();
     const { contactsTable, isLoadingContactsTable, refetchContactsTable } =
@@ -132,24 +110,10 @@ const Contacts = () => {
     const [currentBtnActive, setCurrentBtnActive] = useState("");
     const [currentActiveType, setCurrentActiveType] = useState("");
 
-    const [hideHeader, setHideHeader] = useState(true);
-
     const [isModalOpenUpdate, setisModalOpenUpdate] = useState(false);
     const [isModalOpenAddList, setisModalOpenAddlist] = useState(false);
 
     const [isSendToManyModalOpen, setIsSendToManyModalOpen] = useState(false);
-
-    // const initialListData: ListItem[] = [
-    //     { id: "1", title: "Name" },
-    //     { id: "2", title: "Email" },
-    //     { id: "3", title: "Mobile" },
-    //     { id: "4", title: "Country Link" },
-    //     { id: "5", title: "Acres" },
-    //     { id: "6", title: "Tags" },
-    //     { id: "7", title: "Owner" },
-    //     { id: "8", title: "First Name" },
-    //     { id: "9", title: "Last Name" },
-    // ];
 
     const [listData, setListData] = useState<ListItem[]>([]);
 
@@ -187,7 +151,7 @@ const Contacts = () => {
     useEffect(() => {
         console.log(filter);
 
-        refetch();
+        refetchContacts();
     }, [filter]);
 
     const favoriteTitle = {

@@ -1,48 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
-import {
-    Button,
-    Col,
-    Dropdown,
-    Input,
-    Modal,
-    Radio,
-    Row,
-    Space,
-    Table,
-    Tooltip,
-    Typography,
-    Form,
-    Select,
-    DatePicker,
-    notification,
-    InputNumber,
-} from "antd";
+import React from "react";
+import { Button, Col, Input, Modal, Row, Typography, Form, Select } from "antd";
 
-import {
-    AuditOutlined,
-    CloseOutlined,
-    ContainerOutlined,
-    DownOutlined,
-    FilterOutlined,
-    GroupOutlined,
-    InsertRowBelowOutlined,
-    MobileOutlined,
-    PhoneOutlined,
-    PlusCircleOutlined,
-} from "@ant-design/icons";
+import { CloseOutlined } from "@ant-design/icons";
 
-import Title from "antd/es/skeleton/Title";
-import TextArea from "antd/es/input/TextArea";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "antd/es/form/Form";
 import { useMutation, useQueryClient } from "react-query";
-import { useDealMutation } from "../../../api/mutation/useDealMutation";
-import { useContactsAll } from "../../../api/query/contactsQuery";
-import {
-    useContactsList,
-    useDealsList,
-    useUsersList,
-} from "../../../api/query/activityQuery";
+import { useUsersList } from "../../../api/query/activityQuery";
 import { addContactMutation } from "../../../api/mutation/useContactMutation";
 interface Props {
     isModalOpenContact: boolean;

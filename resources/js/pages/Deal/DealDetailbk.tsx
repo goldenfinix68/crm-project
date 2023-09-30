@@ -3,14 +3,10 @@ import {
     Button,
     Dropdown,
     Space,
-    Radio,
-    Tooltip,
     MenuProps,
     Tabs,
-    Menu,
     Row,
     Col,
-    List,
     notification,
     Typography,
     Collapse,
@@ -21,13 +17,11 @@ import {
     Select,
     DatePicker,
     TimePicker,
-    message,
     Upload,
     Popconfirm,
     Tag,
 } from "antd";
 import axios from "axios";
-import type { UploadProps } from "antd";
 import type { CollapseProps } from "antd";
 import type { CSSProperties } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -44,40 +38,24 @@ import {
     faVideo,
 } from "@fortawesome/free-solid-svg-icons";
 import type { TabsProps } from "antd";
-import React, { useEffect, useState, useSyncExternalStore } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import {
-    UserAddOutlined,
-    PlusCircleOutlined,
     DownOutlined,
-    InsertRowBelowOutlined,
-    FilterOutlined,
-    PhoneOutlined,
-    MailOutlined,
     UserOutlined,
-    HolderOutlined,
-    CloseOutlined,
-    PlusCircleFilled,
-    PlusSquareOutlined,
     LikeOutlined,
     DislikeOutlined,
     CaretRightOutlined,
     CheckCircleOutlined,
-    CalculatorOutlined,
     CalendarOutlined,
     InboxOutlined,
-    UploadOutlined,
     PaperClipOutlined,
     DeleteOutlined,
     PlusOutlined,
 } from "@ant-design/icons";
 
-import { useDealsAll, useDealsByid } from "../../api/query/dealQuery";
-import {
-    useContactsList,
-    useDealsList,
-    useUsersList,
-} from "../../api/query/activityQuery";
+import { useDealsByid } from "../../api/query/dealQuery";
+import { useUsersList } from "../../api/query/activityQuery";
 import { useMutation, useQueryClient } from "react-query";
 import {
     useDealMutationAddNotes,
@@ -91,7 +69,6 @@ import {
     useDealMutationUpdateStage,
 } from "../../api/mutation/useDealMutation";
 import moment from "moment";
-import DealsTable from "./components/DealsTable";
 import type { SelectProps } from "antd";
 import Resizer from "react-image-file-resizer";
 import { addActivityMutation } from "../../api/mutation/useActivityMutation";
@@ -100,10 +77,7 @@ import "react-quill/dist/quill.snow.css";
 import ModalWonDeal from "./components/ModalWonDeal";
 import ModalLostDeal from "./components/ModalLostDeal";
 import ModalAddQuitContact from "./components/ModalAddQuitContact";
-import {
-    useContactTypesAll,
-    useContactsAll,
-} from "../../api/query/contactsQuery";
+import { useAppContextProvider } from "../../context/AppContext";
 
 interface DealsById {
     title: string;
@@ -143,7 +117,7 @@ const DealDetail = () => {
     const { dealId } = useParams();
     const { dataUsers, isLoadingUsers } = useUsersList();
     const { deals, isLoading, refetch } = useDealsByid(dealId ?? "");
-    const { contacts } = useContactsAll("All");
+    const { contacts } = useAppContextProvider();
     const { token } = theme.useToken();
     const { Dragger } = Upload;
     const quillRef = React.useRef(null);

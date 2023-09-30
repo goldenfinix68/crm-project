@@ -104,16 +104,12 @@ import "react-quill/dist/quill.snow.css";
 import ModalWonDeal from "./components/ModalWonDeal";
 import ModalLostDeal from "./components/ModalLostDeal";
 import ModalAddQuitContact from "./components/ModalAddQuitContact";
-import {
-    useContactTypesAll,
-    useContactsAll,
-    useGetContact,
-} from "../../api/query/contactsQuery";
 import ContactsWall from "../ContactView/components/ContactsWall";
 import ContactContext from "../ContactView/context";
 import LoadingComponent from "../../components/LoadingComponent";
 import ActionsTabs from "../ContactView/components/ActionsTabs";
 import ModalAddDeal from "./components/ModalAddDeal";
+import { useAppContextProvider } from "../../context/AppContext";
 interface TDeals {
     id: number;
     title: string;
@@ -170,7 +166,7 @@ const DealDetail = () => {
 
     // const { contact } = useGetContact(deals.data.contactId);
 
-    const { contacts } = useContactsAll("All");
+    const { contacts } = useAppContextProvider();
     const { token } = theme.useToken();
     const { Dragger } = Upload;
     const quillRef = React.useRef(null);
