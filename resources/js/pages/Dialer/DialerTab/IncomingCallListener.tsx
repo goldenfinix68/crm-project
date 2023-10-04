@@ -11,6 +11,7 @@ const IncomingCallListener = () => {
     const [isMuted, setIsMuted] = useState(false);
     const [isOnHold, setIsOnHold] = useState(false);
     const [isLoading, setIsloading] = useState(false);
+    const [isRinging, setIsRinging] = useState(false);
 
     const { isModalOpen, setIsModalOpen, callerNumber, destinationNumber } =
         useCallContext();
@@ -29,26 +30,29 @@ const IncomingCallListener = () => {
         }
     };
     const handleCallUpdate = (call) => {
-        let currentCall = call;
         switch (call.state) {
             case "new": // Setup the UI
                 console.log("New");
                 break;
             case "trying": // You are trying to call someone and he's ringing now
                 console.log("Trying");
+                setCurrentCall(call);
+                setIsModalOpen(true);
+                setIsloading(false);
+                setIsRinging(true);
                 break;
             case "recovering": // Call is recovering from a previous session
                 // Handle recovering logic...
                 break;
             case "ringing": // Someone is calling you
                 // Used to avoid alert blocking audio play, delay audio play first.
-                setCurrentCall(currentCall);
+                setCurrentCall(call);
                 setIsModalOpen(true);
                 setIsloading(false);
                 break;
             case "active": // Call has become active
                 console.log("Call has become active");
-                setCurrentCall(currentCall);
+                setCurrentCall(call);
                 break;
             case "hangup": // Call is over
                 console.log("Call is over");
@@ -64,6 +68,7 @@ const IncomingCallListener = () => {
         setCurrentCall(null);
         setIsModalOpen(false);
         setIsloading(false);
+        setIsRinging(false);
     };
 
     const toggleMute = () => {
@@ -104,8 +109,6 @@ const IncomingCallListener = () => {
         document.body.appendChild(telnyxScript);
 
         telnyxScript.onload = () => {
-            // Telnyx WebRTC SDK is now loaded, you can use its functionality
-
             // Initialize Telnyx
             const TelnyxWebRTC = (window as any).TelnyxWebRTC;
             const client = new TelnyxWebRTC.TelnyxRTC({
@@ -114,7 +117,7 @@ const IncomingCallListener = () => {
                 password: (window as any).TELNYX_PASSWORD,
                 ringtoneFile: "/sounds/incoming_call.mp3",
                 // iceServers: [{ urls: ['stun:stun.l.google.com:19302'] }],
-                // ringbackFile: './sounds/ringback_tone.mp3',
+                // ringbackFile: "/sounds/calling_ringing.mp3",
             });
             client.enableMicrophone();
 
@@ -167,38 +170,25 @@ const IncomingCallListener = () => {
                 />
             ),
         },
-        // {
-        //     key: "2",
-        //     label: <b>PENDING</b>,
-        //     children: `Content of Tab Pane 2`,
-        // },
         {
             key: "3",
             label: <b>RECENT</b>,
             children: <RecentTab />,
         },
-        // {
-        //     key: "4",
-        //     label: <b>MISSED</b>,
-        //     children: `Content of Tab Pane 4`,
-        // },
-        // {
-        //     key: "5",
-        //     label: <b>VM'S</b>,
-        //     children: `Content of Tab Pane 5`,
-        // },
-        // {
-        //     key: "6",
-        //     label: <b>SETTINGS</b>,
-        //     children: `Content of Tab Pane 6`,
-        // },
     ];
     return (
         <>
             <Audio stream={currentCall && currentCall.remoteStream} />
-
+            {isRinging && (
+                <audio autoPlay>
+                    <source
+                        src="/sounds/calling_ringing.mp3"
+                        type="audio/mpeg"
+                    />
+                    Your browser does not support the audio element.
+                </audio>
+            )}
             <Modal
-                title={modalTitle()}
                 open={isModalOpen}
                 footer={null}
                 onCancel={() => {
@@ -252,6 +242,29 @@ const IncomingCallListener = () => {
                             </Button>
                             <Button type="default" onClick={toggleHold}>
                                 {isOnHold ? "Resume Call" : "Hold Call"}
+                            </Button>
+                        </Space>
+                    </Space>
+                ) : currentCall?.state == "trying" ? (
+                    <Space direction="vertical">
+                        <p>
+                            {`Calling ${currentCall?.options?.remoteCallerName}?`}
+                        </p>
+                        <Space
+                            style={{
+                                position: "absolute",
+                                bottom: "16px",
+                                right: "16px",
+                            }}
+                        >
+                            <Button
+                                type="default"
+                                onClick={() => {
+                                    currentCall.hangup();
+                                    clearFields();
+                                }}
+                            >
+                                Hang Up
                             </Button>
                         </Space>
                     </Space>
