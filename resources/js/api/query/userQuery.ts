@@ -1,8 +1,9 @@
 import { useQuery } from "react-query";
 import axios from "axios";
+import { TUser } from "../../entities";
 
 export const useLoggedInUser = () => {
-    const { data, isLoading, isError } = useQuery("user", async () => {
+    const { data, isLoading, isError } = useQuery<TUser>("user", async () => {
         const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
         const response = await axios.get("/api/user", {
             headers: {

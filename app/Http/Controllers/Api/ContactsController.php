@@ -173,9 +173,17 @@ class ContactsController extends Controller
                 $update = new ContactUpdate();
                 $update->userId = Auth::id();
                 $update->contactId = $id;
-                $update->title = Str::title(Str::camel($key)) . " Updated";
-                $update->from = $from->{$key};
-                $update->to = $contact->{$key};
+                
+                if($key == 'defaultMobileNumberId'){
+                    $update->from = $from->defaultMobile->mobileNumber;
+                    $update->to = $contact->defaultMobile->mobileNumber;
+                    $update->title = "Default Mobile Number Updated";
+                }
+                else{
+                    $update->from = $from->{$key};
+                    $update->to = $contact->{$key};
+                    $update->title = Str::title(Str::camel($key)) . " Updated";
+                }
                 $update->save();
             }
         }

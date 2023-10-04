@@ -96,7 +96,7 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
             labelWrap
             initialValues={{
                 to: to,
-                from: user.numbers.length ? user.numbers[0] : null,
+                // from: user.numbers.length ? user.numbers[0] : null,
             }}
             onFinish={onFinish}
             autoComplete="off"
@@ -154,9 +154,12 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
                         ]}
                     >
                         <Select style={{ width: "100%" }}>
-                            {user.numbers?.map((number, index) => (
-                                <Select.Option value={number} key={index}>
-                                    {number}
+                            {user?.numbers?.map((number) => (
+                                <Select.Option
+                                    value={number.mobileNumber}
+                                    key={number.id}
+                                >
+                                    {number.mobileNumber}
                                 </Select.Option>
                             ))}
                         </Select>

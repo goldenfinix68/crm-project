@@ -57,10 +57,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getNumbersAttribute()
     {
-        if(!empty($this->mobileNumbers)){
-            return $this->mobileNumbers->pluck('mobileNumber');
-        }
-        
-        return [];
+        return $this->mobileNumbers;
     }
 }

@@ -112,9 +112,12 @@ const DialerTab = ({
                     ]}
                 >
                     <Select style={{ width: "100%" }} value={callerNumber}>
-                        {user.numbers?.map((number, index) => (
-                            <Select.Option value={number} key={index}>
-                                {number}
+                        {user?.numbers?.map((number) => (
+                            <Select.Option
+                                value={number.mobileNumber}
+                                key={number.id}
+                            >
+                                {number.mobileNumber}
                             </Select.Option>
                         ))}
                     </Select>

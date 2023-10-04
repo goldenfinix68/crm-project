@@ -6,14 +6,16 @@ import React, {
     Dispatch,
     SetStateAction,
 } from "react";
-import { TContact } from "../entities";
+import { TContact, TUser } from "../entities";
 import { useContactsAll } from "../api/query/contactsQuery";
+import { useLoggedInUser } from "../api/query/userQuery";
 
 // Define the context type
 interface IAppContext {
     contacts: TContact[];
     isContactsLoading: boolean;
     refetchContacts: any;
+    loggedInUser: TUser;
 }
 
 // Create the context
@@ -30,12 +32,15 @@ export function AppContextProvider({ children }: AppContextProviderProps) {
         isLoading: isContactsLoading,
         refetch: refetchContacts,
     } = useContactsAll("All");
+
+    const { user } = useLoggedInUser();
     return (
         <AppContext.Provider
             value={{
                 contacts: contacts ?? [],
                 isContactsLoading,
                 refetchContacts,
+                loggedInUser: user,
             }}
         >
             {children}

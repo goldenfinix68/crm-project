@@ -3,7 +3,12 @@ export type TUser = {
     firstName: string;
     lastName: string;
     email: string;
-    numbers?: string[];
+    numbers?: TMobileNumber[];
+};
+
+export type TMobileNumber = {
+    id: string;
+    mobileNumber: string;
 };
 
 export type TContactType = {
@@ -239,4 +244,6 @@ export type TContact = {
     emailOptOutReason?: string;
     mailingZip?: string;
     county?: string;
+    defaultMobileNumber?: TMobileNumber;
+    defaultMobileNumberId?: string;
 };

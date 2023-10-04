@@ -53,6 +53,7 @@ import { useContactTypesAll } from "../../../api/query/contactsQuery";
 import queryClient from "../../../queryClient";
 import { useParams } from "react-router-dom";
 import ContactContext from "../context";
+import { useAppContextProvider } from "../../../context/AppContext";
 
 const ContactInfo = () => {
     const [isCreateNewTypeOpen, setIsCreateNewTypeOpen] = React.useState(false);
@@ -60,6 +61,8 @@ const ContactInfo = () => {
     const { contactTypes, isLoading } = useContactTypesAll();
     const { contact } = useContext(ContactContext);
     const [tagSearchKey, setTagSearchKey] = React.useState("");
+
+    const { loggedInUser } = useAppContextProvider();
 
     const actionMenuList = [
         {
@@ -244,6 +247,24 @@ const ContactInfo = () => {
                         <Input />
                     </Form.Item>
                     <Descriptions column={1}>
+                        <Descriptions.Item label="Default Mobile">
+                            <EditableText
+                                type="select"
+                                value={contact.defaultMobileNumberId}
+                                placeholderValue={
+                                    contact.defaultMobileNumber?.mobileNumber
+                                }
+                                column="defaultMobileNumberId"
+                                form={form}
+                                options={loggedInUser.numbers?.map(
+                                    (number) => ({
+                                        value: number.id,
+                                        label: number.mobileNumber,
+                                    })
+                                )}
+                            />
+                        </Descriptions.Item>
+
                         <Descriptions.Item label="Email">
                             <EditableText
                                 type="input"
@@ -428,15 +449,19 @@ const EditableText = ({
     value,
     column,
     form,
+    placeholderValue,
 }: {
     type: "select" | "inputNumber" | "input" | "selectTags";
     options?: { label: string; value: string }[];
     value?: string | number | string[];
     column: string;
     form: any;
+    placeholderValue?: string;
 }) => {
     const [editing, setEditing] = React.useState(false);
-    const [text, setText] = React.useState(value ?? "-");
+    const [text, setText] = React.useState(
+        placeholderValue ? placeholderValue : value ?? "-"
+    );
     const [textBackgroundColor, setTextBackgroundColor] = React.useState("");
 
     const handleTextClick = () => {
@@ -448,7 +473,11 @@ const EditableText = ({
     };
 
     const handleSelectChange = (value) => {
-        setText(value);
+        const selectedOption = options?.find(
+            (option) => option.value === value
+        );
+        const selectedLabel = selectedOption ? selectedOption.label : ""; // Use an empty string as a default value if the option is not found
+        setText(selectedLabel);
     };
 
     const handleInputBlur = () => {
@@ -485,6 +514,7 @@ const EditableText = ({
                         onBlur={handleInputBlur}
                         autoFocus
                         style={{ width: "100%" }}
+                        showSearch
                     >
                         {options?.map((option) => (
                             <Select.Option

@@ -75,12 +75,14 @@ class Contact extends Model
         'emailOptOutReason',
         'mailingZip',
         'wetlandsStatus',
-        'county'
+        'county',
+        'defaultMobileNumberId'
     ];
 
     protected $appends = [
         'wall',
         'texts',
+        'defaultMobileNumber',
     ];
 
 
@@ -99,7 +101,10 @@ class Contact extends Model
         return $this->hasMany(\App\Models\Note::class, 'contactId', 'id');
     }
 
-
+    public function defaultMobile()
+    {
+        return $this->hasOne(\App\Models\MobileNumber::class, 'id', 'defaultMobileNumberId');
+    }
 
     public function texts()
     {
@@ -158,6 +163,12 @@ class Contact extends Model
     public function getTextsAttribute()
     {
         return $this->texts();
+    }
+
+
+    public function getDefaultMobileNumberAttribute()
+    {
+        return $this->defaultMobile;
     }
 
     public function getWallAttribute()
