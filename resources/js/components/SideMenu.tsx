@@ -15,7 +15,7 @@ import {
     PhoneFilled,
     UsergroupAddOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, Button, theme, Popover } from "antd";
+import { Layout, Menu, Button, theme } from "antd";
 import { useNavigate } from "react-router-dom";
 import Deal from "../pages/Deal";
 import Navigation from "./Navigation";
@@ -23,7 +23,6 @@ import { useCallContext } from "../context/CallContext";
 import { useLoggedInUser } from "../api/query/userQuery";
 import { faPhone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import IncomingCallListenerPopOver from "../pages/Dialer/DialerTab/IncomingCallListenerPopOver";
 
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 
@@ -92,16 +91,8 @@ const SideMenu = ({ children }) => {
                         },
                         {
                             key: "/dialer",
-                            icon: (
-                                <Popover
-                                    trigger={"click"}
-                                    placement="left"
-                                    title={<IncomingCallListenerPopOver />}
-                                >
-                                    <PhoneOutlined />
-                                </Popover>
-                            ),
-                            label: "",
+                            icon: <PhoneOutlined />,
+                            label: "Dialer",
                         },
                     ]}
                     onClick={(e) => {
@@ -110,7 +101,7 @@ const SideMenu = ({ children }) => {
                                 user.numbers?.length ? user.numbers[0] : ""
                             );
                             setDestinationNumber("");
-                            // setIsModalOpen(true);
+                            setIsModalOpen(true);
                         } else {
                             navigate(e.key);
                         }

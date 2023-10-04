@@ -7,7 +7,6 @@ import {
     Dropdown,
     Form,
     Input,
-    Popover,
     Row,
     Select,
     Space,
@@ -31,8 +30,6 @@ import {
 
 import { useCallContext } from "../../context/CallContext";
 import { useLoggedInUser } from "../../api/query/userQuery";
-import IncomingCallListener from "../../pages/Dialer/DialerTab/IncomingCallListener";
-import IncomingCallListenerPopOver from "../../pages/Dialer/DialerTab/IncomingCallListenerPopOver";
 
 const optionsFrom: SelectProps["options"] = [
     {
@@ -472,22 +469,16 @@ const NavigationComponentsCall: React.FC = () => {
                     style={{ fontSize: 17, marginBottom: 4 }}
                 />
             </Dropdown> */}
-            <Popover
-                placement="bottomRight"
-                title={<IncomingCallListenerPopOver />}
-                trigger={"click"}
-            >
-                <PhoneOutlined
-                    style={{ fontSize: 17, marginBottom: 4 }}
-                    onClick={(e) => {
-                        setCallerNumber(
-                            user.numbers?.length ? user.numbers[0] : ""
-                        );
-                        setDestinationNumber("");
-                        // setIsModalOpen(true);
-                    }}
-                />
-            </Popover>
+
+            <PhoneOutlined
+                onClick={(e) => {
+                    setCallerNumber(
+                        user.numbers?.length ? user.numbers[0] : ""
+                    );
+                    setDestinationNumber("");
+                    setIsModalOpen(true);
+                }}
+            />
         </>
     );
 };

@@ -7,6 +7,7 @@ const DialerKeyPad = ({ handleKeyPressed }: { handleKeyPressed: any }) => {
             <div
                 style={{
                     textAlign: "center",
+                    padding: 30,
                     width: 300,
                     margin: "auto",
                 }}

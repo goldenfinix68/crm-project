@@ -7,27 +7,21 @@
     padding-right: 20px;
 }
 
-.ant-tabs-top > .ant-tabs-nav .ant-tabs-ink-bar,
-.ant-tabs-bottom > .ant-tabs-nav .ant-tabs-ink-bar,
-.ant-tabs-top > div > .ant-tabs-nav .ant-tabs-ink-bar,
-:where(.css-dev-only-do-not-override-14wwjjs).ant-tabs-bottom
-    > div
-    > .ant-tabs-nav
-    .ant-tabs-ink-bar {
+.ant-tabs-top >.ant-tabs-nav .ant-tabs-ink-bar, .ant-tabs-bottom >.ant-tabs-nav .ant-tabs-ink-bar, .ant-tabs-top >div>.ant-tabs-nav .ant-tabs-ink-bar, :where(.css-dev-only-do-not-override-14wwjjs).ant-tabs-bottom >div>.ant-tabs-nav .ant-tabs-ink-bar {
     height: 3.5px;
 }
 
 .dialerNumberContainer {
-    display: flex;
+    display: flex; 
     justify-content: center;
     gap: 15px 30px;
     flex-flow: wrap;
 }
 
 .dialerNumberContent {
-    background: #e6eaf2;
-    width: 46px;
-    height: 46px;
+    background: #E6EAF2;
+    width: 50px;
+    height: 50px;
     border-radius: 50px;
     padding-top: 9px;
     line-height: 1;
@@ -35,7 +29,7 @@
 }
 
 .dialerNumber {
-    font-size: 18px;
+    font-size: 20px;
     color: #17274d;
 }
 .dialerNumberChars {
@@ -47,6 +41,7 @@
 .break {
     width: 100%;
 }
+
 
 .dialerTabCallIcon .anticon {
     vertical-align: 0px;

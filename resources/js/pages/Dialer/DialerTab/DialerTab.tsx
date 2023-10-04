@@ -96,89 +96,83 @@ const DialerTab = ({
             onFinish={handleCall}
             onValuesChange={handleFormChange}
         >
-            <Form.Item
-                style={{ marginBottom: 10 }}
-                name="callerNumber"
-                label="From"
-                rules={[
-                    {
-                        required: true,
-                        message: DEFAULT_REQUIRED_MESSAGE,
-                    },
-                ]}
+            <Space
+                style={{ padding: "0px 20px", width: "100%" }}
+                className="dialerTab"
+                direction="vertical"
             >
-                <Select style={{ width: "100%" }} value={callerNumber}>
-                    {user.numbers?.map((number, index) => (
-                        <Select.Option value={number} key={index}>
-                            {number}
-                        </Select.Option>
-                    ))}
-                </Select>
-            </Form.Item>
-
-            <Form.Item
-                style={{ marginBottom: 20 }}
-                name="destinationNumber"
-                label="To"
-                rules={[
-                    {
-                        required: true,
-                        message: DEFAULT_REQUIRED_MESSAGE,
-                    },
-                ]}
-            >
-                <AutoComplete
-                    options={filteredOptions?.map((option) => ({
-                        value: option.mobile,
-                        label: (
-                            <Space>
-                                <Typography.Text strong>
-                                    {`${option.firstName} ${option.lastName}`}
-                                </Typography.Text>
-                                <Typography.Text>
-                                    {option.mobile}
-                                </Typography.Text>
-                            </Space>
-                        ),
-                    }))}
-                    style={{ width: "100%" }}
-                    value={destinationNumber}
+                <Form.Item
+                    name="callerNumber"
+                    label="From"
+                    rules={[
+                        {
+                            required: true,
+                            message: DEFAULT_REQUIRED_MESSAGE,
+                        },
+                    ]}
                 >
-                    <Input
-                        // mask="+1 000-000-0000"
+                    <Select style={{ width: "100%" }} value={callerNumber}>
+                        {user.numbers?.map((number, index) => (
+                            <Select.Option value={number} key={index}>
+                                {number}
+                            </Select.Option>
+                        ))}
+                    </Select>
+                </Form.Item>
+
+                <Form.Item
+                    name="destinationNumber"
+                    label="To"
+                    rules={[
+                        {
+                            required: true,
+                            message: DEFAULT_REQUIRED_MESSAGE,
+                        },
+                    ]}
+                >
+                    <AutoComplete
+                        options={filteredOptions?.map((option) => ({
+                            value: option.mobile,
+                            label: (
+                                <Space>
+                                    <Typography.Text strong>
+                                        {`${option.firstName} ${option.lastName}`}
+                                    </Typography.Text>
+                                    <Typography.Text>
+                                        {option.mobile}
+                                    </Typography.Text>
+                                </Space>
+                            ),
+                        }))}
+                        style={{ width: "100%" }}
                         value={destinationNumber}
-                    />
-                </AutoComplete>
-            </Form.Item>
+                    >
+                        <Input
+                            // mask="+1 000-000-0000"
+                            value={destinationNumber}
+                        />
+                    </AutoComplete>
+                </Form.Item>
 
-            <DialerKeyPad handleKeyPressed={handleKeyPressed} />
-            <div style={{ textAlign: "center", marginTop: "20px" }}>
-                <Button
-                    type="primary"
-                    htmlType="submit"
-                    loading={isCallBtnLoading}
+                <DialerKeyPad handleKeyPressed={handleKeyPressed} />
+
+                <Space
+                    style={{
+                        position: "absolute",
+                        bottom: "16px",
+                        right: "16px",
+                    }}
                 >
-                    Call <PhoneOutlined />
-                </Button>
-            </div>
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        loading={isCallBtnLoading}
+                    >
+                        Call <PhoneOutlined />
+                    </Button>
+                </Space>
 
-            {/* <Space
-                style={{
-                    position: "absolute",
-                    bottom: "16px",
-                    right: "16px",
-                }}
-            >
-                <Button
-                    type="primary"
-                    htmlType="submit"
-                    loading={isCallBtnLoading}
-                >
-                    Call <PhoneOutlined />
-                </Button>
-            </Space> */}
-
-            {/* {call && call.state !== "destroy" ? (
+                {/* {call && call.state !== "destroy" ? (
                     <Button
                         style={{ width: "100%", backgroundColor: "red" }}
                         className="dialerTabCallIcon"
@@ -197,6 +191,7 @@ const DialerTab = ({
                         Call <PhoneOutlined />
                     </Button>
                 )} */}
+            </Space>
         </Form>
     );
 };
