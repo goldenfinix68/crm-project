@@ -4,20 +4,20 @@ import { Spin } from "antd";
 const LoadingComponent = () => {
     const [loading, setLoading] = useState(true);
 
-    // Simulating loading delay for demonstration purposes
-    // useEffect(() => {
-    //     setTimeout(() => {
-    //         setLoading(false);
-    //     }, 2000); // Change this value to simulate actual data loading delay
-    // }, []);
-
     return (
         <div
             style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                height: "100vh",
+                zIndex: 9999, // Adjust z-index to ensure it's above other elements
+                pointerEvents: loading ? "auto" : "none", // Disable user interactions when loading
             }}
         >
             <Spin spinning={true} size="large"></Spin>

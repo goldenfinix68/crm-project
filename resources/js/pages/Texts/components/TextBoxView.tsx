@@ -88,12 +88,13 @@ const TextBoxView = () => {
         }
     }, [threadId]);
 
-    if (isLoading || isThreadLoading) {
+    if (isThreadLoading) {
         return <LoadingComponent />;
     }
 
     return (
         <Space direction="vertical" style={{ width: "100%" }}>
+            {isLoading && <LoadingComponent />}
             <TextsHeaderMenu
                 handleLabelChange={(e) => setLabel(`{{label:${e.key}}} `)}
             />
