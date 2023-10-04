@@ -184,49 +184,59 @@ const TextList = ({ label }) => {
                             onMouseLeave={() => setHoveredItemIndex(null)} // Step 4: Handle mouse leave
                         >
                             <Row gutter={12} style={{ width: "100%" }}>
-                                <Col span={4}>
+                                <Col span={6}>
                                     <TextEllipsis
                                         style={{
                                             fontWeight: "bold",
                                             fontSize: "16px",
                                         }}
                                     >
-                                        <Checkbox
-                                            checked={selectedThreadIds.includes(
-                                                thread.id
-                                            )}
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                const isChecked = (
-                                                    e.target as HTMLInputElement
-                                                ).checked;
-                                                if (isChecked) {
-                                                    setSelectedThreadIds(
-                                                        (
-                                                            prevSelectedThreadIds
-                                                        ) => [
-                                                            ...prevSelectedThreadIds,
-                                                            thread.id,
-                                                        ]
-                                                    );
-                                                } else {
-                                                    setSelectedThreadIds(
-                                                        (
-                                                            prevSelectedThreadIds
-                                                        ) =>
-                                                            prevSelectedThreadIds.filter(
-                                                                (id) =>
-                                                                    id !==
-                                                                    thread.id
-                                                            )
-                                                    );
-                                                }
-                                            }}
-                                        />
+                                        <Space
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <Checkbox
+                                                checked={selectedThreadIds.includes(
+                                                    thread.id
+                                                )}
+                                                onClick={(e) => {
+                                                    const isChecked = (
+                                                        e.target as HTMLInputElement
+                                                    ).checked;
+                                                    if (isChecked) {
+                                                        setSelectedThreadIds(
+                                                            (
+                                                                prevSelectedThreadIds
+                                                            ) => [
+                                                                ...prevSelectedThreadIds,
+                                                                thread.id,
+                                                            ]
+                                                        );
+                                                    } else {
+                                                        setSelectedThreadIds(
+                                                            (
+                                                                prevSelectedThreadIds
+                                                            ) =>
+                                                                prevSelectedThreadIds.filter(
+                                                                    (id) =>
+                                                                        id !==
+                                                                        thread.id
+                                                                )
+                                                        );
+                                                    }
+                                                }}
+                                            />
+                                            <div
+                                                style={{
+                                                    cursor: "default",
+                                                }}
+                                            >
+                                                &nbsp; &nbsp;
+                                            </div>
+                                        </Space>
                                         {` ${thread.contactName}`}
                                     </TextEllipsis>
                                 </Col>
-                                <Col span={17}>
+                                <Col span={15}>
                                     <TextEllipsis
                                         style={{
                                             fontWeight: !thread?.texts![0]

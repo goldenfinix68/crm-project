@@ -131,7 +131,7 @@ const DialerTab = ({
                     options={filteredOptions?.map((option) => ({
                         value: option.mobile,
                         label: (
-                            <Space direction="vertical">
+                            <Space>
                                 <Typography.Text strong>
                                     {`${option.firstName} ${option.lastName}`}
                                 </Typography.Text>

@@ -527,6 +527,7 @@ const EditableText = ({
                     onClick={handleTextClick}
                     style={{
                         width: "100%",
+                        height: "30px",
                         backgroundColor: textBackgroundColor,
                     }}
                     onMouseEnter={() => setTextBackgroundColor("#ADD8E6")}
