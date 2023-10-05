@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
     Button,
     Col,
@@ -31,6 +31,13 @@ interface Props {
     contact?: TContact;
 }
 const TextModal = ({ isModalOpen, closeModal, to, contact }: Props) => {
+    const [divKey, setDivKey] = useState(0);
+
+    useEffect(() => {
+        if (isModalOpen) {
+            setDivKey(divKey + 1);
+        }
+    }, [isModalOpen]);
     return (
         <Modal
             className="modal-activity"
@@ -58,6 +65,7 @@ const TextModal = ({ isModalOpen, closeModal, to, contact }: Props) => {
                 direction="vertical"
                 style={{ padding: "20px", width: "100%" }}
                 size={0}
+                key={divKey}
             >
                 <TextForm
                     handleSubmit={() => {

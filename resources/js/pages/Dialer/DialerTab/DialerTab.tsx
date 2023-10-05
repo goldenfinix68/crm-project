@@ -33,9 +33,8 @@ const DialerTab = ({
     isCallBtnLoading: boolean;
 }) => {
     const { contactId } = useParams();
-    const { contact, isLoading } = useGetContact(contactId ?? "");
     const { user, isLoading: isLogginUserLoading } = useLoggedInUser();
-    const { contacts } = useAppContextProvider();
+    const { contacts, isContactsLoading } = useAppContextProvider();
 
     const [form] = Form.useForm();
 
@@ -80,7 +79,7 @@ const DialerTab = ({
         });
     }, [callerNumber, destinationNumber]);
 
-    if (isLoading || isLogginUserLoading) {
+    if (isContactsLoading || isLogginUserLoading) {
         return <LoadingComponent />;
     }
 

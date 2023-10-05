@@ -256,7 +256,7 @@ const ContactInfo = () => {
                                 }
                                 column="defaultMobileNumberId"
                                 form={form}
-                                options={loggedInUser.numbers?.map(
+                                options={loggedInUser?.numbers?.map(
                                     (number) => ({
                                         value: number.id,
                                         label: number.mobileNumber,

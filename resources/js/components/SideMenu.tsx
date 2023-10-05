@@ -98,7 +98,9 @@ const SideMenu = ({ children }) => {
                     onClick={(e) => {
                         if (e.key == "/dialer") {
                             setCallerNumber(
-                                user.numbers?.length ? user.numbers[0] : ""
+                                user?.numbers?.length
+                                    ? user.numbers[0].mobileNumber
+                                    : ""
                             );
                             setDestinationNumber("");
                             setIsModalOpen(true);

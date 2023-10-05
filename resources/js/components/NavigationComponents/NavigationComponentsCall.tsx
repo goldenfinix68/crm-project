@@ -473,7 +473,9 @@ const NavigationComponentsCall: React.FC = () => {
             <PhoneOutlined
                 onClick={(e) => {
                     setCallerNumber(
-                        user.numbers?.length ? user.numbers[0] : ""
+                        user?.numbers?.length
+                            ? user.numbers[0].mobileNumber
+                            : ""
                     );
                     setDestinationNumber("");
                     setIsModalOpen(true);

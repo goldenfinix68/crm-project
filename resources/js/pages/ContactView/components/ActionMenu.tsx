@@ -44,8 +44,9 @@ const ActionMenu = () => {
                             <Space
                                 onClick={() => {
                                     setCallerNumber(
-                                        user.numbers?.length
-                                            ? user.numbers[0]
+                                        contact.defaultMobileNumber
+                                            ? contact.defaultMobileNumber
+                                                  .mobileNumber
                                             : ""
                                     );
                                     setDestinationNumber(

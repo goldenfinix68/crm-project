@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\MobileNumber;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Telnyx\Telnyx;
 
 class UsersController extends Controller
 {
@@ -51,11 +52,20 @@ class UsersController extends Controller
         $user->save();
 
         foreach($request->numbers as $number){
+            Telnyx::setApiKey(env('TELNYX_API_KEY'));
+            $telnyxNumberDetails = \Telnyx\PhoneNumber::retrieve($number);
+            $telnyxConnectionCreds = \Telnyx\CredentialConnection::retrieve($telnyxNumberDetails->connection_id);
+
             $isExisting = MobileNumber::where('mobileNumber', $number)->where('userId', $user->id)->first();
             if(empty($isExisting)){
                 $newMobile = new MobileNumber();
-                $newMobile->userId = $user->id;               
+                $newMobile->userId = $user->id;
                 $newMobile->mobileNumber = $number;
+                $newMobile->telnyxId = $telnyxNumberDetails->id;
+                $newMobile->messagingProfileId = $telnyxNumberDetails->messaging_profile_id;
+                $newMobile->connectionId = $telnyxNumberDetails->connection_id;
+                $newMobile->sipTrunkUsername = $telnyxConnectionCreds->user_name;
+                $newMobile->sipTrunkPassword = $telnyxConnectionCreds->password;
                 $newMobile->save();
             }
         }

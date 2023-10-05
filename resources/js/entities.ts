@@ -8,6 +8,9 @@ export type TUser = {
 
 export type TMobileNumber = {
     id: string;
+    telnyxId?: string;
+    messagingProfileId?: string;
+    connectionId?: string;
     mobileNumber: string;
 };
 

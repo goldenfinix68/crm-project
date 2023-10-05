@@ -23,8 +23,9 @@ class TextThreadsController extends Controller
         if(empty($user)){
             abort(401, 'Unauthorized');
         }
+        $userNumbers = $user->numbers->pluck('mobileNumber');
 
-        return TextThread::with(['texts', 'labels'])->whereIn('userNumber', $user->numbers)->orderBy('id', 'desc')->get();
+        return TextThread::with(['texts', 'labels'])->whereIn('userNumber', $userNumbers)->orderBy('id', 'desc')->get();
     }
 
     /**

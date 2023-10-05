@@ -8,7 +8,10 @@ import { DEFAULT_REQUIRED_MESSAGE } from "../../constants";
 import { addUserMutation } from "../../api/mutation/useUserMutation";
 import { TUser } from "../../entities";
 import { useForm } from "antd/es/form/Form";
-import { usefindUser } from "../../api/query/userQuery";
+import {
+    useGetAvailableNumbersTelnyx,
+    usefindUser,
+} from "../../api/query/userQuery";
 import LoadingComponent from "../../components/LoadingComponent";
 
 const layout = {
@@ -22,6 +25,9 @@ const AddEditUser = () => {
     const [form] = useForm();
 
     const { user, isLoading } = usefindUser(userId ?? "");
+
+    const { data: mobileNumbers, isLoading: isAvailableNumbersLoading } =
+        useGetAvailableNumbersTelnyx();
 
     const mutation = useMutation(addUserMutation, {
         onSuccess: () => {
@@ -41,7 +47,7 @@ const AddEditUser = () => {
         }
     }, [user]);
 
-    if (isLoading) {
+    if (isLoading || isAvailableNumbersLoading) {
         return <LoadingComponent />;
     }
 
@@ -115,11 +121,15 @@ const AddEditUser = () => {
                     ]}
                 >
                     <Select
-                        mode="tags"
                         placeholder="Enter mobile numbers"
                         defaultValue={[]}
                         style={{ width: "100%" }}
-                        options={[]}
+                        mode="multiple"
+                        showSearch
+                        options={mobileNumbers?.map((number) => ({
+                            label: number.mobileNumber,
+                            value: number.mobileNumber,
+                        }))}
                     />
                 </Form.Item>
 

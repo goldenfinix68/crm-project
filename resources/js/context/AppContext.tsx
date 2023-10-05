@@ -15,7 +15,7 @@ interface IAppContext {
     contacts: TContact[];
     isContactsLoading: boolean;
     refetchContacts: any;
-    loggedInUser: TUser;
+    loggedInUser: TUser | null;
 }
 
 // Create the context
@@ -40,7 +40,7 @@ export function AppContextProvider({ children }: AppContextProviderProps) {
                 contacts: contacts ?? [],
                 isContactsLoading,
                 refetchContacts,
-                loggedInUser: user,
+                loggedInUser: user ?? null,
             }}
         >
             {children}

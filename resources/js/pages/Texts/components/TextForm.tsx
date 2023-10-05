@@ -96,7 +96,9 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
             labelWrap
             initialValues={{
                 to: to,
-                // from: user.numbers.length ? user.numbers[0] : null,
+                from: contact?.defaultMobileNumber
+                    ? contact?.defaultMobileNumber.mobileNumber
+                    : null,
             }}
             onFinish={onFinish}
             autoComplete="off"

@@ -12,6 +12,7 @@ const IncomingCallListener = () => {
     const [isOnHold, setIsOnHold] = useState(false);
     const [isLoading, setIsloading] = useState(false);
     const [isRinging, setIsRinging] = useState(false);
+    const [callFrom, setCallFrom] = useState("");
 
     const { isModalOpen, setIsModalOpen, callerNumber, destinationNumber } =
         useCallContext();
@@ -40,6 +41,7 @@ const IncomingCallListener = () => {
                 setIsModalOpen(true);
                 setIsloading(false);
                 setIsRinging(true);
+                setCallFrom("outgoing");
                 break;
             case "recovering": // Call is recovering from a previous session
                 // Handle recovering logic...
@@ -49,10 +51,14 @@ const IncomingCallListener = () => {
                 setCurrentCall(call);
                 setIsModalOpen(true);
                 setIsloading(false);
+                setIsRinging(true);
+                setCallFrom("incoming");
                 break;
             case "active": // Call has become active
                 console.log("Call has become active");
                 setCurrentCall(call);
+                setIsRinging(false);
+                setCallFrom("");
                 break;
             case "hangup": // Call is over
                 console.log("Call is over");
@@ -69,6 +75,7 @@ const IncomingCallListener = () => {
         setIsModalOpen(false);
         setIsloading(false);
         setIsRinging(false);
+        setCallFrom("");
     };
 
     const toggleMute = () => {
@@ -115,7 +122,7 @@ const IncomingCallListener = () => {
                 env: "production",
                 login: (window as any).TELNYX_USERNAME,
                 password: (window as any).TELNYX_PASSWORD,
-                ringtoneFile: "/sounds/incoming_call.mp3",
+                // ringtoneFile: "/sounds/incoming_call.mp3",
                 // iceServers: [{ urls: ['stun:stun.l.google.com:19302'] }],
                 // ringbackFile: "/sounds/calling_ringing.mp3",
             });
@@ -179,10 +186,14 @@ const IncomingCallListener = () => {
     return (
         <>
             <Audio stream={currentCall && currentCall.remoteStream} />
-            {isRinging && (
+            {isRinging && callFrom && (
                 <audio autoPlay>
                     <source
-                        src="/sounds/calling_ringing.mp3"
+                        src={
+                            callFrom == "outgoing"
+                                ? "/sounds/calling_ringing.mp3"
+                                : "/sounds/incoming_call.mp3"
+                        }
                         type="audio/mpeg"
                     />
                     Your browser does not support the audio element.
@@ -212,8 +223,23 @@ const IncomingCallListener = () => {
                                 right: "16px",
                             }}
                         >
-                            <Button type="default">Reject</Button>
-                            <Button type="primary">Answer</Button>
+                            <Button
+                                type="default"
+                                onClick={() => {
+                                    currentCall.hangup();
+                                    clearFields();
+                                }}
+                            >
+                                Reject
+                            </Button>
+                            <Button
+                                type="primary"
+                                onClick={() => {
+                                    currentCall.answer();
+                                }}
+                            >
+                                Answer
+                            </Button>
                         </Space>
                     </>
                 ) : currentCall?.state == "active" ? (
