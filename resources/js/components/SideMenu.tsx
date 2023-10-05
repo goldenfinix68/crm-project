@@ -79,11 +79,11 @@ const SideMenu = ({ children }) => {
                             icon: <DollarCircleOutlined />,
                             label: "Deals",
                         },
-                        {
-                            key: "/inbox",
-                            icon: <MailOutlined />,
-                            label: "Inbox",
-                        },
+                        // {
+                        //     key: "/inbox",
+                        //     icon: <MailOutlined />,
+                        //     label: "Inbox",
+                        // },
                         {
                             key: "/text-threads",
                             icon: <MobileOutlined />,

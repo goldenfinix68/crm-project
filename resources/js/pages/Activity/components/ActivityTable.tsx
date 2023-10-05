@@ -1016,6 +1016,7 @@ const ActivityTable = () => {
                                         onClick={() =>
                                             navigate("/activities/calendar")
                                         }
+                                        disabled
                                     >
                                         Calendar
                                     </Radio.Button>

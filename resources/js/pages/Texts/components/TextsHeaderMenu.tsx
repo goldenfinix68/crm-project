@@ -56,9 +56,6 @@ const TextsHeaderMenu = ({
                 <Menu.Item key="sent" icon={<SendOutlined />}>
                     Sent
                 </Menu.Item>
-                <Menu.Item key="outbox" icon={<InboxOutlined />}>
-                    Outbox
-                </Menu.Item>
                 <Menu.Item key="failed" icon={<DeleteOutlined />}>
                     Failed
                 </Menu.Item>

@@ -145,3 +145,43 @@ export const FIELD_TYPE_LIST = [
         icon: "currency",
     },
 ];
+
+export const CONTACT_LIST_ACTION = [
+    {
+        value: "Transfer",
+        label: "Mass Transfer Contacts",
+        disabled: true,
+    },
+    {
+        value: "Delete",
+        label: "Mass Delete Contacts",
+        disabled: true,
+    },
+    {
+        value: "Update",
+        label: "Mass Update Contacts",
+        disabled: true,
+    },
+    { value: "Merge", label: "Merge Contacts", disabled: true },
+
+    {
+        value: "ImportExcel",
+        label: "Import from Excel or CSV file",
+        disabled: true,
+    },
+    {
+        value: "ImportGoogle",
+        label: "Import Google Contacts",
+        disabled: true,
+    },
+    {
+        value: "Export",
+        label: "Export Contacts",
+        disabled: true,
+    },
+    {
+        value: "ViewDeleted",
+        label: "View Recent Deleted Records",
+        disabled: true,
+    },
+];

@@ -57,6 +57,7 @@ import ContactsComponentsAddtoList from "./Components/ContactsComponentsAddtoLis
 import SendToManyModal from "../../components/SentToManyModal";
 import HeaderMenu from "./Components/HeaderMenu";
 import { useAppContextProvider } from "../../context/AppContext";
+import { CONTACT_LIST_ACTION } from "../../constants";
 
 interface DataType {
     key: React.Key;
@@ -2246,6 +2247,7 @@ const Contacts = () => {
                                 onClick={() => {
                                     setOpen(true);
                                 }}
+                                disabled
                             >
                                 <FunnelPlotOutlined />
                             </Button>
@@ -2277,39 +2279,16 @@ const Contacts = () => {
                             <Select
                                 dropdownClassName="dropdown-select"
                                 defaultValue="Action"
-                                options={[
-                                    {
-                                        value: "Transfer",
-                                        label: "Mass Transfer Contacts",
-                                    },
-                                    {
-                                        value: "Delete",
-                                        label: "Mass Delete Contacts",
-                                    },
-                                    {
-                                        value: "Update",
-                                        label: "Mass Update Contacts",
-                                    },
-                                    { value: "Merge", label: "Merge Contacts" },
-
-                                    {
-                                        value: "ImportExcel",
-                                        label: "Import from Excel or CSV file",
-                                    },
-                                    {
-                                        value: "ImportGoogle",
-                                        label: "Import Google Contacts",
-                                    },
-                                    {
-                                        value: "Export",
-                                        label: "Export Contacts",
-                                    },
-                                    {
-                                        value: "ViewDeleted",
-                                        label: "View Recent Deleted Records",
-                                    },
-                                ]}
-                            />
+                            >
+                                {CONTACT_LIST_ACTION.map((action) => (
+                                    <Select.Option
+                                        value={action.value}
+                                        disabled={action.disabled}
+                                    >
+                                        {action.label}
+                                    </Select.Option>
+                                ))}
+                            </Select>
                         </Col>
                     </Row>
                 )}
@@ -2363,7 +2342,6 @@ const Contacts = () => {
                     title={isTitle}
                     setTContact={setTContact}
                 />
-                <ContactsComponentsFilter open={open} setOpen={setOpen} />
                 <ContactsComponentsManageColumn
                     isModalManageColumnOpen={isModalManageColumnOpen}
                     setIsModalManageColumnOpen={setIsModalManageColumnOpen}

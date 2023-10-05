@@ -956,6 +956,7 @@ const Deal = () => {
                                             onClick={() => {
                                                 setOpenFilter(true);
                                             }}
+                                            disabled
                                         ></Button>
                                     </span>
                                     <span style={{ marginRight: 10 }}>
@@ -985,6 +986,7 @@ const Deal = () => {
                                         <Dropdown
                                             menu={{ items: action }}
                                             placement="bottomLeft"
+                                            disabled
                                         >
                                             <Button>
                                                 <Space>

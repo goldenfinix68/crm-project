@@ -24,7 +24,7 @@ const ActionsTabs = () => {
         },
         {
             key: "email",
-            label: <TabLabel label="EMAIL" />,
+            label: <TabLabel label="EMAIL" disabled={true} />,
         },
         // {
         //     key: "addActivity",
@@ -63,8 +63,14 @@ const ActionsTabs = () => {
     );
 };
 
-const TabLabel = ({ label }: { label: string }) => (
-    <Typography.Text strong style={{ fontSize: 11 }}>
+const TabLabel = ({
+    label,
+    disabled,
+}: {
+    label: string;
+    disabled?: boolean;
+}) => (
+    <Typography.Text strong style={{ fontSize: 11 }} disabled={disabled}>
         {label}
     </Typography.Text>
 );
