@@ -39,21 +39,18 @@ export const useUsersAll = () => {
 };
 
 export const usefindUser = (id: string) => {
-    if (!id) {
-        return {
-            user: false,
-            isLoading: false,
-        };
-    }
-    const { data, isLoading, isError } = useQuery("findUser", async () => {
-        const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
-        const response = await axios.get(`/api/users/${id}`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        });
-        return response.data;
-    });
+    const { data, isLoading, isError } = useQuery<TUser>(
+        "findUser",
+        async () => {
+            const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+            const response = await axios.get(`/api/users/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            return response.data;
+        }
+    );
 
     return {
         user: data,

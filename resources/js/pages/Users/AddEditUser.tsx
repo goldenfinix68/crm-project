@@ -31,7 +31,7 @@ const AddEditUser = () => {
 
     const mutation = useMutation(addUserMutation, {
         onSuccess: () => {
-            navigate("/users"); // Redirect to the users list page after successful submission
+            navigate("/setup/users"); // Redirect to the users list page after successful submission
         },
     });
 
@@ -42,6 +42,10 @@ const AddEditUser = () => {
     React.useEffect(() => {
         if (user) {
             form.setFieldsValue(user);
+            form.setFieldValue(
+                "numbers",
+                user.numbers?.map((number) => number.mobileNumber)
+            );
         } else {
             form.resetFields();
         }
