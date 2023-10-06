@@ -55,7 +55,7 @@ class UsersController extends Controller
         $user->telnyxConnectionPassword = $request->sipTrunkingConnection['telnyxConnectionPassword'];
         $user->save();
 
-        $mobileNumbers = collect($request->sipTrunkingConnection['mobileNumbers'])->pluck('mobileNumber')->toArray();
+        $mobileNumbers = collect($request->sipTrunkingConnection['numbers'])->pluck('mobileNumber')->toArray();
         
         foreach($mobileNumbers as $number){
             $isExisting = MobileNumber::where('mobileNumber', $number)->where('userId', $user->id)->first();
