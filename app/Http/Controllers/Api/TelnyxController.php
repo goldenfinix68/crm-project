@@ -30,7 +30,7 @@ class TelnyxController extends Controller
                 'telnyxConnectionName' => $connection->connection_name,
                 'telnyxConnectionUserName' => $connection->user_name,
                 'telnyxConnectionPassword' => $connection->password,
-                'mobileNumbers' => $numbers,
+                'numbers' => $numbers,
             ];
 
         }
