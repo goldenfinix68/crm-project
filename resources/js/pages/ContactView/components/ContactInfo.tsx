@@ -55,11 +55,11 @@ import { useParams } from "react-router-dom";
 import ContactContext from "../context";
 import { useAppContextProvider } from "../../../context/AppContext";
 
-const ContactInfo = () => {
+const ContactInfo = ({ contact }: { contact: TContact }) => {
     const [isCreateNewTypeOpen, setIsCreateNewTypeOpen] = React.useState(false);
     const [form] = Form.useForm<TContact>();
     const { contactTypes, isLoading } = useContactTypesAll();
-    const { contact } = useContext(ContactContext);
+    // const { contact } = useContext(ContactContext);
     const [tagSearchKey, setTagSearchKey] = React.useState("");
 
     const { loggedInUser } = useAppContextProvider();
@@ -94,6 +94,7 @@ const ContactInfo = () => {
         onSuccess: () => {
             form.resetFields();
             queryClient.invalidateQueries("getContact");
+            queryClient.invalidateQueries("thread");
         },
     });
 
@@ -234,7 +235,7 @@ const ContactInfo = () => {
                         </Space>
                     }
                 />
-                <ActionMenu />
+                <ActionMenu contact={contact} />
 
                 <Space
                     style={{ width: "100%", justifyContent: "space-between" }}

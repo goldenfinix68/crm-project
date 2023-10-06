@@ -17,14 +17,14 @@ import queryClient from "../../../queryClient";
 import { useCallContext } from "../../../context/CallContext";
 import { useLoggedInUser } from "../../../api/query/userQuery";
 import ContactContext from "../context";
+import { TContact } from "../../../entities";
 
-const ActionMenu = () => {
+const ActionMenu = ({ contact }: { contact: TContact }) => {
     const [textModalOpen, setTextModalOpen] = React.useState(false);
     const [activityModalOpen, setActivityModalOpen] = React.useState(false);
     const [dealModalOpen, setDealModalOpen] = React.useState(false);
     const { setIsModalOpen, setCallerNumber, setDestinationNumber } =
         useCallContext();
-    const { contact } = useContext(ContactContext);
     const { user, isLoading: isLogginUserLoading } = useLoggedInUser();
 
     return (

@@ -35,7 +35,7 @@ import { TContact } from "../../../entities";
 import { useAppContextProvider } from "../../../context/AppContext";
 interface Props {
     handleSubmit: () => void;
-    handleCancel: () => void;
+    handleCancel?: () => void;
     to?: string;
     contact?: TContact;
 }
@@ -48,13 +48,18 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
     const message = Form.useWatch("message", form);
     const toFormValue = Form.useWatch("to", form);
     const [isTemplatePopoverOpen, setIsTemplatePopoverOpen] = useState(false);
+    const [isFocused, setIsFocused] = React.useState(false);
+    const messageTextAreaRef = useRef<HTMLInputElement | null>(null);
 
     const { contacts } = useAppContextProvider();
 
     const resetFields = () => {
-        handleCancel();
+        setIsFocused(false);
         form.resetFields();
         setError("");
+        if (handleCancel) {
+            handleCancel();
+        }
     };
 
     const sendText = useMutation(sendTextMutation, {
@@ -89,206 +94,220 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
             toFormValue ? toFormValue.replace(/[-\s+_]/g, "") : ""
         )
     );
+    const calculateRows = (content) => {
+        const lineHeight = 44; // Adjust this value according to your font and styling
+        const minRows = 1; // Minimum number of rows
+        const maxRows = 6; // Maximum number of rows
+
+        const contentRows = Math.ceil(content / lineHeight);
+
+        return Math.min(maxRows, Math.max(minRows, contentRows));
+    };
     return (
-        <Form
-            name="basic"
-            layout="vertical"
-            labelWrap
-            initialValues={{
-                to: to,
-                from: contact?.defaultMobileNumber
-                    ? contact?.defaultMobileNumber.mobileNumber
-                    : null,
-            }}
-            onFinish={onFinish}
-            autoComplete="off"
-            form={form}
-        >
-            <Row gutter={12}>
-                <Col span={12}>
-                    <Form.Item
-                        label="To"
-                        name="to"
-                        rules={[
-                            {
-                                required: true,
-                                message: "this is required",
-                            },
-                        ]}
-                    >
-                        {to ? (
-                            <Input disabled />
-                        ) : (
-                            <AutoComplete
-                                options={filteredOptions?.map((option) => ({
-                                    value: option.mobile,
-                                    label: (
-                                        <Space>
-                                            <Typography.Text strong>
-                                                {`${option.firstName} ${option.lastName}`}
-                                            </Typography.Text>
-                                            <Typography.Text>
-                                                {option.mobile}
-                                            </Typography.Text>
-                                        </Space>
-                                    ),
-                                }))}
-                                style={{ width: "100%" }}
-                                value={toFormValue}
-                            >
-                                <Input
-                                    // mask="+1 000-000-0000"
-                                    value={toFormValue}
-                                />
-                            </AutoComplete>
-                        )}
-                    </Form.Item>
-                </Col>
-                <Col span={12}>
-                    <Form.Item
-                        label="From"
-                        name="from"
-                        rules={[
-                            {
-                                required: true,
-                                message: "this is required",
-                            },
-                        ]}
-                    >
-                        <Select style={{ width: "100%" }}>
-                            {user?.numbers?.map((number) => (
-                                <Select.Option
-                                    value={number.mobileNumber}
-                                    key={number.id}
-                                >
-                                    {number.mobileNumber}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                </Col>
-            </Row>
-
-            <Form.Item
-                name="message"
-                rules={[
-                    {
-                        required: true,
-                        message: "this is required",
-                    },
-                ]}
-            >
-                <Input.TextArea
-                    rows={4}
-                    placeholder="Type here ..."
-                ></Input.TextArea>
-            </Form.Item>
-
-            <Space
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    width: "100%",
-                    marginTop: "-20px",
-                    marginBottom: "20px",
+        <>
+            <Form
+                name="basic"
+                layout="vertical"
+                labelWrap
+                initialValues={{
+                    to: to,
+                    from: contact?.defaultMobileNumber
+                        ? contact?.defaultMobileNumber.mobileNumber
+                        : null,
                 }}
+                onFinish={onFinish}
+                autoComplete="off"
+                form={form}
             >
-                <Typography.Text>Count: {message?.length}</Typography.Text>
-                {contact && (
+                <Row gutter={12}>
+                    <Col span={12}>
+                        <Form.Item
+                            label="To"
+                            name="to"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            {to ? (
+                                <Input disabled />
+                            ) : (
+                                <AutoComplete
+                                    options={filteredOptions?.map((option) => ({
+                                        value: option.mobile,
+                                        label: (
+                                            <Space>
+                                                <Typography.Text strong>
+                                                    {`${option.firstName} ${option.lastName}`}
+                                                </Typography.Text>
+                                                <Typography.Text>
+                                                    {option.mobile}
+                                                </Typography.Text>
+                                            </Space>
+                                        ),
+                                    }))}
+                                    style={{ width: "100%" }}
+                                    value={toFormValue}
+                                >
+                                    <Input
+                                        // mask="+1 000-000-0000"
+                                        value={toFormValue}
+                                    />
+                                </AutoComplete>
+                            )}
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                            label="From"
+                            name="from"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "this is required",
+                                },
+                            ]}
+                        >
+                            <Select style={{ width: "100%" }}>
+                                {user?.numbers?.map((number) => (
+                                    <Select.Option
+                                        value={number.mobileNumber}
+                                        key={number.id}
+                                    >
+                                        {number.mobileNumber}
+                                    </Select.Option>
+                                ))}
+                            </Select>
+                        </Form.Item>
+                    </Col>
+                </Row>
+
+                <Form.Item
+                    name="message"
+                    rules={[
+                        {
+                            required: true,
+                            message: "this is required",
+                        },
+                    ]}
+                >
+                    <Input.TextArea
+                        ref={messageTextAreaRef}
+                        autoSize={{ minRows: 1, maxRows: 6 }}
+                        placeholder="Type here ..."
+                    ></Input.TextArea>
+                </Form.Item>
+
+                <Space
+                    style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        width: "100%",
+                        marginTop: "-20px",
+                        marginBottom: "20px",
+                    }}
+                >
+                    <Typography.Text>Count: {message?.length}</Typography.Text>
+                    {contact && (
+                        <Popover
+                            content={
+                                <UseTemplatePopover
+                                    handleSelect={(value) => {
+                                        form.setFieldValue(
+                                            "message",
+                                            replacePlaceholders(value, contact)
+                                        );
+                                        setIsTemplatePopoverOpen(false);
+                                    }}
+                                    contact={contact}
+                                />
+                            }
+                            title={
+                                <Button
+                                    type="link"
+                                    style={{ padding: 0 }}
+                                    onClick={() =>
+                                        setIsTemplatePopoverOpen(false)
+                                    }
+                                >
+                                    Cancel
+                                </Button>
+                            }
+                            trigger={"click"}
+                            open={isTemplatePopoverOpen}
+                        >
+                            <Button
+                                type="link"
+                                onClick={() => setIsTemplatePopoverOpen(true)}
+                            >
+                                Use Template <CaretDownOutlined />
+                            </Button>
+                        </Popover>
+                    )}
+                </Space>
+
+                {error ? (
+                    <center>
+                        <Typography.Text style={{ color: "red" }}>
+                            {error}
+                        </Typography.Text>
+                    </center>
+                ) : null}
+
+                {schedule ? (
+                    <center>
+                        <Typography.Text>
+                            {`This text will be sent on ${scheduleLabel}`}
+                        </Typography.Text>
+                    </center>
+                ) : null}
+
+                <Space style={{ paddingTop: "5px" }}>
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        loading={sendText.isLoading}
+                    >
+                        Send
+                    </Button>
                     <Popover
                         content={
-                            <UseTemplatePopover
-                                handleSelect={(value) => {
-                                    form.setFieldValue(
-                                        "message",
-                                        replacePlaceholders(value, contact)
-                                    );
-                                    setIsTemplatePopoverOpen(false);
-                                }}
-                                contact={contact}
-                            />
+                            <Form.Item name="schedule" label="Time & Date">
+                                <DatePicker
+                                    showTime
+                                    showNow={false}
+                                    onOk={() => setIsScheduledMessage(false)}
+                                    disabledDate={disabledDateAndTime}
+                                    format="MMMM D, YYYY h:mm A"
+                                />
+                            </Form.Item>
                         }
                         title={
                             <Button
                                 type="link"
+                                onClick={() => {
+                                    form.setFieldValue("schedule", null);
+                                    setIsScheduledMessage(false);
+                                }}
                                 style={{ padding: 0 }}
-                                onClick={() => setIsTemplatePopoverOpen(false)}
                             >
                                 Cancel
                             </Button>
                         }
-                        trigger={"click"}
-                        open={isTemplatePopoverOpen}
+                        placement="topRight"
+                        visible={isScheduledMessage}
                     >
-                        <Button
-                            type="link"
-                            onClick={() => setIsTemplatePopoverOpen(true)}
-                        >
-                            Use Template <CaretDownOutlined />
+                        <Button onClick={() => setIsScheduledMessage(true)}>
+                            Schedule
                         </Button>
                     </Popover>
-                )}
-            </Space>
-
-            {error ? (
-                <center>
-                    <Typography.Text style={{ color: "red" }}>
-                        {error}
-                    </Typography.Text>
-                </center>
-            ) : null}
-
-            {schedule ? (
-                <center>
-                    <Typography.Text>
-                        {`This text will be sent on ${scheduleLabel}`}
-                    </Typography.Text>
-                </center>
-            ) : null}
-
-            <Space style={{ paddingTop: "5px" }}>
-                <Button
-                    type="primary"
-                    htmlType="submit"
-                    loading={sendText.isLoading}
-                >
-                    Send
-                </Button>
-                <Popover
-                    content={
-                        <Form.Item name="schedule" label="Time & Date">
-                            <DatePicker
-                                showTime
-                                showNow={false}
-                                onOk={() => setIsScheduledMessage(false)}
-                                disabledDate={disabledDateAndTime}
-                                format="MMMM D, YYYY h:mm A"
-                            />
-                        </Form.Item>
-                    }
-                    title={
-                        <Button
-                            type="link"
-                            onClick={() => {
-                                form.setFieldValue("schedule", null);
-                                setIsScheduledMessage(false);
-                            }}
-                            style={{ padding: 0 }}
-                        >
-                            Cancel
-                        </Button>
-                    }
-                    placement="topRight"
-                    visible={isScheduledMessage}
-                >
-                    <Button onClick={() => setIsScheduledMessage(true)}>
-                        Schedule
-                    </Button>
-                </Popover>
-                <Button onClick={resetFields}>Cancel</Button>
-            </Space>
-        </Form>
+                    <Button onClick={resetFields}>Cancel</Button>
+                </Space>
+            </Form>
+        </>
     );
 };
 

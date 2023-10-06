@@ -175,7 +175,7 @@ class ContactsController extends Controller
                 $update->contactId = $id;
                 
                 if($key == 'defaultMobileNumberId'){
-                    $update->from = $from->defaultMobile->mobileNumber;
+                    $update->from = $from->defaultMobile ? $from->defaultMobile->mobileNumber : "";
                     $update->to = $contact->defaultMobile->mobileNumber;
                     $update->title = "Default Mobile Number Updated";
                 }

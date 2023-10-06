@@ -33,6 +33,7 @@ const TextContent = ({
     thread: TTextThread;
 }) => {
     const [isFocused, setIsFocused] = React.useState(false);
+    const [divKey, setDivKey] = React.useState(0);
     const chatBoxRef = React.useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
@@ -43,8 +44,8 @@ const TextContent = ({
 
     React.useEffect(() => {
         scrollToBottom();
+        setDivKey(divKey + 1);
     }, [thread]);
-    console.log(thread);
 
     return ["all", "inbox", "scheduled"].includes(menu) ? (
         <Row key={thread.id}>
@@ -104,26 +105,16 @@ const TextContent = ({
                             backgroundColor: "white",
                             padding: "10px",
                         }}
+                        key={divKey}
                     >
-                        {isFocused ? (
-                            <TextForm
-                                handleSubmit={() => {
-                                    queryClient.invalidateQueries("getContact");
-                                    setIsFocused(false);
-                                }}
-                                handleCancel={() => {
-                                    setIsFocused(false);
-                                }}
-                                to={thread.contactNumber}
-                                contact={thread.contact ?? undefined}
-                            />
-                        ) : (
-                            <Input.TextArea
-                                rows={2}
-                                placeholder="Type here ..."
-                                onClick={() => setIsFocused(true)}
-                            ></Input.TextArea>
-                        )}
+                        <TextForm
+                            handleSubmit={() => {
+                                queryClient.invalidateQueries("getContact");
+                                queryClient.invalidateQueries("thread");
+                            }}
+                            to={thread.contactNumber}
+                            contact={thread.contact ?? undefined}
+                        />
                     </div>
                 </div>
             </Col>
@@ -145,11 +136,7 @@ const TextContent = ({
                         Related Information
                     </div>
                     {thread.contact ? (
-                        <ContactContext.Provider
-                            value={{ contact: thread.contact }}
-                        >
-                            <ContactInfo />
-                        </ContactContext.Provider>
+                        <ContactInfo contact={thread.contact} />
                     ) : (
                         <p style={{ textAlign: "center" }}>
                             Number not saved in contacts

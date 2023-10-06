@@ -21,7 +21,7 @@ const ContactView = () => {
         <ContactContext.Provider value={{ contact }}>
             <Row gutter={24}>
                 <Col span={7}>
-                    <ContactInfo />
+                    <ContactInfo contact={contact} />
                 </Col>
                 <Col span={10}>
                     <ActionsTabs />
