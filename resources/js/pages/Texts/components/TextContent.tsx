@@ -50,7 +50,7 @@ const TextContent = ({
     return ["all", "inbox", "scheduled"].includes(menu) ? (
         <Row key={thread.id}>
             <Col
-                span={12}
+                span={13}
                 style={{ height: "85vh", overflowY: "auto" }}
                 ref={chatBoxRef}
             >
@@ -81,7 +81,7 @@ const TextContent = ({
                 </div>
 
                 <div style={{ paddingTop: "50px", height: "85%" }}>
-                    <div style={{ paddingBottom: "106", minHeight: "100%" }}>
+                    <div style={{ minHeight: "80%" }}>
                         {thread.texts
                             ?.sort(
                                 (a, b) =>
@@ -118,7 +118,7 @@ const TextContent = ({
                     </div>
                 </div>
             </Col>
-            <Col span={12} style={{ height: "85vh", overflowY: "auto" }}>
+            <Col span={11} style={{ height: "85vh", overflowY: "auto" }}>
                 <Space
                     direction="vertical"
                     size={0}

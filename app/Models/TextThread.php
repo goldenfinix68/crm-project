@@ -30,7 +30,7 @@ class TextThread extends Model
 
     public function getContactAttribute()
     {
-        return Contact::where('mobile', $this->contactNumber)->first();
+        return Contact::with(['type'])->where('mobile', $this->contactNumber)->first();
     }
 
     public function getContactNameAttribute()

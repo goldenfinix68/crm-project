@@ -100,12 +100,12 @@ const TextBoxView = () => {
             />
             <Card bodyStyle={{ padding: 0 }}>
                 <Row gutter={0} style={{ height: "85vh" }}>
-                    <Col span={12} style={{ padding: "24px" }}>
+                    <Col span={11} style={{ padding: "24px" }}>
                         <TextList label={label} />
                     </Col>
 
                     <Col
-                        span={12}
+                        span={13}
                         style={{
                             backgroundColor: "#F5F5F5",
                             margin: 0,

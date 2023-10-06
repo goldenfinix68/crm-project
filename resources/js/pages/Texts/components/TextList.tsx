@@ -165,7 +165,9 @@ const TextList = ({ label }) => {
                         Labels
                     </Button>
                 </Space>
-            ) : null}
+            ) : (
+                <div style={{ height: "32px" }}></div>
+            )}
             <List itemLayout="horizontal" style={{ marginTop: 0 }}>
                 {threadList?.map((thread, index) => (
                     <>
