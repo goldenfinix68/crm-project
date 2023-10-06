@@ -44,19 +44,19 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
 
-    protected $appends = [
-        'numbers', 
-    ];
+    // protected $appends = [
+    //     'numbers', 
+    // ];
 
-    public function mobileNumbers()
+    public function numbers()
     {
         return $this->hasMany(\App\Models\MobileNumber::class, 'userId', 'id');
         
     }
     
 
-    public function getNumbersAttribute()
-    {
-        return $this->mobileNumbers;
-    }
+//     public function getNumbersAttribute()
+//     {
+//         return $this->mobileNumbers;
+//     }
 }

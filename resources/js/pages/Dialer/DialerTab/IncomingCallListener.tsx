@@ -4,6 +4,7 @@ import { Audio } from "@telnyx/react-client";
 import DialerTab from "./DialerTab";
 import { useCallContext } from "../../../context/CallContext";
 import RecentTab from "./RecentTab";
+import { useAppContextProvider } from "../../../context/AppContext";
 
 const IncomingCallListener = () => {
     const [telnyxClient, setTelnyxClient] = useState<any>(null);
@@ -16,6 +17,8 @@ const IncomingCallListener = () => {
 
     const { isModalOpen, setIsModalOpen, callerNumber, destinationNumber } =
         useCallContext();
+
+    const { loggedInUser } = useAppContextProvider();
 
     const handleNotification = (notification) => {
         // console.log(notification);
@@ -109,52 +112,54 @@ const IncomingCallListener = () => {
         telnyxClient?.newCall(params);
     };
     useEffect(() => {
-        // Load the Telnyx WebRTC SDK script
-        const telnyxScript = document.createElement("script");
-        telnyxScript.src = "https://unpkg.com/@telnyx/webrtc";
-        telnyxScript.type = "text/javascript";
-        document.body.appendChild(telnyxScript);
+        if (loggedInUser) {
+            // Load the Telnyx WebRTC SDK script
+            const telnyxScript = document.createElement("script");
+            telnyxScript.src = "https://unpkg.com/@telnyx/webrtc";
+            telnyxScript.type = "text/javascript";
+            document.body.appendChild(telnyxScript);
 
-        telnyxScript.onload = () => {
-            // Initialize Telnyx
-            const TelnyxWebRTC = (window as any).TelnyxWebRTC;
-            const client = new TelnyxWebRTC.TelnyxRTC({
-                env: "production",
-                login: (window as any).TELNYX_USERNAME,
-                password: (window as any).TELNYX_PASSWORD,
-                // ringtoneFile: "/sounds/incoming_call.mp3",
-                // iceServers: [{ urls: ['stun:stun.l.google.com:19302'] }],
-                // ringbackFile: "/sounds/calling_ringing.mp3",
-            });
-            client.enableMicrophone();
+            telnyxScript.onload = () => {
+                // Initialize Telnyx
+                const TelnyxWebRTC = (window as any).TelnyxWebRTC;
+                const client = new TelnyxWebRTC.TelnyxRTC({
+                    env: "production",
+                    login: loggedInUser?.telnyxConnectionUserName,
+                    password: loggedInUser?.telnyxConnectionPassword,
+                    // ringtoneFile: "/sounds/incoming_call.mp3",
+                    // iceServers: [{ urls: ['stun:stun.l.google.com:19302'] }],
+                    // ringbackFile: "/sounds/calling_ringing.mp3",
+                });
+                client.enableMicrophone();
 
-            client.on("telnyx.ready", function () {
-                console.log("connected");
-            });
+                client.on("telnyx.ready", function () {
+                    console.log("connected");
+                });
 
-            // Update UI on socket close
-            client.on("telnyx.socket.close", function () {
-                console.log("closed");
-                client.disconnect();
-            });
+                // Update UI on socket close
+                client.on("telnyx.socket.close", function () {
+                    console.log("closed");
+                    client.disconnect();
+                });
 
-            // Handle error...
-            client.on("telnyx.error", function (error) {
-                console.error("telnyx error:", error);
-                client.disconnect();
-            });
-            client.on("telnyx.notification", handleNotification);
+                // Handle error...
+                client.on("telnyx.error", function (error) {
+                    console.error("telnyx error:", error);
+                    client.disconnect();
+                });
+                client.on("telnyx.notification", handleNotification);
 
-            client.connect();
+                client.connect();
 
-            setTelnyxClient(client);
-        };
+                setTelnyxClient(client);
+            };
 
-        return () => {
-            // Cleanup: remove script when the component unmounts
-            document.body.removeChild(telnyxScript);
-        };
-    }, []);
+            return () => {
+                // Cleanup: remove script when the component unmounts
+                document.body.removeChild(telnyxScript);
+            };
+        }
+    }, [loggedInUser]);
 
     const modalTitle = () => {
         if (currentCall?.state == "ringing?") {

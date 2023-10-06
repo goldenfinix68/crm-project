@@ -325,7 +325,6 @@ const App: React.FC = () => {
                                     }
                                 />
                             </Routes>
-                            <IncomingCallListener />
                         </SideMenu>
                     </CallProvider>
                 </AppContextProvider>

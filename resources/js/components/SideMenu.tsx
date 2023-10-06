@@ -25,6 +25,8 @@ import { faPhone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { faUser } from "@fortawesome/free-solid-svg-icons";
+import IncomingCallListener from "../pages/Dialer/DialerTab/IncomingCallListener";
+import { useAppContextProvider } from "../context/AppContext";
 
 const { Header, Sider, Content } = Layout;
 
@@ -32,7 +34,8 @@ const SideMenu = ({ children }) => {
     const navigate = useNavigate();
     const { setIsModalOpen, setCallerNumber, setDestinationNumber } =
         useCallContext();
-    const { user, isLoading: isLogginUserLoading } = useLoggedInUser();
+
+    const { loggedInUser } = useAppContextProvider();
     const {
         token: { colorBgContainer },
     } = theme.useToken();
@@ -98,8 +101,8 @@ const SideMenu = ({ children }) => {
                     onClick={(e) => {
                         if (e.key == "/dialer") {
                             setCallerNumber(
-                                user?.numbers?.length
-                                    ? user.numbers[0].mobileNumber
+                                loggedInUser?.numbers?.length
+                                    ? loggedInUser.numbers[0].mobileNumber
                                     : ""
                             );
                             setDestinationNumber("");
@@ -128,6 +131,8 @@ const SideMenu = ({ children }) => {
                     {children}
                 </Content>
             </Layout>
+
+            <IncomingCallListener />
         </Layout>
     );
 };

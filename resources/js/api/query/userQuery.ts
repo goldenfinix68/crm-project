@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
 import axios from "axios";
-import { TMobileNumber, TUser } from "../../entities";
+import { TMobileNumber, TSipTrunkingConnection, TUser } from "../../entities";
 
 export const useLoggedInUser = () => {
     const { data, isLoading, isError } = useQuery<TUser>("user", async () => {
@@ -81,16 +81,19 @@ export const useUserFavorites = () => {
     };
 };
 
-export const useGetAvailableNumbersTelnyx = () => {
-    const { data, isLoading, isError } = useQuery<TMobileNumber[]>(
-        "availableNumbersTelnyx",
+export const useGetAvailableSipTrunkingConnectionTelnyx = () => {
+    const { data, isLoading, isError } = useQuery<TSipTrunkingConnection[]>(
+        "getAvailableSipTrunkingConnection",
         async () => {
             const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
-            const response = await axios.get("/api/telnyx/available-numbers", {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            });
+            const response = await axios.get(
+                "/api/telnyx/available-sip-trunking-connections",
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            );
             return response.data;
         }
     );

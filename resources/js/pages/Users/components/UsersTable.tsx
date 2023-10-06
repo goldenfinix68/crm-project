@@ -22,6 +22,21 @@ const columns: ColumnsType<TUser> = [
         dataIndex: "email",
     },
     {
+        key: "telnyxConnectionName",
+        title: "SIP Trunking / Mobile Numbers",
+        render: (key: any, record: TUser) => {
+            return record.telnyxConnectionName
+                ? `${record.telnyxConnectionName} (${
+                      record.numbers?.length
+                          ? record.numbers
+                                ?.map((number) => number.mobileNumber)
+                                .join(", ")
+                          : "No number associated with this connection"
+                  })`
+                : "";
+        },
+    },
+    {
         title: "Action",
         key: "action",
         render: (key: any, record: any) => {

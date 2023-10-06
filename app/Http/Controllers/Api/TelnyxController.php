@@ -8,22 +8,31 @@ use Telnyx\Telnyx;
 
 class TelnyxController extends Controller
 {
-    public function getAvailableNumbers()
+    public function getAvailableSipTrunkingConnection()
     {
         // Initialize the Telnyx client with your API key
         Telnyx::setApiKey(env('TELNYX_API_KEY'));
 
-        // Make a request to Telnyx to get available numbers
-        $response = \Telnyx\PhoneNumber::all();
+        $connections = \Telnyx\CredentialConnection::all();
 
         $data = [];
-        foreach($response->data as $number){
+        foreach($connections->data as $connection){
+            $mobileNumbers = \Telnyx\PhoneNumber::all(['filter[connection_id]' => $connection->id]);
+            
+            $numbers = [];
+            foreach($mobileNumbers->data as $number){
+                $numbers[] = [
+                    'mobileNumber' => $number->phone_number,
+                ];
+            }
             $data[] = [
-                'telnyId' => $number->id,
-                'messagingProfileId' => $number->messaging_profile_id,
-                'connectionId' => $number->connection_id,
-                'mobileNumber' => $number->phone_number,
+                'telnyxConnectionId' => $connection->id,
+                'telnyxConnectionName' => $connection->connection_name,
+                'telnyxConnectionUserName' => $connection->user_name,
+                'telnyxConnectionPassword' => $connection->password,
+                'mobileNumbers' => $numbers,
             ];
+
         }
         // Process the response, it will contain the available numbers
 

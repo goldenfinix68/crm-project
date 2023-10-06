@@ -3,15 +3,19 @@ export type TUser = {
     firstName: string;
     lastName: string;
     email: string;
-    numbers?: TMobileNumber[];
-};
+} & TSipTrunkingConnection;
 
 export type TMobileNumber = {
     id: string;
-    telnyxId?: string;
-    messagingProfileId?: string;
-    connectionId?: string;
     mobileNumber: string;
+};
+
+export type TSipTrunkingConnection = {
+    telnyxConnectionId: string;
+    telnyxConnectionName: string;
+    telnyxConnectionUserName: string;
+    telnyxConnectionPassword: string;
+    numbers: TMobileNumber[];
 };
 
 export type TContactType = {

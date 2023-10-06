@@ -47,7 +47,7 @@ class Text extends Model
     {
         $from = $this->from;
         if($this->isFromApp){
-            $senders = User::whereHas('mobileNumbers', function ($query) use ($from) {
+            $senders = User::whereHas('numbers', function ($query) use ($from) {
                 $query->where('mobileNumber', $from);
             })->get()->pluck('firstName', 'lastName');
             
@@ -80,7 +80,7 @@ class Text extends Model
         }
         else{
             
-            $senders = User::whereHas('mobileNumbers', function ($query) use ($to) {
+            $senders = User::whereHas('numbers', function ($query) use ($to) {
                 $query->where('mobileNumber', $to);
             })->get()->pluck('firstName', 'lastName');
             

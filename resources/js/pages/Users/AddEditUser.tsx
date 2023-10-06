@@ -9,7 +9,7 @@ import { addUserMutation } from "../../api/mutation/useUserMutation";
 import { TUser } from "../../entities";
 import { useForm } from "antd/es/form/Form";
 import {
-    useGetAvailableNumbersTelnyx,
+    useGetAvailableSipTrunkingConnectionTelnyx,
     usefindUser,
 } from "../../api/query/userQuery";
 import LoadingComponent from "../../components/LoadingComponent";
@@ -26,8 +26,10 @@ const AddEditUser = () => {
 
     const { user, isLoading } = usefindUser(userId ?? "");
 
-    const { data: mobileNumbers, isLoading: isAvailableNumbersLoading } =
-        useGetAvailableNumbersTelnyx();
+    const {
+        data: sipTrunkingConnections,
+        isLoading: isSipTrunkingConnectionsLoading,
+    } = useGetAvailableSipTrunkingConnectionTelnyx();
 
     const mutation = useMutation(addUserMutation, {
         onSuccess: () => {
@@ -36,22 +38,28 @@ const AddEditUser = () => {
     });
 
     const onFinish = (values: TUser) => {
-        mutation.mutate(values);
+        mutation.mutate({
+            ...values,
+            sipTrunkingConnection: sipTrunkingConnections?.find(
+                (connection) =>
+                    connection.telnyxConnectionId == values.telnyxConnectionId
+            ),
+        });
     };
 
     React.useEffect(() => {
         if (user) {
             form.setFieldsValue(user);
-            form.setFieldValue(
-                "numbers",
-                user.numbers?.map((number) => number.mobileNumber)
-            );
+            // form.setFieldValue(
+            //     "numbers",
+            //     user.numbers?.map((number) => number.mobileNumber)
+            // );
         } else {
             form.resetFields();
         }
     }, [user]);
 
-    if (isLoading || isAvailableNumbersLoading) {
+    if (isLoading || isSipTrunkingConnectionsLoading) {
         return <LoadingComponent />;
     }
 
@@ -59,7 +67,7 @@ const AddEditUser = () => {
         <Card
             title={`${user ? "Edit" : "Add"} user`}
             extra={
-                <Link to="/users">
+                <Link to="/setup/users">
                     <Button type="link">
                         <ArrowLeftOutlined /> &nbsp;Back
                     </Button>
@@ -115,8 +123,8 @@ const AddEditUser = () => {
                     <Input type="email" />
                 </Form.Item>
                 <Form.Item
-                    label="Mobile Numbers"
-                    name="numbers"
+                    label="SIP Trunking Connection"
+                    name="telnyxConnectionId"
                     rules={[
                         {
                             required: true,
@@ -125,14 +133,19 @@ const AddEditUser = () => {
                     ]}
                 >
                     <Select
-                        placeholder="Enter mobile numbers"
+                        placeholder="Select SIP Trunking Connection"
                         defaultValue={[]}
                         style={{ width: "100%" }}
-                        mode="multiple"
                         showSearch
-                        options={mobileNumbers?.map((number) => ({
-                            label: number.mobileNumber,
-                            value: number.mobileNumber,
+                        options={sipTrunkingConnections?.map((connection) => ({
+                            label: `${connection.telnyxConnectionName} (${
+                                connection.numbers.length
+                                    ? connection.numbers
+                                          ?.map((number) => number.mobileNumber)
+                                          .join(", ")
+                                    : "No number associated with this connection"
+                            })`,
+                            value: connection.telnyxConnectionId,
                         }))}
                     />
                 </Form.Item>

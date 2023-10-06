@@ -61,7 +61,7 @@ class CheckWorkflow extends Command
                         $message = $this->replace_text($workflow->message, $contact);
 
                         $text = new Text();
-                        $text->from = $user->mobileNumbers->first();
+                        $text->from = $user->numbers->first();
                         $text->to = $contact->mobile;
                         $text->message = $message;
                         $text->type = 'SMS';

@@ -66,7 +66,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/activities_contacts', 'App\Http\Controllers\Api\ActivityController@get_contact');
     Route::get('/activities_deals', 'App\Http\Controllers\Api\ActivityController@get_deal');
     Route::get('/user', function (Request $request) {
-        return $request->user();
+        return App\Models\User::with('numbers')->find($request->user()->id);
     });
 
     Route::resource('/activity_custome_fields', 'App\Http\Controllers\Api\ActivityCustomFieldController');
@@ -93,7 +93,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/text-threads/mark-texts-seen', 'App\Http\Controllers\Api\TextThreadsController@mark_texts_seen');
     Route::post('/text-threads/delete', 'App\Http\Controllers\Api\TextThreadsController@destroy');
 
-    Route::get('/telnyx/available-numbers', 'App\Http\Controllers\Api\TelnyxController@getAvailableNumbers');
+    Route::get('/telnyx/available-sip-trunking-connections', 'App\Http\Controllers\Api\TelnyxController@getAvailableSipTrunkingConnection');
 
 });
 

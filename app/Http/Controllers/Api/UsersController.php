@@ -17,7 +17,7 @@ class UsersController extends Controller
      */
     public function index()
     {
-        return User::all();
+        return User::with('numbers')->get();
     }
 
     /**
@@ -49,27 +49,24 @@ class UsersController extends Controller
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
 
+        $user->telnyxConnectionId = $request->sipTrunkingConnection['telnyxConnectionId'];
+        $user->telnyxConnectionName = $request->sipTrunkingConnection['telnyxConnectionName'];
+        $user->telnyxConnectionUserName = $request->sipTrunkingConnection['telnyxConnectionUserName'];
+        $user->telnyxConnectionPassword = $request->sipTrunkingConnection['telnyxConnectionPassword'];
         $user->save();
 
-        foreach($request->numbers as $number){
-            Telnyx::setApiKey(env('TELNYX_API_KEY'));
-            $telnyxNumberDetails = \Telnyx\PhoneNumber::retrieve($number);
-            $telnyxConnectionCreds = \Telnyx\CredentialConnection::retrieve($telnyxNumberDetails->connection_id);
-
+        $mobileNumbers = collect($request->sipTrunkingConnection['mobileNumbers'])->pluck('mobileNumber')->toArray();
+        
+        foreach($mobileNumbers as $number){
             $isExisting = MobileNumber::where('mobileNumber', $number)->where('userId', $user->id)->first();
             if(empty($isExisting)){
                 $newMobile = new MobileNumber();
                 $newMobile->userId = $user->id;
                 $newMobile->mobileNumber = $number;
-                $newMobile->telnyxId = $telnyxNumberDetails->id;
-                $newMobile->messagingProfileId = $telnyxNumberDetails->messaging_profile_id;
-                $newMobile->connectionId = $telnyxNumberDetails->connection_id;
-                $newMobile->sipTrunkUsername = $telnyxConnectionCreds->user_name;
-                $newMobile->sipTrunkPassword = $telnyxConnectionCreds->password;
                 $newMobile->save();
             }
         }
-        $user->mobileNumbers()->whereNotIn('mobileNumber', $request->numbers)->delete();
+        $user->numbers()->whereNotIn('mobileNumber', $mobileNumbers)->delete();
 
         if(empty($request->id)){
             $user->markEmailAsVerified();
@@ -87,7 +84,7 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        return User::find($id);
+        return User::with('numbers')->find($id);
     }
 
     /**
