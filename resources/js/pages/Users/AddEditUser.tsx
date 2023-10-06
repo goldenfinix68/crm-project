@@ -139,7 +139,7 @@ const AddEditUser = () => {
                         showSearch
                         options={sipTrunkingConnections?.map((connection) => ({
                             label: `${connection.telnyxConnectionName} (${
-                                connection.numbers.length
+                                connection.numbers?.length
                                     ? connection.numbers
                                           ?.map((number) => number.mobileNumber)
                                           .join(", ")
