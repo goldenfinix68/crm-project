@@ -35,13 +35,15 @@ const ChatBoxItem = ({ name, text }: { name: string; text: TText }) => {
                     {text.message}
                 </div>
                 <div style={{ marginTop: "8px", fontSize: "10px" }}>
-                    {text.month.substring(0, 3) +
+                    {`${text.to} ${
+                        text.month.substring(0, 3) +
                         " " +
                         text.day +
                         ", " +
                         text.year +
                         " " +
-                        text.time}
+                        text.time
+                    }`}
                 </div>
             </div>
         </div>
@@ -99,13 +101,15 @@ const ChatBoxItem = ({ name, text }: { name: string; text: TText }) => {
                     {text.message}
                 </div>
                 <div style={{ marginTop: "8px", fontSize: "10px" }}>
-                    {text.month.substring(0, 3) +
+                    {`${
+                        text.month.substring(0, 3) +
                         " " +
                         text.day +
                         ", " +
                         text.year +
                         " " +
-                        text.time}
+                        text.time
+                    } ${text.from}`}
                 </div>
             </div>
         </div>

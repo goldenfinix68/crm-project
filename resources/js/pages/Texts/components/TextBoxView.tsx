@@ -73,7 +73,7 @@ const TextBoxView = () => {
 
     const markAsSeen = useMutation(useMarkThreadSeen, {
         onSuccess: () => {
-            queryClient.invalidateQueries("threads");
+            queryClient.invalidateQueries("textThreads");
         },
     });
 
@@ -84,9 +84,14 @@ const TextBoxView = () => {
         } else {
             setIsLoading(true);
             refetch();
-            markAsSeen.mutate({ threadId });
         }
     }, [threadId]);
+
+    React.useEffect(() => {
+        if (thread) {
+            markAsSeen.mutate({ threadId: thread.id });
+        }
+    }, [thread]);
 
     if (isThreadLoading) {
         return <LoadingComponent />;

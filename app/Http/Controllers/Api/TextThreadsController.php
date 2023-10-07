@@ -8,6 +8,7 @@ use App\Models\TextThread;
 use App\Models\Text;
 use Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class TextThreadsController extends Controller
 {
@@ -25,7 +26,13 @@ class TextThreadsController extends Controller
         }
         $userNumbers = $user->numbers->pluck('mobileNumber');
 
-        return TextThread::with(['texts', 'labels'])->whereIn('userNumber', $userNumbers)->orderBy('id', 'desc')->get();
+        $threads =  TextThread::with('labels')->whereIn('userNumber', $userNumbers)->get()->unique('contactNumber');
+
+        foreach($threads as $thread){
+            $thread = $this->prepareThreadTexts($thread);
+        }
+
+        return $threads->sortByDesc('lastTextId')->values();
     }
 
     /**
@@ -57,7 +64,14 @@ class TextThreadsController extends Controller
      */
     public function show($id)
     {
-        return TextThread::with(['texts', 'labels'])->where('id', $id)->first();
+        $thread = TextThread::with('labels')->where('id', $id)->first();
+        
+        if(empty($thread)){
+            abort(404, 'Thread not found');
+        }
+
+        $thread = $this->prepareThreadTexts($thread);
+        return $thread;
     }
 
     /**
@@ -129,10 +143,29 @@ class TextThreadsController extends Controller
         }
 
         // Update all texts for the contact where seen_at is null
-        Text::where('threadId', $thread->id)
-            ->whereNull('seen_at')
-            ->update(['seen_at' => Carbon::now()]); // Set seen_at to the current timestamp
+        $threads = TextThread::where('contactNumber', $thread->contactNumber)->get();
+        foreach($threads as $threa){
+            Text::where('threadId', $threa->id)
+            ->where(function($query) {
+                $query->whereNull('seen_at')
+                    ->orWhere('seen_at', ''); // Empty string condition
+            })
+            ->update(['seen_at' => Carbon::now()]);
+        } 
 
         return response()->json(['success' => true]);
+    }
+
+    private function prepareThreadTexts($thread){
+        $datas = TextThread::with('texts')->where('contactNumber', $thread->contactNumber)->get();
+
+        $mergedTexts = collect();
+        foreach($datas as $data){
+            $mergedTexts = $mergedTexts->merge($data->texts);
+        }
+        $thread->texts = $mergedTexts->sortByDesc('id')->values();
+        $thread->lastTextId = $thread->texts[0]->id;
+
+        return $thread;
     }
 }
