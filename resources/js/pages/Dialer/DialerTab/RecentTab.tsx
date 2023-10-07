@@ -21,7 +21,7 @@ const RecentTab = () => {
                     <List.Item>
                         <List.Item.Meta
                             avatar={<Avatar icon={<UserOutlined />} />}
-                            title={`${item.contactName}`}
+                            title={`${item.contactName} to ${item.to}`}
                             description={
                                 <Space direction="vertical" size={0}>
                                     {item.isFromApp ? (

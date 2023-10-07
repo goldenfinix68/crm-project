@@ -5,6 +5,7 @@ import DialerTab from "./DialerTab";
 import { useCallContext } from "../../../context/CallContext";
 import RecentTab from "./RecentTab";
 import { useAppContextProvider } from "../../../context/AppContext";
+import LoadingComponent from "../../../components/LoadingComponent";
 
 const IncomingCallListener = () => {
     const [telnyxClient, setTelnyxClient] = useState<any>(null);
@@ -14,12 +15,14 @@ const IncomingCallListener = () => {
     const [isLoading, setIsloading] = useState(false);
     const [isRinging, setIsRinging] = useState(false);
     const [callFrom, setCallFrom] = useState("");
+    const [callerNameNumber, setCallerNameNumber] = useState("");
 
     const { isModalOpen, setIsModalOpen, callerNumber, destinationNumber } =
         useCallContext();
+    const { contacts, isContactsLoading } = useAppContextProvider();
 
     const { loggedInUser } = useAppContextProvider();
-
+    console.log(contacts);
     const handleNotification = (notification) => {
         // console.log(notification);
         switch (notification.type) {
@@ -40,11 +43,14 @@ const IncomingCallListener = () => {
                 break;
             case "trying": // You are trying to call someone and he's ringing now
                 console.log("Trying");
+                setCallerNameNumber(call?.options?.destinationNumber);
                 setCurrentCall(call);
                 setIsModalOpen(true);
                 setIsloading(false);
                 setIsRinging(true);
                 setCallFrom("outgoing");
+                console.log("calling: ", call);
+                console.log({ contacts });
                 break;
             case "recovering": // Call is recovering from a previous session
                 // Handle recovering logic...
@@ -56,12 +62,14 @@ const IncomingCallListener = () => {
                 setIsloading(false);
                 setIsRinging(true);
                 setCallFrom("incoming");
+                setCallerNameNumber(call?.options?.remoteCallerName);
                 break;
             case "active": // Call has become active
                 console.log("Call has become active");
                 setCurrentCall(call);
                 setIsRinging(false);
                 setCallFrom("");
+                setCallerNameNumber(call?.options?.remoteCallerName);
                 break;
             case "hangup": // Call is over
                 console.log("Call is over");
@@ -71,6 +79,17 @@ const IncomingCallListener = () => {
                 clearFields();
                 console.log("Call has been destroyed");
                 break;
+        }
+    };
+
+    const getCallerNameByMobile = () => {
+        const contact = contacts.find(
+            (data) => data.mobile == callerNameNumber
+        );
+        if (contact) {
+            return `${contact.firstName} ${contact.lastName}`;
+        } else {
+            return callerNameNumber;
         }
     };
     const clearFields = () => {
@@ -188,6 +207,10 @@ const IncomingCallListener = () => {
             children: <RecentTab />,
         },
     ];
+
+    if (isContactsLoading) {
+        return <LoadingComponent />;
+    }
     return (
         <>
             <Audio stream={currentCall && currentCall.remoteStream} />
@@ -216,98 +239,96 @@ const IncomingCallListener = () => {
                 // okText="Answer"
                 // cancelText="Reject"
             >
-                {currentCall?.state == "ringing" ? (
-                    <>
-                        <p>
-                            {`Pick up the call from ${currentCall?.options?.remoteCallerName}?`}
-                        </p>
-                        <Space
-                            style={{
-                                position: "absolute",
-                                bottom: "16px",
-                                right: "16px",
-                            }}
-                        >
-                            <Button
-                                type="default"
-                                onClick={() => {
-                                    currentCall.hangup();
-                                    clearFields();
+                <div style={{ paddingTop: "16px" }}>
+                    {currentCall?.state == "ringing" ? (
+                        <>
+                            <p>{`Pick up the call from ${getCallerNameByMobile()}?`}</p>
+                            <Space
+                                style={{
+                                    position: "absolute",
+                                    bottom: "16px",
+                                    right: "16px",
                                 }}
                             >
-                                Reject
-                            </Button>
-                            <Button
-                                type="primary"
-                                onClick={() => {
-                                    currentCall.answer();
+                                <Button
+                                    type="default"
+                                    onClick={() => {
+                                        currentCall.hangup();
+                                        clearFields();
+                                    }}
+                                >
+                                    Reject
+                                </Button>
+                                <Button
+                                    type="primary"
+                                    onClick={() => {
+                                        currentCall.answer();
+                                    }}
+                                >
+                                    Answer
+                                </Button>
+                            </Space>
+                        </>
+                    ) : currentCall?.state == "active" ? (
+                        <Space direction="vertical">
+                            <p>
+                                {`Active call with ${getCallerNameByMobile()}?`}
+                            </p>
+                            <Space
+                                style={{
+                                    position: "absolute",
+                                    bottom: "16px",
+                                    right: "16px",
                                 }}
                             >
-                                Answer
-                            </Button>
+                                <Button type="default" onClick={toggleMute}>
+                                    {isMuted ? "Unmute" : "Mute"}
+                                </Button>
+                                <Button
+                                    type="default"
+                                    onClick={() => {
+                                        currentCall.hangup();
+                                        clearFields();
+                                    }}
+                                >
+                                    Hang Up
+                                </Button>
+                                <Button type="default" onClick={toggleHold}>
+                                    {isOnHold ? "Resume Call" : "Hold Call"}
+                                </Button>
+                            </Space>
                         </Space>
-                    </>
-                ) : currentCall?.state == "active" ? (
-                    <Space direction="vertical">
-                        <p>
-                            {`Active call with ${currentCall?.options?.remoteCallerName}?`}
-                        </p>
-                        <Space
-                            style={{
-                                position: "absolute",
-                                bottom: "16px",
-                                right: "16px",
-                            }}
-                        >
-                            <Button type="default" onClick={toggleMute}>
-                                {isMuted ? "Unmute" : "Mute"}
-                            </Button>
-                            <Button
-                                type="default"
-                                onClick={() => {
-                                    currentCall.hangup();
-                                    clearFields();
+                    ) : currentCall?.state == "trying" ? (
+                        <Space direction="vertical">
+                            <p>{`Calling ${getCallerNameByMobile()}?`}</p>
+                            <Space
+                                style={{
+                                    position: "absolute",
+                                    bottom: "16px",
+                                    right: "16px",
                                 }}
                             >
-                                Hang Up
-                            </Button>
-                            <Button type="default" onClick={toggleHold}>
-                                {isOnHold ? "Resume Call" : "Hold Call"}
-                            </Button>
+                                <Button
+                                    type="default"
+                                    onClick={() => {
+                                        currentCall.hangup();
+                                        clearFields();
+                                    }}
+                                >
+                                    Hang Up
+                                </Button>
+                            </Space>
                         </Space>
-                    </Space>
-                ) : currentCall?.state == "trying" ? (
-                    <Space direction="vertical">
-                        <p>
-                            {`Calling ${currentCall?.options?.remoteCallerName}?`}
-                        </p>
-                        <Space
-                            style={{
-                                position: "absolute",
-                                bottom: "16px",
-                                right: "16px",
-                            }}
-                        >
-                            <Button
-                                type="default"
-                                onClick={() => {
-                                    currentCall.hangup();
-                                    clearFields();
-                                }}
-                            >
-                                Hang Up
-                            </Button>
-                        </Space>
-                    </Space>
-                ) : (
-                    <>
-                        <Tabs
-                            className="dialerComponent"
-                            defaultActiveKey="1"
-                            items={dialerTabs}
-                        />
-                    </>
-                )}
+                    ) : (
+                        <>
+                            <Tabs
+                                className="dialerComponent"
+                                defaultActiveKey="1"
+                                items={dialerTabs}
+                            />
+                        </>
+                    )}
+                </div>
             </Modal>
         </>
     );

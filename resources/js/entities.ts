@@ -57,6 +57,8 @@ export type TCallHistory = {
     isFromApp: string;
     contactName: string;
     duration: string;
+    from: string;
+    to: string;
 };
 
 export type TText = {

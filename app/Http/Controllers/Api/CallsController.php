@@ -54,6 +54,8 @@ class CallsController extends Controller
                 'dateTime' => $call->created_at->format('M j, Y h:i a'),
                 'isFromApp' => !empty($isFromApp),
                 'contactName' => $contactName,
+                'to' => $call->to,
+                'from' => $call->from,
                 'duration' => $isAnswered ? $hangupData->created_at->diffInSeconds($answeredData->created_at) : "0"
             ];
         }
