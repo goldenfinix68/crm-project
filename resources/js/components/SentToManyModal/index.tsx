@@ -27,6 +27,7 @@ import { replacePlaceholders } from "../../helpers";
 import { useMutation } from "react-query";
 import { createWorkflowMutation } from "../../api/mutation/useWorkflowMutation";
 import queryClient from "../../queryClient";
+import AddAttributePopoverContent from "../../pages/TextTemplates/components/AddAttributePopoverContent";
 
 interface Props {
     isModalOpen: boolean;
@@ -99,6 +100,7 @@ const ModalForm = ({
     const [form] = Form.useForm();
     const message = Form.useWatch("message", form);
     const [isTemplatePopoverOpen, setIsTemplatePopoverOpen] = useState(false);
+    const [isAttributePopoverOpen, setIsAttributePopoverOpen] = useState(false);
     // const timezoneOptions = moment.tz.names().map((tz) => (
     //     <Select.Option key={tz} value={tz}>
     //         {tz}
@@ -358,35 +360,70 @@ const ModalForm = ({
                 }}
             >
                 <Typography.Text>Count: {message?.length}</Typography.Text>
-                <Popover
-                    content={
-                        <UseTemplatePopover
-                            handleSelect={(value) => {
-                                form.setFieldValue("message", value);
-                                setIsTemplatePopoverOpen(false);
-                            }}
-                            contact={contacts[0] ?? []}
-                        />
-                    }
-                    title={
+                <div>
+                    <Popover
+                        content={
+                            <AddAttributePopoverContent
+                                handleSelect={(value) => {
+                                    const currentMessage =
+                                        form.getFieldValue("message");
+                                    form.setFieldValue(
+                                        "message",
+                                        `${currentMessage ?? ""}${value}`
+                                    );
+                                    setIsAttributePopoverOpen(false);
+                                }}
+                            />
+                        }
+                        title={
+                            <Button
+                                type="link"
+                                style={{ padding: 0 }}
+                                onClick={() => setIsAttributePopoverOpen(false)}
+                            >
+                                Cancel
+                            </Button>
+                        }
+                        trigger={"click"}
+                        open={isAttributePopoverOpen}
+                    >
                         <Button
                             type="link"
-                            style={{ padding: 0 }}
-                            onClick={() => setIsTemplatePopoverOpen(false)}
+                            onClick={() => setIsAttributePopoverOpen(true)}
                         >
-                            Cancel
+                            Merge Fields <CaretDownOutlined />
                         </Button>
-                    }
-                    trigger={"click"}
-                    open={isTemplatePopoverOpen}
-                >
-                    <Button
-                        type="link"
-                        onClick={() => setIsTemplatePopoverOpen(true)}
+                    </Popover>
+                    <Popover
+                        content={
+                            <UseTemplatePopover
+                                handleSelect={(value) => {
+                                    form.setFieldValue("message", value);
+                                    setIsTemplatePopoverOpen(false);
+                                }}
+                                contact={contacts[0] ?? []}
+                            />
+                        }
+                        title={
+                            <Button
+                                type="link"
+                                style={{ padding: 0 }}
+                                onClick={() => setIsTemplatePopoverOpen(false)}
+                            >
+                                Cancel
+                            </Button>
+                        }
+                        trigger={"click"}
+                        open={isTemplatePopoverOpen}
                     >
-                        Use Template <CaretDownOutlined />
-                    </Button>
-                </Popover>
+                        <Button
+                            type="link"
+                            onClick={() => setIsTemplatePopoverOpen(true)}
+                        >
+                            Use Template <CaretDownOutlined />
+                        </Button>
+                    </Popover>
+                </div>
             </Space>
 
             <Space style={{ paddingTop: "5px" }}>

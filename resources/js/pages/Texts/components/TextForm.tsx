@@ -33,6 +33,7 @@ import { replacePlaceholders } from "../../../helpers";
 import UseTemplatePopover from "../../../components/UseTemplatePopover";
 import { TContact } from "../../../entities";
 import { useAppContextProvider } from "../../../context/AppContext";
+import AddAttributePopoverContent from "../../TextTemplates/components/AddAttributePopoverContent";
 interface Props {
     handleSubmit: () => void;
     handleCancel?: () => void;
@@ -50,6 +51,7 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
     const [isTemplatePopoverOpen, setIsTemplatePopoverOpen] = useState(false);
     const [isFocused, setIsFocused] = React.useState(false);
     const messageTextAreaRef = useRef<HTMLInputElement | null>(null);
+    const [isAttributePopoverOpen, setIsAttributePopoverOpen] = useState(false);
 
     const { contacts } = useAppContextProvider();
 
@@ -94,15 +96,6 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
             toFormValue ? toFormValue.replace(/[-\s+_]/g, "") : ""
         )
     );
-    const calculateRows = (content) => {
-        const lineHeight = 44; // Adjust this value according to your font and styling
-        const minRows = 1; // Minimum number of rows
-        const maxRows = 6; // Maximum number of rows
-
-        const contentRows = Math.ceil(content / lineHeight);
-
-        return Math.min(maxRows, Math.max(minRows, contentRows));
-    };
     return (
         <>
             <Form
@@ -212,40 +205,91 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
                 >
                     <Typography.Text>Count: {message?.length}</Typography.Text>
                     {contact && (
-                        <Popover
-                            content={
-                                <UseTemplatePopover
-                                    handleSelect={(value) => {
-                                        form.setFieldValue(
-                                            "message",
-                                            replacePlaceholders(value, contact)
-                                        );
-                                        setIsTemplatePopoverOpen(false);
-                                    }}
-                                    contact={contact}
-                                />
-                            }
-                            title={
+                        <div>
+                            <Popover
+                                content={
+                                    <AddAttributePopoverContent
+                                        handleSelect={(value) => {
+                                            let currentMessage =
+                                                form.getFieldValue("message");
+                                            currentMessage = `${
+                                                currentMessage ?? ""
+                                            }${value}`;
+
+                                            form.setFieldValue(
+                                                "message",
+                                                replacePlaceholders(
+                                                    currentMessage,
+                                                    contact
+                                                )
+                                            );
+                                            setIsAttributePopoverOpen(false);
+                                        }}
+                                    />
+                                }
+                                title={
+                                    <Button
+                                        type="link"
+                                        style={{ padding: 0 }}
+                                        onClick={() =>
+                                            setIsAttributePopoverOpen(false)
+                                        }
+                                    >
+                                        Cancel
+                                    </Button>
+                                }
+                                trigger={"click"}
+                                open={isAttributePopoverOpen}
+                            >
                                 <Button
                                     type="link"
-                                    style={{ padding: 0 }}
                                     onClick={() =>
-                                        setIsTemplatePopoverOpen(false)
+                                        setIsAttributePopoverOpen(true)
                                     }
                                 >
-                                    Cancel
+                                    Merge Fields <CaretDownOutlined />
                                 </Button>
-                            }
-                            trigger={"click"}
-                            open={isTemplatePopoverOpen}
-                        >
-                            <Button
-                                type="link"
-                                onClick={() => setIsTemplatePopoverOpen(true)}
+                            </Popover>
+                            <Popover
+                                content={
+                                    <UseTemplatePopover
+                                        handleSelect={(value) => {
+                                            form.setFieldValue(
+                                                "message",
+                                                replacePlaceholders(
+                                                    value,
+                                                    contact
+                                                )
+                                            );
+                                            setIsTemplatePopoverOpen(false);
+                                        }}
+                                        contact={contact}
+                                    />
+                                }
+                                title={
+                                    <Button
+                                        type="link"
+                                        style={{ padding: 0 }}
+                                        onClick={() =>
+                                            setIsTemplatePopoverOpen(false)
+                                        }
+                                    >
+                                        Cancel
+                                    </Button>
+                                }
+                                trigger={"click"}
+                                open={isTemplatePopoverOpen}
                             >
-                                Use Template <CaretDownOutlined />
-                            </Button>
-                        </Popover>
+                                <Button
+                                    type="link"
+                                    onClick={() =>
+                                        setIsTemplatePopoverOpen(true)
+                                    }
+                                >
+                                    Use Template <CaretDownOutlined />
+                                </Button>
+                            </Popover>
+                        </div>
                     )}
                 </Space>
 
