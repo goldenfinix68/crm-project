@@ -1,26 +1,26 @@
 {
   "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff": {
-    "file": "assets/bootstrap-icons-999550fa.woff",
+    "file": "assets/bootstrap-icons-4d4572ef.woff",
     "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff"
   },
   "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2": {
-    "file": "assets/bootstrap-icons-cfe45b98.woff2",
+    "file": "assets/bootstrap-icons-bacd70af.woff2",
     "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2"
   },
   "resources/js/app.css": {
-    "file": "assets/app-9b90d72b.css",
+    "file": "assets/app-5514be87.css",
     "src": "resources/js/app.css"
   },
   "resources/js/app.tsx": {
     "assets": [
       "assets/deal-arrow-b5bb7f1a.png",
-      "assets/bootstrap-icons-cfe45b98.woff2",
-      "assets/bootstrap-icons-999550fa.woff"
+      "assets/bootstrap-icons-bacd70af.woff2",
+      "assets/bootstrap-icons-4d4572ef.woff"
     ],
     "css": [
-      "assets/app-9b90d72b.css"
+      "assets/app-5514be87.css"
     ],
-    "file": "assets/app-e157282a.js",
+    "file": "assets/app-5f77bac2.js",
     "isEntry": true,
     "src": "resources/js/app.tsx"
   },
