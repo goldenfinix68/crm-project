@@ -185,3 +185,296 @@ export const CONTACT_LIST_ACTION = [
         disabled: true,
     },
 ];
+export const CONTACT_COLUMNS = [
+    {
+        label: "First Name",
+        value: "firstName",
+    },
+    {
+        label: "Last Name",
+        value: "lastName",
+    },
+    {
+        label: "Mobile",
+        value: "mobile",
+    },
+    {
+        label: "Country Link",
+        value: "countryLink",
+    },
+    {
+        label: "Acres",
+        value: "acres",
+    },
+    {
+        label: "Email",
+        value: "email",
+    },
+    {
+        label: "Job Title",
+        value: "jobTitle",
+    },
+    {
+        label: "Phone",
+        value: "phone",
+    },
+    {
+        label: "Other Phone",
+        value: "otherPhone",
+    },
+    {
+        label: "Owner ID",
+        value: "ownerId",
+    },
+    {
+        label: "Email 2",
+        value: "email2",
+    },
+    {
+        label: "Type ID",
+        value: "typeId",
+    },
+    {
+        label: "Type",
+        value: "type",
+    },
+    {
+        label: "Mailing Street Address",
+        value: "mailingStreetAddress",
+    },
+    {
+        label: "Email Opt Out",
+        value: "emailOptOut",
+    },
+    {
+        label: "Mailing City",
+        value: "mailingCity",
+    },
+    {
+        label: "Mailing Country",
+        value: "mailingCountry",
+    },
+    {
+        label: "Subdivision",
+        value: "subdivision",
+    },
+    {
+        label: "APN",
+        value: "APN",
+    },
+    {
+        label: "Google Map Link",
+        value: "gMapLink",
+    },
+    {
+        label: "Road Frontage",
+        value: "roadFrontage",
+    },
+    {
+        label: "Redfin Link",
+        value: "redfinLink",
+    },
+    {
+        label: "Opening Bid",
+        value: "openingBid",
+    },
+    {
+        label: "Assessed Value",
+        value: "assessedValue",
+    },
+    {
+        label: "Assessed vs Opening Margin",
+        value: "assessedVsOpeningMargin",
+    },
+    {
+        label: "Assessed vs Opening Multiple",
+        value: "assessedVsOpeningMultiple",
+    },
+    {
+        label: "Wetlands Status",
+        value: "wetlandsStatus",
+    },
+    {
+        label: "Legal Description",
+        value: "legalDescription",
+    },
+    {
+        label: "Legal Subdivision",
+        value: "legalSubdivision",
+    },
+    {
+        label: "Flood Zone",
+        value: "floodzone",
+    },
+    {
+        label: "Topography",
+        value: "topography",
+    },
+    {
+        label: "Wireless 1",
+        value: "wireless1",
+    },
+    {
+        label: "Wireless 2",
+        value: "wireless2",
+    },
+    {
+        label: "Wireless 3",
+        value: "wireless3",
+    },
+    {
+        label: "Wireless 4",
+        value: "wireless4",
+    },
+    {
+        label: "Landline 1",
+        value: "landline1",
+    },
+    {
+        label: "Landline 2",
+        value: "landline2",
+    },
+    {
+        label: "Landline 3",
+        value: "landline3",
+    },
+    {
+        label: "Landline 4",
+        value: "landline4",
+    },
+    {
+        label: "Market Area Name",
+        value: "marketAreaName",
+    },
+    {
+        label: "Skype",
+        value: "skype",
+    },
+    {
+        label: "Website",
+        value: "website",
+    },
+    {
+        label: "Facebook",
+        value: "facebook",
+    },
+    {
+        label: "LinkedIn",
+        value: "linkedIn",
+    },
+    {
+        label: "Twitter",
+        value: "twitter",
+    },
+    {
+        label: "Instagram",
+        value: "instagram",
+    },
+    {
+        label: "Details Description",
+        value: "detailsDescription",
+    },
+    {
+        label: "Tags",
+        value: "tags",
+    },
+    {
+        label: "Details Legal Description",
+        value: "detailsLegalDescription",
+    },
+    {
+        label: "Address Line 1",
+        value: "addressLine1",
+    },
+    {
+        label: "Address Line 2",
+        value: "addressLine2",
+    },
+    {
+        label: "City",
+        value: "city",
+    },
+    {
+        label: "Country",
+        value: "country",
+    },
+    {
+        label: "Zip Code",
+        value: "zipCode",
+    },
+    {
+        label: "State",
+        value: "state",
+    },
+    {
+        label: "Owner",
+        value: "owner",
+    },
+    {
+        label: "Wall",
+        value: "wall",
+    },
+    {
+        label: "Texts",
+        value: "texts",
+    },
+    {
+        label: "Mailing State",
+        value: "mailingState",
+    },
+    {
+        label: "SMS Opt Out",
+        value: "smsOptOut",
+    },
+    {
+        label: "Email Opt Out Reason",
+        value: "emailOptOutReason",
+    },
+    {
+        label: "Mailing Zip",
+        value: "mailingZip",
+    },
+    {
+        label: "County",
+        value: "county",
+    },
+    {
+        label: "Default Mobile Number",
+        value: "defaultMobileNumber",
+    },
+];
+
+export const FILTER_OPTIONS = [
+    {
+        value: "contains",
+        label: "Contains",
+    },
+    {
+        value: "notContains",
+        label: "Does not contains",
+    },
+    {
+        value: "equals",
+        label: "Equals to",
+    },
+    {
+        value: "notEquals",
+        label: "Not equals to",
+    },
+    {
+        value: "startsWith",
+        label: "Starts with",
+    },
+    {
+        value: "endsWith",
+        label: "Ends with",
+    },
+    {
+        value: "empty",
+        label: "Is unknown",
+    },
+    {
+        value: "notEmpty",
+        label: "Has any value",
+    },
+];

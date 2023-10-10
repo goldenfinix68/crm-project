@@ -34,7 +34,6 @@ import {
 } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import ContactsComponentsAddContacts from "./Components/ContactsComponentsAddContacts";
-import ContactsComponentsFilter from "./Components/ContactsComponentsFilter";
 import ContactsComponentsManageColumn from "./Components/ContactsComponentsManageColumn";
 import { useContactsTableColumn } from "../../api/query/contactsQuery";
 import { useUserFavorites } from "../../api/query/userQuery";
@@ -57,7 +56,8 @@ import ContactsComponentsAddtoList from "./Components/ContactsComponentsAddtoLis
 import SendToManyModal from "../../components/SentToManyModal";
 import HeaderMenu from "./Components/HeaderMenu";
 import { useAppContextProvider } from "../../context/AppContext";
-import { CONTACT_LIST_ACTION } from "../../constants";
+import { CONTACT_COLUMNS, CONTACT_LIST_ACTION } from "../../constants";
+import Filter from "../Deal/components/Filter";
 
 interface DataType {
     key: React.Key;
@@ -103,7 +103,7 @@ const Contacts = () => {
     const [isModalOpen, setisModalOpen] = useState(false);
     const [isModalManageColumnOpen, setIsModalManageColumnOpen] =
         useState(false);
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(true);
     const [isTitle, setTitle] = useState("");
 
     const [showDeleteButton, setShowDeleteButton] = useState(false);
@@ -2247,7 +2247,6 @@ const Contacts = () => {
                                 onClick={() => {
                                     setOpen(true);
                                 }}
-                                disabled
                             >
                                 <FunnelPlotOutlined />
                             </Button>
@@ -2317,7 +2316,12 @@ const Contacts = () => {
                     title={isTitle}
                     setTContact={setTContact}
                 />
-                <ContactsComponentsFilter open={open} setOpen={setOpen} />
+
+                <Filter
+                    openFilter={open}
+                    setOpenFilter={setOpen}
+                    columns={CONTACT_COLUMNS}
+                />
 
                 <ContactsComponentsUpdate
                     isModalOpenUpdate={isModalOpenUpdate}

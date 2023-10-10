@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 export function getTimeAgo(dateString: string) {
     let timeAgo = "";
 
@@ -62,4 +64,57 @@ export function replacePlaceholders(inputString, contact) {
     });
 
     return replacedString;
+}
+
+interface ArrayActions<T> {
+    array: T[];
+    add: (item: T) => void;
+    removeByKey: (key: string) => void;
+    updateByKey: (key: string, newValue: T) => void;
+    clear: () => void;
+}
+
+export function useArray<T>(initialArray: T[] = []): ArrayActions<T> {
+    const [array, setArray] = useState<T[]>(initialArray);
+
+    // Add an item to the array
+    const add = (item: T) => {
+        if (
+            !array.some(
+                (arrayItem) => (arrayItem as any).key === (item as any).key
+            )
+        ) {
+            setArray([...array, item]);
+        }
+    };
+
+    // Remove an item from the array by key
+    const removeByKey = (key: string) => {
+        const newArray = array.filter((item) => (item as any).key !== key);
+        setArray(newArray);
+    };
+
+    // Update an item in the array by key or add it if it doesn't exist
+    const updateByKey = (key: string, newValue: T) => {
+        const index = array.findIndex((item) => (item as any).key === key);
+        if (index !== -1) {
+            // Update the object if it exists
+            const newArray = [...array];
+            newArray[index] = newValue;
+            setArray(newArray);
+        }
+    };
+
+    // Clear the array
+    const clear = () => {
+        setArray([]);
+    };
+
+    return {
+        array,
+        add,
+        removeByKey,
+        updateByKey,
+        clear,
+    };
 }
