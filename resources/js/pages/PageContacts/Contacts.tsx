@@ -103,7 +103,7 @@ const Contacts = () => {
     const [isModalOpen, setisModalOpen] = useState(false);
     const [isModalManageColumnOpen, setIsModalManageColumnOpen] =
         useState(false);
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     const [isTitle, setTitle] = useState("");
 
     const [showDeleteButton, setShowDeleteButton] = useState(false);
@@ -2278,6 +2278,14 @@ const Contacts = () => {
                             <Select
                                 dropdownClassName="dropdown-select"
                                 defaultValue="Action"
+                                showSearch
+                                onChange={(e) => {
+                                    if (e == "ImportExcel") {
+                                        navigate(
+                                            "/setup/data-administration/import-file"
+                                        );
+                                    }
+                                }}
                             >
                                 {CONTACT_LIST_ACTION.map((action) => (
                                     <Select.Option

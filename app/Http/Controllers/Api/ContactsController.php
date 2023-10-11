@@ -10,12 +10,15 @@ use App\Http\Controllers\Controller;
 use App\Models\ContactFile;
 use App\Models\ContactLog;
 use App\Models\Text;
+use App\Models\Deal;
+use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Support\Str;
 use Auth;
 use Carbon\Carbon;
+use League\Csv\Reader;
 
 class ContactsController extends Controller
 {
@@ -331,6 +334,7 @@ class ContactsController extends Controller
 
     public function get_contacts_table_column(Request $request)
     {
+        return [];
         $contacts_table_column= ContactTableColumn::where('user_id', auth()->user()->id)->get();
         return response()->json($contacts_table_column, 200);
     }
@@ -346,6 +350,68 @@ class ContactsController extends Controller
             'success' => true,
             'data' => $data 
         ]);
+    }
+
+    public function bulkContactImportCsv(Request $request)
+    {
+        if (!empty($request->csvData) && !empty($request->columnMappings)) {
+            $data = $request->csvData;
+            $mapping = $request->columnMappings;
+
+            $result = [];
+            
+            foreach ($data as $record) {
+                $contactData = new Contact();
+                $dealData = new Deal();
+                $activityData = new Activity();
+            
+                foreach ($mapping as $sourceColumn => $targetColumn) {
+                    if (strpos($targetColumn['mergeField'], "contact.") !== false) {
+                        $column = preg_replace('/{{contact\.|\}}/', '', $targetColumn['mergeField']);
+                        $contactData->{$column} = $record[$sourceColumn];
+                    }
+                    if (strpos($targetColumn['mergeField'], "deal.") !== false) {
+                        $column = preg_replace('/{{deal\.|\}}/', '', $targetColumn['mergeField']);
+                        $dealData->{$column} = $record[$sourceColumn];
+                    }
+                    if (strpos($targetColumn['mergeField'], "activity.") !== false) {
+                        $column = preg_replace('/{{activity\.|\}}/', '', $targetColumn['mergeField']);
+                        $activityData->{$column} = $record[$sourceColumn];
+                    }
+                }
+                //save if required fields are present
+                $isContactSuccess = false;
+                if(!empty($contactData->firstName) && !empty($contactData->lastName)){
+                    $contactData->ownerId = Auth::id();
+                    $isContactSuccess =$contactData->save();
+                    
+                }
+                $isActivitySuccess = false;
+                if(!empty($contactData) && !empty($activityData->title)){
+                    $activityData->ownerId = Auth::id();
+                    $activityData->contact_id = $contactData->id;
+                    $isActivitySuccess = $contactData->save();
+                    
+                }
+                $isDealSuccess = false;
+                if(!empty($contactData) && !empty($dealData->title)){
+                    $dealData->owner = Auth::id();
+                    $dealData->contactId = $contactData->id;
+                    $isDealSuccess = $contactData->save();
+                    
+                }
+                $result[] = [
+                    'contactName' => $contactData->firstName . ' ' . $contactData->lastName,
+                    'isContactSuccess' => $isContactSuccess,
+                    'isActivitySuccess' => $isActivitySuccess,
+                    'isDealSuccess' => $isDealSuccess,
+                ];
+            }
+            
+            return response()->json(['result' => $result], 200);
+           
+        }
+        return response()->json(['message' => 'No file uploaded'], 400);
     }
 
 }

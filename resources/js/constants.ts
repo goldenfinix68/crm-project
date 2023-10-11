@@ -167,7 +167,6 @@ export const CONTACT_LIST_ACTION = [
     {
         value: "ImportExcel",
         label: "Import from Excel or CSV file",
-        disabled: true,
     },
     {
         value: "ImportGoogle",
@@ -189,261 +188,185 @@ export const CONTACT_COLUMNS = [
     {
         label: "First Name",
         value: "firstName",
+        mergeField: "{{contact.firstName}}",
     },
     {
         label: "Last Name",
         value: "lastName",
+        mergeField: "{{contact.lastName}}",
     },
     {
         label: "Mobile",
         value: "mobile",
+        mergeField: "{{contact.mobile}}",
     },
     {
         label: "Country Link",
         value: "countryLink",
+        mergeField: "{{contact.countryLink}}",
     },
     {
         label: "Acres",
         value: "acres",
+        mergeField: "{{contact.acres}}",
     },
     {
         label: "Email",
         value: "email",
+        mergeField: "{{contact.email}}",
     },
     {
         label: "Job Title",
         value: "jobTitle",
+        mergeField: "{{contact.jobTitle}}",
     },
     {
         label: "Phone",
         value: "phone",
+        mergeField: "{{contact.phone}}",
     },
     {
         label: "Other Phone",
         value: "otherPhone",
+        mergeField: "{{contact.otherPhone}}",
     },
-    {
-        label: "Owner ID",
-        value: "ownerId",
-    },
+    // {
+    //     label: "Owner ID",
+    //     value: "ownerId",
+    //     mergeField: "{{contact.ownerId}}",
+    // },
     {
         label: "Email 2",
         value: "email2",
+        mergeField: "{{contact.email2}}",
     },
-    {
-        label: "Type ID",
-        value: "typeId",
-    },
-    {
-        label: "Type",
-        value: "type",
-    },
+    // {
+    //     label: "Type ID",
+    //     value: "typeId",
+    //     mergeField: "{{contact.typeId}}",
+    // },
+    // {
+    //     label: "Type",
+    //     value: "type",
+    //     mergeField: "{{contact.type}}",
+    // },
     {
         label: "Mailing Street Address",
         value: "mailingStreetAddress",
+        mergeField: "{{contact.mailingStreetAddress}}",
     },
     {
         label: "Email Opt Out",
         value: "emailOptOut",
+        mergeField: "{{contact.emailOptOut}}",
     },
     {
         label: "Mailing City",
         value: "mailingCity",
+        mergeField: "{{contact.mailingCity}}",
     },
     {
         label: "Mailing Country",
         value: "mailingCountry",
+        mergeField: "{{contact.mailingCountry}}",
     },
     {
         label: "Subdivision",
         value: "subdivision",
+        mergeField: "{{contact.subdivision}}",
     },
     {
         label: "APN",
         value: "APN",
+        mergeField: "{{contact.APN}}",
     },
     {
         label: "Google Map Link",
         value: "gMapLink",
+        mergeField: "{{contact.gMapLink}}",
     },
     {
         label: "Road Frontage",
         value: "roadFrontage",
+        mergeField: "{{contact.roadFrontage}}",
     },
     {
         label: "Redfin Link",
         value: "redfinLink",
+        mergeField: "{{contact.redfinLink}}",
     },
     {
         label: "Opening Bid",
         value: "openingBid",
+        mergeField: "{{contact.openingBid}}",
     },
     {
         label: "Assessed Value",
         value: "assessedValue",
+        mergeField: "{{contact.assessedValue}}",
     },
     {
         label: "Assessed vs Opening Margin",
         value: "assessedVsOpeningMargin",
-    },
-    {
-        label: "Assessed vs Opening Multiple",
-        value: "assessedVsOpeningMultiple",
-    },
-    {
-        label: "Wetlands Status",
-        value: "wetlandsStatus",
-    },
-    {
-        label: "Legal Description",
-        value: "legalDescription",
-    },
-    {
-        label: "Legal Subdivision",
-        value: "legalSubdivision",
-    },
-    {
-        label: "Flood Zone",
-        value: "floodzone",
-    },
-    {
-        label: "Topography",
-        value: "topography",
-    },
-    {
-        label: "Wireless 1",
-        value: "wireless1",
-    },
-    {
-        label: "Wireless 2",
-        value: "wireless2",
-    },
-    {
-        label: "Wireless 3",
-        value: "wireless3",
-    },
-    {
-        label: "Wireless 4",
-        value: "wireless4",
-    },
-    {
-        label: "Landline 1",
-        value: "landline1",
-    },
-    {
-        label: "Landline 2",
-        value: "landline2",
-    },
-    {
-        label: "Landline 3",
-        value: "landline3",
-    },
-    {
-        label: "Landline 4",
-        value: "landline4",
-    },
-    {
-        label: "Market Area Name",
-        value: "marketAreaName",
-    },
-    {
-        label: "Skype",
-        value: "skype",
-    },
-    {
-        label: "Website",
-        value: "website",
-    },
-    {
-        label: "Facebook",
-        value: "facebook",
-    },
-    {
-        label: "LinkedIn",
-        value: "linkedIn",
-    },
-    {
-        label: "Twitter",
-        value: "twitter",
-    },
-    {
-        label: "Instagram",
-        value: "instagram",
-    },
-    {
-        label: "Details Description",
-        value: "detailsDescription",
-    },
-    {
-        label: "Tags",
-        value: "tags",
-    },
-    {
-        label: "Details Legal Description",
-        value: "detailsLegalDescription",
-    },
-    {
-        label: "Address Line 1",
-        value: "addressLine1",
-    },
-    {
-        label: "Address Line 2",
-        value: "addressLine2",
-    },
-    {
-        label: "City",
-        value: "city",
-    },
-    {
-        label: "Country",
-        value: "country",
-    },
-    {
-        label: "Zip Code",
-        value: "zipCode",
-    },
-    {
-        label: "State",
-        value: "state",
-    },
-    {
-        label: "Owner",
-        value: "owner",
-    },
-    {
-        label: "Wall",
-        value: "wall",
-    },
-    {
-        label: "Texts",
-        value: "texts",
-    },
-    {
-        label: "Mailing State",
-        value: "mailingState",
-    },
-    {
-        label: "SMS Opt Out",
-        value: "smsOptOut",
-    },
-    {
-        label: "Email Opt Out Reason",
-        value: "emailOptOutReason",
-    },
-    {
-        label: "Mailing Zip",
-        value: "mailingZip",
-    },
-    {
-        label: "County",
-        value: "county",
-    },
-    {
-        label: "Default Mobile Number",
-        value: "defaultMobileNumber",
+        mergeField: "{{contact.assessedVsOpeningMargin}}",
     },
 ];
 
+export const DEAL_COLUMNS = [
+    {
+        label: "Title",
+        value: "title",
+        mergeField: "{{deal.title}}",
+    },
+    {
+        label: "Win Probability",
+        value: "win_probabilty",
+        mergeField: "{{deal.win_probabilty}}",
+    },
+    {
+        label: "Estimated closed date",
+        value: "estimated_close_date",
+        mergeField: "{{deal.estimated_close_date}}",
+    },
+    {
+        label: "Value",
+        value: "value",
+        mergeField: "{{deal.value}}",
+    },
+    {
+        label: "Currency",
+        value: "currency",
+        mergeField: "{{deal.currency}}",
+    },
+    {
+        label: "Status",
+        value: "status",
+        mergeField: "{{deal.status}}",
+    },
+    {
+        label: "Stage",
+        value: "stage",
+        mergeField: "{{deal.stage}}",
+    },
+    {
+        label: "Priority",
+        value: "priority",
+        mergeField: "{{deal.priority}}",
+    },
+];
+
+export const ACTIVITY_COLUMNS = [
+    {
+        label: "Title",
+        value: "title",
+        mergeField: "{{activity.title}}",
+    },
+    {
+        label: "Type",
+        value: "type",
+        mergeField: "{{activity.type}}",
+    },
+];
 export const FILTER_OPTIONS = [
     {
         value: "contains",
