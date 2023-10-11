@@ -86,18 +86,11 @@ const ContactsComponentsAddContacts = ({
 
     useEffect(() => {
         if (record) {
-            console.log("record", record);
-            //
             form.setFieldsValue(record);
         }
     }, [record]);
 
-    useEffect(() => {
-        console.log("title", title);
-    }, [title]);
-
     const handleFinish = (values: TContact) => {
-        console.log(values.id);
         if (record) {
             addContact.mutate({ ...values, id: record.id });
         } else {

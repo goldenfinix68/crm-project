@@ -22,7 +22,7 @@ const IncomingCallListener = () => {
     const { contacts, isContactsLoading } = useAppContextProvider();
 
     const { loggedInUser } = useAppContextProvider();
-    console.log(contacts);
+
     const handleNotification = (notification) => {
         // console.log(notification);
         switch (notification.type) {

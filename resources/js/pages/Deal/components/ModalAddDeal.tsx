@@ -94,7 +94,6 @@ const ModalAddDeal = ({
     }, [showModalAddDealValue]);
 
     useEffect(() => {
-        console.log("modalValue", modalValue);
         if (from == "update" || from == "clone") {
             form.setFieldsValue({
                 ...modalValue,
@@ -107,12 +106,6 @@ const ModalAddDeal = ({
     const onChangeSelectTeammate = (value: any) => {
         addTeammate.mutate({ user_id: value, deal_id: "" + modalValue.id });
     };
-
-    useEffect(() => {
-        if (modalValue) {
-            console.log("modalValue", modalValue);
-        }
-    }, [modalValue]);
 
     const addTeammate = useMutation(useDealMutationAddTeammate, {
         onSuccess: (res) => {
@@ -158,8 +151,6 @@ const ModalAddDeal = ({
             };
 
             setTeamateLocal([...teamateLocal, a]);
-
-            console.log(find);
         }
     };
 
@@ -186,14 +177,9 @@ const ModalAddDeal = ({
             };
 
             setParticipantLocal([...particapantLocal, a]);
-
-            console.log(find);
         }
     };
 
-    useEffect(() => {
-        console.log("teamateLocal", teamateLocal);
-    }, [teamateLocal]);
     return (
         <Modal
             className="your-modal"
