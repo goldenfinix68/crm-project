@@ -167,6 +167,13 @@ export type TWorkflowItem = {
     total: number;
 };
 
+export type TCustomFieldSection = {
+    id: any;
+    columnLayout: string;
+    name: string;
+    type: string;
+};
+
 export type TWallData = {
     date: string;
     day: string;

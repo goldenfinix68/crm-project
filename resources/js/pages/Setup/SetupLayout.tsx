@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Col, Layout, Menu, Row, Typography } from "antd";
+import {
+    Button,
+    Col,
+    Dropdown,
+    Layout,
+    Menu,
+    Row,
+    Space,
+    Typography,
+} from "antd";
 import Sider from "antd/es/layout/Sider";
 import {
     SlidersOutlined,
@@ -7,8 +16,12 @@ import {
     UserOutlined,
     VideoCameraOutlined,
     DatabaseOutlined,
+    PlusCircleOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import CustomFieldAddUpdateModal from "../../components/CustomFieldAddUpdateModal";
+import CustomFieldSectionAddUpdateModal from "../../components/CustomFieldSectionAddUpdateModal";
+import { MenuProps } from "antd/lib";
 
 const { SubMenu } = Menu;
 
@@ -20,6 +33,26 @@ interface SetupLayoutProps {
 const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
     const { content, title } = props;
     const navigate = useNavigate();
+
+    const [isCustomFieldAddUpdateOpen, setIsCustomFieldAddUpdateOpen] =
+        React.useState(false);
+    const [
+        isCustomFieldSectionAddUpdateOpen,
+        setIsCustomFieldSectionAddUpdateOpen,
+    ] = React.useState(false);
+    const items: MenuProps["items"] = [
+        {
+            label: "Add new Section",
+            key: "1",
+            onClick: () => {
+                setIsCustomFieldSectionAddUpdateOpen(true);
+            },
+        },
+        {
+            label: "Map Dependency Fields",
+            key: "2",
+        },
+    ];
 
     const sideMenuItems: any = [
         {
@@ -47,6 +80,11 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                 //     path: "/setup/customizations/calling",
                 //     label: "Calling Configurations",
                 // },
+                {
+                    key: "/setup/customizations/contact",
+                    path: "/setup/customizations/contact",
+                    label: "Contact",
+                },
                 {
                     key: "/setup/customizations/tag",
                     path: "/setup/customizations/tag",
@@ -148,7 +186,64 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                         <Col span={12} className="p-l-md">
                             <Typography.Text>{title}</Typography.Text>
                         </Col>
-                        <Col span={12} className="text-right"></Col>
+                        <Col span={12} className="text-right p-r-md">
+                            {title == "Contact" && (
+                                <>
+                                    <Space>
+                                        <Button
+                                            type="default"
+                                            style={{
+                                                background: "#52c41a", // Green color for success
+                                                borderColor: "#52c41a",
+                                                color: "white",
+                                            }}
+                                            icon={<PlusCircleOutlined />}
+                                            // onClick={handleOpenCreateMdal}
+                                        >
+                                            Form Review
+                                        </Button>
+                                        <Dropdown.Button
+                                            type="primary"
+                                            menu={{ items }}
+                                            onClick={() => {
+                                                setIsCustomFieldAddUpdateOpen(
+                                                    true
+                                                );
+                                            }}
+                                        >
+                                            New Custom Field
+                                        </Dropdown.Button>
+                                    </Space>
+
+                                    <CustomFieldAddUpdateModal
+                                        isModalOpen={isCustomFieldAddUpdateOpen}
+                                        closeModal={() =>
+                                            setIsCustomFieldAddUpdateOpen(false)
+                                        }
+                                        handleSubmit={() => {
+                                            console.log("qwe");
+                                        }}
+                                    />
+
+                                    <CustomFieldSectionAddUpdateModal
+                                        isModalOpen={
+                                            isCustomFieldSectionAddUpdateOpen
+                                        }
+                                        closeModal={() =>
+                                            setIsCustomFieldSectionAddUpdateOpen(
+                                                false
+                                            )
+                                        }
+                                        handleSubmit={() => {
+                                            console.log("qwe");
+                                        }}
+                                        type={
+                                            title == "Contact" ? "contact" : ""
+                                        }
+                                    />
+                                </>
+                            )}
+                        </Col>
                     </Row>
                 </Layout.Header>
                 <Layout.Content style={{ margin: "24px 16px 40px" }}>

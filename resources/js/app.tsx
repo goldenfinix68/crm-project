@@ -65,6 +65,7 @@ import ActivityCalendar from "./pages/Activity/ActivityCalendar";
 import BulkAction from "./pages/PageContacts/BulkAction";
 import TextBoxView from "./pages/Texts/components/TextBoxView";
 import { AppContextProvider } from "./context/AppContext";
+import ContactSetup from "./pages/ContactSetup";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isForgotPassword = window.location.pathname === "/forgot-password";
@@ -294,6 +295,28 @@ const App: React.FC = () => {
                                                     <ComponentTagManagement />
                                                 }
                                                 title="Tag Management"
+                                            />
+                                        </PrivateRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/setup/customizations/contact"
+                                    element={
+                                        <PrivateRoute>
+                                            <SetupLayout
+                                                content={<ContactSetup />}
+                                                title="Contact"
+                                            />
+                                        </PrivateRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/setup/customizations/contact"
+                                    element={
+                                        <PrivateRoute>
+                                            <SetupLayout
+                                                content={<ContactSetup />}
+                                                title="Contact"
                                             />
                                         </PrivateRoute>
                                     }

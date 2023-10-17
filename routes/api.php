@@ -88,6 +88,7 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('/workflows', 'App\Http\Controllers\Api\WorkflowsController');
     Route::resource('/text-labels', 'App\Http\Controllers\Api\TextLabelsController');
     Route::resource('/text-threads', 'App\Http\Controllers\Api\TextThreadsController');
+    Route::resource('/custom-field-sections', 'App\Http\Controllers\Api\CustomFieldSectionsController');
 
 
     Route::post('/assign-label-thread', 'App\Http\Controllers\Api\TextThreadsController@assign_label');

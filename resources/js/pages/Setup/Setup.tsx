@@ -11,17 +11,18 @@ import {
     UserOutlined,
     ZoomInOutlined,
     DatabaseOutlined,
+    UsergroupAddOutlined,
 } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Setup: React.FC = (props) => {
     const navigate = useNavigate();
     const customizationButtons: any = [
-        // {
-        //     icon: <UserOutlined />,
-        //     title: "Contact",
-        //     link: "/setup/customizations/contact",
-        // },
+        {
+            icon: <UsergroupAddOutlined />,
+            title: "Contact",
+            link: "/setup/customizations/contact",
+        },
         // {
         //     icon: <DollarOutlined />,
         //     title: "Deal",
@@ -36,13 +37,7 @@ const Setup: React.FC = (props) => {
         //     icon: <PhoneOutlined />,
         //     title: "Calling Configurations",
         //     link: "/setup/customizations/activity",
-        // },
-
-        {
-            icon: <TagsOutlined />,
-            title: "Tag Management",
-            link: "/setup/customizations/tag",
-        },
+        // },c
         // {
         //     icon: <BarChartOutlined />,
         //     title: "Deal Pipeline",
