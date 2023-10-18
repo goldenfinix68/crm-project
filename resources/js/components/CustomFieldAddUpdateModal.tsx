@@ -14,6 +14,8 @@ import {
     Form,
     Select,
     DatePicker,
+    List,
+    Checkbox,
 } from "antd";
 
 import { CloseOutlined } from "@ant-design/icons";
@@ -21,24 +23,173 @@ import { CloseOutlined } from "@ant-design/icons";
 import { useMutation } from "react-query";
 import { createCustomFieldMutation } from "../api/mutation/useCustomFieldMutation";
 import queryClient from "../queryClient";
-import { DEFAULT_REQUIRED_MESSAGE } from "../constants";
+import { DEFAULT_REQUIRED_MESSAGE, FIELD_TYPE_LIST } from "../constants";
+import {
+    faFont,
+    faSquare,
+    fa1,
+    faCircleDot,
+    faCalendarDay,
+    faClock,
+    faEnvelope,
+    faPhone,
+    faCircleArrowDown,
+    faSquareCheck,
+    faUser,
+    faCircleUser,
+    faLink,
+    faPercentage,
+    faDollarSign,
+    faCalculator,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import validateRules from "../providers/validateRules";
+import { useCustomFieldSections } from "../api/query/customFieldQuery";
+import { TCustomField } from "../entities";
 interface Props {
     isModalOpen: boolean;
     closeModal: () => void;
     handleSubmit: () => void;
-    customTemplate?: any;
+    customField?: TCustomField;
+    type: string;
 }
 const CustomFieldAddUpdateModal = ({
     isModalOpen,
     closeModal,
     handleSubmit,
-    customTemplate,
+    customField,
+    type,
 }: Props) => {
     const [form] = Form.useForm();
+    const [step, setStep] = useState(1);
+    const [selectedFieldType, setSelectedFieldType] = useState<
+        | {
+              label: string;
+              type: string;
+              description: string;
+              icon: string;
+          }
+        | undefined
+    >();
+    const [searchKey, setSearchKey] = useState("");
 
-    const createTemplate = useMutation(createCustomFieldMutation, {
+    const {
+        data: contactSections,
+        isLoading,
+        refetch: refetchContacts,
+    } = useCustomFieldSections("contact");
+
+    const data = [
+        {
+            title: "Text",
+            description: "The text field can store up to 255 characters",
+            icon: <FontAwesomeIcon icon={faFont} />,
+        },
+        {
+            title: "Text Area",
+            description:
+                "This field lets you store much bigger texts than text fields. Such fields are not visible on reports or grids.",
+            icon: <FontAwesomeIcon icon={faSquare} />,
+        },
+        {
+            title: "Integer",
+            description:
+                "The integer field can have numeric values without any demical points",
+            icon: <FontAwesomeIcon icon={fa1} />,
+        },
+        {
+            title: "Decimal",
+            description:
+                "The decimal field can have numeric values with two decimal points",
+            icon: <FontAwesomeIcon icon={faCircleDot} />,
+        },
+        {
+            title: "Date",
+            description:
+                "The field lets you select date input using the calendar component.",
+            icon: <FontAwesomeIcon icon={faCalendarDay} />,
+        },
+        {
+            title: "Date Time",
+            description:
+                "The field lets you select a date and time information using calendar + time picker.",
+            icon: <FontAwesomeIcon icon={faClock} />,
+        },
+        {
+            title: "Email",
+            description: "The field lets you enter a valid email address.",
+            icon: <FontAwesomeIcon icon={faEnvelope} />,
+        },
+        {
+            title: "Phone",
+            description: "The field lets you enter a phone or mobile number.",
+            icon: <FontAwesomeIcon icon={faPhone} />,
+        },
+        {
+            title: "Select",
+            description:
+                "The field lets you define a list of options that will appear in the dropdown. You can select a single option from the list.",
+            icon: <FontAwesomeIcon icon={faCircleArrowDown} />,
+        },
+        {
+            title: "Multi Select",
+            description:
+                "The field lets define a list of options that will appear in the dropdown. You can select multiple options from the list.",
+            icon: <FontAwesomeIcon icon={faSquareCheck} />,
+        },
+        {
+            title: "Contact Lookup",
+            description:
+                "The field lets you associate the contact record with your module.",
+            icon: <FontAwesomeIcon icon={faUser} />,
+        },
+        {
+            title: "User Lookup",
+            description:
+                "The field lets you associate the user record with your module.",
+            icon: <FontAwesomeIcon icon={faCircleUser} />,
+        },
+        {
+            title: "URL",
+            description:
+                "The field lets you enter a website or page URL, which appears as a clickable link.",
+            icon: <FontAwesomeIcon icon={faLink} />,
+        },
+        {
+            title: "Big Integer",
+            description:
+                "The big integer field can have numeric values without any decimal points. Big Integer can go up to 9223372036854775807",
+            icon: <FontAwesomeIcon icon={fa1} />,
+        },
+        {
+            title: "Percentage",
+            description:
+                "The field can have numeric values that appear with a % sign during display.",
+            icon: <FontAwesomeIcon icon={faPercentage} />,
+        },
+        {
+            title: "Boolean",
+            description:
+                "The field lets you create a single value (true/false) option with a toggle operation.",
+            icon: <FontAwesomeIcon icon={faCircleDot} />,
+        },
+        {
+            title: "Currency",
+            description:
+                "The field lets you create a numeric value with decimals that appears with the organization's currency symbol during display.",
+            icon: <FontAwesomeIcon icon={faDollarSign} />,
+        },
+        {
+            title: "Formula",
+            description:
+                "The field presents calculated information on basis of the other fields.",
+            icon: <FontAwesomeIcon icon={faCalculator} />,
+        },
+    ];
+
+    const createCustomField = useMutation(createCustomFieldMutation, {
         onSuccess: () => {
-            queryClient.invalidateQueries("textTemplates");
+            queryClient.invalidateQueries("customFieldSections");
             closeModal();
             resetFields();
         },
@@ -48,9 +199,10 @@ const CustomFieldAddUpdateModal = ({
     });
 
     const onFinish = async (values: any) => {
-        await createTemplate.mutate({
+        await createCustomField.mutate({
             ...values,
-            id: customTemplate?.id ? customTemplate.id : "",
+            id: customField?.id ? customField.id : "",
+            type: selectedFieldType?.type,
         });
     };
     const resetFields = () => {
@@ -59,75 +211,231 @@ const CustomFieldAddUpdateModal = ({
         // setError("");
     };
     useEffect(() => {
-        if (customTemplate) {
-            form.setFieldsValue(customTemplate);
+        if (customField) {
+            setSelectedFieldType(
+                FIELD_TYPE_LIST.find((field) => field.type == customField.type)
+            );
+            setStep(2);
+            form.setFieldsValue(customField);
         } else {
+            setSelectedFieldType(undefined);
+            setStep(1);
             form.resetFields();
         }
-    }, [customTemplate]);
+    }, [customField]);
+
+    const fieldTypeList = () => {
+        if (searchKey) {
+            return FIELD_TYPE_LIST.filter((str: any) =>
+                str.label.toLowerCase().includes(searchKey.toLowerCase())
+            );
+        } else {
+            return FIELD_TYPE_LIST;
+        }
+    };
+
+    const sections = () => {
+        if (type == "contact") {
+            return contactSections;
+        }
+
+        return [];
+    };
+
     return (
         <Modal
-            className="modal-activity"
+            title={<Typography.Text>Select Field Type</Typography.Text>}
             open={isModalOpen}
-            onCancel={closeModal}
-            footer={null}
-            title={null}
-            closable={false}
-        >
-            <div className="modal-header">
-                <Typography.Title level={5} style={{ color: "white" }}>
-                    {customTemplate ? "Update" : "Create new"} Custom Field
-                </Typography.Title>
-
-                <Button
-                    onClick={closeModal}
-                    style={{
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                        border: "0px",
-                    }}
-                    icon={<CloseOutlined style={{ color: "white" }} />}
-                />
-            </div>
-            <Space
-                direction="vertical"
-                style={{ padding: "20px", width: "100%", paddingTop: "30px" }}
-                size={0}
-            >
-                <Form
-                    name="basic"
-                    layout="vertical"
-                    labelWrap
-                    onFinish={onFinish}
-                    autoComplete="off"
-                    form={form}
-                >
-                    <Form.Item
-                        name="name"
-                        label="Folder name"
-                        rules={[
-                            {
-                                required: true,
-                                message: DEFAULT_REQUIRED_MESSAGE,
-                            },
-                        ]}
-                    >
-                        <Input placeholder="Folder name" />
-                    </Form.Item>
-
-                    <Space style={{ paddingTop: "5px" }}>
+            onCancel={resetFields}
+            className="manage-column-field"
+            footer={
+                step === 1 ? null : (
+                    <Space key={"btn"}>
                         <Button
                             type="primary"
-                            htmlType="submit"
-                            loading={createTemplate.isLoading}
+                            onClick={() => {
+                                form.validateFields()
+                                    .then((values) => {
+                                        form.submit();
+                                    })
+                                    .catch((info) => {});
+                            }}
                         >
                             Save
                         </Button>
 
                         <Button onClick={resetFields}>Cancel</Button>
                     </Space>
-                </Form>
-            </Space>
+                )
+            }
+        >
+            {step === 1 ? (
+                <>
+                    <Row gutter={12}>
+                        <Col span={24}>
+                            <Input
+                                placeholder="Search Field"
+                                className="w-100"
+                                onChange={(event: any) => {
+                                    setSearchKey(event.target.value);
+                                }}
+                            />
+                        </Col>
+
+                        <Col span={24} className="m-t-md">
+                            <FieldTypeListComponent
+                                fieldTypeList={fieldTypeList()}
+                                handleSelectField={(fieldType) => {
+                                    setStep(2);
+                                    setSelectedFieldType(fieldType);
+                                }}
+                            />
+                        </Col>
+                    </Row>
+                </>
+            ) : (
+                <>
+                    <Form
+                        layout="vertical"
+                        form={form}
+                        initialValues={{
+                            required: false,
+                            customFieldSectionId: contactSections?.length
+                                ? contactSections[0].id
+                                : "",
+                        }}
+                        onFinish={onFinish}
+                    >
+                        <AddCustomFieldForm
+                            selectedType={selectedFieldType}
+                            changeSelectField={() => {
+                                setStep(1);
+                                setSelectedFieldType(undefined);
+                            }}
+                            type={type}
+                            sections={sections()}
+                        />
+                    </Form>
+                </>
+            )}
         </Modal>
+    );
+};
+
+const FieldTypeListComponent = ({
+    fieldTypeList,
+    handleSelectField,
+}: {
+    fieldTypeList: any;
+    handleSelectField: any;
+}) => {
+    return (
+        <>
+            <List
+                className="field-list"
+                size="large"
+                header={false}
+                footer={false}
+                bordered
+                dataSource={fieldTypeList}
+                renderItem={(item: any) => (
+                    <List.Item
+                        onClick={() => {
+                            handleSelectField(item);
+                        }}
+                    >
+                        <Space direction="vertical" size={0}>
+                            <Typography.Text strong>
+                                {item.label}
+                            </Typography.Text>
+                            <Typography.Text>
+                                {item.description}
+                            </Typography.Text>
+                        </Space>
+                    </List.Item>
+                )}
+            />
+        </>
+    );
+};
+
+const AddCustomFieldForm = ({
+    selectedType,
+    changeSelectField,
+    type,
+    sections,
+}): any => {
+    return (
+        <>
+            <Space className="m-b-sm">
+                <Typography.Text strong>
+                    {`${selectedType.label} field for ${
+                        type.charAt(0).toUpperCase() + type.slice(1)
+                    }`}
+                </Typography.Text>
+                <Button
+                    type="link"
+                    className="p-l-none"
+                    onClick={changeSelectField}
+                >
+                    Change
+                </Button>
+            </Space>
+
+            <Form.Item name="sort" style={{ display: "none" }}>
+                <Input hidden />
+            </Form.Item>
+
+            <Form.Item
+                name={"label"}
+                label="Label"
+                rules={[validateRules.required]}
+            >
+                <Input />
+            </Form.Item>
+
+            <Form.Item
+                name={"customFieldSectionId"}
+                label="Section Name"
+                rules={[validateRules.required]}
+                initialValue={"Default"}
+            >
+                <Select>
+                    {sections?.map((section) => (
+                        <Select.Option value={section.id}>
+                            {section.name}
+                        </Select.Option>
+                    ))}
+                </Select>
+            </Form.Item>
+
+            {selectedType.type === "Select" ||
+            selectedType.type === "Multi Select" ? (
+                <Row gutter={24}>
+                    <Col span={12}>
+                        <Form.Item name="options" label="Pick list values">
+                            <Input.TextArea rows={5} />
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={12} className="p-t-md">
+                        <Typography.Text style={{ fontSize: 12 }}>
+                            Enter one per line, for example (about Customer
+                            Industry): <br />
+                            Accounting <br />
+                            Health Care <br />
+                            Information Technology
+                        </Typography.Text>
+                    </Col>
+                </Row>
+            ) : (
+                ""
+            )}
+
+            <Form.Item name={"isRequired"} valuePropName="checked">
+                <Checkbox checked={false}>Required</Checkbox>
+            </Form.Item>
+        </>
     );
 };
 

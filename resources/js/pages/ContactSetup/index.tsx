@@ -15,40 +15,46 @@ import {
     Row,
     Col,
     message,
+    List,
+    Tag,
 } from "antd";
 import {
     DeleteOutlined,
     EditOutlined,
     PlusCircleOutlined,
+    UndoOutlined,
 } from "@ant-design/icons";
 
 import { useMutation, useQueryClient } from "react-query";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import DraggableCardSection from "./components/DraggableCardSection";
-import { useCustomFieldSections } from "../../api/query/customFieldQuery";
+import DraggableCardSection from "../../components/DraggableCardSection";
+import {
+    useCustomFieldSections,
+    useInactiveCustomFields,
+} from "../../api/query/customFieldQuery";
 import LoadingComponent from "../../components/LoadingComponent";
 import { Empty } from "antd/lib";
 import { TCustomFieldSection } from "../../entities";
 import { sortCustomFieldSectionsMutation } from "../../api/mutation/useCustomFieldMutation";
 import CustomFieldSectionAddUpdateModal from "../../components/CustomFieldSectionAddUpdateModal";
+import { FIELD_TYPE_LIST } from "../../constants";
+import InactiveCustomFields from "../../components/InactiveCustomFields";
 
 const ContactSetup: React.FC = () => {
     const queryClient = useQueryClient();
-    const [
-        isCustomFieldSectionAddUpdateOpen,
-        setIsCustomFieldSectionAddUpdateOpen,
-    ] = React.useState(false);
     const [cards, setCards] = useState<TCustomFieldSection[] | undefined>();
-    const [selectedSection, setSelectedSection] = useState<
-        TCustomFieldSection | undefined
-    >();
 
     const {
         data: sections,
         isLoading,
         refetch: refetchContacts,
     } = useCustomFieldSections("contact");
+    const {
+        data: inactiveFields,
+        isLoading: isInactiveFieldsLoading,
+        refetch: refetchInactiveCustomFields,
+    } = useInactiveCustomFields();
 
     const sortSections = useMutation(sortCustomFieldSectionsMutation, {
         onSuccess: () => {
@@ -77,7 +83,7 @@ const ContactSetup: React.FC = () => {
     return (
         <>
             <Row gutter={12}>
-                <Col span={18}>
+                <Col span={16}>
                     {cards?.length ? (
                         <DndProvider backend={HTML5Backend}>
                             <Space
@@ -91,12 +97,7 @@ const ContactSetup: React.FC = () => {
                                         card={card}
                                         index={index}
                                         moveCard={moveCard}
-                                        handleEdit={(section) => {
-                                            setSelectedSection(section);
-                                            setIsCustomFieldSectionAddUpdateOpen(
-                                                true
-                                            );
-                                        }}
+                                        type="contact"
                                     />
                                 ))}
                             </Space>
@@ -107,21 +108,13 @@ const ContactSetup: React.FC = () => {
                         </Card>
                     )}
                 </Col>
+                <Col span={8}>
+                    <InactiveCustomFields
+                        inactiveFields={inactiveFields ?? []}
+                        sections={sections ?? []}
+                    />
+                </Col>
             </Row>
-
-            {selectedSection && (
-                <CustomFieldSectionAddUpdateModal
-                    isModalOpen={isCustomFieldSectionAddUpdateOpen}
-                    closeModal={() =>
-                        setIsCustomFieldSectionAddUpdateOpen(false)
-                    }
-                    handleSubmit={() => {
-                        console.log("qwe");
-                    }}
-                    type="contact"
-                    cutomFieldSection={selectedSection}
-                />
-            )}
         </>
     );
 };

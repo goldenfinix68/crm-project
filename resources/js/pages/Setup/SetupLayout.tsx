@@ -86,6 +86,16 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                     label: "Contact",
                 },
                 {
+                    key: "/setup/customizations/deal",
+                    path: "/setup/customizations/deal",
+                    label: "Deal",
+                },
+                {
+                    key: "/setup/customizations/activity",
+                    path: "/setup/customizations/activity",
+                    label: "Activity",
+                },
+                {
                     key: "/setup/customizations/tag",
                     path: "/setup/customizations/tag",
                     label: "Tag Management",
@@ -223,6 +233,9 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                                         handleSubmit={() => {
                                             console.log("qwe");
                                         }}
+                                        type={
+                                            title == "Contact" ? "contact" : ""
+                                        }
                                     />
 
                                     <CustomFieldSectionAddUpdateModal

@@ -16,4 +16,15 @@ class CustomFieldSection extends Model
         'type',
         'sort',
     ];
+
+    
+    public function fields()
+    {
+        return $this->hasMany('\App\Models\CustomField', 'customFieldSectionId', 'id')->where('isActive', true)->orderBy('sort');
+    }
+    
+    public function inactivefields()
+    {
+        return $this->hasMany('\App\Models\CustomField', 'customFieldSectionId', 'id')->where('isActive', false)->orderBy('sort');
+    }
 }

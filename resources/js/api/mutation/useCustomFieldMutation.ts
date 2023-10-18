@@ -1,14 +1,66 @@
-import { TCustomFieldSection } from "../../entities";
+import { TCustomField, TCustomFieldSection } from "../../entities";
 
-export const createCustomFieldMutation = async (customField: any) => {
+export const createCustomFieldMutation = async (customField: TCustomField) => {
     const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
-    const response = await fetch("/api/custom-field", {
+    const response = await fetch("/api/custom-fields", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify(customField),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to add contact type");
+    }
+    return data;
+};
+
+export const sortCustomFieldsMutation = async (
+    customFieldSections: TCustomField[]
+) => {
+    const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+    const response = await fetch("/api/custom-fields/sort", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(customFieldSections),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to add");
+    }
+    return data;
+};
+
+export const restoreCustomFieldMutation = async (customField: TCustomField) => {
+    const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+    const response = await fetch("/api/custom-fields/restore", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(customField),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to add contact type");
+    }
+    return data;
+};
+
+export const deleteCustomFieldMutation = async (id: string) => {
+    const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+    const response = await fetch("/api/custom-fields/" + id, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        },
     });
     const data = await response.json();
     if (!response.ok) {

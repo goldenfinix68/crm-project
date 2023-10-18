@@ -88,8 +88,14 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('/workflows', 'App\Http\Controllers\Api\WorkflowsController');
     Route::resource('/text-labels', 'App\Http\Controllers\Api\TextLabelsController');
     Route::resource('/text-threads', 'App\Http\Controllers\Api\TextThreadsController');
+
     Route::resource('/custom-field-sections', 'App\Http\Controllers\Api\CustomFieldSectionsController');
     Route::post('/custom-field-sections/sort', 'App\Http\Controllers\Api\CustomFieldSectionsController@sort');
+
+    Route::get('/custom-fields/inactive', 'App\Http\Controllers\Api\CustomFieldsController@inactiveFields');
+    Route::post('/custom-fields/restore', 'App\Http\Controllers\Api\CustomFieldsController@restore');
+    Route::post('/custom-fields/sort', 'App\Http\Controllers\Api\CustomFieldsController@sort');
+    Route::resource('/custom-fields', 'App\Http\Controllers\Api\CustomFieldsController');
 
 
     Route::post('/assign-label-thread', 'App\Http\Controllers\Api\TextThreadsController@assign_label');

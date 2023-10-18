@@ -30,67 +30,67 @@ export const COLUMN_LIST = [
 export const FIELD_TYPE_LIST = [
     {
         label: "Text",
-        type: "Text",
+        type: "text",
         description: "The text fields can store up to 255 characters.",
         icon: "text",
     },
     {
         label: "Text Area",
-        type: "Text Area",
+        type: "textArea",
         description:
             "This field lets you store much bigger texts than text fields. Such fields are not visible on reports or grids.",
         icon: "text-area",
     },
     {
         label: "Integer",
-        type: "Integer",
+        type: "int",
         description:
             "The integer field can have numeric values without any decimal points.",
         icon: "integer",
     },
     {
         label: "Decimal",
-        type: "Decimal",
+        type: "decimal",
         description:
             "The decimal field can have numeric values with two decimal points.",
         icon: "decimal",
     },
     {
         label: "Date",
-        type: "Date",
+        type: "date",
         description:
             "The field lets you select date input using the calendar component.",
         icon: "date",
     },
     {
         label: "Date Time",
-        type: "Date Time",
+        type: "dateTime",
         description:
             "The field lets you select a date and time information using calendar + time picker.",
         icon: "date",
     },
     {
         label: "Email",
-        type: "Email",
+        type: "email",
         description: "The field lets you enter a valid email address..",
         icon: "email",
     },
     {
         label: "Phone",
-        type: "Phone",
+        type: "phone",
         description: "The field lets you enter a phone or mobile number.",
         icon: "phone",
     },
     {
         label: "Select",
-        type: "Select",
+        type: "select",
         description:
             "The field lets you define a list of options that will appear in the dropdown. You can select a single option from the list.",
         icon: "select",
     },
     {
         label: "Multi Select",
-        type: "Multi Select",
+        type: "multiSelect",
         description:
             "The field lets you define a list of options that will appear in the dropdown. You can select multiple options from the list.",
         icon: "multi-select",
@@ -111,35 +111,35 @@ export const FIELD_TYPE_LIST = [
     // },
     {
         label: "URL",
-        type: "URL",
+        type: "url",
         description:
             "This field lets you enter a website or page URL, which appears as a clickable link.",
         icon: "url",
     },
     {
         label: "Big Integer",
-        type: "Big Integer",
+        type: "bigInt",
         description:
             "The big integer field can have numeric values without any decimal points.  Big Integer can go up to 9223372036854775807.",
         icon: "big-integer",
     },
     {
         label: "Percentage",
-        type: "Percentage",
+        type: "percentage",
         description:
             "The field can have numeric values that appear with a % sign during display.",
         icon: "percentage",
     },
     {
         label: "Boolean",
-        type: "Boolean",
+        type: "boolean",
         description:
             "The field lets you create a single value (true/false) option with a toggle operation.",
         icon: "boolean",
     },
     {
         label: "Currency",
-        type: "Currency",
+        type: "currency",
         description:
             "The field lets you create a numeric value with decimals that appears with the organization's currency symbol during display.",
         icon: "currency",
