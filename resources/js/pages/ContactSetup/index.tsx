@@ -54,7 +54,7 @@ const ContactSetup: React.FC = () => {
         data: inactiveFields,
         isLoading: isInactiveFieldsLoading,
         refetch: refetchInactiveCustomFields,
-    } = useInactiveCustomFields();
+    } = useInactiveCustomFields("contact");
 
     const sortSections = useMutation(sortCustomFieldSectionsMutation, {
         onSuccess: () => {

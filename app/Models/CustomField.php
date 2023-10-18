@@ -13,6 +13,7 @@ class CustomField extends Model
         'label',
         'fieldName',
         'customFieldSectionId',
+        'customFieldSectionType',
         'type',
         'sort',
         'userId',

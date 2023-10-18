@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\CustomField;
+use App\Models\CustomFieldSection;
 use Illuminate\Support\Facades\Validator;
 use Auth;
 
@@ -27,14 +28,18 @@ class CustomFieldsController extends Controller
         return $fields;
     }
 
-    public function inactiveFields()
+    public function inactiveFields(Request $request)
     {
         $user = auth()->user();
         if(empty($user)){
             abort(401, 'Unauthorized');
         }
 
-        $inactiveFields =  CustomField::where('userId', $user->id)->where('isActive', false)->orderBy('updated_at', 'desc')->get();
+        $inactiveFields =  CustomField::where('userId', $user->id)
+            ->where('isActive', false)
+            ->where('customFieldSectionType', $request->type)
+            ->orderBy('updated_at', 'desc')
+            ->get();
         
         return $inactiveFields;
     }
@@ -77,12 +82,16 @@ class CustomFieldsController extends Controller
         else if(!empty($highestSort)){
             $sort = $highestSort->sort + 1;
         }
+        
+        $section = CustomFieldSection::find($data['customFieldSectionId']);
 
         $customField = CustomField::updateOrCreate(
             ['id' => isset($data['id'])? $data['id'] : null],
             array_merge($data, [
                 'userId' => $user->id, 
                 'sort' => $sort,
+                'customFieldSectionType' => $section->type,
+
             ])
         );
         $customField->fieldName = 'custom_field_' . $customField->id;

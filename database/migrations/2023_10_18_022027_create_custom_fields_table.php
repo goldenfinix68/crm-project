@@ -21,6 +21,7 @@ class CreateCustomFieldsTable extends Migration
             $table->string('options')->nullable();
             $table->integer('userId')->unsigned();
             $table->integer('customFieldSectionId')->unsigned();
+            $table->string('customFieldSectionType')->nullable();
             $table->boolean('isActive')->default(1);
             $table->boolean('isRequired')->default(1);
             $table->string('sort')->nullable();
