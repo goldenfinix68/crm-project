@@ -1,29 +1,22 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Button,
     Col,
-    Dropdown,
     Input,
     Modal,
-    Radio,
     Row,
     Space,
-    Table,
-    Tooltip,
     Typography,
     Form,
     Select,
-    DatePicker,
     List,
     Checkbox,
 } from "antd";
 
-import { CloseOutlined } from "@ant-design/icons";
-
 import { useMutation } from "react-query";
 import { createCustomFieldMutation } from "../api/mutation/useCustomFieldMutation";
 import queryClient from "../queryClient";
-import { DEFAULT_REQUIRED_MESSAGE, FIELD_TYPE_LIST } from "../constants";
+import { FIELD_TYPE_LIST } from "../constants";
 import {
     faFont,
     faSquare,
@@ -217,6 +210,7 @@ const CustomFieldAddUpdateModal = ({
             );
             setStep(2);
             form.setFieldsValue(customField);
+            console.log(customField);
         } else {
             setSelectedFieldType(undefined);
             setStep(1);
@@ -260,6 +254,7 @@ const CustomFieldAddUpdateModal = ({
                                     })
                                     .catch((info) => {});
                             }}
+                            loading={createCustomField.isLoading}
                         >
                             Save
                         </Button>
@@ -299,7 +294,7 @@ const CustomFieldAddUpdateModal = ({
                         layout="vertical"
                         form={form}
                         initialValues={{
-                            required: false,
+                            isRequired: false,
                             customFieldSectionId: contactSections?.length
                                 ? contactSections[0].id
                                 : "",
@@ -432,8 +427,8 @@ const AddCustomFieldForm = ({
                 ""
             )}
 
-            <Form.Item name={"isRequired"} valuePropName="checked">
-                <Checkbox checked={false}>Required</Checkbox>
+            <Form.Item name="isRequired" valuePropName="checked">
+                <Checkbox>Required</Checkbox>
             </Form.Item>
         </>
     );

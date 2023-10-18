@@ -1,18 +1,15 @@
-import React, { useState } from "react";
-import { Card, Space, Button, Typography, List, Tag, message } from "antd";
+import React, { useEffect, useState } from "react";
+import { Space, List, Tag, message } from "antd";
 import { useDrag, useDrop } from "react-dnd";
 import {
-    DownOutlined,
-    RightOutlined,
     EditOutlined,
     DeleteOutlined,
     HolderOutlined,
 } from "@ant-design/icons";
-import { TCustomField, TCustomFieldSection } from "../entities";
+import { TCustomField } from "../entities";
 import { useMutation } from "react-query";
 import {
     deleteCustomFieldMutation,
-    deleteCustomFieldSectionMutation,
     sortCustomFieldsMutation,
 } from "../api/mutation/useCustomFieldMutation";
 import queryClient from "../queryClient";
@@ -23,14 +20,14 @@ import CustomFieldAddUpdateModal from "./CustomFieldAddUpdateModal";
 const DraggableCustomFieldList = ({
     id,
     index,
-    moveCustomField,
     customField,
+    customFields,
     type,
 }: {
     id: number;
     index: number;
-    moveCustomField: (fromIndex, toIndex) => void;
     customField: TCustomField;
+    customFields: TCustomField[];
     type: string;
 }) => {
     const [selectedCustomField, setSelectedCustomField] = useState<
@@ -40,6 +37,9 @@ const DraggableCustomFieldList = ({
         React.useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleteBtnLoading, setIsDeleteBtnLoading] = useState(false);
+    const [customFieldsArr, setCustomFieldsArr] = useState<
+        TCustomField[] | undefined
+    >(customFields);
 
     const deleteCustomField = useMutation(
         (id: string) => deleteCustomFieldMutation(id),
@@ -70,6 +70,28 @@ const DraggableCustomFieldList = ({
         },
     });
 
+    const sortCustomFields = useMutation(sortCustomFieldsMutation, {
+        onSuccess: () => {
+            queryClient.invalidateQueries("customFieldSections");
+            message.success("Succesfully saved.");
+        },
+        onError: (e: any) => {
+            console.log(e.message || "An error occurred");
+        },
+    });
+
+    const moveCustomField = (fromIndex, toIndex) => {
+        const updatedCards = [...(customFields || [])];
+        const [moveCustomField] = updatedCards.splice(fromIndex, 1);
+        updatedCards.splice(toIndex, 0, moveCustomField);
+        setCustomFieldsArr(updatedCards);
+        console.log(updatedCards);
+        sortCustomFields.mutate(updatedCards);
+    };
+
+    useEffect(() => {
+        setCustomFieldsArr(customFields);
+    }, [customFields]);
     return (
         <>
             <List.Item
@@ -95,7 +117,9 @@ const DraggableCustomFieldList = ({
                             )?.label
                         }
                     </Tag>
-                    {customField.isRequired && <Tag color="red">Required</Tag>}
+                    {customField.isRequired ? (
+                        <Tag color="red">Required</Tag>
+                    ) : null}
                     <EditOutlined
                         style={{ cursor: "pointer" }}
                         onClick={() => {

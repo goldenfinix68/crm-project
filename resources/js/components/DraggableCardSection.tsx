@@ -1,39 +1,37 @@
 import React, { useEffect, useState } from "react";
-import { Card, Space, Button, Typography, List, Divider, message } from "antd";
+import { Card, Space, Button, Typography, List, message } from "antd";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import {
     DownOutlined,
     RightOutlined,
     EditOutlined,
     DeleteOutlined,
-    ColumnHeightOutlined,
     HolderOutlined,
 } from "@ant-design/icons";
-import { TCustomField, TCustomFieldSection } from "../entities";
+import { TCustomFieldSection } from "../entities";
 import { useMutation } from "react-query";
 import {
     deleteCustomFieldSectionMutation,
-    sortCustomFieldsMutation,
+    sortCustomFieldSectionsMutation,
 } from "../api/mutation/useCustomFieldMutation";
 import queryClient from "../queryClient";
 import ConfirmModal from "./ConfirmModal";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import DraggableCustomFieldList from "./DraggableCustomFieldList";
-import CustomFieldAddUpdateModal from "./CustomFieldAddUpdateModal";
 import CustomFieldSectionAddUpdateModal from "./CustomFieldSectionAddUpdateModal";
 
 const DraggableCard = ({
     id,
     index,
-    moveCard,
     card,
     type,
+    sections,
 }: {
     id: number;
     index: number;
-    moveCard: (fromIndex, toIndex) => void;
     card: TCustomFieldSection;
     type: string;
+    sections: TCustomFieldSection[];
 }) => {
     const [
         isCustomFieldSectionAddUpdateOpen,
@@ -43,12 +41,20 @@ const DraggableCard = ({
         TCustomFieldSection | undefined
     >();
     const [isMinimized, setIsMinimized] = useState(false);
-    const [customFields, setCustomFields] = useState<
-        TCustomField[] | undefined
-    >(card.fields);
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleteBtnLoading, setIsDeleteBtnLoading] = useState(false);
+    const [cards, setCards] = useState<TCustomFieldSection[] | undefined>();
+
+    const sortSections = useMutation(sortCustomFieldSectionsMutation, {
+        onSuccess: () => {
+            queryClient.invalidateQueries("customFieldSections");
+            message.success("Succesfully saved.");
+        },
+        onError: (e: any) => {
+            console.log(e.message || "An error occurred");
+        },
+    });
 
     const [, ref] = useDrag({
         type: "CARD",
@@ -69,6 +75,14 @@ const DraggableCard = ({
         },
     });
 
+    const moveCard = (fromIndex, toIndex) => {
+        const updatedCards = [...(cards || [])];
+        const [movedCard] = updatedCards.splice(fromIndex, 1);
+        updatedCards.splice(toIndex, 0, movedCard);
+        setCards(updatedCards);
+        sortSections.mutate(updatedCards);
+    };
+
     const toggleMinimize = () => {
         setIsMinimized(!isMinimized);
     };
@@ -86,28 +100,9 @@ const DraggableCard = ({
         }
     );
 
-    const sortCustomFields = useMutation(sortCustomFieldsMutation, {
-        onSuccess: () => {
-            queryClient.invalidateQueries("customFieldSections");
-            message.success("Succesfully saved.");
-        },
-        onError: (e: any) => {
-            console.log(e.message || "An error occurred");
-        },
-    });
-
-    const moveCustomField = (fromIndex, toIndex) => {
-        const updatedCards = [...(customFields || [])];
-        const [moveCustomField] = updatedCards.splice(fromIndex, 1);
-        updatedCards.splice(toIndex, 0, moveCustomField);
-        setCustomFields(updatedCards);
-        console.log(updatedCards);
-        sortCustomFields.mutate(updatedCards);
-    };
-
     useEffect(() => {
-        setCustomFields(card.fields);
-    }, [card.fields]);
+        setCards(sections);
+    }, [sections]);
 
     return (
         <>
@@ -162,12 +157,12 @@ const DraggableCard = ({
                                 size="small"
                                 header={false}
                                 footer={false}
-                                dataSource={customFields}
+                                dataSource={card.fields}
                                 renderItem={(customField, index) => (
                                     <DraggableCustomFieldList
                                         customField={customField}
+                                        customFields={card.fields ?? []}
                                         index={index}
-                                        moveCustomField={moveCustomField}
                                         key={customField.id}
                                         id={card.id}
                                         type={type}

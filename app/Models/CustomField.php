@@ -17,6 +17,7 @@ class CustomField extends Model
         'type',
         'sort',
         'userId',
+        'isRequired',
     ];
     
     public function section()
