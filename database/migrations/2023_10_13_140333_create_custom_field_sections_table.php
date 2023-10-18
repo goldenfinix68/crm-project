@@ -18,6 +18,7 @@ class CreateCustomFieldSectionsTable extends Migration
             $table->string('name');
             $table->string('columnLayout');
             $table->string('type');
+            $table->string('sort');
             $table->integer('userId')->unsigned();
             $table->timestamps();
         });

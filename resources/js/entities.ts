@@ -171,6 +171,7 @@ export type TCustomFieldSection = {
     id: any;
     columnLayout: string;
     name: string;
+    sort: number;
     type: string;
 };
 

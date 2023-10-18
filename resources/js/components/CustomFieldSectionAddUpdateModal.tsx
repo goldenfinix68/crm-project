@@ -44,7 +44,7 @@ const CustomFieldSectionAddUpdateModal = ({
 
     const createTemplate = useMutation(createCustomFieldSectionMutation, {
         onSuccess: () => {
-            queryClient.invalidateQueries("textTemplates");
+            queryClient.invalidateQueries("customFieldSections");
             closeModal();
             resetFields();
         },
@@ -109,6 +109,10 @@ const CustomFieldSectionAddUpdateModal = ({
                     form={form}
                     initialValues={{ columnLayout: "one" }}
                 >
+                    <Form.Item name="sort" style={{ display: "none" }}>
+                        <Input hidden />
+                    </Form.Item>
+
                     <Form.Item
                         name="name"
                         label="Section Name"

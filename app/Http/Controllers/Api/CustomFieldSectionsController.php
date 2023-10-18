@@ -15,15 +15,14 @@ class CustomFieldSectionsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
-
         if(empty($user)){
             abort(401, 'Unauthorized');
         }
 
-        $sections =  CustomFieldSection::where('userId', $user->id)->get();
+        $sections =  CustomFieldSection::where('userId', $user->id)->where('type', $request->type)->orderBy('sort')->get();
 
         return $sections;
     }
@@ -46,7 +45,6 @@ class CustomFieldSectionsController extends Controller
      */
     public function store(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'columnLayout' => 'required',
@@ -55,10 +53,23 @@ class CustomFieldSectionsController extends Controller
 
         $user = Auth::user();
         $data = $request->all();
+
+        //check highest sort
+        $highestSort = CustomFieldSection::where('userId', $user->id)->where('type', $request->type)->orderBy('sort', 'desc')->first();
+
+        $sort = 1;
+        if(!empty($data['sort'])){
+            $sort = $data['sort'];
+        }
+        else if(!empty($highestSort)){
+            $sort = $highestSort->sort + 1;
+        }
+
         $customFieldSection = CustomFieldSection::updateOrCreate(
             ['id' => isset($data['id'])? $data['id'] : null],
             array_merge($data, [
                 'userId' => $user->id, 
+                'sort' => $sort,
             ])
         );
 
@@ -108,6 +119,29 @@ class CustomFieldSectionsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = Auth::user();
+        $section = CustomFieldSection::find($id);
+
+        if(empty($user) || $user->id != $section->userId){
+            abort(401, 'Unauthorized');
+        }
+
+        $section->delete();
+        
+        return response()->json("Success", 200);
+    }
+    
+    public function sort(Request $request)
+    {
+        $user = Auth::user();
+        foreach($request->all() as $index => $data){
+            $section = CustomFieldSection::find($data['id']);
+            if(!empty($section) && $section->userId == $user->id){
+                $section->sort = $index+1;
+                $section->save();
+            }
+        }
+
+        return response()->json("Success", 200);
     }
 }

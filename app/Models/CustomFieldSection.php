@@ -13,5 +13,7 @@ class CustomFieldSection extends Model
         'name',
         'columnLayout',
         'userId',
+        'type',
+        'sort',
     ];
 }
