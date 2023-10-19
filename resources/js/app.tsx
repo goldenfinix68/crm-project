@@ -67,6 +67,7 @@ import TextBoxView from "./pages/Texts/components/TextBoxView";
 import { AppContextProvider } from "./context/AppContext";
 import ContactSetup from "./pages/ContactSetup";
 import DealSetup from "./pages/DealSetup";
+import ActivitySetup from "./pages/ActivitySetup";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isForgotPassword = window.location.pathname === "/forgot-password";
@@ -312,12 +313,12 @@ const App: React.FC = () => {
                                     }
                                 />
                                 <Route
-                                    path="/setup/customizations/contact"
+                                    path="/setup/customizations/activity"
                                     element={
                                         <PrivateRoute>
                                             <SetupLayout
-                                                content={<ContactSetup />}
-                                                title="Contact"
+                                                content={<ActivitySetup />}
+                                                title="Activity"
                                             />
                                         </PrivateRoute>
                                     }

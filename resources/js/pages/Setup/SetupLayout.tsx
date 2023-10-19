@@ -42,19 +42,6 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
         isCustomFieldSectionAddUpdateOpen,
         setIsCustomFieldSectionAddUpdateOpen,
     ] = React.useState(false);
-    const items: MenuProps["items"] = [
-        {
-            label: "Add new Section",
-            key: "1",
-            onClick: () => {
-                setIsCustomFieldSectionAddUpdateOpen(true);
-            },
-        },
-        {
-            label: "Map Dependency Fields",
-            key: "2",
-        },
-    ];
 
     const sideMenuItems: any = [
         {
@@ -199,29 +186,60 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                             <Typography.Text>{title}</Typography.Text>
                         </Col>
                         <Col span={12} className="text-right p-r-md">
-                            {(title == "Contact" || title == "Deal") && (
+                            {(title == "Contact" ||
+                                title == "Deal" ||
+                                title == "Activity") && (
                                 <>
                                     <Space>
-                                        <Button
-                                            type="default"
-                                            style={{
-                                                background: "#52c41a", // Green color for success
-                                                borderColor: "#52c41a",
-                                                color: "white",
-                                            }}
-                                            icon={<PlusCircleOutlined />}
-                                            // onClick={handleOpenCreateMdal}
-                                        >
-                                            Form Review
-                                        </Button>
+                                        {title != "Activity" && (
+                                            <Button
+                                                type="default"
+                                                style={{
+                                                    background: "#52c41a", // Green color for success
+                                                    borderColor: "#52c41a",
+                                                    color: "white",
+                                                }}
+                                                icon={<PlusCircleOutlined />}
+                                                // onClick={handleOpenCreateMdal}
+                                            >
+                                                Form Review
+                                            </Button>
+                                        )}
+
                                         <Dropdown.Button
                                             type="primary"
-                                            menu={{ items }}
                                             onClick={() => {
                                                 setIsCustomFieldAddUpdateOpen(
                                                     true
                                                 );
                                             }}
+                                            overlay={
+                                                <Menu>
+                                                    {title != "Activity" && (
+                                                        <Menu.Item
+                                                            key="1"
+                                                            onClick={() => {
+                                                                setIsCustomFieldSectionAddUpdateOpen(
+                                                                    true
+                                                                );
+                                                            }}
+                                                        >
+                                                            Add new Section
+                                                        </Menu.Item>
+                                                    )}
+
+                                                    <Menu.Item
+                                                        key="2"
+                                                        onClick={() => {
+                                                            // setIsCustomFieldSectionAddUpdateOpen(
+                                                            //     true
+                                                            // );
+                                                        }}
+                                                    >
+                                                        Map Dependency Fields
+                                                    </Menu.Item>
+                                                </Menu>
+                                            }
                                         >
                                             New Custom Field
                                         </Dropdown.Button>
@@ -235,13 +253,7 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                                         handleSubmit={() => {
                                             console.log("qwe");
                                         }}
-                                        type={
-                                            title == "Contact"
-                                                ? "contact"
-                                                : title == "Deal"
-                                                ? "deal"
-                                                : ""
-                                        }
+                                        type={title.toLowerCase()}
                                     />
 
                                     <CustomFieldSectionAddUpdateModal
@@ -256,13 +268,7 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                                         handleSubmit={() => {
                                             console.log("qwe");
                                         }}
-                                        type={
-                                            title == "Contact"
-                                                ? "contact"
-                                                : title == "Deal"
-                                                ? "deal"
-                                                : ""
-                                        }
+                                        type={title.toLowerCase()}
                                     />
                                 </>
                             )}

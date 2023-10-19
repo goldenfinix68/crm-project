@@ -145,7 +145,15 @@ const DraggableCard = ({
                             />
                             <DeleteOutlined
                                 style={{ cursor: "pointer" }}
-                                onClick={() => setIsDeleteModalOpen(true)}
+                                onClick={() => {
+                                    if (card.isDefault) {
+                                        message.error(
+                                            "Cannot delete default section"
+                                        );
+                                    } else {
+                                        setIsDeleteModalOpen(true);
+                                    }
+                                }}
                             />
                         </Space>
                     }

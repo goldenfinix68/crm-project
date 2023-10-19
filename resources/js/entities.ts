@@ -175,6 +175,7 @@ export type TCustomFieldSection = {
     type: string;
     fields?: TCustomField[];
     inactivefields?: TCustomField[];
+    isDefault: boolean;
 };
 
 export type TCustomField = {

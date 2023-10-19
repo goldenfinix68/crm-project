@@ -12,17 +12,17 @@ import LoadingComponent from "../../components/LoadingComponent";
 import { Empty } from "antd/lib";
 import InactiveCustomFields from "../../components/InactiveCustomFields";
 
-const DealSetup: React.FC = () => {
+const ActivitySetup: React.FC = () => {
     const {
         data: sections,
         isLoading,
         refetch: refetchSections,
-    } = useCustomFieldSections("deal");
+    } = useCustomFieldSections("activity");
     const {
         data: inactiveFields,
         isLoading: isInactiveFieldsLoading,
         refetch: refetchInactiveCustomFields,
-    } = useInactiveCustomFields("deal");
+    } = useInactiveCustomFields("activity");
 
     useEffect(() => {
         refetchInactiveCustomFields();
@@ -37,18 +37,23 @@ const DealSetup: React.FC = () => {
             <Row gutter={12}>
                 <Col span={16}>
                     {sections?.length ? (
-                        <Space direction="vertical" style={{ width: "100%" }}>
-                            {sections?.map((card, index) => (
-                                <DraggableCardSection
-                                    key={card.id}
-                                    id={card.id}
-                                    card={card}
-                                    sections={sections}
-                                    index={index}
-                                    type="deal"
-                                />
-                            ))}
-                        </Space>
+                        <DndProvider backend={HTML5Backend}>
+                            <Space
+                                direction="vertical"
+                                style={{ width: "100%" }}
+                            >
+                                {sections?.map((card, index) => (
+                                    <DraggableCardSection
+                                        key={card.id}
+                                        id={card.id}
+                                        card={card}
+                                        sections={sections}
+                                        index={index}
+                                        type="activity"
+                                    />
+                                ))}
+                            </Space>
+                        </DndProvider>
                     ) : (
                         <Card>
                             <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
@@ -66,4 +71,4 @@ const DealSetup: React.FC = () => {
     );
 };
 
-export default DealSetup;
+export default ActivitySetup;
