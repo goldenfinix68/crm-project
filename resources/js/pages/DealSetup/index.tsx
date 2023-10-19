@@ -12,22 +12,23 @@ import LoadingComponent from "../../components/LoadingComponent";
 import { Empty } from "antd/lib";
 import InactiveCustomFields from "../../components/InactiveCustomFields";
 
-const ContactSetup: React.FC = () => {
+const DealSetup: React.FC = () => {
     const {
         data: sections,
         isLoading,
         refetch: refetchSections,
-    } = useCustomFieldSections("contact");
+    } = useCustomFieldSections("deal");
     const {
         data: inactiveFields,
         isLoading: isInactiveFieldsLoading,
         refetch: refetchInactiveCustomFields,
-    } = useInactiveCustomFields("contact");
+    } = useInactiveCustomFields("deal");
 
     useEffect(() => {
         refetchInactiveCustomFields();
         refetchSections();
     }, []);
+
     if (isLoading) {
         return <LoadingComponent />;
     }
@@ -36,23 +37,18 @@ const ContactSetup: React.FC = () => {
             <Row gutter={12}>
                 <Col span={16}>
                     {sections?.length ? (
-                        <DndProvider backend={HTML5Backend}>
-                            <Space
-                                direction="vertical"
-                                style={{ width: "100%" }}
-                            >
-                                {sections?.map((card, index) => (
-                                    <DraggableCardSection
-                                        key={card.id}
-                                        id={card.id}
-                                        card={card}
-                                        sections={sections}
-                                        index={index}
-                                        type="contact"
-                                    />
-                                ))}
-                            </Space>
-                        </DndProvider>
+                        <Space direction="vertical" style={{ width: "100%" }}>
+                            {sections?.map((card, index) => (
+                                <DraggableCardSection
+                                    key={card.id}
+                                    id={card.id}
+                                    card={card}
+                                    sections={sections}
+                                    index={index}
+                                    type="contact"
+                                />
+                            ))}
+                        </Space>
                     ) : (
                         <Card>
                             <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
@@ -70,4 +66,4 @@ const ContactSetup: React.FC = () => {
     );
 };
 
-export default ContactSetup;
+export default DealSetup;

@@ -152,28 +152,22 @@ const DraggableCard = ({
                     bodyStyle={{ padding: isMinimized ? 0 : 24 }}
                 >
                     {!isMinimized ? (
-                        <DndProvider backend={HTML5Backend}>
-                            <List
-                                size="small"
-                                header={false}
-                                footer={false}
-                                dataSource={card.fields}
-                                renderItem={(customField, index) => (
-                                    <DraggableCustomFieldList
-                                        customField={customField}
-                                        customFields={card.fields ?? []}
-                                        index={index}
-                                        key={customField.id}
-                                        id={card.id}
-                                        type={type}
-                                        // handleEdit={(customField) => {
-                                        //     setSelectedCustomField(customField);
-                                        //     setIsCustomFielAddUpdateOpen(true);
-                                        // }}
-                                    />
-                                )}
-                            />
-                        </DndProvider>
+                        <List
+                            size="small"
+                            header={false}
+                            footer={false}
+                            dataSource={card.fields}
+                            renderItem={(customField, index) => (
+                                <DraggableCustomFieldList
+                                    customField={customField}
+                                    customFields={card.fields ?? []}
+                                    index={index}
+                                    key={customField.id}
+                                    id={card.id}
+                                    type={type}
+                                />
+                            )}
+                        />
                     ) : null}
                 </Card>
             </div>

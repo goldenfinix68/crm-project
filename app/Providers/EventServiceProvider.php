@@ -20,7 +20,10 @@ class EventServiceProvider extends ServiceProvider
         ],
         'App\Events\SendMailEvent' => [
             'App\Listeners\SendMailListener',
-        ]
+        ],
+        'App\Events\UserCreated' => [
+            'App\Listeners\GenerateDefaultFields',
+        ],
     ];
 
     /**

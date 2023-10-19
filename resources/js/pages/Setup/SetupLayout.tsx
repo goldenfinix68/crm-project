@@ -22,6 +22,8 @@ import { useNavigate } from "react-router-dom";
 import CustomFieldAddUpdateModal from "../../components/CustomFieldAddUpdateModal";
 import CustomFieldSectionAddUpdateModal from "../../components/CustomFieldSectionAddUpdateModal";
 import { MenuProps } from "antd/lib";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 const { SubMenu } = Menu;
 
@@ -197,7 +199,7 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                             <Typography.Text>{title}</Typography.Text>
                         </Col>
                         <Col span={12} className="text-right p-r-md">
-                            {title == "Contact" && (
+                            {(title == "Contact" || title == "Deal") && (
                                 <>
                                     <Space>
                                         <Button
@@ -234,7 +236,11 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                                             console.log("qwe");
                                         }}
                                         type={
-                                            title == "Contact" ? "contact" : ""
+                                            title == "Contact"
+                                                ? "contact"
+                                                : title == "Deal"
+                                                ? "deal"
+                                                : ""
                                         }
                                     />
 
@@ -251,7 +257,11 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                                             console.log("qwe");
                                         }}
                                         type={
-                                            title == "Contact" ? "contact" : ""
+                                            title == "Contact"
+                                                ? "contact"
+                                                : title == "Deal"
+                                                ? "deal"
+                                                : ""
                                         }
                                     />
                                 </>
@@ -260,7 +270,7 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                     </Row>
                 </Layout.Header>
                 <Layout.Content style={{ margin: "24px 16px 40px" }}>
-                    {content}
+                    <DndProvider backend={HTML5Backend}>{content}</DndProvider>
                 </Layout.Content>
             </Layout>
         </Layout>

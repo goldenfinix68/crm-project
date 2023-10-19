@@ -67,10 +67,10 @@ const CustomFieldAddUpdateModal = ({
     const [searchKey, setSearchKey] = useState("");
 
     const {
-        data: contactSections,
+        data: sections,
         isLoading,
-        refetch: refetchContacts,
-    } = useCustomFieldSections("contact");
+        refetch: refetchSections,
+    } = useCustomFieldSections(type);
 
     const data = [
         {
@@ -218,6 +218,10 @@ const CustomFieldAddUpdateModal = ({
         }
     }, [customField]);
 
+    useEffect(() => {
+        refetchSections();
+    }, []);
+
     const fieldTypeList = () => {
         if (searchKey) {
             return FIELD_TYPE_LIST.filter((str: any) =>
@@ -226,14 +230,6 @@ const CustomFieldAddUpdateModal = ({
         } else {
             return FIELD_TYPE_LIST;
         }
-    };
-
-    const sections = () => {
-        if (type == "contact") {
-            return contactSections;
-        }
-
-        return [];
     };
 
     return (
@@ -295,8 +291,8 @@ const CustomFieldAddUpdateModal = ({
                         form={form}
                         initialValues={{
                             isRequired: false,
-                            customFieldSectionId: contactSections?.length
-                                ? contactSections[0].id
+                            customFieldSectionId: sections?.length
+                                ? sections[0].id
                                 : "",
                         }}
                         onFinish={onFinish}
@@ -308,7 +304,7 @@ const CustomFieldAddUpdateModal = ({
                                 setSelectedFieldType(undefined);
                             }}
                             type={type}
-                            sections={sections()}
+                            sections={sections}
                         />
                     </Form>
                 </>

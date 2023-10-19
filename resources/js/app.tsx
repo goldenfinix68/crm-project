@@ -66,6 +66,7 @@ import BulkAction from "./pages/PageContacts/BulkAction";
 import TextBoxView from "./pages/Texts/components/TextBoxView";
 import { AppContextProvider } from "./context/AppContext";
 import ContactSetup from "./pages/ContactSetup";
+import DealSetup from "./pages/DealSetup";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isForgotPassword = window.location.pathname === "/forgot-password";
@@ -317,6 +318,17 @@ const App: React.FC = () => {
                                             <SetupLayout
                                                 content={<ContactSetup />}
                                                 title="Contact"
+                                            />
+                                        </PrivateRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/setup/customizations/deal"
+                                    element={
+                                        <PrivateRoute>
+                                            <SetupLayout
+                                                content={<DealSetup />}
+                                                title="Deal"
                                             />
                                         </PrivateRoute>
                                     }

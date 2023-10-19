@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use App\Events\UserCreated;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -52,6 +53,15 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(\App\Models\MobileNumber::class, 'userId', 'id');
         
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($user) {
+            event(new UserCreated($user));
+        });
     }
     
 
