@@ -5,7 +5,7 @@ import {
     BarChartOutlined,
     CheckCircleOutlined,
     ClockCircleOutlined,
-    DollarOutlined,
+    DollarCircleOutlined,
     PhoneOutlined,
     TagsOutlined,
     UserOutlined,
@@ -22,6 +22,16 @@ const Setup: React.FC = (props) => {
             icon: <UsergroupAddOutlined />,
             title: "Contact",
             link: "/setup/customizations/contact",
+        },
+        {
+            icon: <DollarCircleOutlined />,
+            title: "Deal",
+            link: "/setup/customizations/deal",
+        },
+        {
+            icon: <CheckCircleOutlined />,
+            title: "Activity",
+            link: "/setup/customizations/activity",
         },
         // {
         //     icon: <DollarOutlined />,
