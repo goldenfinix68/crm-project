@@ -24,6 +24,7 @@ import CustomFieldSectionAddUpdateModal from "../../components/CustomFieldSectio
 import { MenuProps } from "antd/lib";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import CustomFieldFormModal from "../../components/CustomFieldFormModal";
 
 const { SubMenu } = Menu;
 
@@ -37,6 +38,8 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
     const navigate = useNavigate();
 
     const [isCustomFieldAddUpdateOpen, setIsCustomFieldAddUpdateOpen] =
+        React.useState(false);
+    const [isFormReviewModalOpen, setIsFormReviewModalOpen] =
         React.useState(false);
     const [
         isCustomFieldSectionAddUpdateOpen,
@@ -200,7 +203,11 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                                                     color: "white",
                                                 }}
                                                 icon={<PlusCircleOutlined />}
-                                                // onClick={handleOpenCreateMdal}
+                                                onClick={() => {
+                                                    setIsFormReviewModalOpen(
+                                                        true
+                                                    );
+                                                }}
                                             >
                                                 Form Review
                                             </Button>
@@ -269,6 +276,18 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                                             console.log("qwe");
                                         }}
                                         type={title.toLowerCase()}
+                                    />
+
+                                    <CustomFieldFormModal
+                                        isModalOpen={isFormReviewModalOpen}
+                                        closeModal={() =>
+                                            setIsFormReviewModalOpen(false)
+                                        }
+                                        handleSubmit={() => {
+                                            console.log("qwe");
+                                        }}
+                                        type={title.toLowerCase()}
+                                        preview
                                     />
                                 </>
                             )}

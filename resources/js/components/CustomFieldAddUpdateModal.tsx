@@ -11,6 +11,7 @@ import {
     Select,
     List,
     Checkbox,
+    Radio,
 } from "antd";
 
 import { useMutation } from "react-query";
@@ -294,6 +295,7 @@ const CustomFieldAddUpdateModal = ({
                             customFieldSectionId: sections?.length
                                 ? sections[0].id
                                 : "",
+                            associationType: "single",
                         }}
                         onFinish={onFinish}
                     >
@@ -377,6 +379,43 @@ const AddCustomFieldForm = ({
                 <Input hidden />
             </Form.Item>
 
+            {(selectedType.type == "contactLookup" ||
+                selectedType.type == "userLookup") && (
+                <Form.Item
+                    name="associationType"
+                    rules={[
+                        {
+                            required: true,
+                            message: "Please select an option",
+                        },
+                    ]}
+                >
+                    <Radio.Group>
+                        <Radio value="single">
+                            <Space direction="vertical" size={0}>
+                                <Typography.Title level={5}>
+                                    Single
+                                </Typography.Title>
+                                Let you associate single contact with a record.
+                                Associated contact will appear inside the
+                                listing screen too.
+                            </Space>
+                        </Radio>
+                        <Radio value="multiple" className="p-t-lg">
+                            <Space direction="vertical" size={0}>
+                                <Typography.Title level={5}>
+                                    Multiple
+                                </Typography.Title>
+                                Let you associate multiple contacts with a
+                                record. Associated contacts will not appear in
+                                the list view. They will only appear inside a
+                                detailed view.
+                            </Space>
+                        </Radio>
+                    </Radio.Group>
+                </Form.Item>
+            )}
+
             <Form.Item
                 name={"label"}
                 label="Label"
@@ -391,7 +430,7 @@ const AddCustomFieldForm = ({
                 rules={[validateRules.required]}
                 initialValue={"Default"}
             >
-                <Select>
+                <Select showSearch>
                     {sections?.map((section) => (
                         <Select.Option value={section.id}>
                             {section.name}
@@ -400,8 +439,8 @@ const AddCustomFieldForm = ({
                 </Select>
             </Form.Item>
 
-            {selectedType.type === "Select" ||
-            selectedType.type === "Multi Select" ? (
+            {selectedType.type === "select" ||
+            selectedType.type === "multiSelect" ? (
                 <Row gutter={24}>
                     <Col span={12}>
                         <Form.Item name="options" label="Pick list values">

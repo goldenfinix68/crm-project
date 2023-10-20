@@ -183,7 +183,7 @@ export type TCustomField = {
     type: string;
     fieldName: string;
     label: number;
-    options?: string[];
+    options?: string;
     customFieldSectionId?: string;
     isRequired: boolean;
     isActive: boolean;
