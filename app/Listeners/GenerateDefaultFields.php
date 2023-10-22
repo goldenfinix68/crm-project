@@ -6,6 +6,7 @@ use App\Events\UserCreated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Models\CustomFieldSection;
+use App\Models\CustomField;
 
 class GenerateDefaultFields
 {
@@ -29,16 +30,78 @@ class GenerateDefaultFields
     {
         $user = $event->user;
 
-        $defaultCustomFieldSectionsType = ['contact', 'deal', 'activity'];
-        foreach($defaultCustomFieldSectionsType as $type){
-            $section = new CustomFieldSection();
-            $section->name = 'Default';
-            $section->columnLayout = 'two';
-            $section->userId = $user->id;
-            $section->type = $type;
-            $section->sort = 1;
-            $section->isDefault = true;
-            $section->save();
+        $defaultCustomFieldSectionsType = [
+            [
+                "type" => "contact",
+                "sectionName" => "Default",
+                "columnLayout" => "two",
+            ],
+            [
+                "type" => "deal",
+                "sectionName" => "Default",
+                "columnLayout" => "two",
+            ],
+            [
+                "type" => "activity",
+                "sectionName" => "Default",
+                "columnLayout" => "two",
+            ],
+        ];
+        $defaultCustomFields = [
+            [
+                "type" => "contact",
+                "fieldType" => "text",
+                "fieldName" => "firstName",
+                "label" => "First Name",
+                "isRequired" => true,
+            ],
+            [
+                "type" => "contact",
+                "fieldType" => "text",
+                "fieldName" => "lastName",
+                "label" => "Last Name",
+                "isRequired" => true,
+            ],
+        ];
+        foreach($defaultCustomFieldSectionsType as $section){
+            $isExisting = CustomFieldSection::where('userId', $user->id)
+                ->where('name', $section['sectionName'])
+                ->where('type', $section['type'])
+                ->where('isDefault', true)
+                ->first();
+            if(empty($isExisting)){
+                $customSection = new CustomFieldSection();
+                $customSection->name = $section['sectionName'];
+                $customSection->columnLayout = $section['columnLayout'];
+                $customSection->userId = $user->id;
+                $customSection->type = $section['type'];
+                $customSection->sort = 1;
+                $customSection->isDefault = true;
+                $customSection->save();
+
+                foreach($defaultCustomFields as $field){
+                    $isExisting = CustomField::where('userId', $user->id)
+                        ->where('fieldName', $field['fieldName'])
+                        ->where('type', $field['type'])
+                        ->where('isDefault', true)
+                        ->first();
+                    if(empty($isExisting)){
+                        $customField = new CustomField();
+                        $customField->label = $field['label'];
+                        $customField->fieldName = $field['fieldName'];
+                        $customField->customFieldSectionId = $customSection->id;
+                        $customField->customFieldSectionType = $customSection->type;
+                        $customField->type = $field['type'];
+                        $customField->sort = 1;
+                        $customField->userId = $user->id;
+                        $customField->isRequired = $field['isRequired'];
+                        $customField->options = $field['options'] ?? null;
+                        $customField->associationType = $field['associationType'] ?? null;
+                        $customField->fieldName = $field['fieldName'];
+                        $customField->save();
+                    }
+                }
+            }
         }
     }
 }
