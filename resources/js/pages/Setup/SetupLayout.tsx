@@ -287,7 +287,7 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                                             console.log("qwe");
                                         }}
                                         type={title.toLowerCase()}
-                                        preview
+                                        // preview
                                     />
                                 </>
                             )}

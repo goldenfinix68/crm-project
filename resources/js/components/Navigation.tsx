@@ -142,28 +142,21 @@ const Navigation: React.FC = () => {
                                             {contacts
                                                 ?.filter(
                                                     (contact) =>
-                                                        contact.firstName
+                                                        contact.fields?.firstName
                                                             .toLowerCase()
                                                             .includes(
                                                                 searchKeyword.toLowerCase()
                                                             ) ||
-                                                        contact.lastName
+                                                        contact.fields?.lastName
                                                             .toLowerCase()
                                                             .includes(
                                                                 searchKeyword.toLowerCase()
                                                             ) ||
-                                                        (contact.mobile &&
-                                                            contact.mobile
-                                                                .toLowerCase()
-                                                                .includes(
-                                                                    searchKeyword.toLowerCase()
-                                                                )) ||
-                                                        (contact.phone &&
-                                                            contact.phone
-                                                                .toLowerCase()
-                                                                .includes(
-                                                                    searchKeyword.toLowerCase()
-                                                                ))
+                                                        contact.fields?.mobile
+                                                            .toLowerCase()
+                                                            .includes(
+                                                                searchKeyword.toLowerCase()
+                                                            )
                                                 )
                                                 ?.map((contact) => (
                                                     <Menu.Item key={contact.id}>
@@ -179,7 +172,7 @@ const Navigation: React.FC = () => {
                                                                         "middle",
                                                                 }}
                                                             >
-                                                                {contact.firstName.charAt(
+                                                                {contact.fields?.firstName.charAt(
                                                                     0
                                                                 )}
                                                             </Avatar>
@@ -190,7 +183,7 @@ const Navigation: React.FC = () => {
                                                                 className="m-l-xs"
                                                             >
                                                                 <Typography.Text>
-                                                                    {`${contact.firstName} ${contact.lastName}`}
+                                                                    {`${contact.fields?.firstName} ${contact.fields?.lastName}`}
                                                                 </Typography.Text>
                                                                 <Typography.Text className="list-data-info">
                                                                     <Space
@@ -213,7 +206,9 @@ const Navigation: React.FC = () => {
                                                                             }}
                                                                         >
                                                                             {`Mobile: ${
-                                                                                contact.mobile ??
+                                                                                contact
+                                                                                    .fields
+                                                                                    ?.mobile ??
                                                                                 "Not set"
                                                                             }`}
                                                                         </Typography.Text>
@@ -224,7 +219,9 @@ const Navigation: React.FC = () => {
                                                                             }}
                                                                         >
                                                                             {`Phone: ${
-                                                                                contact.phone ??
+                                                                                contact
+                                                                                    .fields
+                                                                                    ?.phone ??
                                                                                 "Not set"
                                                                             }`}
                                                                         </Typography.Text>

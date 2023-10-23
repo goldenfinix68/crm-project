@@ -31,12 +31,20 @@ class ContactsController extends Controller
 
     public function index(Request $request)
     {
+
+        $currentWeekStart = Carbon::now()->startOfWeek();
+        $currentWeekEnd = Carbon::now()->endOfWeek();
+        $lastWeekStart = Carbon::now()->subWeek()->startOfWeek();
+        $lastWeekEnd = Carbon::now()->subWeek()->endOfWeek();
+        $startOfDay = Carbon::now()->startOfDay();
+        $endOfDay = Carbon::now()->endOfDay();
+
         $data = [];
         $contacts = Contact::with(['customFieldValues', 'customFieldValues.customField'])
-            ->where('id', 1)
-            ->whereHas('customFieldValues', function ($query) {
-                $query->where('value', 'qweqweqwe');
-            })
+            // ->where('id', 1)
+            // ->whereHas('customFieldValues', function ($query) {
+            //     $query->where('value', 'qweqweqwe');
+            // })
             ->get();
 
         foreach($contacts as $contact){
@@ -53,63 +61,56 @@ class ContactsController extends Controller
         ], 200);
 
 
-        $currentWeekStart = Carbon::now()->startOfWeek();
-        $currentWeekEnd = Carbon::now()->endOfWeek();
-        $lastWeekStart = Carbon::now()->subWeek()->startOfWeek();
-        $lastWeekEnd = Carbon::now()->subWeek()->endOfWeek();
-        $startOfDay = Carbon::now()->startOfDay();
-        $endOfDay = Carbon::now()->endOfDay();
+        // $data = Contact::select([
+        //     'contacts.*',
+        //     \DB::raw("(SELECT CONCAT(users.firstName, ' ', users.lastName)) as `owner`"),
+        // ])
+        //     ->where('ownerId', Auth::id())
+        //     ->leftJoin('users', 'users.id', '=', 'contacts.ownerId')
+        //     ->leftJoin('contact_types', 'contact_types.id', '=', 'contacts.typeId')
+        //     ->with(['type']);
 
-        $data = Contact::select([
-            'contacts.*',
-            \DB::raw("(SELECT CONCAT(users.firstName, ' ', users.lastName)) as `owner`"),
-        ])
-            ->where('ownerId', Auth::id())
-            ->leftJoin('users', 'users.id', '=', 'contacts.ownerId')
-            ->leftJoin('contact_types', 'contact_types.id', '=', 'contacts.typeId')
-            ->with(['type']);
+        // if (isset($request->filter)) {
+        //     if ($request->filter == "new-last-week") {
+        //         $data = $data->whereBetween('contacts.created_at', [$lastWeekStart, $lastWeekEnd]);
+        //     }
+        //     if ($request->filter == "new-this-week") {
+        //         $data = $data->whereBetween('contacts.created_at', [$currentWeekStart, $currentWeekEnd]);
+        //     }
+        //     if ($request->filter == "recent-modified-contact") {
+        //         $data = $data->whereBetween('contacts.updated_at', [$startOfDay, $endOfDay]);
+        //     }
+        // }
 
-        if (isset($request->filter)) {
-            if ($request->filter == "new-last-week") {
-                $data = $data->whereBetween('contacts.created_at', [$lastWeekStart, $lastWeekEnd]);
-            }
-            if ($request->filter == "new-this-week") {
-                $data = $data->whereBetween('contacts.created_at', [$currentWeekStart, $currentWeekEnd]);
-            }
-            if ($request->filter == "recent-modified-contact") {
-                $data = $data->whereBetween('contacts.updated_at', [$startOfDay, $endOfDay]);
-            }
-        }
+        // if (isset($request->search)) {
+        //     $data = $data->where(function ($q) use ($request) {
+        //         $q->orWhere('id', 'LIKE', "%{$request->search}%");
+        //     });
+        // }
 
-        if (isset($request->search)) {
-            $data = $data->where(function ($q) use ($request) {
-                $q->orWhere('id', 'LIKE', "%{$request->search}%");
-            });
-        }
+        // if ($request->sort_order != '') {
+        //     $data->orderBy($request->sort_field, $request->sort_order == 'ascend' ? 'asc' : 'desc');
+        // } else {
+        //     $data->orderBy('id', 'desc');
+        // }
 
-        if ($request->sort_order != '') {
-            $data->orderBy($request->sort_field, $request->sort_order == 'ascend' ? 'asc' : 'desc');
-        } else {
-            $data->orderBy('id', 'desc');
-        }
+        // if (isset($request->pageSize)) {
+        //     $data = $data->paginate($request->pageSize);
+        // } else {
+        //     $data = $data->get();
+        // }
 
-        if (isset($request->pageSize)) {
-            $data = $data->paginate($request->pageSize);
-        } else {
-            $data = $data->get();
-        }
+        // $data = $data->map(function ($q) {
+        //     if ($q->tags) {
+        //         $q->tags = json_decode($q->tags);
+        //     }
+        //     return $q;
+        // });
 
-        $data = $data->map(function ($q) {
-            if ($q->tags) {
-                $q->tags = json_decode($q->tags);
-            }
-            return $q;
-        });
-
-        return response()->json([
-            'success' => true,
-            'data' => $data
-        ], 200);
+        // return response()->json([
+        //     'success' => true,
+        //     'data' => $data
+        // ], 200);
     }
 
 

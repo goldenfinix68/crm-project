@@ -26,6 +26,31 @@ export const useCustomFieldSections = (type: any) => {
     };
 };
 
+export const useCustomFields = (type: any) => {
+    const { data, isLoading, isError, refetch } = useQuery<TCustomField[]>(
+        "customFields",
+        async () => {
+            const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+            const response = await axios.get(
+                `/api/custom-fields?type=${type}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            );
+            return response.data;
+        }
+    );
+
+    return {
+        data,
+        isLoading,
+        isError,
+        refetch,
+    };
+};
+
 export const useInactiveCustomFields = (type: any) => {
     const { data, isLoading, isError, refetch } = useQuery<TCustomField[]>(
         "inactiveCustomFields",

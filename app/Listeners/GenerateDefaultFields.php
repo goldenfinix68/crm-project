@@ -65,9 +65,16 @@ class GenerateDefaultFields
             [
                 "type" => "contact",
                 "fieldType" => "mobile",
-                "fieldName" => "mobileNo",
+                "fieldName" => "mobile",
                 "label" => "Mobile Number",
                 "isRequired" => true,
+            ],
+            [
+                "type" => "contact",
+                "fieldType" => "phone",
+                "fieldName" => "phone",
+                "label" => "Phone Number",
+                "isRequired" => false,
             ],
         ];
         foreach($defaultCustomFieldSectionsType as $section){

@@ -135,7 +135,7 @@ const DraggableCustomFieldList = ({
                             if (customField.isDefault) {
                                 message.error("Cannot edit default section");
                             } else {
-                                setIsDeleteModalOpen(true);
+                                setIsCustomFielAddUpdateOpen(true);
                                 setSelectedCustomField(customField);
                             }
                         }}

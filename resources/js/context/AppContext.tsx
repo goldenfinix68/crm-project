@@ -6,9 +6,13 @@ import React, {
     Dispatch,
     SetStateAction,
 } from "react";
-import { TContact, TUser } from "../entities";
+import { TContact, TCustomField, TUser } from "../entities";
 import { useContactsAll } from "../api/query/contactsQuery";
 import { useLoggedInUser } from "../api/query/userQuery";
+import {
+    useCustomFieldSections,
+    useCustomFields,
+} from "../api/query/customFieldQuery";
 
 // Define the context type
 interface IAppContext {
@@ -16,6 +20,7 @@ interface IAppContext {
     isContactsLoading: boolean;
     refetchContacts: any;
     loggedInUser: TUser | null;
+    contactFields: TCustomField[];
 }
 
 // Create the context
@@ -34,6 +39,13 @@ export function AppContextProvider({ children }: AppContextProviderProps) {
     } = useContactsAll("All");
 
     const { user } = useLoggedInUser();
+
+    const {
+        data: contactFields,
+        isLoading: isContactFieldsLoading,
+        refetch: refetchContactFields,
+    } = useCustomFields("contact");
+
     return (
         <AppContext.Provider
             value={{
@@ -41,6 +53,7 @@ export function AppContextProvider({ children }: AppContextProviderProps) {
                 isContactsLoading,
                 refetchContacts,
                 loggedInUser: user ?? null,
+                contactFields: contactFields ?? [],
             }}
         >
             {children}

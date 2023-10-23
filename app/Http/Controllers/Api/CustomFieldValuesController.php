@@ -58,18 +58,19 @@ class CustomFieldValuesController extends Controller
                 
                 if($customField->type == "userLookup" || $customField->type == "contactLookup"){
                     if($customField->type == "userLookup"){
-                        $data = Contact::whereIn('id', $value)
-                        ->selectRaw('CONCAT(firstName, ", ", lastName) as full_name')
+                        $data = User::whereIn('id', $value)
+                        ->selectRaw('CONCAT(firstName, " ", lastName) as full_name')
                         ->pluck('full_name')
                         ->implode(', ');
                     }
                     else{
-                        $data = User::whereIn('id', $value)
-                        ->selectRaw('CONCAT(firstName, ", ", lastName) as full_name')
+                        $data = Contact::whereIn('id', $value)
+                        ->selectRaw('CONCAT(firstName, " ", lastName) as full_name')
                         ->pluck('full_name')
                         ->implode(', ');
                     }
                     $fieldValue->lookupIds = json_encode($value);
+                    $fieldValue->value =  $data;
                 }
                 else{
                     if($customField->type == "multiSelect"){
