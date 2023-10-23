@@ -76,9 +76,15 @@ export const FIELD_TYPE_LIST = [
         icon: "email",
     },
     {
+        label: "Mobile",
+        type: "mobile",
+        description: "The field lets you enter a mobile number.",
+        icon: "mobile",
+    },
+    {
         label: "Phone",
         type: "phone",
-        description: "The field lets you enter a phone or mobile number.",
+        description: "The field lets you enter a phone number.",
         icon: "phone",
     },
     {

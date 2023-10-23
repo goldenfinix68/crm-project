@@ -86,6 +86,11 @@ class Contact extends Model
     ];
 
 
+    public function customFieldValues()
+    {
+        return $this->hasMany(\App\Models\CustomFieldValue::class, 'customableId', 'id')->where('customableType', 'contact');
+    }
+
     public function owner()
     {
         return $this->belongsTo(User::class, 'ownerId');

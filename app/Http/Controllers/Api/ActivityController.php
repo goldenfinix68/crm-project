@@ -297,11 +297,11 @@ class ActivityController extends Controller
 
     public function get_contact(Request $request)
     {
-        $data = \App\Models\Contact::get();
+        // $data = \App\Models\Contact::get();
 
         return response()->json([
             'success' => true,
-            'data' => $data,
+            'data' => [],
         ], 200);
     }
 

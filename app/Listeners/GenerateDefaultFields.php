@@ -62,6 +62,13 @@ class GenerateDefaultFields
                 "label" => "Last Name",
                 "isRequired" => true,
             ],
+            [
+                "type" => "contact",
+                "fieldType" => "mobile",
+                "fieldName" => "mobileNo",
+                "label" => "Mobile Number",
+                "isRequired" => true,
+            ],
         ];
         foreach($defaultCustomFieldSectionsType as $section){
             $isExisting = CustomFieldSection::where('userId', $user->id)
@@ -91,13 +98,14 @@ class GenerateDefaultFields
                         $customField->fieldName = $field['fieldName'];
                         $customField->customFieldSectionId = $customSection->id;
                         $customField->customFieldSectionType = $customSection->type;
-                        $customField->type = $field['type'];
+                        $customField->type = $field['fieldType'];
                         $customField->sort = 1;
                         $customField->userId = $user->id;
                         $customField->isRequired = $field['isRequired'];
                         $customField->options = $field['options'] ?? null;
                         $customField->associationType = $field['associationType'] ?? null;
                         $customField->fieldName = $field['fieldName'];
+                        $customField->isDefault = true;
                         $customField->save();
                     }
                 }

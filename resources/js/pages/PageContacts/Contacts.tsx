@@ -58,6 +58,7 @@ import HeaderMenu from "./Components/HeaderMenu";
 import { useAppContextProvider } from "../../context/AppContext";
 import { CONTACT_COLUMNS, CONTACT_LIST_ACTION } from "../../constants";
 import Filter from "../Deal/components/Filter";
+import CustomFieldFormModal from "../../components/CustomFieldFormModal";
 
 interface DataType {
     key: React.Key;
@@ -2317,13 +2318,22 @@ const Contacts = () => {
                     </Col>
                 </Row>
 
-                <ContactsComponentsAddContacts
+                <CustomFieldFormModal
+                    isModalOpen={isModalOpen}
+                    closeModal={() => setisModalOpen(false)}
+                    handleSubmit={() => {
+                        console.log("qwe");
+                    }}
+                    type="contact"
+                />
+
+                {/* <ContactsComponentsAddContacts
                     isModalOpen={isModalOpen}
                     setIsModalOpen={setisModalOpen}
                     record={isTContact}
                     title={isTitle}
                     setTContact={setTContact}
-                />
+                /> */}
 
                 <Filter
                     openFilter={open}
@@ -2345,13 +2355,6 @@ const Contacts = () => {
                     record={isTContact}
                     title={isTitle}
                     selectedData={selectedData}
-                    setTContact={setTContact}
-                />
-                <ContactsComponentsAddContacts
-                    isModalOpen={isModalOpen}
-                    setIsModalOpen={setisModalOpen}
-                    record={isTContact}
-                    title={isTitle}
                     setTContact={setTContact}
                 />
                 <ContactsComponentsManageColumn

@@ -1,15 +1,20 @@
-import { Button, Col, Modal, Row, Typography, Form } from "antd";
+import { Button, Col, Modal, Row, Typography, Form, Input } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import React, { useEffect } from "react";
 import { useCustomFieldSections } from "../api/query/customFieldQuery";
 import { DEFAULT_REQUIRED_MESSAGE } from "../constants";
 import CustomFieldInput from "./CustomFieldInput";
+import { Link } from "react-router-dom";
+import { useMutation } from "react-query";
+import { saveCustomFieldValuesMutation } from "../api/mutation/useCustomFieldMutation";
+import CustomFieldInputWrapper from "./CustomFieldInput";
 interface CustomFieldFormModalProps {
     isModalOpen: boolean;
     closeModal: () => void;
     handleSubmit: () => void;
     type: string;
     preview?: boolean;
+    record?: any;
 }
 
 const CustomFieldFormModal = ({
@@ -18,6 +23,7 @@ const CustomFieldFormModal = ({
     handleSubmit,
     type,
     preview,
+    record,
 }: CustomFieldFormModalProps) => {
     const [form] = Form.useForm();
 
@@ -27,23 +33,29 @@ const CustomFieldFormModal = ({
         refetch: refetchSections,
     } = useCustomFieldSections(type);
 
+    const save = useMutation(saveCustomFieldValuesMutation, {
+        onSuccess: () => {
+            resetFields();
+            if (handleSubmit) {
+                handleSubmit();
+            }
+        },
+        onError: (e: any) => {
+            console.log(e.message || "An error occurred");
+        },
+    });
+
     const handleFinish = (values: any) => {
-        // if (record) {
-        //     addContact.mutate({ ...values, id: record.id });
-        // } else {
-        //     addContact.mutate(values);
-        // }
+        save.mutate({
+            fields: { ...values },
+            customableId: record?.customableId,
+            customableType: type,
+        });
     };
 
     const resetFields = () => {
         form.resetFields();
         closeModal();
-    };
-    const validateEmail = (rule, value) => {
-        if (/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/.test(value)) {
-            return Promise.resolve();
-        }
-        return Promise.reject("Please enter a valid email address.");
     };
 
     useEffect(() => {
@@ -70,8 +82,9 @@ const CustomFieldFormModal = ({
                             type="link"
                             style={{ marginRight: "-270px", color: "white" }}
                         >
-                            {" "}
-                            <u>Manage Fields</u>
+                            <Link to={`/setup/customizations/${type}`}>
+                                Manage Fields
+                            </Link>
                         </Button>
                     )}
 
@@ -113,53 +126,9 @@ const CustomFieldFormModal = ({
                                                     md={columnSpan}
                                                     xs={columnSpan}
                                                 >
-                                                    {field.type == "boolean" ? (
-                                                        <Form.Item
-                                                            name={
-                                                                field.fieldName
-                                                            }
-                                                            valuePropName="checked"
-                                                        >
-                                                            <CustomFieldInput
-                                                                customField={
-                                                                    field
-                                                                }
-                                                            />
-                                                        </Form.Item>
-                                                    ) : (
-                                                        <Form.Item
-                                                            name={
-                                                                field.fieldName
-                                                            }
-                                                            label={field.label}
-                                                            rules={[
-                                                                {
-                                                                    required:
-                                                                        field.isRequired,
-                                                                    message:
-                                                                        DEFAULT_REQUIRED_MESSAGE,
-                                                                },
-                                                                {
-                                                                    type: "email",
-                                                                    message:
-                                                                        "The input is not a valid email address",
-                                                                },
-                                                                {
-                                                                    validator:
-                                                                        field.type ==
-                                                                        "email"
-                                                                            ? validateEmail
-                                                                            : undefined,
-                                                                },
-                                                            ]}
-                                                        >
-                                                            <CustomFieldInput
-                                                                customField={
-                                                                    field
-                                                                }
-                                                            />
-                                                        </Form.Item>
-                                                    )}
+                                                    <CustomFieldInput
+                                                        customField={field}
+                                                    />
                                                 </Col>
                                             );
                                         })}
@@ -177,9 +146,7 @@ const CustomFieldFormModal = ({
                             type="primary"
                             onClick={() => {
                                 // setSaveAndAdd(false);
-                                form.validateFields().then((values) => {
-                                    form.submit();
-                                });
+                                form.submit();
                             }}
                         >
                             Save and Close
@@ -189,9 +156,7 @@ const CustomFieldFormModal = ({
                             type="primary"
                             onClick={() => {
                                 // setSaveAndAdd(true);
-                                form.validateFields().then((values) => {
-                                    form.submit();
-                                });
+                                form.submit();
                             }}
                         >
                             Save and add other

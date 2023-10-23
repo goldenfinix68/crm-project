@@ -97,6 +97,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/custom-fields/sort', 'App\Http\Controllers\Api\CustomFieldsController@sort');
     Route::resource('/custom-fields', 'App\Http\Controllers\Api\CustomFieldsController');
 
+    Route::resource('/custom-field-values', 'App\Http\Controllers\Api\CustomFieldValuesController');
+
 
     Route::post('/assign-label-thread', 'App\Http\Controllers\Api\TextThreadsController@assign_label');
     Route::post('/text-threads/mark-texts-seen', 'App\Http\Controllers\Api\TextThreadsController@mark_texts_seen');
@@ -189,21 +191,21 @@ Route::get('/mail_test', function (Request $request) {
 
 // Do not remove this code
 Route::get('/get_people', function (Request $request) {
-    $data = \App\Models\User::select([
-        'id',
-        'firstName',
-        'lastName',
-        DB::raw("(SELECT CONCAT('users')) as `from_table`")
-    ]) ->union(DB::table('contacts')->select(
-        'id',
-        'firstName',
-        'lastName',
-        DB::raw("(SELECT CONCAT('contacts')) as `from_table`")
-    ))
-    ->get();
+    // $data = \App\Models\User::select([
+    //     'id',
+    //     'firstName',
+    //     'lastName',
+    //     DB::raw("(SELECT CONCAT('users')) as `from_table`")
+    // ]) ->union(DB::table('contacts')->select(
+    //     'id',
+    //     'firstName',
+    //     'lastName',
+    //     DB::raw("(SELECT CONCAT('contacts')) as `from_table`")
+    // ))
+    // ->get();
 
     return response()->json([
         'success' => true,
-        'data' => $data,
+        'data' => [],
     ], 200);
 });

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Space, List, Tag, message } from "antd";
+import { Space, List, Tag, message, Tooltip } from "antd";
 import { useDrag, useDrop } from "react-dnd";
 import {
     EditOutlined,
     DeleteOutlined,
     HolderOutlined,
+    LockOutlined,
 } from "@ant-design/icons";
 import { TCustomField } from "../entities";
 import { useMutation } from "react-query";
@@ -105,11 +106,19 @@ const DraggableCustomFieldList = ({
                         <Space>
                             <HolderOutlined className="p-t-xs" />
                             {customField.label}
+                            {customField.isDefault ? (
+                                <Tooltip title="You can not edit or delete default field. However, you can still move it within its section.">
+                                    <LockOutlined style={{ color: "gray" }} />
+                                </Tooltip>
+                            ) : null}
                         </Space>
                     }
                     // description={item.email}
                 />
                 <Space>
+                    {!customField.isDefault ? (
+                        <Tag color="orange">Custom Field</Tag>
+                    ) : null}
                     <Tag>
                         {
                             FIELD_TYPE_LIST.find(
@@ -123,15 +132,23 @@ const DraggableCustomFieldList = ({
                     <EditOutlined
                         style={{ cursor: "pointer" }}
                         onClick={() => {
-                            setSelectedCustomField(customField);
-                            setIsCustomFielAddUpdateOpen(true);
+                            if (customField.isDefault) {
+                                message.error("Cannot edit default section");
+                            } else {
+                                setIsDeleteModalOpen(true);
+                                setSelectedCustomField(customField);
+                            }
                         }}
                     />
                     <DeleteOutlined
                         style={{ cursor: "pointer" }}
                         onClick={() => {
-                            setIsDeleteModalOpen(true);
-                            setSelectedCustomField(customField);
+                            if (customField.isDefault) {
+                                message.error("Cannot delete default section");
+                            } else {
+                                setIsDeleteModalOpen(true);
+                                setSelectedCustomField(customField);
+                            }
                         }}
                     />
                 </Space>

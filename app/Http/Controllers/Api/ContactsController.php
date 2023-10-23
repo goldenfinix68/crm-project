@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Auth;
 use Carbon\Carbon;
-use League\Csv\Reader;
+use League\Csv\Reaer;
 
 class ContactsController extends Controller
 {
@@ -31,6 +31,28 @@ class ContactsController extends Controller
 
     public function index(Request $request)
     {
+        $data = [];
+        $contacts = Contact::with(['customFieldValues', 'customFieldValues.customField'])
+            ->where('id', 1)
+            ->whereHas('customFieldValues', function ($query) {
+                $query->where('value', 'qweqweqwe');
+            })
+            ->get();
+
+        foreach($contacts as $contact){
+            $customFields = [];
+            foreach($contact->customFieldValues as $key => $value){
+                $customFields[$value->customField->fieldName] = $value->value;
+            }
+            $contact->fields = $customFields;
+        }
+        // dd($contacts->customFieldValues);
+        return response()->json([
+            'success' => true,
+            'data' => $contacts
+        ], 200);
+
+
         $currentWeekStart = Carbon::now()->startOfWeek();
         $currentWeekEnd = Carbon::now()->endOfWeek();
         $lastWeekStart = Carbon::now()->subWeek()->startOfWeek();

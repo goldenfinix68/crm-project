@@ -122,3 +122,20 @@ export const deleteCustomFieldSectionMutation = async (id: string) => {
     }
     return data;
 };
+
+export const saveCustomFieldValuesMutation = async (values: any) => {
+    const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+    const response = await fetch("/api/custom-field-values", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(values),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to add contact type");
+    }
+    return data;
+};

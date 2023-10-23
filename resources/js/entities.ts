@@ -187,9 +187,17 @@ export type TCustomField = {
     customFieldSectionId?: string;
     isRequired: boolean;
     isActive: boolean;
+    isDefault: boolean;
     sort: string;
     associationType?: string;
     relatedRecordLabel?: string;
+};
+
+export type TCustomFieldValue = {
+    id: string;
+    customableId?: string;
+    customFieldName: string;
+    value?: string;
 };
 
 export type TWallData = {
