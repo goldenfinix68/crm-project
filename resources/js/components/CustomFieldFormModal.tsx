@@ -48,7 +48,7 @@ const CustomFieldFormModal = ({
     const handleFinish = (values: any) => {
         save.mutate({
             fields: { ...values },
-            customableId: record?.customableId,
+            customableId: record?.contactId,
             customableType: type,
         });
     };
@@ -61,6 +61,23 @@ const CustomFieldFormModal = ({
     useEffect(() => {
         refetchSections();
     }, []);
+
+    useEffect(() => {
+        if (record) {
+            const obj = {};
+            const entries = Object.entries(record);
+            for (const [key, value] of entries) {
+                if (record[key + "lookupIds"]) {
+                    obj[key] = JSON.parse(record[key + "lookupIds"]);
+                }
+                console.log(`Key: ${key}, Value: ${value}`);
+            }
+
+            form.setFieldsValue(obj);
+        } else {
+            form.resetFields();
+        }
+    }, [record]);
 
     return (
         <>
@@ -102,7 +119,7 @@ const CustomFieldFormModal = ({
                         form={form}
                         onFinish={handleFinish}
                         layout="vertical"
-                        initialValues={{ ownerId: 1 }}
+                        initialValues={record ?? undefined}
                     >
                         {sections?.map((section) => {
                             // if (section.columnLayout == "two") {

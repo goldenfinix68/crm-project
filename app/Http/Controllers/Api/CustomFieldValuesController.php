@@ -40,50 +40,65 @@ class CustomFieldValuesController extends Controller
     public function store(Request $request)
     {
         $fields = $request->fields;
-
         if($request->customableType == "contact"){
-            $record = new Contact();
-            $record->save();
+            if($request->customableId){
+                $record = Contact::find($request->customableId);
+                if(empty($record)){
+                    abort(404);
+                }
+            }
+            else{
+                $record = new Contact();
+                $record->save();
+            }
         }
 
         foreach($fields as $key => $value){
             //create new record
-            if(empty($request->customableId)){
-                $customField = CustomField::where('fieldName', $key)->first();
+            $customField = CustomField::where('fieldName', $key)->where('customFieldSectionType', $request->customableType)->first();
 
+            $fieldValue = CustomFieldValue::where('customFieldId', $customField->id)->where('customableId', $record->id)->first();
+            if(empty($fieldValue)){
                 $fieldValue = new CustomFieldValue();
-                $fieldValue->customableId = $record->id;
-                $fieldValue->customableType = $request->customableType;
-                $fieldValue->customFieldId = $customField->id;
-                
-                if($customField->type == "userLookup" || $customField->type == "contactLookup"){
-                    if($customField->type == "userLookup"){
-                        $data = User::whereIn('id', $value)
-                        ->selectRaw('CONCAT(firstName, " ", lastName) as full_name')
-                        ->pluck('full_name')
-                        ->implode(', ');
-                    }
-                    else{
-                        $data = Contact::whereIn('id', $value)
-                        ->selectRaw('CONCAT(firstName, " ", lastName) as full_name')
-                        ->pluck('full_name')
-                        ->implode(', ');
-                    }
-                    $fieldValue->lookupIds = json_encode($value);
-                    $fieldValue->value =  $data;
+            }
+            $fieldValue->customableId = $record->id;
+            $fieldValue->customableType = $request->customableType;
+            $fieldValue->customFieldId = $customField->id;
+            
+            if($customField->type == "userLookup" || $customField->type == "contactLookup"){
+                if($customField->type == "userLookup"){
+                    $data = User::whereIn('id', $value)
+                    ->selectRaw('CONCAT(firstName, " ", lastName) as full_name')
+                    ->pluck('full_name')
+                    ->implode(', ');
                 }
                 else{
-                    if($customField->type == "multiSelect"){
-                        $fieldValue->value = json_encode($value);
+                    $data = "";
+                    $contacts = Contact::with(['customFieldValues', 'customFieldValues.customField'])
+                    ->whereIn('id', $value)
+                    ->get();
+
+                    foreach($contacts as $index => $contact){
+                        $customFields = $contact->fields();
+                        $data = $data . ($index == 0 ? "" : ", ") . $customFields['firstName'] . ' ' . $customFields['lastName'];
                     }
-                    else{
-                        $fieldValue->value =  $value;
-                    }
-                    $fieldValue->lookupIds = null;
+
                 }
-                $fieldValue->save();
+                $fieldValue->lookupIds = json_encode($value);
+                $fieldValue->value =  $data;
             }
+            else{
+                if($customField->type == "multiSelect"){
+                    $fieldValue->value = json_encode($value);
+                }
+                else{
+                    $fieldValue->value =  $value;
+                }
+                $fieldValue->lookupIds = null;
+            }
+            $fieldValue->save();
         }
+        return response()->json(['message' => "Success"], 200);
     }
 
     /**
@@ -129,5 +144,55 @@ class CustomFieldValuesController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function quickUpdate(Request $request)
+    {
+        
+        if(empty($request->fields)){
+            abort(404);
+        }
+        foreach($request->fields as $field){
+            
+            $fieldValue = CustomFieldValue::find($field['customFieldValueId']);
+
+            $customField = $fieldValue->customField;
+
+            $value = $field[$customField->fieldName];
+
+            if($customField->type == "userLookup" || $customField->type == "contactLookup"){
+                if($customField->type == "userLookup"){
+                    $data = User::whereIn('id', $value)
+                    ->selectRaw('CONCAT(firstName, " ", lastName) as full_name')
+                    ->pluck('full_name')
+                    ->implode(', ');
+                }
+                else{
+                    $data = "";
+                    $contacts = Contact::with(['customFieldValues', 'customFieldValues.customField'])
+                    ->whereIn('id', $value)
+                    ->get();
+
+                    foreach($contacts as $index => $contact){
+                        $customFields = $contact->fields();
+                        $data = $data . ($index == 0 ? "" : ", ") . $customFields['firstName'] . ' ' . $customFields['lastName'];
+                    }
+                }
+                $fieldValue->lookupIds = json_encode($value);
+                $fieldValue->value =  $data;
+            }
+            else{
+                if($customField->type == "multiSelect"){
+                    $fieldValue->value = json_encode($value);
+                }
+                else{
+                    $fieldValue->value =  $value;
+                }
+                $fieldValue->lookupIds = null;
+            }
+            $fieldValue->save();
+        }
+        
+        return response()->json(['message' => "Success"], 200);
     }
 }

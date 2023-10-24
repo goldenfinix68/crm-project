@@ -90,6 +90,17 @@ class Contact extends Model
     {
         return $this->hasMany(\App\Models\CustomFieldValue::class, 'customableId', 'id')->where('customableType', 'contact');
     }
+    
+    public function fields()
+    {
+        $customFields = [];
+        foreach($this->customFieldValues as $key => $val){
+            $customFields[$val->customField->fieldName] = $val->value;
+        }
+
+        return $customFields;
+
+    }
 
     public function owner()
     {

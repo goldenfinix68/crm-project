@@ -48,10 +48,16 @@ class ContactsController extends Controller
             ->get();
 
         foreach($contacts as $contact){
+            
             $customFields = [];
             foreach($contact->customFieldValues as $key => $value){
                 $customFields[$value->customField->fieldName] = $value->value;
+                if(!empty($value->lookupIds)){
+                    $customFields[$value->customField->fieldName.'lookupIds'] = $value->lookupIds;
+                }
+                $customFields[$value->customField->fieldName.'Id'] = $value->id;
             }
+            $customFields['contactId'] = $contact->id;
             $contact->fields = $customFields;
         }
         // dd($contacts->customFieldValues);

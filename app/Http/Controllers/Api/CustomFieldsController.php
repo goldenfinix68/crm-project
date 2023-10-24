@@ -23,9 +23,14 @@ class CustomFieldsController extends Controller
             abort(401, 'Unauthorized');
         }
 
-        $fields =  CustomField::where('userId', $user->id)->where('isActive', true)->orderBy('sort')->get();
+        $fields =  CustomField::where('userId', $user->id)->where('isActive', true)->orderBy('sort');
+
+        if(!empty($request->type)){
+            $fields = $fields->where('customFieldSectionType', $request->type);
+        }
+
         
-        return $fields;
+        return $fields->get();
     }
 
     public function inactiveFields(Request $request)

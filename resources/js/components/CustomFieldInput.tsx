@@ -19,7 +19,13 @@ import { useAppContextProvider } from "../context/AppContext";
 import { useUsersAll } from "../api/query/userQuery";
 import { DEFAULT_REQUIRED_MESSAGE } from "../constants";
 
-const CustomFieldInput = ({ customField }: { customField: TCustomField }) => {
+const CustomFieldInput = ({
+    customField,
+    showLabel = true,
+}: {
+    customField: TCustomField;
+    showLabel?: boolean;
+}) => {
     const { contacts } = useAppContextProvider();
     const { users, isLoading } = useUsersAll();
 
@@ -71,6 +77,7 @@ const CustomFieldInput = ({ customField }: { customField: TCustomField }) => {
                             ? "multiple"
                             : undefined
                     }
+                    dropdownStyle={{ zIndex: 999999 }}
                 >
                     {stringArray?.map((option, index) => (
                         <Select.Option value={option} key={index}>
@@ -106,6 +113,7 @@ const CustomFieldInput = ({ customField }: { customField: TCustomField }) => {
                             ? "multiple"
                             : undefined
                     }
+                    dropdownStyle={{ zIndex: 999999 }}
                 >
                     {contacts?.map((contact, index) => (
                         <Select.Option value={contact.id} key={index}>
@@ -118,10 +126,13 @@ const CustomFieldInput = ({ customField }: { customField: TCustomField }) => {
                                     }}
                                 >
                                     <p style={{ fontSize: "9px" }}>
-                                        {contact.firstName.charAt(0)}
+                                        {contact.fields?.firstName?.charAt(0) ??
+                                            ""}
                                     </p>
                                 </Avatar>
-                                {contact.firstName + " " + contact.lastName}
+                                {contact.fields?.firstName +
+                                    " " +
+                                    contact.fields?.lastName}
                             </Space>
                         </Select.Option>
                     ))}
@@ -137,6 +148,7 @@ const CustomFieldInput = ({ customField }: { customField: TCustomField }) => {
                             ? "multiple"
                             : undefined
                     }
+                    dropdownStyle={{ zIndex: 999999 }}
                 >
                     {users?.map((user, index) => (
                         <Select.Option value={user.id} key={index}>
@@ -161,7 +173,7 @@ const CustomFieldInput = ({ customField }: { customField: TCustomField }) => {
         return (
             <Form.Item
                 name={customField.fieldName}
-                label={customField.label}
+                label={showLabel ? customField.label : null}
                 rules={[
                     {
                         required: customField.isRequired,
@@ -183,7 +195,7 @@ const CustomFieldInput = ({ customField }: { customField: TCustomField }) => {
     return (
         <Form.Item
             name={customField.fieldName}
-            label={customField.label}
+            label={showLabel ? customField.label : null}
             rules={[
                 {
                     required: customField.isRequired,
