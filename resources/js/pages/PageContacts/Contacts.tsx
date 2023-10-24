@@ -46,7 +46,7 @@ import { useNavigate } from "react-router";
 import ContactsComponentsTableEditableCell from "./Components/ContactsComponentsTableEditableCell";
 import ContactsComponentsTableEditableCellTags from "./Components/ContactsComponentsTableEditableCellTags";
 import ContactsComponentsTableEditableCellName from "./Components/ContactsEditableTableCell";
-import ContactsComponentsUpdate from "./Components/ContactsComponentsUpdate";
+import ContactsComponentsUpdate from "./Components/ContactBulkUpdate";
 import Papa from "papaparse";
 import {
     useContactAddFavorite,

@@ -19,6 +19,8 @@ use Illuminate\Support\Str;
 use Auth;
 use Carbon\Carbon;
 use League\Csv\Reaer;
+use App\Models\CustomField;
+use App\Models\CustomFieldValue;
 
 class ContactsController extends Controller
 {
@@ -370,9 +372,6 @@ class ContactsController extends Controller
 
     public function delete_contacts_table_column(Request $request)
     {
-    
-
-      
         $data = ContactTableColumn::where('user_id',auth()->user()->id)->delete();
     
         return response()->json([
@@ -442,5 +441,60 @@ class ContactsController extends Controller
         }
         return response()->json(['message' => 'No file uploaded'], 400);
     }
+    
+    public function bulkUpdateField(Request $request)
+    {
+        
+        if(empty($request->contactIds)){
+            abort(404);
+        }
+        $customField = $request->customField;
+        $value = $request->fieldValue;
+        foreach($request->contactIds as $id){
+            
+            $fieldValue = CustomFieldValue::where('customableId', $id)->where('customFieldId', $customField['id'])->first();
 
+            if(empty($fieldValue)){
+                $fieldValue = new CustomFieldValue();
+            }
+
+            $fieldValue->customableId = $id;
+            $fieldValue->customableType = 'contact';
+            $fieldValue->customFieldId = $customField['id'];
+
+            if($customField['type'] == "userLookup" || $customField['type'] == "contactLookup"){
+                if($customField['type'] == "userLookup"){
+                    $data = User::whereIn('id', $value)
+                    ->selectRaw('CONCAT(firstName, " ", lastName) as full_name')
+                    ->pluck('full_name')
+                    ->implode(', ');
+                }
+                else{
+                    $data = "";
+                    $contacts = Contact::with(['customFieldValues', 'customFieldValues.customField'])
+                    ->whereIn('id', $value)
+                    ->get();
+
+                    foreach($contacts as $index => $contact){
+                        $customFields = $contact->fields();
+                        $data = $data . ($index == 0 ? "" : ", ") . $customFields['firstName'] . ' ' . $customFields['lastName'];
+                    }
+                }
+                $fieldValue->lookupIds = json_encode($value);
+                $fieldValue->value =  $data;
+            }
+            else{
+                if($customField['type'] == "multiSelect"){
+                    $fieldValue->value = json_encode($value);
+                }
+                else{
+                    $fieldValue->value =  $value;
+                }
+                $fieldValue->lookupIds = null;
+            }
+            $fieldValue->save();
+        }
+        
+        return response()->json(['message' => "Success"], 200);
+    }
 }

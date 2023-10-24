@@ -43,6 +43,8 @@ import { Search, useNavigate } from "react-router-dom";
 import { CONTACT_LIST_ACTION } from "../../../constants";
 import { useMutation } from "react-query";
 import { deleteContactMutation } from "../../../api/mutation/useContactMutation";
+import ContactsComponentsUpdate from "./ContactBulkUpdate";
+import ContactBulkUpdate from "./ContactBulkUpdate";
 interface Props {
     selectedRows?: {
         [key: string]: any;
@@ -58,7 +60,7 @@ const ContactTableHeader = ({
     selectedRowKeys,
 }: Props) => {
     const navigate = useNavigate();
-    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+    const [isBulkUpdateModalOpen, setIsBulkUpdateModalOpen] = useState(false);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isSendToManyModalOpen, setIsSendToManyModalOpen] = useState(false);
     const [isAddListModalOpen, setIsAddListModalOpen] = useState(false);
@@ -111,7 +113,7 @@ const ContactTableHeader = ({
 
                         <Button
                             onClick={() => {
-                                setIsUpdateModalOpen(true);
+                                setIsBulkUpdateModalOpen(true);
                             }}
                             icon={<SaveOutlined />}
                             className="m-r-sm"
@@ -790,6 +792,15 @@ const ContactTableHeader = ({
                 //     </Col>
                 // </Row>
             }
+
+            <ContactBulkUpdate
+                isModalOpen={isBulkUpdateModalOpen}
+                closeModal={() => setIsBulkUpdateModalOpen(false)}
+                handleSubmit={() => {
+                    console.log("qwe");
+                }}
+                selectedRowKeys={selectedRowKeys}
+            />
         </>
     );
 };

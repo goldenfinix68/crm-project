@@ -38,6 +38,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/contacts/add_files', 'App\Http\Controllers\Api\ContactsController@add_files');
     Route::post('/contacts/save_column_setting', 'App\Http\Controllers\Api\ContactsController@save_column_setting');
     Route::post('/contacts/bulk-contact-import-csv', 'App\Http\Controllers\Api\ContactsController@bulkContactImportCsv');
+    Route::post('/contacts/bulk-update-field', 'App\Http\Controllers\Api\ContactsController@bulkUpdateField');
 
 
 
