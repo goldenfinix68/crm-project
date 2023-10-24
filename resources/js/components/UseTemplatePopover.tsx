@@ -13,7 +13,9 @@ const UseTemplatePopover = ({
     contact,
 }: {
     handleSelect: (e) => void;
-    contact: TContact;
+    contact: {
+        [key: string]: any;
+    }[];
 }) => {
     const { templates, isLoading } = useTextTemplates();
 

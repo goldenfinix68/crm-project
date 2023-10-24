@@ -45,6 +45,7 @@ import { useMutation } from "react-query";
 import { deleteContactMutation } from "../../../api/mutation/useContactMutation";
 import ContactsComponentsUpdate from "./ContactBulkUpdate";
 import ContactBulkUpdate from "./ContactBulkUpdate";
+import SendToManyModal from "../../../components/SentToManyModal";
 interface Props {
     selectedRows?: {
         [key: string]: any;
@@ -800,6 +801,12 @@ const ContactTableHeader = ({
                     console.log("qwe");
                 }}
                 selectedRowKeys={selectedRowKeys}
+            />
+
+            <SendToManyModal
+                isModalOpen={isSendToManyModalOpen}
+                closeModal={() => setIsSendToManyModalOpen(false)}
+                contacts={(selectedRows as any) ?? []}
             />
         </>
     );

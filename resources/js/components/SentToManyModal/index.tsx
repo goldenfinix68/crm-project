@@ -32,7 +32,9 @@ import AddAttributePopoverContent from "../../pages/TextTemplates/components/Add
 interface Props {
     isModalOpen: boolean;
     closeModal: () => void;
-    contacts: TContact[];
+    contacts: {
+        [key: string]: any;
+    }[];
 }
 const SendToManyModal = ({ isModalOpen, closeModal, contacts }: Props) => {
     const colors = ["#FF5733", "#00AC7C", "#3498DB", "#E74C3C", "#9B59B6"];
@@ -95,7 +97,9 @@ const ModalForm = ({
     contacts,
 }: {
     closeModal: () => void;
-    contacts: TContact[];
+    contacts: {
+        [key: string]: any;
+    }[];
 }) => {
     const [form] = Form.useForm();
     const message = Form.useWatch("message", form);
@@ -131,7 +135,7 @@ const ModalForm = ({
 
     const onFinish = async (values: any) => {
         // setError("");
-        const contactIds = contacts?.map((contact) => contact.id);
+        const contactIds = contacts?.map((contact) => contact.contactId);
         const now = new Date();
         const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -401,7 +405,7 @@ const ModalForm = ({
                                     form.setFieldValue("message", value);
                                     setIsTemplatePopoverOpen(false);
                                 }}
-                                contact={contacts[0] ?? []}
+                                contact={contacts}
                             />
                         }
                         title={
