@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Table } from "antd";
+import { Button, Table } from "antd";
 
 import { useAppContextProvider } from "../../../context/AppContext";
 import { ColumnsType } from "antd/es/table";
@@ -8,36 +8,30 @@ import CustomFieldFormModal from "../../../components/CustomFieldFormModal";
 import { TContact } from "../../../entities";
 import queryClient from "../../../queryClient";
 interface Props {
-    handleUpdateContactClick?: (contactId) => void;
+    setSelectedRows: any;
+    setSelectedRowKeys: any;
+    selectedRowKeys: string[];
 }
-const ContactsTable = ({ handleUpdateContactClick }: Props) => {
-    const [selectedRowsData, setSelectedRows] = useState<React.Key[]>([]);
-    const [selectedData, setSelectedData] = useState<any>([]);
-    const [selectionType, setSelectionType] = useState<"checkbox" | "radio">(
-        "checkbox"
-    );
+const ContactsTable = ({
+    setSelectedRows,
+    setSelectedRowKeys,
+    selectedRowKeys,
+}: Props) => {
     const { contacts, contactFields } = useAppContextProvider();
     const [isModalOpen, setisModalOpen] = useState(false);
     const [selectedContact, setSelectedContact] = useState<
         TContact | undefined
     >();
 
-    const onSelectChange = (
-        selectedRowKeys: React.Key[],
-        selectedRows: any
-    ) => {
-        console.log(selectedRowKeys);
-        console.log(selectedRows);
-        setSelectedData(selectedRows);
-        setSelectedRows(selectedRowKeys);
-
-        // setSelectionType(selectedRows);
-    };
     const rowSelection = {
-        selectedRowKeys: selectedRowsData,
-        onChange: onSelectChange,
-
-        // setSelectionType(selectedRows);
+        selectedRowKeys,
+        onChange: (
+            selectedRowKeys: React.Key[],
+            selectedRows: ColumnsType<{ [key: string]: any }>
+        ) => {
+            setSelectedRowKeys(selectedRowKeys);
+            setSelectedRows(selectedRows);
+        },
     };
 
     const columns = contactFields
@@ -89,15 +83,16 @@ const ContactsTable = ({ handleUpdateContactClick }: Props) => {
                 },
             };
         });
+
     return (
         <>
             <Table
                 className="tableCell"
                 rowSelection={{
-                    type: selectionType,
+                    type: "checkbox",
                     ...rowSelection,
                 }}
-                rowKey={(record) => record.id}
+                rowKey={(record) => (record as any)?.contactId}
                 // columns={orderedColumns ? orderedColumns : columns}
                 columns={columns as ColumnsType<{ [key: string]: any }>}
                 dataSource={contacts.map((contact) => contact.fields)}
