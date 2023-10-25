@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\DealPipelineStage;
 use App\Models\DealPipeline;
 use Auth;
 
-class DealPipelinesController extends Controller
+class DealPipelineStagesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,7 +18,7 @@ class DealPipelinesController extends Controller
      */
     public function index()
     {
-        return DealPipeline::with(['stages'])->get();
+        return DealPipelineStage::all();
     }
 
     /**
@@ -41,19 +42,33 @@ class DealPipelinesController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required',
         ]);
-
-        $user = Auth::user();
         $data = $request->all();
+        $pipeline = DealPipeline::find($data['dealPipelineId']);
+        $user = Auth::user();
+        if($user->id != $pipeline->userId){
+            abort(401);
+        }
+        //check highest sort
+        $highestSort = DealPipelineStage::where('dealPipelineId', $pipeline->id)->orderBy('sort', 'desc')->first();
 
-        $pipeline = DealPipeline::updateOrCreate(
+        $sort = 1;
+        if(!empty($data['sort'])){
+            $sort = $data['sort'];
+        }
+        else if(!empty($highestSort)){
+            $sort = $highestSort->sort + 1;
+        }
+
+        $stage = DealPipelineStage::updateOrCreate(
             ['id' => isset($data['id'])? $data['id'] : null],
             array_merge($data, [
                 'userId' => $user->id, 
+                'sort' => $sort,
             ])
         );
 
         
-        return response()->json($pipeline, 200);
+        return response()->json($stage, 200);
     }
 
     /**
@@ -98,6 +113,20 @@ class DealPipelinesController extends Controller
      */
     public function destroy($id)
     {
-        return DealPipeline::find($id)->delete();
+        return DealPipelineStage::find($id)->delete();
+    }
+    
+    public function sort(Request $request)
+    {
+        $user = Auth::user();
+        foreach($request->all() as $index => $data){
+            $stage = DealPipelineStage::find($data['id']);
+            if(!empty($stage) && $stage->pipeline->userId == $user->id){
+                $stage->sort = $index+1;
+                $stage->save();
+            }
+        }
+
+        return response()->json("Success", 200);
     }
 }

@@ -203,7 +203,15 @@ export type TCustomFieldValue = {
 
 export type TDealPipeline = {
     id: string;
-    name?: string;
+    name: string;
+    stages?: TDealPipelineStage[];
+};
+
+export type TDealPipelineStage = {
+    id: string;
+    name: string;
+    pipeline?: TDealPipeline;
+    dealPipelineId?: string;
 };
 
 export type TWallData = {

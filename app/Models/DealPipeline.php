@@ -14,4 +14,9 @@ class DealPipeline extends Model
         'name',
         'userId'
     ];
+
+    public function stages()
+    {
+        return $this->hasMany('\App\Models\DealPipelineStage', 'dealPipelineId', 'id')->orderBy('sort');
+    }
 }

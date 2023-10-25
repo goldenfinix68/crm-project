@@ -18,23 +18,10 @@ import { TDealPipeline } from "../../entities";
 import { useMutation } from "react-query";
 import { deleteDealPipeline } from "../../api/mutation/useDealMutation";
 import queryClient from "../../queryClient";
+import PipelineCard from "./components/PipelineCard";
 
 const DealPipelineSetup: React.FC = () => {
-    const [isPipelineAddUpdateOpen, setIsPipelineAddUpdateOpen] =
-        React.useState(false);
-    const [selectedPipeline, setSelectedPipeline] = React.useState<
-        TDealPipeline | undefined
-    >();
     const { data: pipelines, isLoading, refetch } = dealPipelines();
-
-    const deletePipeline = useMutation((id: string) => deleteDealPipeline(id), {
-        onSuccess: () => {
-            queryClient.invalidateQueries("dealPipelines");
-        },
-        onError: (e: any) => {
-            console.log(e.message || "An error occurred");
-        },
-    });
 
     if (isLoading) {
         return <LoadingComponent />;
@@ -44,38 +31,7 @@ const DealPipelineSetup: React.FC = () => {
             {pipelines?.length ? (
                 <Space direction="vertical" style={{ width: "100%" }}>
                     {pipelines?.map((pipeline, index) => (
-                        <Card
-                            title={pipeline.name}
-                            key={index}
-                            extra={
-                                <Space>
-                                    <Button type="default" size="small">
-                                        Add New Stage
-                                    </Button>
-                                    <EditOutlined
-                                        style={{ cursor: "pointer" }}
-                                        onClick={() => {
-                                            setSelectedPipeline(pipeline);
-                                            setIsPipelineAddUpdateOpen(true);
-                                        }}
-                                    />
-
-                                    <Popconfirm
-                                        title="Delete"
-                                        description="Are you sure to delete this pipeline?"
-                                        onConfirm={async () =>
-                                            await deletePipeline.mutate(
-                                                pipeline.id
-                                            )
-                                        }
-                                        okText="Yes"
-                                        cancelText="No"
-                                    >
-                                        <DeleteOutlined />
-                                    </Popconfirm>
-                                </Space>
-                            }
-                        ></Card>
+                        <PipelineCard pipeline={pipeline} />
                     ))}
                 </Space>
             ) : (
@@ -83,15 +39,6 @@ const DealPipelineSetup: React.FC = () => {
                     <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
                 </Card>
             )}
-
-            <PipelineAddUpdateModal
-                isModalOpen={isPipelineAddUpdateOpen}
-                closeModal={() => setIsPipelineAddUpdateOpen(false)}
-                handleSubmit={() => {
-                    console.log("qwe");
-                }}
-                pipeline={selectedPipeline}
-            />
         </>
     );
 };
