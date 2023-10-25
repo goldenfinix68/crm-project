@@ -9,6 +9,7 @@ import { useMutation } from "react-query";
 import queryClient from "../../../queryClient";
 import { TCustomField } from "../../../entities";
 import { Link } from "react-router-dom";
+import ContactTypeTag from "../../../components/ContactTypeTag";
 
 interface ContactsEditableTableCellProps {
     record: any;
@@ -65,15 +66,22 @@ const ContactsEditableTableCell = ({
         }
     };
 
+    const getLabel = () => {
+        if (field.type == "contactTypeLookup") {
+            return <ContactTypeTag fields={record} />;
+        }
+        return record[field.fieldName];
+    };
+
     return (
         <div
             style={{
                 backgroundColor: isHovered || isPopconfirmOpen ? "#ADD8E6" : "",
                 borderRadius: "5px",
-                padding: "5px",
             }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
+            className="w-100"
         >
             <Space
                 className="w-100"
@@ -112,7 +120,7 @@ const ContactsEditableTableCell = ({
                         } ${record["lastName"]}`}</Link>
                     </Space>
                 ) : (
-                    record[field.fieldName]
+                    getLabel()
                 )}
 
                 {(isHovered || isPopconfirmOpen) && (

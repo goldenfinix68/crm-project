@@ -58,6 +58,8 @@ import {
     createCustomFieldMutation,
     saveCustomFieldValuesMutation,
 } from "../../../api/mutation/useCustomFieldMutation";
+import ContactsEditableTableCell from "../../PageContacts/Components/ContactsEditableTableCell";
+import ContactTypeTag from "../../../components/ContactTypeTag";
 
 const ContactInfo = ({ contact }: { contact: TContact }) => {
     const [isCreateNewTypeOpen, setIsCreateNewTypeOpen] = React.useState(false);
@@ -72,7 +74,7 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
     // const { contact } = useContext(ContactContext);
     const [tagSearchKey, setTagSearchKey] = React.useState("");
 
-    const { loggedInUser } = useAppContextProvider();
+    const { loggedInUser, contactFields } = useAppContextProvider();
 
     const save = useMutation(saveCustomFieldValuesMutation, {
         onSuccess: () => {
@@ -211,19 +213,9 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                                 visible={isCreateNewTypeOpen}
                                 placement="rightTop"
                             >
-                                {contactTypelookupId &&
-                                contactTypelookupId != 0 ? (
-                                    <Tag
-                                        color={contactType?.highlight}
-                                        style={{ cursor: "pointer" }}
-                                    >
-                                        {contactType?.name}
-                                    </Tag>
-                                ) : (
-                                    <Tag style={{ cursor: "pointer" }}>
-                                        No Type
-                                    </Tag>
-                                )}
+                                <div style={{ cursor: "pointer" }}>
+                                    <ContactTypeTag fields={contact.fields} />
+                                </div>
                             </Popover>
                         </Dropdown>
                     </Col>
@@ -275,327 +267,24 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                     <Form.Item name="typeId" style={{ display: "none" }}>
                         <Input />
                     </Form.Item>
-                    {/* <Descriptions column={1}>
-                        <Descriptions.Item label="Default Mobile">
-                            <EditableText
-                                type="select"
-                                value={contact.defaultMobileNumberId}
-                                placeholderValue={
-                                    contact.defaultMobileNumber?.mobileNumber
-                                }
-                                column="defaultMobileNumberId"
-                                form={form}
-                                options={loggedInUser?.numbers?.map(
-                                    (number) => ({
-                                        value: number.id,
-                                        label: number.mobileNumber,
-                                    })
-                                )}
-                            />
-                        </Descriptions.Item>
-
-                        <Descriptions.Item label="Email">
-                            <EditableText
-                                type="input"
-                                value={contact.email}
-                                column="email"
-                                form={form}
-                            />
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Phone">
-                            <EditableText
-                                type="input"
-                                value={contact.phone}
-                                column="phone"
-                                form={form}
-                            />
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Redfin Quick Link">
-                            <EditableText
-                                type="input"
-                                value={contact.redfinLink}
-                                column="redfinLink"
-                                form={form}
-                            />
-                        </Descriptions.Item>
-                        <Descriptions.Item label="County Link">
-                            <EditableText
-                                type="input"
-                                value={contact.countryLink}
-                                column="countryLink"
-                                form={form}
-                            />
-                        </Descriptions.Item>
-                        <Descriptions.Item label="APN">
-                            <EditableText
-                                type="input"
-                                value={contact.APN}
-                                column="APN"
-                                form={form}
-                            />
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Google Map Link">
-                            <EditableText
-                                type="input"
-                                value={contact.gMapLink}
-                                column="gMapLink"
-                                form={form}
-                            />
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Acres">
-                            <EditableText
-                                type="inputNumber"
-                                value={contact.acres}
-                                column="acres"
-                                form={form}
-                            />
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Wetlands Status">
-                            <EditableText
-                                type="select"
-                                value={contact.wetlandsStatus}
-                                column="wetlandsStatus"
-                                form={form}
-                                options={[
-                                    {
-                                        value: "None",
-                                        label: "None",
-                                    },
-                                    {
-                                        value: "Small Portion",
-                                        label: "Small Portion",
-                                    },
-                                    {
-                                        value: "Half",
-                                        label: "Half",
-                                    },
-                                    {
-                                        value: "Most",
-                                        label: "Most",
-                                    },
-                                    { value: "All", label: "All" },
-                                ]}
-                            />
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Mobile">
-                            <EditableText
-                                type="input"
-                                value={contact.mobile}
-                                column="mobile"
-                                form={form}
-                            />
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Other Phone">
-                            <EditableText
-                                type="input"
-                                value={contact.otherPhone}
-                                column="otherPhone"
-                                form={form}
-                            />
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Website">
-                            <EditableText
-                                type="input"
-                                value={contact.website}
-                                column="website"
-                                form={form}
-                            />
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Address Line 1">
-                            <EditableText
-                                type="input"
-                                value={contact.addressLine1}
-                                column="addressLine1"
-                                form={form}
-                            />
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Address Line 2">
-                            <EditableText
-                                type="input"
-                                value={contact.addressLine2}
-                                column="addressLine2"
-                                form={form}
-                            />
-                        </Descriptions.Item>
-                        <Descriptions.Item label="City">
-                            <EditableText
-                                type="input"
-                                value={contact.city}
-                                column="city"
-                                form={form}
-                            />
-                        </Descriptions.Item>
-                        <Descriptions.Item label="State">
-                            <EditableText
-                                type="input"
-                                value={contact.state}
-                                column="state"
-                                form={form}
-                            />
-                        </Descriptions.Item>
-                        <Descriptions.Item label="ZipCode">
-                            <EditableText
-                                type="inputNumber"
-                                value={contact.zipCode}
-                                column="zipCode"
-                                form={form}
-                            />
-                        </Descriptions.Item>
-                        <Descriptions.Item label="County">
-                            <EditableText
-                                type="input"
-                                value={contact.country}
-                                column="country"
-                                form={form}
-                            />
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Description">
-                            <EditableText
-                                type="input"
-                                value={contact.detailsDescription}
-                                column="detailsDescription"
-                                form={form}
-                            />
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Tags">
-                            <EditableText
-                                type="selectTags"
-                                value={contact.tags}
-                                column="tags"
-                                form={form}
-                            />
-                        </Descriptions.Item>
-                    </Descriptions> */}
+                    <Descriptions column={1}>
+                        {contactFields?.map((field, index) => {
+                            return (
+                                <Descriptions.Item
+                                    label={field.label}
+                                    key={index}
+                                >
+                                    <ContactsEditableTableCell
+                                        record={contact.fields}
+                                        field={field}
+                                    />
+                                </Descriptions.Item>
+                            );
+                        })}
+                    </Descriptions>
                 </Form>
             </Space>
         </Card>
-    );
-};
-
-const EditableText = ({
-    type,
-    options,
-    value,
-    column,
-    form,
-    placeholderValue,
-}: {
-    type: "select" | "inputNumber" | "input" | "selectTags";
-    options?: { label: string; value: string }[];
-    value?: string | number | string[];
-    column: string;
-    form: any;
-    placeholderValue?: string;
-}) => {
-    const [editing, setEditing] = React.useState(false);
-    const [text, setText] = React.useState(
-        placeholderValue ? placeholderValue : value ?? "-"
-    );
-    const [textBackgroundColor, setTextBackgroundColor] = React.useState("");
-
-    const handleTextClick = () => {
-        setEditing(true);
-    };
-
-    const handleInputChange = (e) => {
-        setText(e.target.value);
-    };
-
-    const handleSelectChange = (value) => {
-        const selectedOption = options?.find(
-            (option) => option.value === value
-        );
-        const selectedLabel = selectedOption ? selectedOption.label : ""; // Use an empty string as a default value if the option is not found
-        setText(selectedLabel);
-    };
-
-    const handleInputBlur = () => {
-        setTextBackgroundColor("");
-        setEditing(false);
-        form.submit();
-    };
-
-    const renderInputComponent = () => {
-        switch (type) {
-            case "input":
-                return (
-                    <Input
-                        value={text}
-                        onChange={handleInputChange}
-                        onBlur={handleInputBlur}
-                        autoFocus
-                    />
-                );
-            case "inputNumber":
-                return (
-                    <InputNumber
-                        value={text}
-                        onChange={handleInputChange}
-                        onBlur={handleInputBlur}
-                        autoFocus
-                    />
-                );
-            case "select":
-                return (
-                    <Select
-                        value={text}
-                        onChange={handleSelectChange}
-                        onBlur={handleInputBlur}
-                        autoFocus
-                        style={{ width: "100%" }}
-                        showSearch
-                    >
-                        {options?.map((option) => (
-                            <Select.Option
-                                key={option.value}
-                                value={option.value}
-                            >
-                                {option.label}
-                            </Select.Option>
-                        ))}
-                    </Select>
-                );
-            case "selectTags":
-                return (
-                    <Select
-                        mode="tags"
-                        style={{ width: "100%" }}
-                        tokenSeparators={[","]}
-                        onChange={handleSelectChange}
-                        onBlur={handleInputBlur}
-                        // options={options}
-                    />
-                );
-            default:
-                return null;
-        }
-    };
-
-    return (
-        <>
-            {editing ? (
-                <Form.Item
-                    name={[column]}
-                    style={{ width: "100%", marginBottom: 0 }}
-                    initialValue={text}
-                >
-                    {renderInputComponent()}
-                </Form.Item>
-            ) : (
-                <span
-                    onClick={handleTextClick}
-                    style={{
-                        width: "100%",
-                        height: "30px",
-                        backgroundColor: textBackgroundColor,
-                    }}
-                    onMouseEnter={() => setTextBackgroundColor("#ADD8E6")}
-                    onMouseLeave={() => setTextBackgroundColor("")}
-                >
-                    {text}
-                </span>
-            )}
-        </>
     );
 };
 

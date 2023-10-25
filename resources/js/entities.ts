@@ -191,6 +191,7 @@ export type TCustomField = {
     sort: string;
     associationType?: string;
     relatedRecordLabel?: string;
+    fieldType?: string;
 };
 
 export type TCustomFieldValue = {
