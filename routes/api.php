@@ -108,6 +108,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::get('/telnyx/available-sip-trunking-connections', 'App\Http\Controllers\Api\TelnyxController@getAvailableSipTrunkingConnection');
 
+    Route::resource('/deal-pipelines', 'App\Http\Controllers\Api\DealPipelinesController');
 });
 
 Route::post('/telnyx/sms/webhook', 'App\Http\Controllers\Api\TextsController@textReceived');

@@ -25,6 +25,7 @@ import { MenuProps } from "antd/lib";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import CustomFieldFormModal from "../../components/CustomFieldFormModal";
+import PipelineAddUpdateModal from "../DealPipelineSetup/components/PipelineAddUpdateModal";
 
 const { SubMenu } = Menu;
 
@@ -45,6 +46,8 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
         isCustomFieldSectionAddUpdateOpen,
         setIsCustomFieldSectionAddUpdateOpen,
     ] = React.useState(false);
+    const [isPipelineAddUpdateOpen, setIsPipelineAddUpdateOpen] =
+        React.useState(false);
 
     const sideMenuItems: any = [
         {
@@ -92,11 +95,11 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                     path: "/setup/customizations/tag",
                     label: "Tag Management",
                 },
-                // {
-                //     key: "/setup/customizations/deal-pipeline",
-                //     path: "/setup/customizations/deal-pipeline",
-                //     label: "Deal Pipeline",
-                // },
+                {
+                    key: "/setup/customizations/deal-pipeline",
+                    path: "/setup/customizations/deal-pipeline",
+                    label: "Deal Pipeline",
+                },
                 {
                     key: "/setup/customizations/activity-types",
                     path: "/setup/customizations/activity-types",
@@ -189,6 +192,29 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                             <Typography.Text>{title}</Typography.Text>
                         </Col>
                         <Col span={12} className="text-right p-r-md">
+                            {title == "Deal Pipeline" && (
+                                <>
+                                    <Button
+                                        type="primary"
+                                        icon={<PlusCircleOutlined />}
+                                        onClick={() => {
+                                            setIsPipelineAddUpdateOpen(true);
+                                        }}
+                                    >
+                                        New Pipeline
+                                    </Button>
+
+                                    <PipelineAddUpdateModal
+                                        isModalOpen={isPipelineAddUpdateOpen}
+                                        closeModal={() =>
+                                            setIsPipelineAddUpdateOpen(false)
+                                        }
+                                        handleSubmit={() => {
+                                            console.log("qwe");
+                                        }}
+                                    />
+                                </>
+                            )}
                             {(title == "Contact" ||
                                 title == "Deal" ||
                                 title == "Activity") && (

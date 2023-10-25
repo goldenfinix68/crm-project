@@ -68,6 +68,7 @@ import { AppContextProvider } from "./context/AppContext";
 import ContactSetup from "./pages/ContactSetup";
 import DealSetup from "./pages/DealSetup";
 import ActivitySetup from "./pages/ActivitySetup";
+import DealPipelineSetup from "./pages/DealPipelineSetup";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isForgotPassword = window.location.pathname === "/forgot-password";
@@ -330,6 +331,17 @@ const App: React.FC = () => {
                                             <SetupLayout
                                                 content={<DealSetup />}
                                                 title="Deal"
+                                            />
+                                        </PrivateRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/setup/customizations/deal-pipeline"
+                                    element={
+                                        <PrivateRoute>
+                                            <SetupLayout
+                                                content={<DealPipelineSetup />}
+                                                title="Deal Pipeline"
                                             />
                                         </PrivateRoute>
                                     }

@@ -201,6 +201,11 @@ export type TCustomFieldValue = {
     value?: string;
 };
 
+export type TDealPipeline = {
+    id: string;
+    name?: string;
+};
+
 export type TWallData = {
     date: string;
     day: string;

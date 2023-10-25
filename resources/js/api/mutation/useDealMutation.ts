@@ -1,4 +1,5 @@
 import { useMutation } from "react-query";
+import { TDealPipeline } from "../../entities";
 
 export type Tnotes = {
     deal_id: string;
@@ -289,6 +290,39 @@ export const useDealUpdateTitleForm = async (items: any) => {
     const data = await response.json();
     if (!response.ok) {
         throw new Error(data.message || "Failed to add deal");
+    }
+    return data;
+};
+
+export const createPipeline = async (pipeline: TDealPipeline) => {
+    const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+    const response = await fetch("/api/deal-pipelines", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(pipeline),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to add deal");
+    }
+    return data;
+};
+
+export const deleteDealPipeline = async (id: string) => {
+    const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+    const response = await fetch("/api/deal-pipelines/" + id, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        },
+    });
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to add contact type");
     }
     return data;
 };
