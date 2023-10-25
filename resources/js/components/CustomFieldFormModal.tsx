@@ -92,7 +92,9 @@ const CustomFieldFormModal = ({
             >
                 <div className="modal-header">
                     <Typography.Title level={5} style={{ color: "white" }}>
-                        {preview ? "Form Preview" : `Add new ${type}`}
+                        {preview
+                            ? "Form Preview"
+                            : `${record ? "Update" : "Add new"} ${type}`}
                     </Typography.Title>
                     {!preview && (
                         <Button
