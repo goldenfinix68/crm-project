@@ -83,6 +83,7 @@ class Contact extends Model
         'wall',
         'texts',
         'defaultMobileNumber',
+        'fields',
     ];
 
 
@@ -91,12 +92,17 @@ class Contact extends Model
         return $this->hasMany(\App\Models\CustomFieldValue::class, 'customableId', 'id')->where('customableType', 'contact');
     }
     
-    public function fields()
+    public function getFieldsAttribute()
     {
         $customFields = [];
-        foreach($this->customFieldValues as $key => $val){
-            $customFields[$val->customField->fieldName] = $val->value;
+        foreach($this->customFieldValues as $key => $value){
+            $customFields[$value->customField->fieldName] = $value->value;
+            if(!empty($value->lookupIds)){
+                $customFields[$value->customField->fieldName.'lookupIds'] = $value->lookupIds;
+            }
+            $customFields[$value->customField->fieldName.'Id'] = $value->id;
         }
+        $customFields['contactId'] = $this->id;
 
         return $customFields;
 

@@ -18,6 +18,7 @@ import TextArea from "antd/es/input/TextArea";
 import { useAppContextProvider } from "../context/AppContext";
 import { useUsersAll } from "../api/query/userQuery";
 import { DEFAULT_REQUIRED_MESSAGE } from "../constants";
+import { useContactTypesAll } from "../api/query/contactsQuery";
 
 const CustomFieldInput = ({
     customField,
@@ -28,6 +29,8 @@ const CustomFieldInput = ({
 }) => {
     const { contacts } = useAppContextProvider();
     const { users, isLoading } = useUsersAll();
+    const { contactTypes, isLoading: isContactTypeLoading } =
+        useContactTypesAll();
 
     const validateEmail = (rule, value) => {
         if (
@@ -78,6 +81,7 @@ const CustomFieldInput = ({
                             : undefined
                     }
                     dropdownStyle={{ zIndex: 999999 }}
+                    className="w-100"
                 >
                     {stringArray?.map((option, index) => (
                         <Select.Option value={option} key={index}>
@@ -114,6 +118,7 @@ const CustomFieldInput = ({
                             : undefined
                     }
                     dropdownStyle={{ zIndex: 999999 }}
+                    className="w-100"
                 >
                     {contacts?.map((contact, index) => (
                         <Select.Option value={contact.id} key={index}>
@@ -149,10 +154,31 @@ const CustomFieldInput = ({
                             : undefined
                     }
                     dropdownStyle={{ zIndex: 999999 }}
+                    className="w-100"
                 >
                     {users?.map((user, index) => (
                         <Select.Option value={user.id} key={index}>
                             {user.firstName + " " + user.lastName}
+                        </Select.Option>
+                    ))}
+                </Select>
+            );
+        }
+        if (customField.type == "contactTypeLookup") {
+            return (
+                <Select
+                    showSearch
+                    mode={
+                        customField.associationType == "multiple"
+                            ? "multiple"
+                            : undefined
+                    }
+                    dropdownStyle={{ zIndex: 999999 }}
+                    className="w-100"
+                >
+                    {contactTypes?.map((contactType, index) => (
+                        <Select.Option value={contactType.id} key={index}>
+                            {contactType.name}
                         </Select.Option>
                     ))}
                 </Select>

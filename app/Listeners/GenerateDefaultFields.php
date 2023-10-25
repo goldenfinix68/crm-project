@@ -76,14 +76,22 @@ class GenerateDefaultFields
                 "label" => "Phone Number",
                 "isRequired" => false,
             ],
+            [
+                "type" => "contact",
+                "fieldType" => "contactTypeLookup",
+                "fieldName" => "contactType",
+                "label" => "Type",
+                "isRequired" => false,
+                "associationType" => "multiple",
+            ],
         ];
         foreach($defaultCustomFieldSectionsType as $section){
-            $isExisting = CustomFieldSection::where('userId', $user->id)
+            $customSection = CustomFieldSection::where('userId', $user->id)
                 ->where('name', $section['sectionName'])
                 ->where('type', $section['type'])
                 ->where('isDefault', true)
                 ->first();
-            if(empty($isExisting)){
+            if(empty($customSection)){
                 $customSection = new CustomFieldSection();
                 $customSection->name = $section['sectionName'];
                 $customSection->columnLayout = $section['columnLayout'];
@@ -92,29 +100,29 @@ class GenerateDefaultFields
                 $customSection->sort = 1;
                 $customSection->isDefault = true;
                 $customSection->save();
+            }
 
-                foreach($defaultCustomFields as $field){
-                    $isExisting = CustomField::where('userId', $user->id)
-                        ->where('fieldName', $field['fieldName'])
-                        ->where('type', $field['type'])
-                        ->where('isDefault', true)
-                        ->first();
-                    if(empty($isExisting)){
-                        $customField = new CustomField();
-                        $customField->label = $field['label'];
-                        $customField->fieldName = $field['fieldName'];
-                        $customField->customFieldSectionId = $customSection->id;
-                        $customField->customFieldSectionType = $customSection->type;
-                        $customField->type = $field['fieldType'];
-                        $customField->sort = 1;
-                        $customField->userId = $user->id;
-                        $customField->isRequired = $field['isRequired'];
-                        $customField->options = $field['options'] ?? null;
-                        $customField->associationType = $field['associationType'] ?? null;
-                        $customField->fieldName = $field['fieldName'];
-                        $customField->isDefault = true;
-                        $customField->save();
-                    }
+            foreach($defaultCustomFields as $field){
+                $isExisting = CustomField::where('userId', $user->id)
+                    ->where('fieldName', $field['fieldName'])
+                    ->where('type', $field['fieldType'])
+                    ->where('isDefault', true)
+                    ->first();
+                if(empty($isExisting)){
+                    $customField = new CustomField();
+                    $customField->label = $field['label'];
+                    $customField->fieldName = $field['fieldName'];
+                    $customField->customFieldSectionId = $customSection->id;
+                    $customField->customFieldSectionType = $customSection->type;
+                    $customField->type = $field['fieldType'];
+                    $customField->sort = 1;
+                    $customField->userId = $user->id;
+                    $customField->isRequired = $field['isRequired'];
+                    $customField->options = $field['options'] ?? null;
+                    $customField->associationType = $field['associationType'] ?? null;
+                    $customField->fieldName = $field['fieldName'];
+                    $customField->isDefault = true;
+                    $customField->save();
                 }
             }
         }

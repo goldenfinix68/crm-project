@@ -380,7 +380,8 @@ const AddCustomFieldForm = ({
             </Form.Item>
 
             {(selectedType.type == "contactLookup" ||
-                selectedType.type == "userLookup") && (
+                selectedType.type == "userLookup" ||
+                selectedType.type == "contactTypeLookup") && (
                 <Form.Item
                     name="associationType"
                     rules={[

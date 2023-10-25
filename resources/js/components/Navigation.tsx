@@ -143,17 +143,17 @@ const Navigation: React.FC = () => {
                                                 ?.filter(
                                                     (contact) =>
                                                         contact.fields?.firstName
-                                                            .toLowerCase()
+                                                            ?.toLowerCase()
                                                             .includes(
                                                                 searchKeyword.toLowerCase()
                                                             ) ||
                                                         contact.fields?.lastName
-                                                            .toLowerCase()
+                                                            ?.toLowerCase()
                                                             .includes(
                                                                 searchKeyword.toLowerCase()
                                                             ) ||
                                                         contact.fields?.mobile
-                                                            .toLowerCase()
+                                                            ?.toLowerCase()
                                                             .includes(
                                                                 searchKeyword.toLowerCase()
                                                             )

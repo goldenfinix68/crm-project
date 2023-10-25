@@ -105,7 +105,7 @@ const ContactsEditableTableCell = ({
                                 verticalAlign: "middle",
                             }}
                         >
-                            {record[field.fieldName].charAt(0)}
+                            {record[field.fieldName]?.charAt(0)}
                         </Avatar>
                         <Link to={`/contacts/${record.contactId}`}>{`${
                             record[field.fieldName]

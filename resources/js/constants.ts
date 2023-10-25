@@ -116,6 +116,13 @@ export const FIELD_TYPE_LIST = [
         icon: "user-lookup",
     },
     {
+        label: "Contact Type Lookup",
+        type: "contactTypeLookup",
+        description:
+            "The field lets you associate a contact type record with your module.",
+        icon: "contactTypeLookup",
+    },
+    {
         label: "URL",
         type: "url",
         description:
