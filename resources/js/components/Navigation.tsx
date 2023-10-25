@@ -116,163 +116,149 @@ const Navigation: React.FC = () => {
 
     return (
         <>
-            <Row gutter={12}>
-                <Col span={12}>{/* Left Side  */}</Col>
-                <Col span={12}>
-                    {/* Right Side  */}
-                    <Row gutter={12} justify={"end"}>
-                        <Col md={24} lg={24} xl={24} xxl={24}>
-                            <Space
-                                wrap
-                                className="w-100 header-btn m-l-sm"
-                                size={20}
-                            >
-                                <Dropdown
-                                    // menu={{ items }}
-                                    placement="bottomRight"
-                                    arrow
-                                    overlayClassName="header-search-bar"
-                                    trigger={["click"]}
-                                    overlay={
-                                        <Menu
-                                            onClick={(e) => {
-                                                navigate("/contacts/" + e.key);
-                                            }}
-                                        >
-                                            {contacts
-                                                ?.filter(
-                                                    (contact) =>
-                                                        contact.fields?.firstName
-                                                            ?.toLowerCase()
-                                                            .includes(
-                                                                searchKeyword.toLowerCase()
-                                                            ) ||
-                                                        contact.fields?.lastName
-                                                            ?.toLowerCase()
-                                                            .includes(
-                                                                searchKeyword.toLowerCase()
-                                                            ) ||
-                                                        contact.fields?.mobile
-                                                            ?.toLowerCase()
-                                                            .includes(
-                                                                searchKeyword.toLowerCase()
-                                                            )
-                                                )
-                                                ?.map((contact) => (
-                                                    <Menu.Item key={contact.id}>
-                                                        <div className="list-data">
-                                                            <Avatar
-                                                                className="avatarText m-r-sm"
-                                                                // src={record.avatar}
-                                                                size={32}
-                                                                style={{
-                                                                    backgroundColor:
-                                                                        "#1677FF",
-                                                                    verticalAlign:
-                                                                        "middle",
-                                                                }}
-                                                            >
-                                                                {contact.fields?.firstName.charAt(
-                                                                    0
-                                                                )}
-                                                            </Avatar>
-                                                            {/* <img src="https://files.salesmate.io/clinkup.salesmate.io/profilepic/9bfff1ff-8021-4f0b-a1c1-2c614882ac6b.jpg" /> */}
+            <Row gutter={12} justify={"end"}>
+                <Col md={24} lg={24} xl={24} xxl={24}>
+                    <Space wrap className="w-100 header-btn m-l-sm" size={20}>
+                        <Dropdown
+                            // menu={{ items }}
+                            placement="bottomRight"
+                            arrow
+                            overlayClassName="header-search-bar"
+                            trigger={["click"]}
+                            overlay={
+                                <Menu
+                                    onClick={(e) => {
+                                        navigate("/contacts/" + e.key);
+                                    }}
+                                >
+                                    {contacts
+                                        ?.filter(
+                                            (contact) =>
+                                                contact.fields?.firstName
+                                                    ?.toLowerCase()
+                                                    .includes(
+                                                        searchKeyword.toLowerCase()
+                                                    ) ||
+                                                contact.fields?.lastName
+                                                    ?.toLowerCase()
+                                                    .includes(
+                                                        searchKeyword.toLowerCase()
+                                                    ) ||
+                                                contact.fields?.mobile
+                                                    ?.toLowerCase()
+                                                    .includes(
+                                                        searchKeyword.toLowerCase()
+                                                    )
+                                        )
+                                        ?.map((contact) => (
+                                            <Menu.Item key={contact.id}>
+                                                <div className="list-data">
+                                                    <Avatar
+                                                        className="avatarText m-r-sm"
+                                                        // src={record.avatar}
+                                                        size={32}
+                                                        style={{
+                                                            backgroundColor:
+                                                                "#1677FF",
+                                                            verticalAlign:
+                                                                "middle",
+                                                        }}
+                                                    >
+                                                        {contact.fields?.firstName.charAt(
+                                                            0
+                                                        )}
+                                                    </Avatar>
+                                                    {/* <img src="https://files.salesmate.io/clinkup.salesmate.io/profilepic/9bfff1ff-8021-4f0b-a1c1-2c614882ac6b.jpg" /> */}
+                                                    <Space
+                                                        direction="vertical"
+                                                        size={0}
+                                                        className="m-l-xs"
+                                                    >
+                                                        <Typography.Text>
+                                                            {`${contact.fields?.firstName} ${contact.fields?.lastName}`}
+                                                        </Typography.Text>
+                                                        <Typography.Text className="list-data-info">
                                                             <Space
-                                                                direction="vertical"
-                                                                size={0}
-                                                                className="m-l-xs"
-                                                            >
-                                                                <Typography.Text>
-                                                                    {`${contact.fields?.firstName} ${contact.fields?.lastName}`}
-                                                                </Typography.Text>
-                                                                <Typography.Text className="list-data-info">
-                                                                    <Space
-                                                                        split={
-                                                                            <FontAwesomeIcon
-                                                                                icon={
-                                                                                    faCircle
-                                                                                }
-                                                                                style={{
-                                                                                    fontSize: 4,
-                                                                                    verticalAlign: 3,
-                                                                                }}
-                                                                            />
+                                                                split={
+                                                                    <FontAwesomeIcon
+                                                                        icon={
+                                                                            faCircle
                                                                         }
-                                                                    >
-                                                                        <Typography.Text
-                                                                            className="list-data-info"
-                                                                            style={{
-                                                                                fontWeight: 300,
-                                                                            }}
-                                                                        >
-                                                                            {`Mobile: ${
-                                                                                contact
-                                                                                    .fields
-                                                                                    ?.mobile ??
-                                                                                "Not set"
-                                                                            }`}
-                                                                        </Typography.Text>
-                                                                        <Typography.Text
-                                                                            className="list-data-info"
-                                                                            style={{
-                                                                                fontWeight: 300,
-                                                                            }}
-                                                                        >
-                                                                            {`Phone: ${
-                                                                                contact
-                                                                                    .fields
-                                                                                    ?.phone ??
-                                                                                "Not set"
-                                                                            }`}
-                                                                        </Typography.Text>
-                                                                    </Space>
+                                                                        style={{
+                                                                            fontSize: 4,
+                                                                            verticalAlign: 3,
+                                                                        }}
+                                                                    />
+                                                                }
+                                                            >
+                                                                <Typography.Text
+                                                                    className="list-data-info"
+                                                                    style={{
+                                                                        fontWeight: 300,
+                                                                    }}
+                                                                >
+                                                                    {`Mobile: ${
+                                                                        contact
+                                                                            .fields
+                                                                            ?.mobile ??
+                                                                        "Not set"
+                                                                    }`}
+                                                                </Typography.Text>
+                                                                <Typography.Text
+                                                                    className="list-data-info"
+                                                                    style={{
+                                                                        fontWeight: 300,
+                                                                    }}
+                                                                >
+                                                                    {`Phone: ${
+                                                                        contact
+                                                                            .fields
+                                                                            ?.phone ??
+                                                                        "Not set"
+                                                                    }`}
                                                                 </Typography.Text>
                                                             </Space>
-                                                        </div>
-                                                    </Menu.Item>
-                                                ))}
-                                        </Menu>
-                                    }
-                                >
-                                    <Input
-                                        placeholder="Search"
-                                        prefix={
-                                            <FontAwesomeIcon icon={faSearch} />
-                                        }
-                                        onChange={(e) =>
-                                            setSearchKey(e.target.value)
-                                        }
-                                        size="large"
-                                        style={{ width: "400px" }}
-                                    />
-                                </Dropdown>
+                                                        </Typography.Text>
+                                                    </Space>
+                                                </div>
+                                            </Menu.Item>
+                                        ))}
+                                </Menu>
+                            }
+                        >
+                            <Input
+                                placeholder="Search"
+                                prefix={<FontAwesomeIcon icon={faSearch} />}
+                                onChange={(e) => setSearchKey(e.target.value)}
+                                size="large"
+                                style={{ width: "400px" }}
+                            />
+                        </Dropdown>
 
-                                <NavigationComponentsQuickAdd />
+                        <NavigationComponentsQuickAdd />
 
-                                <NavigationComponentsCall />
-                                <Dropdown
-                                    open={isDropdownVisible}
-                                    onOpenChange={setDropdownVisible}
-                                    menu={{ items: profile }}
-                                    placement="bottomLeft"
-                                    trigger={["click"]}
-                                    overlayClassName="profile-dropdown"
-                                >
-                                    <Image
-                                        src={
-                                            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-                                        }
-                                        style={{
-                                            height: 50,
-                                            width: 50,
-                                            borderRadius: 100,
-                                        }}
-                                        preview={false}
-                                    />
-                                </Dropdown>
-                            </Space>
-                        </Col>
-                    </Row>
+                        <NavigationComponentsCall />
+                        <Dropdown
+                            open={isDropdownVisible}
+                            onOpenChange={setDropdownVisible}
+                            menu={{ items: profile }}
+                            placement="bottomLeft"
+                            trigger={["click"]}
+                            overlayClassName="profile-dropdown"
+                        >
+                            <Image
+                                src={
+                                    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                                }
+                                style={{
+                                    height: 50,
+                                    width: 50,
+                                    borderRadius: 100,
+                                }}
+                                preview={false}
+                            />
+                        </Dropdown>
+                    </Space>
                 </Col>
             </Row>
         </>
