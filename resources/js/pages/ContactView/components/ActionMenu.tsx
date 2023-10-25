@@ -44,13 +44,11 @@ const ActionMenu = ({ contact }: { contact: TContact }) => {
                             <Space
                                 onClick={() => {
                                     setCallerNumber(
-                                        contact.defaultMobileNumber
-                                            ? contact.defaultMobileNumber
-                                                  .mobileNumber
-                                            : ""
+                                        contact?.defaultMobileNumber
+                                            ?.mobileNumber ?? ""
                                     );
                                     setDestinationNumber(
-                                        contact?.mobile ? contact?.mobile : ""
+                                        contact?.fields.mobile ?? ""
                                     );
                                     setIsModalOpen(true);
                                 }}
@@ -170,7 +168,7 @@ const ActionMenu = ({ contact }: { contact: TContact }) => {
             <TextModal
                 closeModal={() => setTextModalOpen(false)}
                 isModalOpen={textModalOpen}
-                to={contact.mobile}
+                to={contact.fields.mobile ?? ""}
                 contact={contact}
             />
 
