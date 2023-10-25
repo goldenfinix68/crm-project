@@ -83,6 +83,7 @@ const Navigation: React.FC = () => {
                         <Menu.Item
                             onClick={() => {
                                 navigate("/setup");
+                                setDropdownVisible(false);
                             }}
                         >
                             <Space>
