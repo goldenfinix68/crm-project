@@ -46,6 +46,7 @@ import { deleteContactMutation } from "../../../api/mutation/useContactMutation"
 import ContactsComponentsUpdate from "./ContactBulkUpdate";
 import ContactBulkUpdate from "./ContactBulkUpdate";
 import SendToManyModal from "../../../components/SentToManyModal";
+import Papa from "papaparse";
 interface Props {
     selectedRows?: {
         [key: string]: any;
@@ -82,6 +83,32 @@ const ContactTableHeader = ({
     const clearSelection = () => {
         setSelectedRowKeys([]); // Clear selected row keys
         setSelectedRows([]); // Clear selected rows
+    };
+
+    const handleExportCSV = () => {
+        // const tableData = selectedData.map((item) => ({
+        //     Name: item.firstName + " " + item.lastName,
+        //     Email: item.email,
+        //     Mobile: item.mobile,
+        //     CountryLink: item.countryLink,
+        //     Acres: item.acres,
+        //     Tags: item.tags,
+        //     Owner: item.owner,
+        //     FirstName: item.firstName,
+        //     LastName: item.lastName,
+        // }));
+        // Get the current timestamp in the user's local time zone
+        const timestamp = new Date().toLocaleString();
+        // Format the timestamp to be suitable for a filename
+        const formattedTimestamp = timestamp.replace(/[\s:]/g, "-");
+        const fileName = `Speedlead_Export_${formattedTimestamp}.csv`; // Add timestamp to the filename
+        const csvData = Papa.unparse(selectedRows, { header: true });
+        const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.setAttribute("download", fileName);
+        link.click();
     };
 
     return (
@@ -125,7 +152,7 @@ const ContactTableHeader = ({
                             icon={<ExportOutlined />}
                             className="m-r-sm"
                             onClick={() => {
-                                // handleExportCSV();
+                                handleExportCSV();
                             }}
                         >
                             Export
