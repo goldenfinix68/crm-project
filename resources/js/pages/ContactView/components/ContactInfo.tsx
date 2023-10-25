@@ -54,15 +54,34 @@ import queryClient from "../../../queryClient";
 import { useParams } from "react-router-dom";
 import ContactContext from "../context";
 import { useAppContextProvider } from "../../../context/AppContext";
+import {
+    createCustomFieldMutation,
+    saveCustomFieldValuesMutation,
+} from "../../../api/mutation/useCustomFieldMutation";
 
 const ContactInfo = ({ contact }: { contact: TContact }) => {
     const [isCreateNewTypeOpen, setIsCreateNewTypeOpen] = React.useState(false);
     const [form] = Form.useForm<TContact>();
     const { contactTypes, isLoading } = useContactTypesAll();
+    const contactTypelookupId = contact.fields.contactTypelookupIds
+        ? JSON.parse(contact.fields.contactTypelookupIds)[0]
+        : "0";
+    const contactType = contactTypes?.find(
+        (type) => type.id == contactTypelookupId
+    );
     // const { contact } = useContext(ContactContext);
     const [tagSearchKey, setTagSearchKey] = React.useState("");
 
     const { loggedInUser } = useAppContextProvider();
+
+    const save = useMutation(saveCustomFieldValuesMutation, {
+        onSuccess: () => {
+            queryClient.invalidateQueries("getContact");
+        },
+        onError: (e: any) => {
+            console.log(e.message || "An error occurred");
+        },
+    });
 
     const actionMenuList = [
         {
@@ -103,9 +122,15 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
         await updateContact.mutate({ ...values, id: contact.id });
     };
 
-    const handleTypeChange = (e) => {
-        form.setFieldValue("typeId", e.key);
-        form.submit();
+    const handleTypeChange = async (e) => {
+        const fields = {
+            contactType: [e.key],
+        };
+        save.mutate({
+            fields,
+            customableId: contact.id,
+            customableType: "contact",
+        });
     };
 
     return (
@@ -117,7 +142,7 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                             overlay={
                                 <Menu
                                     onClick={handleTypeChange}
-                                    selectedKeys={[contact?.typeId ?? "0"]}
+                                    selectedKeys={[contactTypelookupId]}
                                 >
                                     <Menu.Item key="search">
                                         <Input
@@ -186,12 +211,13 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                                 visible={isCreateNewTypeOpen}
                                 placement="rightTop"
                             >
-                                {contact.typeId && contact.typeId != "0" ? (
+                                {contactTypelookupId &&
+                                contactTypelookupId != 0 ? (
                                     <Tag
-                                        color={contact.type?.highlight}
+                                        color={contactType?.highlight}
                                         style={{ cursor: "pointer" }}
                                     >
-                                        {contact.type?.name}
+                                        {contactType?.name}
                                     </Tag>
                                 ) : (
                                     <Tag style={{ cursor: "pointer" }}>
@@ -214,7 +240,9 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                         <AvatarWithPopover />
                     </Badge>
                     <Typography.Title level={5}>
-                        {contact.firstName + " " + contact.lastName}
+                        {contact.fields.firstName +
+                            " " +
+                            contact.fields.lastName}
                     </Typography.Title>
                 </Space>
 
@@ -247,7 +275,7 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                     <Form.Item name="typeId" style={{ display: "none" }}>
                         <Input />
                     </Form.Item>
-                    <Descriptions column={1}>
+                    {/* <Descriptions column={1}>
                         <Descriptions.Item label="Default Mobile">
                             <EditableText
                                 type="select"
@@ -437,7 +465,7 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                                 form={form}
                             />
                         </Descriptions.Item>
-                    </Descriptions>
+                    </Descriptions> */}
                 </Form>
             </Space>
         </Card>

@@ -82,7 +82,7 @@ class GenerateDefaultFields
                 "fieldName" => "contactType",
                 "label" => "Type",
                 "isRequired" => false,
-                "associationType" => "multiple",
+                "associationType" => "single",
             ],
         ];
         foreach($defaultCustomFieldSectionsType as $section){

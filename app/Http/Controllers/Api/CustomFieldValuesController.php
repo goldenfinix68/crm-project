@@ -142,10 +142,6 @@ class CustomFieldValuesController extends Controller
 
         if($customField->type == "userLookup" || $customField->type == "contactLookup" || $customField->type == "contactTypeLookup"){
             //convert if type not multiple
-            if($customField->associationType){
-                $value = str_split($value);
-                $value = array_map('intval', $value);;
-            }
 
             if($customField->type == "userLookup"){
                 $data = User::whereIn('id', $value)
@@ -166,7 +162,7 @@ class CustomFieldValuesController extends Controller
                 ->get();
 
                 foreach($contacts as $index => $contact){
-                    $customFields = $contact->fields();
+                    $customFields = $contact->fields;
                     $data = $data . ($index == 0 ? "" : ", ") . $customFields['firstName'] . ' ' . $customFields['lastName'];
                 }
             }
