@@ -9,15 +9,7 @@ import { faPen } from "@fortawesome/free-solid-svg-icons";
 import ModalAddDeal from "./ModalAddDeal";
 import { useMutation, useQueryClient } from "react-query";
 import ContactsComponentsUpdate from "./ContactsComponentsUpdate";
-interface TDeals {
-    id: number;
-    title: string;
-    name: string;
-    value: string;
-    stage: string;
-    status: string;
-    owner: string;
-}
+import { TDeal } from "../../../entities";
 
 const DealsTable = ({
     deals,
@@ -36,7 +28,7 @@ const DealsTable = ({
     isTitle,
     setTitle,
 }: {
-    deals: any;
+    deals: TDeal[];
     filterPage: any;
     setFilterPage: any;
     showDeleteButton: any;
@@ -53,7 +45,7 @@ const DealsTable = ({
     setTitle: any;
 }) => {
     const queryClient = useQueryClient();
-    const onChange: TableProps<TDeals>["onChange"] = (
+    const onChange: TableProps<TDeal>["onChange"] = (
         pagination: any,
         sorter: any,
         filters: any,
@@ -70,7 +62,7 @@ const DealsTable = ({
 
     const onSelectChange = (
         selectedRowKeys: React.Key[],
-        selectedRows: TDeals[]
+        selectedRows: TDeal[]
     ) => {
         console.log(selectedRowKeys);
         console.log(selectedRows);
@@ -79,7 +71,7 @@ const DealsTable = ({
 
         // setSelectionType(selectedRows);
     };
-    const rowSelection: TableRowSelection<TDeals> = {
+    const rowSelection: TableRowSelection<TDeal> = {
         selectedRowKeys: selectedRowsData,
         onChange: onSelectChange,
     };
@@ -95,68 +87,59 @@ const DealsTable = ({
         }
     }, [showDeleteButton]);
 
-    const [showModalAddDealValue, setshowModalAddDealValue] =
-        useState<string>("");
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
-    const [modalValue, setModalValue] = useState(false);
-    const showModalAdd = (record: any) => {
-        setModalValue(record);
-        setIsModalOpenAdd(true);
-    };
-
-    const handleOkAdd = () => {
-        setIsModalOpenAdd(false);
-        queryClient.invalidateQueries("deals");
-    };
-
+    const [selectedDeal, setSelectedDeal] = useState<TDeal | undefined>(
+        undefined
+    );
     return (
         <>
             <Table
-                dataSource={deals?.data && deals?.data?.data}
+                dataSource={deals}
                 onChange={onChange}
-                rowKey={(record) => record.id}
+                rowKey={(record) => record?.id ?? ""}
                 rowSelection={{ ...rowSelection }}
-                scroll={{ x: 1300 }}
-                pagination={{
-                    total: deals?.data?.total,
-                    current: filterPage.page,
-                    pageSize: filterPage.page_size,
-                    showSizeChanger: true,
-                    pageSizeOptions: [10, 20, 50, 100, 200],
-                    showTotal: (total, range) =>
-                        `${range[0]}-${range[1]} of ${total} items`,
-                }}
+                scroll={{ x: 800 }}
             >
                 <Table.Column
-                    title="Title"
-                    dataIndex="title"
+                    title="Contact"
                     className="col-status"
-                    width={400}
                     sorter
-                    render={(text: string, record: any) => {
+                    render={(text: string, record: TDeal) => {
                         return (
                             <>
                                 <Button
                                     type="text"
                                     className="m-r-sm"
                                     icon={<FontAwesomeIcon icon={faPen} />}
-                                    onClick={() => showModalAdd(record)}
+                                    onClick={() => {
+                                        setIsModalOpenAdd(true);
+                                        setSelectedDeal(record);
+                                    }}
                                 />
 
-                                <span>{text}</span>
+                                <span>
+                                    {record.contact?.fields.firstName +
+                                        " " +
+                                        record.contact?.fields.lastName}
+                                </span>
                             </>
                         );
                     }}
                     fixed={"left"}
                 />
 
-                <Table.Column title="Name" dataIndex="contact_name" sorter />
-
-                <Table.Column title="Value" dataIndex="value" sorter />
-                <Table.Column title="Stage" dataIndex="stage" sorter />
-
-                <Table.Column title="Status" dataIndex={"status"} sorter />
-                <Table.Column title="Owner" dataIndex={"owner_name"} sorter />
+                <Table.Column
+                    title="Pipeline"
+                    render={(text: string, record: TDeal) => {
+                        return <>{record.pipeline?.name}</>;
+                    }}
+                />
+                <Table.Column
+                    title="Stage"
+                    render={(text: string, record: TDeal) => {
+                        return <>{record.stage?.name}</>;
+                    }}
+                />
             </Table>
 
             <ModalAddDeal
@@ -166,7 +149,9 @@ const DealsTable = ({
                 }}
                 closeModal={() => {
                     setIsModalOpenAdd(false);
+                    setSelectedDeal(undefined);
                 }}
+                deal={selectedDeal}
             />
 
             <ContactsComponentsUpdate

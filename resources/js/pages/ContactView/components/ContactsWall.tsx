@@ -137,19 +137,19 @@ const ContactsWall = () => {
 
     const feedBox = (data: TWallData) => {
         if (data.type === "note") {
-            return <NoteBox data={data} user={user} />;
+            return <NoteBox data={data} user={user!} />;
         } else if (data.type === "text") {
-            return <TextBox data={data} user={user} />;
+            return <TextBox data={data} user={user!} />;
         } else if (data.type === "deal") {
-            return <DealBox data={data} user={user} />;
+            return <DealBox data={data} user={user!} />;
         } else if (data.type === "update") {
-            return <UpdateBox data={data} user={user} />;
+            return <UpdateBox data={data} user={user!} />;
         } else if (data.type === "activity log") {
-            return <Log data={data} user={user} />;
+            return <Log data={data} user={user!} />;
         } else if (data.type === "files") {
-            return <File data={data} user={user} />;
+            return <File data={data} user={user!} />;
         } else if (data.type === "activities") {
-            return <Activities data={data} user={user} />;
+            return <Activities data={data} user={user!} />;
         } else {
             return <></>;
         }
@@ -361,18 +361,16 @@ const DealBox = ({ data, user }: { data: TWallData; user: TUser }) => {
                         }}
                         size={20}
                     >
-                        {data.deal?.owner1?.firstName.charAt(0)}
+                        {data.deal?.creator?.firstName.charAt(0)}
                     </Avatar>{" "}
-                    {user.id == data.deal?.owner1?.id
+                    {user.id == data.deal?.creator?.id
                         ? "Deal created - by You"
-                        : "Deal created - by " + data.deal?.owner1?.firstName}
+                        : "Deal created - by " + data.deal?.creator?.firstName}
                 </Typography.Text>
             }
             bordered={false}
             extra={data.month.substring(0, 3) + " " + data.day}
-        >
-            <Button type="link">{data.deal?.title}</Button>
-        </Card>
+        ></Card>
     );
 };
 

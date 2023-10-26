@@ -1,9 +1,9 @@
 import { useQuery } from "react-query";
 import axios from "axios";
-import { TDealPipeline } from "../../entities";
+import { TDeal, TDealPipeline } from "../../entities";
 
 export const useDealsAll = (url: any) => {
-    const { data, isLoading, isError, refetch } = useQuery(
+    const { data, isLoading, isError, refetch } = useQuery<TDeal[]>(
         "deals",
         async () => {
             const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies

@@ -21,97 +21,14 @@ class DealsController extends Controller
      */
     public function index(Request $request)
     {
-        $end_of_date = Carbon::now()->lastOfMonth();
-        $start_of_date = Carbon::now()->startOfMonth();
-        $start_date = date('Y-m-d', strtotime($start_of_date));
-        $end_date = date('Y-m-d', strtotime($end_of_date));
-
-        $end_of_date_next = Carbon::now()->lastOfMonth()->addMonth();
-        $start_of_date_next = Carbon::now()->startOfMonth()->addMonth();
-        $start_date_next = date('Y-m-d', strtotime($start_of_date_next));
-        $end_date_next = date('Y-m-d', strtotime($end_of_date_next));
-
-        $data = Deal::select([
-            'deals.*',
-            DB::raw('(SELECT CONCAT(firstName," ",lastName) FROM contacts WHERE contacts.id = deals.contactId) As contact_name'),
-            DB::raw('(SELECT CONCAT(firstName," ",lastName) FROM users WHERE users.id = deals.owner) As owner_name'),
-        ])->where(function ($q) use ($request) {
-            if ($request->search) {
-                // $search = str_replace('%','[%]',$request->search);
-                $search = $request->search;
-                $q->where(\DB::raw('CONCAT(first_name," ",last_name)'), 'LIKE', "%$search%")
-                    ->orWhere('role', 'LIKE', "%$search%")
-                    // ->orWhere('COMPANY','LIKE',"%$search%")
-                    ->orWhere('email', 'LIKE', "%$search%")
-                    ->orWhere('username', 'LIKE', "%$search%")
-                    ->orWhere('first_name', 'LIKE', "%$search%")
-                    ->orWhere('last_name', 'LIKE', "%$search%")
-                    ->orWhere(\DB::raw("(SELECT DATE_FORMAT(created_at, '%m/%d/%Y'))"), 'LIKE', "%$request->search%");
-            }
-        })->with(['owner', 'activities.owner', 'notes.user', 'files.uploaded_by', 'participant.user', 'contact', 'teammate.user']);
-
-        if ($request->pipeline) {
-            $data->where('pipeline', $request->pipeline);
-        }
-        if ($request->status == 'All Open Deals') {
-            $data->where('status', 'Open');
-        }
-        if ($request->status == 'Deals Closing This Month') {
-            $data = $data->where('estimated_close_date', '>=', $start_date)->where('estimated_close_date', '<=', $end_date);
-        }
-        if ($request->status == 'Deals Closing Next Month') {
-            $data = $data->where('estimated_close_date', '>=', $start_date_next)->where('estimated_close_date', '<=', $end_date_next);
-        }
-        if ($request->status == 'Won Deals') {
-            $data = $data->where('status', 'Won');
-        }
-        if ($request->status == 'Lost Deals') {
-            $data =  $data->where('status', 'Lost');
+       
+        if(empty($request->pipelineId)){
+            return response()->json([], 200);
         }
 
+        $deals = Deal::with(['contact', 'pipeline', 'stage'])->where('pipelineId', $request->pipelineId)->get();
 
-        if ($request->sort_field && $request->sort_order) {
-            if (
-                $request->sort_field != '' && $request->sort_field != 'undefined' && $request->sort_field != 'null'  &&
-                $request->sort_order != ''  && $request->sort_order != 'undefined' && $request->sort_order != 'null'
-            ) {
-                if ($request->sort_field == "column") {
-                    //
-                } else {
-                    $data = $data->orderBy(isset($request->sort_field) ? $request->sort_field : 'id', isset($request->sort_order)  ? $request->sort_order : 'desc');
-                }
-            }
-        } else {
-            $data = $data->orderBy('id', 'asc');
-        }
-
-        if ($request->page_size) {
-            $data = $data->limit($request->page_size)
-                ->paginate($request->page_size, ['*'], 'page', $request->page)
-                ->toArray();
-        } else {
-            $data = $data->get();
-        }
-
-        $cq = Deal::where('stage', 'Comp & Qualify')->sum('value');
-        $fg = Deal::where('stage', 'First Offer Given')->sum('value');
-        $in = Deal::where('stage', 'In Negotiation')->sum('value');
-        $voa = Deal::where('stage', 'Verbal Offer Accepted')->sum('value');
-        $uc = Deal::where('stage', 'Under Contract')->sum('value');
-        $count = Deal::count();
-        $sum_upp = Deal::sum('value');
-
-        $deal_favorite = DealFavorite::where('user_id', auth()->user()->id)->get();
-        return response()->json(['success' => true, 'data' => $data, 'deal_favorite' =>   $deal_favorite, 'sum' => [
-            'cq' => $cq,
-            'fg' => $fg,
-            'in' => $in,
-            'voa' => $voa,
-            'uc' => $uc,
-            'count' => $count,
-            'sum_upp' => $sum_upp,
-
-        ]], 200);
+        return response()->json($deals, 200);
     }
 
     /**
@@ -122,11 +39,22 @@ class DealsController extends Controller
      */
     public function store(Request $request)
     {
-
-
-        $data = Deal::updateOrCreate(['id' => $request->id], $request->all());
-        $data->sort = $data->id;
-        $data->save();
+        if(!empty($request->dealIds)){
+            foreach($request->dealIds as $id){
+                $data = Deal::find($id);
+                $data->pipelineId = $request->pipelineId;
+                $data->stageId = $request->stageId;
+                $data->save();
+            }
+        }
+        else{
+            $user = Auth::user();
+            $data = Deal::updateOrCreate(['id' => $request->id], 
+                array_merge($request->except('dealIds'), [
+                    'createdByUserId' => $user->id, 
+                ]));
+            $data->save();
+        }
 
         return response()->json(['success' => true, 'data' => $data], 200);
     }
@@ -249,20 +177,19 @@ class DealsController extends Controller
     public function useDealUpdateBoardMutation(Request $request)
     {
 
-        $data = $request->lanes;
-        $cards = [];
-        foreach ($data as $key => $val) {
-            array_push($cards,  $val);
-        }
+        $datas = $request->lanes;
+        // $cards = [];
+        // foreach ($data as $key => $val) {
+        //     array_push($cards,  $val);
+        // }
 
-        foreach ($cards as $key => $val) {
-            $find = Deal::find($val['id']);
-            $find->stage = $val['laneId'];
-            $find->sort = $key;
+        foreach ($datas as $data) {
+            $find = Deal::find($data['id']);
+            $find->stageId = $data['laneId'];
             $find->save();
         }
 
-        return response()->json(['success' => true, 'data' => $data], 200);
+        return response()->json(['success' => true, 'data' => $datas], 200);
     }
 
     public function won(Request $request)

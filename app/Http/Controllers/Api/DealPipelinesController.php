@@ -17,7 +17,7 @@ class DealPipelinesController extends Controller
      */
     public function index()
     {
-        return DealPipeline::with(['stages'])->get();
+        return DealPipeline::with(['stages', 'stages.deals', 'stages.deals.contact'])->get();
     }
 
     /**

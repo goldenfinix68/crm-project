@@ -22,10 +22,9 @@ class ActivityController extends Controller
             'activity_tags',
             "activity_followers" => function($query) {
                 $user = "(SELECT CONCAT(users.firstName, ' ', users.lastName) FROM `users` WHERE users.id = activity_followers.from_id AND activity_followers.from_table='users')";
-                $contact = "(SELECT CONCAT(contacts.firstName, ' ', contacts.lastName) FROM `contacts` WHERE contacts.id = activity_followers.from_id AND activity_followers.from_table='contacts')";
                 $query->select([
                     'activity_followers.*',
-                    DB::raw("IF($user <> '', $user, $contact) as `full_name`"),
+                    DB::raw("IF($user <> '', $user, 'aasdasd') as `full_name`"),
                 ]);
             },
             "activity_invitees",

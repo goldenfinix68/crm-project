@@ -18,11 +18,13 @@ import { useDealMutation } from "../../../api/mutation/useDealMutation";
 import { TDeal } from "../../../entities";
 import CustomFieldInput from "../../../components/CustomFieldInput";
 import { dealPipelines } from "../../../api/query/dealQuery";
+import queryClient from "../../../queryClient";
 interface Props {
     isModalOpen: boolean;
     closeModal: () => void;
     handleSubmit: () => void;
     deal?: TDeal;
+    selectedRows?: React.Key[];
 }
 
 const ModalAddDeal = ({
@@ -30,6 +32,7 @@ const ModalAddDeal = ({
     closeModal,
     handleSubmit,
     deal,
+    selectedRows,
 }: Props) => {
     const [form] = useForm();
     const { data: pipelines, isLoading, refetch } = dealPipelines();
@@ -42,6 +45,7 @@ const ModalAddDeal = ({
         saveDeal.mutate({
             ...values,
             id: deal?.id ? deal.id : "",
+            dealIds: selectedRows,
         });
     };
 
@@ -53,6 +57,7 @@ const ModalAddDeal = ({
                     message: "Deal",
                     description: "Successfully Added",
                 });
+                queryClient.invalidateQueries("deals");
                 handleSubmit();
                 resetFields();
             }
@@ -92,7 +97,11 @@ const ModalAddDeal = ({
             >
                 <div className="modal-header">
                     <Typography.Title level={5} style={{ color: "white" }}>
-                        {deal ? "Update New Deal" : "Add New Deal"}
+                        {selectedRows?.length
+                            ? "Bulk update"
+                            : deal
+                            ? "Update New Deal"
+                            : "Add New Deal"}
                     </Typography.Title>
                     <Button
                         onClick={resetFields}
@@ -105,14 +114,17 @@ const ModalAddDeal = ({
                 </div>
                 <Row gutter={12} style={{ marginTop: 10 }}>
                     <Col md={24} className="col-1-modal-act">
-                        <CustomFieldInput
-                            customField={{
-                                type: "contactLookup",
-                                fieldName: "contactId",
-                                label: "Contact",
-                                isRequired: true,
-                            }}
-                        />
+                        {!selectedRows?.length && (
+                            <CustomFieldInput
+                                customField={{
+                                    type: "contactLookup",
+                                    fieldName: "contactId",
+                                    label: "Contact",
+                                    isRequired: true,
+                                }}
+                            />
+                        )}
+
                         <Row gutter={24}>
                             <Col md={12}>
                                 <Form.Item
@@ -125,7 +137,12 @@ const ModalAddDeal = ({
                                         },
                                     ]}
                                 >
-                                    <Select placeholder="Pipeline">
+                                    <Select
+                                        placeholder="Pipeline"
+                                        onChange={() => {
+                                            form.setFieldValue("stageId", null);
+                                        }}
+                                    >
                                         {pipelines?.map((pipeline, index) => (
                                             <Select.Option
                                                 value={pipeline.id}
@@ -172,13 +189,16 @@ const ModalAddDeal = ({
                     >
                         Save
                     </Button>
-                    <Button
-                        className="m-r-xs"
-                        type="primary"
-                        loading={saveDeal.isLoading}
-                    >
-                        Save and add other
-                    </Button>
+                    {!selectedRows?.length && !deal && (
+                        <Button
+                            className="m-r-xs"
+                            type="primary"
+                            loading={saveDeal.isLoading}
+                        >
+                            Save and add other
+                        </Button>
+                    )}
+
                     <Button onClick={resetFields}>Cancel</Button>
                 </div>
             </Form>

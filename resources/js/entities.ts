@@ -95,21 +95,14 @@ export type TTextThread = {
 
 export type TDeal = {
     id?: string;
-    title: string;
+    contact?: TContact;
+    pipeline?: TDealPipeline;
+    stage?: TDealPipelineStage;
     contactId?: string;
-    owner: any;
-    owner1: any;
-    estimated_close_date: string;
-    value?: string;
-    currency?: string;
-    pipeline?: string;
-    source?: string;
-    stage?: string;
-    priority?: string;
-    status?: string;
-    details?: string;
-    tags?: string;
-    sort?: string;
+    pipelineId?: string;
+    stageId?: string;
+    created_at?: string;
+    creator?: TUser;
 };
 
 export type TUpdateOwner = {
@@ -212,6 +205,7 @@ export type TDealPipelineStage = {
     name: string;
     pipeline?: TDealPipeline;
     dealPipelineId?: string;
+    deals?: TDeal[];
 };
 
 export type TWallData = {
@@ -242,4 +236,6 @@ export type TContact = {
     fields: {
         [key: string]: any;
     };
+    wall?: TWallData[];
+    deals?: TDeal[];
 };

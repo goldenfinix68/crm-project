@@ -4,66 +4,42 @@ import {
     Dropdown,
     Space,
     Radio,
-    Tooltip,
     MenuProps,
-    Tabs,
-    Menu,
     Row,
     Col,
-    List,
-    notification,
     Popconfirm,
     Typography,
+    Empty,
 } from "antd";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import {
-    UserAddOutlined,
     PlusCircleOutlined,
     DownOutlined,
-    InsertRowBelowOutlined,
     FilterOutlined,
     PhoneOutlined,
     MailOutlined,
     UserOutlined,
-    HolderOutlined,
     CloseOutlined,
-    PlusCircleFilled,
     PlusSquareOutlined,
     SaveOutlined,
     ExportOutlined,
-    CopyOutlined,
     MobileOutlined,
-    UnorderedListOutlined,
-    EyeOutlined,
-    StarFilled,
-    StarOutlined,
     CheckCircleOutlined,
 } from "@ant-design/icons";
-import Search from "antd/es/input/Search";
 import ModalAddDeal from "./components/ModalAddDeal";
 import Filter from "./components/Filter";
 import { useNavigate } from "react-router-dom";
-import {
-    DragDropContext,
-    Draggable,
-    Droppable,
-    DropResult,
-    DraggableLocation,
-} from "react-beautiful-dnd";
 import Board from "react-trello";
-import { useDealsAll } from "../../api/query/dealQuery";
+import { dealPipelines, useDealsAll } from "../../api/query/dealQuery";
 import { useMutation, useQueryClient } from "react-query";
 import {
-    useDealAddFavorite,
-    useDealDeleteFavorite,
-    useDealMutation,
     useDealMutationDeleteDeal,
     useDealUpdateBoardMutation,
 } from "../../api/mutation/useDealMutation";
 import moment from "moment";
 import DealsTable from "./components/DealsTable";
-import { deleteContactMutation } from "../../api/mutation/useContactMutation";
+import { TDeal } from "../../entities";
+import LoadingComponent from "../../components/LoadingComponent";
 
 interface Card {
     id: number;
@@ -89,18 +65,11 @@ interface TDeals {
     status: string;
     owner: any;
 }
-interface Bytotal {
-    comp_qualify: number;
-    first_given: number;
-    in_negoation: number;
-    verbal_offer_accepted: number;
-    under_contract: number;
-}
 const Deal = () => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [filterPage, setFilterPage] = useState({
-        pipeline: "ACQ",
+        pipelineId: "",
         title: "",
         status: "All Deals",
         page: 1,
@@ -109,88 +78,23 @@ const Deal = () => {
         sort_field: "id",
         sort_order: "asc",
     });
-
-    const [isDropdownVisible, setDropdownVisible] = useState(false);
-    const [isFavorite, setIsFavorite] = useState<string[]>([]);
-
-    const addFavorite = useMutation(useDealAddFavorite, {
-        onSuccess: (res) => {
-            queryClient.invalidateQueries("deals");
-        },
-    });
-    const deleteFavorite = useMutation(useDealDeleteFavorite, {
-        onSuccess: (res) => {
-            queryClient.invalidateQueries("deals");
-        },
-    });
-
-    const handleFavoriteClick = (value) => {
-        console.log("val", value);
-        let isFavoriteVar = [...isFavorite];
-
-        if (!isFavoriteVar.includes(value)) {
-            isFavoriteVar.push(value);
-
-            addFavorite.mutate({ name: value });
-        } else {
-            let index = isFavoriteVar.findIndex((x) => x === value);
-            isFavoriteVar.splice(index, 1);
-
-            deleteFavorite.mutate({ name: value });
-        }
-
-        setIsFavorite(isFavoriteVar);
-    };
-    const [showModalAddDealValue, setshowModalAddDealValue] =
-        useState<string>("");
-    const [showDeleteButton, setShowDeleteButton] = useState(false);
     const { deals, isLoading, refetch } = useDealsAll(filterPage);
+    const { data: pipelines, isLoading: isPipelinesLoading } = dealPipelines();
+    const selectedpipeline = pipelines?.find(
+        (pipeline) => pipeline.id === filterPage.pipelineId
+    );
 
-    useEffect(() => {
-        refetch();
-    }, [filterPage]);
+    const [showDeleteButton, setShowDeleteButton] = useState(false);
+
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
-    const [byTotalDeals, setByTotalDeals] = useState<Bytotal>({
-        comp_qualify: 0,
-        first_given: 0,
-        in_negoation: 0,
-        verbal_offer_accepted: 0,
-        under_contract: 0,
-    });
+
     const showModalAdd = () => {
         setIsModalOpenAdd(true);
     };
 
-    const showModalAddDeal = (val: any) => {
-        setshowModalAddDealValue(val);
-        setIsModalOpenAdd(true);
-    };
-
-    const onClickACQ = (value: string) => {
-        setFilterPage({
-            ...filterPage,
-            pipeline: value,
-        });
-    };
-
-    const onClickStatus = (value: string) => {
-        setFilterPage({
-            ...filterPage,
-            status: value,
-        });
-        console.log(value);
-    };
-
     useEffect(() => {
         refetch();
     }, [filterPage]);
-
-    function toCurrency(number: any) {
-        return new Intl.NumberFormat("en-US", {
-            style: "decimal",
-            minimumFractionDigits: 2,
-        }).format(number);
-    }
 
     const [openFilter, setOpenFilter] = useState(false);
 
@@ -220,46 +124,25 @@ const Deal = () => {
             label: <div>View Recent Deleted Records</div>,
         },
     ];
-    const acq: MenuProps["items"] = [
-        {
-            key: "1",
-            label: <div onClick={() => onClickACQ("Marketing")}>Marketing</div>,
-        },
-        {
-            key: "2",
-            label: <div onClick={() => onClickACQ("ACQ")}>ACQ</div>,
-        },
-    ];
-    const title: MenuProps["items"] = [
-        {
-            key: "1",
-            label: <div>Title</div>,
-        },
-        {
-            key: "2",
-            label: <div>Win Probability</div>,
-        },
-        {
-            key: "3",
-            label: <div>Owner</div>,
-        },
-        {
-            key: "4",
-            label: <div>Estimated Close Date</div>,
-        },
-        {
-            key: "5",
-            label: <div>Created At</div>,
-        },
-        {
-            key: "6",
-            label: <div>Last Modified Date</div>,
-        },
-        {
-            key: "7",
-            label: <div> Inactive Days</div>,
-        },
-    ];
+    const pipelineDropdownItem: MenuProps["items"] = pipelines?.map(
+        (pipeline) => {
+            return {
+                key: pipeline.id,
+                label: (
+                    <div
+                        onClick={() =>
+                            setFilterPage({
+                                ...filterPage,
+                                pipelineId: pipeline.id,
+                            })
+                        }
+                    >
+                        {pipeline.name}
+                    </div>
+                ),
+            };
+        }
+    );
 
     const phone: MenuProps["items"] = [
         {
@@ -276,461 +159,76 @@ const Deal = () => {
         },
     ];
 
-    const activities_type = (
-        <Card>
-            <Search
-                placeholder="input search text"
-                allowClear
-                // onSearch={onSearch}
-                style={{ width: 200 }}
-            />
-            <Tabs
-                defaultActiveKey="tab1"
-                // onChange={handleTabChange}
-            >
-                <Tabs.TabPane tab="FAVORITES" key="tab1">
-                    {isFavorite.length > 0 ? (
-                        <Menu
-                            style={{
-                                backgroundColor: "none",
-                                boxShadow: "none",
-                            }}
-                            mode="inline"
-                        >
-                            {isFavorite.map((item, index) => {
-                                return (
-                                    <Menu.Item
-                                        key={index}
-                                        onClick={() => {
-                                            onClickStatus(item);
-                                        }}
-                                    >
-                                        {item}
-                                    </Menu.Item>
-                                );
-                            })}{" "}
-                        </Menu>
-                    ) : (
-                        "You have no favorties"
-                    )}
-                </Tabs.TabPane>
-                <Tabs.TabPane tab="ALL VIEWS" key="tab2">
-                    <Menu
-                        style={{
-                            backgroundColor: "none",
-                            boxShadow: "none",
-                        }}
-                        mode="inline"
-                    >
-                        <Menu.Item key="1">
-                            <Space>
-                                <div
-                                    onClick={() => {
-                                        onClickStatus("All Deals");
-                                        setDropdownVisible(true);
-                                    }}
-                                >
-                                    {" "}
-                                    All Deals
-                                </div>
-                                <div
-                                    onClick={() => {
-                                        handleFavoriteClick("All Deals");
-                                    }}
-                                >
-                                    {isFavorite.includes("All Deals") ? (
-                                        <StarFilled />
-                                    ) : (
-                                        <StarOutlined />
-                                    )}
-                                </div>
-                            </Space>
-                        </Menu.Item>
-                        <Menu.Item key="2">
-                            <Space>
-                                <div
-                                    onClick={() => {
-                                        onClickStatus("All Open Deals");
-                                        setDropdownVisible(true);
-                                    }}
-                                >
-                                    All Open Deals
-                                </div>
-                                <div
-                                    onClick={() => {
-                                        handleFavoriteClick("All Open Deals");
-                                    }}
-                                >
-                                    {isFavorite.includes("All Open Deals") ? (
-                                        <StarFilled />
-                                    ) : (
-                                        <StarOutlined />
-                                    )}
-                                </div>
-                            </Space>
-                        </Menu.Item>
-                        <Menu.Item key="3">
-                            <Space>
-                                <div
-                                    onClick={() => {
-                                        onClickStatus(
-                                            "Deals Closing Next Month"
-                                        );
-                                        setDropdownVisible(true);
-                                    }}
-                                >
-                                    Deals Closing Next Month
-                                </div>
-                                <div
-                                    onClick={() => {
-                                        handleFavoriteClick(
-                                            "Deals Closing Next Month"
-                                        );
-                                    }}
-                                >
-                                    {isFavorite.includes(
-                                        "Deals Closing Next Month"
-                                    ) ? (
-                                        <StarFilled />
-                                    ) : (
-                                        <StarOutlined />
-                                    )}
-                                </div>
-                            </Space>
-                        </Menu.Item>
-                        <Menu.Item key="4">
-                            <Space>
-                                <div
-                                    onClick={() => {
-                                        onClickStatus(
-                                            "Deals Closing This Month"
-                                        );
-                                        setDropdownVisible(true);
-                                    }}
-                                >
-                                    Deals Closing This Month
-                                </div>
-                                <div
-                                    onClick={() => {
-                                        handleFavoriteClick(
-                                            "Deals Closing This Month"
-                                        );
-                                    }}
-                                >
-                                    {isFavorite.includes(
-                                        "Deals Closing This Month"
-                                    ) ? (
-                                        <StarFilled />
-                                    ) : (
-                                        <StarOutlined />
-                                    )}
-                                </div>
-                            </Space>
-                        </Menu.Item>
-                        {/* <Menu.Item
-                            key="5"
-                            onClick={() =>
-                                onClickStatus("Deals I am following")
-                            }
-                        >
-                            Deals I am following
-                        </Menu.Item>
-                        <Menu.Item
-                            key="6"
-                            onClick={() => onClickStatus("My Open Deals")}
-                        >
-                            My Open Deals
-                        </Menu.Item>
-                        <Menu.Item
-                            key="7"
-                            onClick={() => onClickStatus("My Ovderdue Deals")}
-                        >
-                            My Ovderdue Deals
-                        </Menu.Item> */}
-                        <Menu.Item key="8">
-                            <Space>
-                                <div
-                                    onClick={() => {
-                                        onClickStatus("Lost Deals");
-                                        setDropdownVisible(true);
-                                    }}
-                                >
-                                    Lost Deals
-                                </div>
-                                <div
-                                    onClick={() => {
-                                        handleFavoriteClick("Lost Deals");
-                                    }}
-                                >
-                                    {isFavorite.includes("Lost Deals") ? (
-                                        <StarFilled />
-                                    ) : (
-                                        <StarOutlined />
-                                    )}
-                                </div>
-                            </Space>
-                        </Menu.Item>
-                        <Menu.Item key="9">
-                            <Space>
-                                <div
-                                    onClick={() => {
-                                        onClickStatus("Won Deals");
-                                        setDropdownVisible(true);
-                                    }}
-                                >
-                                    Won Deals
-                                </div>
-                                <div
-                                    onClick={() => {
-                                        handleFavoriteClick("Won Deals");
-                                    }}
-                                >
-                                    {isFavorite.includes("Won Deals") ? (
-                                        <StarFilled />
-                                    ) : (
-                                        <StarOutlined />
-                                    )}
-                                </div>
-                            </Space>
-                        </Menu.Item>
-                    </Menu>
-                </Tabs.TabPane>
-            </Tabs>
-        </Card>
-    );
-
-    const initialBoardData: { lanes: Lane[] } = {
-        lanes: [
-            {
-                id: "Comp & Qualify",
-                title: (
-                    <div className="item-deals-header">
-                        <div className="arrow top"></div>
-                        <div className="content">
-                            Comp & Qualify
-                            <div className="total-dollar">
-                                ${deals && toCurrency(deals.sum.cq)}
-                            </div>
-                        </div>
-                        <div className="arrow bottom"></div>
-
-                        <span className="add-deals">
-                            <PlusSquareOutlined
-                                onClick={() =>
-                                    showModalAddDeal("Comp & Qualify")
-                                }
-                            />
-                        </span>
-                    </div>
-                ),
-                label: "",
-                style: {
-                    width: 280,
-                },
-                cards: [],
-            },
-            {
-                id: "First Offer Given",
-
-                title: (
-                    <div className="item-deals-header">
-                        <div className="arrow top"></div>
-                        <div className="content">
-                            First Offer Given{" "}
-                            <div className="total-dollar">
-                                ${deals && toCurrency(deals.sum.fg)}
-                            </div>
-                        </div>
-                        <div className="arrow bottom"></div>
-                        <span className="add-deals">
-                            <PlusSquareOutlined
-                                onClick={() =>
-                                    showModalAddDeal("First Offer Given")
-                                }
-                            />
-                        </span>
-                    </div>
-                ),
-                label: "",
-                style: {
-                    width: 280,
-                },
-                cards: [],
-            },
-            {
-                id: "In Negotiation",
-                title: (
-                    <div className="item-deals-header">
-                        <div className="arrow top"></div>
-                        <div className="content">
-                            In Negotiation{" "}
-                            <div className="total-dollar">
-                                ${deals && toCurrency(deals.sum.in)}
-                            </div>
-                        </div>
-                        <div className="arrow bottom"></div>
-                        <span className="add-deals">
-                            <PlusSquareOutlined
-                                onClick={() =>
-                                    showModalAddDeal("In Negotiation")
-                                }
-                            />
-                        </span>
-                    </div>
-                ),
-                label: "",
-                style: {
-                    width: 280,
-                },
-                cards: [],
-            },
-            {
-                id: "Verbal Offer Accepted",
-                title: (
-                    <div className="item-deals-header">
-                        <div className="arrow top"></div>
-                        <div className="content">
-                            Verbal Offer Accepted{" "}
-                            <div className="total-dollar">
-                                ${deals && toCurrency(deals.sum.voa)}
-                            </div>
-                        </div>
-                        <div className="arrow bottom"></div>
-                        <span className="add-deals">
-                            <PlusSquareOutlined
-                                onClick={() =>
-                                    showModalAddDeal("Verbal Offer Accepted")
-                                }
-                            />
-                        </span>
-                    </div>
-                ),
-                style: {
-                    width: 280,
-                },
-                label: "",
-                cards: [],
-            },
-            {
-                id: "Under Contract",
-                title: (
-                    <div className="item-deals-header">
-                        <div className="arrow top"></div>
-                        <div className="content">
-                            Under Contract{" "}
-                            <div className="total-dollar">
-                                ${deals && toCurrency(deals.sum.uc)}
-                            </div>
-                        </div>
-                        <div className="arrow bottom"></div>
-                        <span className="add-deals">
-                            <PlusSquareOutlined
-                                onClick={() =>
-                                    showModalAddDeal("Under Contract")
-                                }
-                            />
-                        </span>
-                    </div>
-                ),
-                style: {
-                    width: 280,
-                },
-                label: "",
-                cards: [],
-            },
-        ],
-    };
     const [listBoard, setListBoard] = useState("Board");
-    const [boardData, setBoardData] = useState(initialBoardData);
-    const [listData, setListData] = useState<TDeals[]>([]);
+    const [boardData, setBoardData] = useState<{ lanes: Lane[] } | undefined>();
 
     useEffect(() => {
         if (deals) {
-            if (deals.deal_favorite.length > 0) {
-                let isFavoriteVar: any = [];
-                console.log("deals", deals);
-
-                deals.deal_favorite.forEach((element: any) => {
-                    isFavoriteVar.push(element.name);
-                });
-
-                setIsFavorite(isFavoriteVar);
-            }
-
             if (listBoard != "List") {
-                const data: { lanes: Lane[] } = { ...initialBoardData }; // Clone the initial data
+                const initialBoardData: { lanes: Lane[] } = {
+                    lanes:
+                        selectedpipeline?.stages?.map((stage) => {
+                            return {
+                                id: stage.id,
+                                title: (
+                                    <div className="item-deals-header">
+                                        <div className="arrow top"></div>
+                                        <div className="content">
+                                            {stage.name}
+                                        </div>
+                                        <div className="arrow bottom"></div>
+                                        <span className="add-deals">
+                                            <PlusSquareOutlined
+                                                onClick={() =>
+                                                    setIsModalOpenAdd(true)
+                                                }
+                                            />
+                                        </span>
+                                    </div>
+                                ),
+                                style: {
+                                    width: 280,
+                                },
+                                label: "",
+                                cards:
+                                    stage.deals?.map((deal) => {
+                                        return {
+                                            id: parseInt(deal.id ?? ""),
+                                            title: cardDiv(deal),
+                                            laneId: stage.id,
+                                        };
+                                    }) ?? [],
+                            };
+                        }) ?? [],
+                };
 
-                deals.data.data.forEach((x: any, key: any) => {
-                    if (x.stage == "Comp & Qualify") {
-                        data.lanes[0].cards.push({
-                            id: x.id,
-                            title: cardDiv(x),
-                            laneId: x.stage,
-                        });
-                    }
-                    if (x.stage == "First Offer Given") {
-                        data.lanes[1].cards.push({
-                            id: x.id,
-                            title: cardDiv(x),
-                            laneId: x.stage,
-                        });
-                    }
-                    if (x.stage == "In Negotiation") {
-                        data.lanes[2].cards.push({
-                            id: x.id,
-                            title: cardDiv(x),
-                            laneId: x.stage,
-                        });
-                    }
-                    if (x.stage == "Verbal Offer Accepted") {
-                        data.lanes[3].cards.push({
-                            id: x.id,
-                            title: cardDiv(x),
-                            laneId: x.stage,
-                        });
-                    }
-                    if (x.stage == "Under Contract") {
-                        data.lanes[4].cards.push({
-                            id: x.id,
-                            title: cardDiv(x),
-                            laneId: x.stage,
-                        });
-                    }
-                });
-                setBoardData(data);
-            } else {
-                setListData(deals.data.data);
-                console.log("wew", deals.data.data);
+                setBoardData(initialBoardData);
             }
         }
     }, [deals, listBoard]);
 
-    const cardDiv = (x: any) => {
+    const cardDiv = (deal: TDeal) => {
         return (
             <div>
                 <Card
                     style={{ width: "100%", cursor: "pointer" }}
                     onClick={() => {
-                        navigate("/deals/" + x.id);
+                        navigate("/contacts/" + deal.contact?.id);
                     }}
                 >
-                    <div>{x.title}</div>
-                    <div
-                        style={{
-                            fontSize: 12,
-                            color: "#9b9999",
-                        }}
-                    >
-                        {x?.contact?.firstName + " " + x?.contact?.lastName} - $
-                        {toCurrency(x.value)}{" "}
+                    <div>
+                        {deal.contact?.fields.firstName +
+                            " " +
+                            deal.contact?.fields.lastName}
                     </div>
+
                     <div
                         style={{
                             fontSize: 10,
                             color: "#9b9999",
                         }}
                     >
-                        {moment(x?.estimated_close_date).format("LL")}
+                        {moment(deal?.created_at).format("LL")}
                     </div>
 
                     <div
@@ -786,7 +284,7 @@ const Deal = () => {
 
     const mutation = useMutation(useDealUpdateBoardMutation, {
         onSuccess: (res) => {
-            // console.log("wew", res);
+            queryClient.invalidateQueries("pipelines");
         },
     });
 
@@ -827,6 +325,22 @@ const Deal = () => {
     const [isTContact, setTContact] = useState<TDeals | null>(null);
     const [isTitle, setTitle] = useState("");
 
+    //set initial pipeline
+    useEffect(() => {
+        if (pipelines?.length && !filterPage.pipelineId) {
+            setFilterPage({
+                ...filterPage,
+                pipelineId: pipelines[0].id,
+            });
+            setTimeout(() => {
+                refetch(); // Call refetch after a 1-second delay
+            }, 1000);
+        }
+    }, [pipelines]);
+
+    if (isPipelinesLoading) {
+        <LoadingComponent />;
+    }
     return (
         <Row className="deal-group-row">
             <Col md={24}>
@@ -867,7 +381,7 @@ const Deal = () => {
 
                             <Button
                                 onClick={() => {
-                                    setisModalOpenUpdate(true);
+                                    setIsModalOpenAdd(true);
                                 }}
                                 icon={<SaveOutlined />}
                                 className="m-r-sm"
@@ -910,29 +424,16 @@ const Deal = () => {
                                 <div>
                                     <span style={{ marginRight: 10 }}>
                                         <Dropdown
-                                            menu={{ items: acq }}
+                                            menu={{
+                                                items: pipelineDropdownItem,
+                                            }}
                                             placement="bottomLeft"
                                         >
                                             <Button>
                                                 <Space>
-                                                    {filterPage.pipeline}
+                                                    {selectedpipeline?.name ??
+                                                        "Select pipeline"}
 
-                                                    <DownOutlined />
-                                                </Space>
-                                            </Button>
-                                        </Dropdown>
-                                    </span>
-                                    <span style={{ marginRight: 10 }}>
-                                        <Dropdown
-                                            visible={isDropdownVisible}
-                                            onVisibleChange={setDropdownVisible}
-                                            overlay={activities_type}
-                                            placement="bottomLeft"
-                                            trigger={["click"]}
-                                        >
-                                            <Button>
-                                                <Space>
-                                                    {filterPage.status}
                                                     <DownOutlined />
                                                 </Space>
                                             </Button>
@@ -1000,75 +501,72 @@ const Deal = () => {
                                 <div>
                                     <span style={{ marginRight: 15 }}>
                                         {" "}
-                                        # of Deals:{" "}
-                                        <b>{deals && deals.sum.count}</b>
-                                    </span>
-                                    <span style={{ marginRight: 15 }}>
-                                        {" "}
-                                        Pipeline Value:{" "}
-                                        <b>
-                                            {deals &&
-                                                "$" +
-                                                    toCurrency(
-                                                        deals.sum.sum_upp
-                                                    )}
-                                        </b>
-                                    </span>
-                                    <span>
-                                        {" "}
-                                        Forecasted Value:{" "}
-                                        <b>
-                                            {deals &&
-                                                "$" +
-                                                    toCurrency(
-                                                        deals.sum.sum_upp
-                                                    )}
-                                        </b>
+                                        # of Deals: <b>{deals?.length}</b>
                                     </span>
                                 </div>
                             </div>
                         </>
                     )}
 
-                    {boardData && listBoard != "List" ? (
-                        <div>
-                            <div className="mainDealArrow">
-                                <div style={{ width: "100%", height: "100vh" }}>
-                                    <Board
-                                        draggable
-                                        data={boardData}
-                                        laneDraggable={false}
-                                        hideCardDeleteIcon={true}
-                                        className="react-trello-board board"
-                                        cardDragClass="card-drag"
-                                        cardDropClass="card-drop"
-                                        style={{ background: "none!important" }}
-                                        customCardLayout={true}
-                                        onDataChange={onDataChangeBoard}
+                    {deals?.length ? (
+                        <>
+                            {boardData && listBoard != "List" ? (
+                                <div>
+                                    <div className="mainDealArrow">
+                                        <div
+                                            style={{
+                                                width: "100%",
+                                                height: "100vh",
+                                            }}
+                                        >
+                                            <Board
+                                                draggable
+                                                data={boardData}
+                                                laneDraggable={false}
+                                                hideCardDeleteIcon={true}
+                                                className="react-trello-board board"
+                                                cardDragClass="card-drag"
+                                                cardDropClass="card-drop"
+                                                style={{
+                                                    background:
+                                                        "none!important",
+                                                }}
+                                                customCardLayout={true}
+                                                onDataChange={onDataChangeBoard}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div>
+                                    <DealsTable
+                                        deals={deals ?? []}
+                                        filterPage={filterPage}
+                                        setFilterPage={setFilterPage}
+                                        showDeleteButton={showDeleteButton}
+                                        setShowDeleteButton={
+                                            setShowDeleteButton
+                                        }
+                                        selectedData={selectedData}
+                                        setSelectedData={setSelectedData}
+                                        selectedRowsData={selectedRowsData}
+                                        setSelectedRows={setSelectedRows}
+                                        isModalOpenUpdate={isModalOpenUpdate}
+                                        setisModalOpenUpdate={
+                                            setisModalOpenUpdate
+                                        }
+                                        isTContact={isTContact}
+                                        setTContact={setTContact}
+                                        isTitle={isTitle}
+                                        setTitle={setTitle}
                                     />
                                 </div>
-                            </div>
-                        </div>
+                            )}
+                        </>
                     ) : (
-                        <div>
-                            <DealsTable
-                                deals={deals}
-                                filterPage={filterPage}
-                                setFilterPage={setFilterPage}
-                                showDeleteButton={showDeleteButton}
-                                setShowDeleteButton={setShowDeleteButton}
-                                selectedData={selectedData}
-                                setSelectedData={setSelectedData}
-                                selectedRowsData={selectedRowsData}
-                                setSelectedRows={setSelectedRows}
-                                isModalOpenUpdate={isModalOpenUpdate}
-                                setisModalOpenUpdate={setisModalOpenUpdate}
-                                isTContact={isTContact}
-                                setTContact={setTContact}
-                                isTitle={isTitle}
-                                setTitle={setTitle}
-                            />
-                        </div>
+                        <Card>
+                            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                        </Card>
                     )}
 
                     <Filter
@@ -1083,6 +581,7 @@ const Deal = () => {
                         closeModal={() => {
                             setIsModalOpenAdd(false);
                         }}
+                        selectedRows={selectedRowsData}
                     />
                 </Card>
             </Col>

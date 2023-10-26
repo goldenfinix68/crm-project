@@ -18,13 +18,6 @@ const CollapsibleDetails = () => {
     const [getLastCommunicationDate, setGetLastCommunicationDate] =
         useState("");
 
-    const [getOpen, setGetOpen] = useState(0);
-    const [getOpenTotal, setGetOpenTotal] = useState(0);
-
-    const [getWon, setGetWon] = useState(0);
-    const [getWonTotal, setGetWonTotal] = useState(0);
-    const [getActivity, setGetActivity] = useState(0);
-
     useEffect(() => {
         if (contact) {
             contact.wall?.every((x) => {
@@ -35,39 +28,6 @@ const CollapsibleDetails = () => {
                 }
                 return true;
             });
-
-            var open = 0;
-            var open_total = 0;
-
-            var won = 0;
-            var won_total = 0;
-
-            var activity = 0;
-
-            var deals_all = [];
-            contact.wall?.forEach((x) => {
-                if (x.type == "activities") {
-                    activity++;
-                }
-                if (x.type == "deal") {
-                    if (x.deal?.status == "Open") {
-                        var a: string | undefined = x.deal?.value;
-                        open++;
-                        open_total = open_total + (a ? parseFloat(a) : 0);
-                    }
-                    if (x.deal?.status == "Won") {
-                        var a: string | undefined = x.deal?.value;
-                        won++;
-                        won_total = won_total + (a ? parseFloat(a) : 0);
-                    }
-                }
-            });
-            setGetOpen(open);
-            setGetOpen(open_total);
-
-            setGetWon(won);
-            setGetWonTotal(won_total);
-            setGetActivity(activity);
         }
     }, [contact]);
     const onChange = (key: string | string[]) => {
@@ -92,7 +52,7 @@ it can be found as a welcome guest in many households across the world.
                     <Descriptions.Item label="Last Communication On">
                         {moment(getLastCommunicationDate).fromNow()}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Open Deals">
+                    {/* <Descriptions.Item label="Open Deals">
                         {getOpen} (${getOpenTotal})
                     </Descriptions.Item>
                     <Descriptions.Item label="Deals Won">
@@ -100,7 +60,7 @@ it can be found as a welcome guest in many households across the world.
                     </Descriptions.Item>
                     <Descriptions.Item label="Activities">
                         {getActivity}
-                    </Descriptions.Item>
+                    </Descriptions.Item> */}
                 </Descriptions>
             ),
         },
@@ -111,29 +71,18 @@ it can be found as a welcome guest in many households across the world.
         },
         {
             key: "3",
-            label: `DEALS (${getOpen + getWon}) `,
+            label: `DEALS (${contact.deals?.length}) `,
             children: (
                 <>
-                    <ul>
-                        {contact.wall?.map((x) => {
-                            if (x.type == "deal") {
-                                return (
-                                    <li style={{ marginBottom: 10 }}>
-                                        <a
-                                            href={
-                                                window.location.origin +
-                                                "/deals/" +
-                                                x.deal?.id
-                                            }
-                                        >
-                                            {x.deal?.title}
-                                            {` (${x.deal?.status})`}
-                                        </a>
-                                    </li>
-                                );
-                            }
+                    <Descriptions column={1}>
+                        {contact.deals?.map((deal) => {
+                            return (
+                                <Descriptions.Item label="Stage">
+                                    {deal.stage?.name}
+                                </Descriptions.Item>
+                            );
                         })}
-                    </ul>
+                    </Descriptions>
                 </>
             ),
         },

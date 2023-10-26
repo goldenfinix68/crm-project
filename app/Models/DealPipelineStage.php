@@ -19,4 +19,9 @@ class DealPipelineStage extends Model
     {
         return $this->belongsTo('\App\Models\DealPipeline', 'dealPipelineId', 'id');
     }
+    
+    public function deals()
+    {
+        return $this->hasMany('\App\Models\Deal', 'stageId', 'id')->orderBy('sort');
+    }
 }
