@@ -157,11 +157,15 @@ const ContactBulkUpdate = ({
                                     );
                                 }}
                             >
-                                {contactFields?.map((field) => (
-                                    <Select.Option value={field.id}>
-                                        {field.label}
-                                    </Select.Option>
-                                ))}
+                                {contactFields
+                                    .filter(
+                                        (field) => field.fieldName != "mobile"
+                                    )
+                                    ?.map((field) => (
+                                        <Select.Option value={field.id}>
+                                            {field.label}
+                                        </Select.Option>
+                                    ))}
                             </Select>
                         </Col>
                     </Row>

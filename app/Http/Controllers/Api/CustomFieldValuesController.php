@@ -10,6 +10,7 @@ use App\Models\CustomField;
 use App\Models\CustomFieldValue;
 use App\Models\ContactType;
 use Auth;
+use DB;
 
 class CustomFieldValuesController extends Controller
 {
@@ -41,28 +42,56 @@ class CustomFieldValuesController extends Controller
      */
     public function store(Request $request)
     {
-        $fields = $request->fields;
-        if($request->customableType == "contact"){
-            if($request->customableId){
-                $record = Contact::find($request->customableId);
-                if(empty($record)){
-                    abort(404);
+        DB::beginTransaction();
+
+        try {
+            $fields = $request->fields;
+            if($request->customableType == "contact"){
+                if($request->customableId){
+                    $record = Contact::find($request->customableId);
+                    if(empty($record)){
+                        abort(404);
+                    }
+                }
+                else{
+                    $record = new Contact();
+                    $record->save();
+                }
+                $verify = CustomFieldValue::with(['customField'])
+                    ->where('value', $fields['mobile'])
+                    ->where('customableType', 'contact')
+                    ->whereHas('customField', function ($query) {
+                        $query->where('type', 'mobile');
+                    })
+                    ->first();
+                if(!empty($verify) && $verify->customableId != $record->id){
+                    $existingContact = Contact::find($verify->customableId);
+                    abort(400, "Mobile number is already associated with " . $existingContact->fields['firstName'] . ' ' . $existingContact->fields['lastName']);
                 }
             }
-            else{
-                $record = new Contact();
-                $record->save();
+            $user = Auth::user();
+            foreach($fields as $key => $value){
+                $customField = CustomField::where('fieldName', $key)
+                    ->where('customFieldSectionType', $request->customableType)
+                    ->where('userId', $user->id)
+                    ->first();
+                $this->createOrUpdateValue($record->id, $customField, $request->customableType, $value);
             }
+            DB::commit();
+            return response()->json(['message' => "Success"], 200);
+        } catch (\Exception $e) {
+            // Something went wrong, so we'll roll back the transaction
+            DB::rollBack();
+            
+            $statusCode = $e->getCode();
+            if (!is_numeric($statusCode) || $statusCode < 100 || $statusCode >= 600) {
+                // If the HTTP status code is invalid, you can use a default 500 Internal Server Error
+                $statusCode = 500;
+            }
+
+            return response()->json(['message' => $e->getMessage()], $statusCode);
+
         }
-        $user = Auth::user();
-        foreach($fields as $key => $value){
-            $customField = CustomField::where('fieldName', $key)
-                ->where('customFieldSectionType', $request->customableType)
-                ->where('userId', $user->id)
-                ->first();
-            $this->createOrUpdateValue($record->id, $customField, $request->customableType, $value);
-        }
-        return response()->json(['message' => "Success"], 200);
     }
 
     /**
@@ -121,7 +150,21 @@ class CustomFieldValuesController extends Controller
             $fieldValue = CustomFieldValue::find($field['customFieldValueId']);
             $customField = $fieldValue->customField;
             $value = $field[$customField->fieldName];
-            
+            //verify number
+            if($customField->fieldName == 'mobile'){
+                $verify = CustomFieldValue::with(['customField'])
+                    ->where('value', $value)
+                    ->where('customableType', 'contact')
+                    ->whereHas('customField', function ($query) {
+                        $query->where('type', 'mobile');
+                    })
+                    ->first();
+                if(!empty($verify) && $verify->customableId != $fieldValue->customableId){
+                    $existingContact = Contact::find($verify->customableId);
+                    
+                    return response()->json(['message' => "Mobile number is already associated with " . $existingContact->fields['firstName'] . ' ' . $existingContact->fields['lastName']], 400);
+                }
+            }
             $this->createOrUpdateValue($fieldValue->customableId, $customField, $fieldValue->customableType, $value);
         }
         

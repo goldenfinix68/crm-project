@@ -1,6 +1,6 @@
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Avatar, Button, Form, Input, Popconfirm, Space } from "antd";
+import { Avatar, Button, Form, Input, Popconfirm, Space, message } from "antd";
 
 import React from "react";
 import CustomFieldInput from "../../../components/CustomFieldInput";
@@ -36,7 +36,7 @@ const ContactsEditableTableCell = ({
             setIsPopconfirmOpen(false);
         },
         onError: (e: any) => {
-            console.log(e.message || "An error occurred");
+            message.error(e.message || "An error occurred");
         },
     });
 

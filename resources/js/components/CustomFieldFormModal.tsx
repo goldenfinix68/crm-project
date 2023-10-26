@@ -1,4 +1,4 @@
-import { Button, Col, Modal, Row, Typography, Form, Input } from "antd";
+import { Button, Col, Modal, Row, Typography, Form, message } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import React, { useEffect } from "react";
 import { useCustomFieldSections } from "../api/query/customFieldQuery";
@@ -41,7 +41,7 @@ const CustomFieldFormModal = ({
             }
         },
         onError: (e: any) => {
-            console.log(e.message || "An error occurred");
+            message.error(e.message || "An error occurred");
         },
     });
 
