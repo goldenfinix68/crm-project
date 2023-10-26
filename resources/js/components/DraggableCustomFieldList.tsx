@@ -173,7 +173,9 @@ const DraggableCustomFieldList = ({
                     handleNo={() => setIsDeleteModalOpen(false)}
                     handleYes={async () => {
                         setIsDeleteBtnLoading(true);
-                        await deleteCustomField.mutate(selectedCustomField!.id);
+                        await deleteCustomField.mutate(
+                            selectedCustomField!.id!
+                        );
                         setIsDeleteBtnLoading(false);
                     }}
                     isOpen={isDeleteModalOpen}

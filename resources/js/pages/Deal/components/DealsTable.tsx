@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import { EditOutlined } from "@ant-design/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
-import { useDealsAll, useDealsAllFiter } from "../../../api/query/dealQuery";
 import ModalAddDeal from "./ModalAddDeal";
 import { useMutation, useQueryClient } from "react-query";
 import ContactsComponentsUpdate from "./ContactsComponentsUpdate";
@@ -110,13 +109,6 @@ const DealsTable = ({
         queryClient.invalidateQueries("deals");
     };
 
-    const handleCancelAdd = () => {
-        setIsModalOpenAdd(false);
-    };
-    const handleEdit = (record: any) => {
-        setTContact(record);
-    };
-
     return (
         <>
             <Table
@@ -166,14 +158,17 @@ const DealsTable = ({
                 <Table.Column title="Status" dataIndex={"status"} sorter />
                 <Table.Column title="Owner" dataIndex={"owner_name"} sorter />
             </Table>
+
             <ModalAddDeal
-                isModalOpenAdd={isModalOpenAdd}
-                handleOkAdd={handleOkAdd}
-                handleCancelAdd={handleCancelAdd}
-                showModalAddDealValue={showModalAddDealValue}
-                from={"update"}
-                modalValue={modalValue}
+                isModalOpen={isModalOpenAdd}
+                handleSubmit={() => {
+                    console.log("qwe");
+                }}
+                closeModal={() => {
+                    setIsModalOpenAdd(false);
+                }}
             />
+
             <ContactsComponentsUpdate
                 isModalOpenUpdate={isModalOpenUpdate}
                 setisModalOpenUpdate={setisModalOpenUpdate}

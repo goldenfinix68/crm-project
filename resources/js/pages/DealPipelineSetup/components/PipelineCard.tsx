@@ -30,13 +30,11 @@ import queryClient from "../../../queryClient";
 import { Card, Popconfirm } from "antd/lib";
 import PipelineAddUpdateModal from "./PipelineAddUpdateModal";
 import DealPipelineStageAddUpdateModal from "./DealPipelineStageAddUpdateModal";
-import { dealPipelines } from "../../../api/query/dealQuery";
 import DraggableStageItemList from "./DraggableStageItemList";
 interface Props {
     pipeline: TDealPipeline;
 }
 const PipelineCard = ({ pipeline }: Props) => {
-    const { data: pipelines, isLoading, refetch } = dealPipelines();
     const [isPipelineAddUpdateOpen, setIsPipelineAddUpdateOpen] =
         React.useState(false);
     const [selectedPipeline, setSelectedPipeline] = React.useState<

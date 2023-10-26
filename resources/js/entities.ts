@@ -179,16 +179,16 @@ export type TCustomFieldSection = {
 };
 
 export type TCustomField = {
-    id: string;
+    id?: string;
     type: string;
     fieldName: string;
-    label: number;
+    label: string;
     options?: string;
     customFieldSectionId?: string;
     isRequired: boolean;
-    isActive: boolean;
-    isDefault: boolean;
-    sort: string;
+    isActive?: boolean;
+    isDefault?: boolean;
+    sort?: string;
     associationType?: string;
     relatedRecordLabel?: string;
     fieldType?: string;

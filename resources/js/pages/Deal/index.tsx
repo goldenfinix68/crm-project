@@ -166,15 +166,6 @@ const Deal = () => {
         setIsModalOpenAdd(true);
     };
 
-    const handleOkAdd = () => {
-        setIsModalOpenAdd(false);
-        queryClient.invalidateQueries("deals");
-    };
-
-    const handleCancelAdd = () => {
-        setIsModalOpenAdd(false);
-    };
-
     const onClickACQ = (value: string) => {
         setFilterPage({
             ...filterPage,
@@ -1085,12 +1076,13 @@ const Deal = () => {
                         setOpenFilter={setOpenFilter}
                     />
                     <ModalAddDeal
-                        isModalOpenAdd={isModalOpenAdd}
-                        handleOkAdd={handleOkAdd}
-                        handleCancelAdd={handleCancelAdd}
-                        showModalAddDealValue={showModalAddDealValue}
-                        from={"add"}
-                        modalValue={""}
+                        isModalOpen={isModalOpenAdd}
+                        handleSubmit={() => {
+                            console.log("qwe");
+                        }}
+                        closeModal={() => {
+                            setIsModalOpenAdd(false);
+                        }}
                     />
                 </Card>
             </Col>

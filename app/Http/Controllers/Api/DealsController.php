@@ -124,26 +124,9 @@ class DealsController extends Controller
     {
 
 
-        $data = Deal::updateOrCreate(['id' => $request->id], $request->except('teamateLocal', 'particapantLocal'));
+        $data = Deal::updateOrCreate(['id' => $request->id], $request->all());
         $data->sort = $data->id;
         $data->save();
-
-        if ($request->id == 0) {
-            foreach ($request->teamateLocal as $key => $val) {
-                $team = \App\Models\DealTeammate::updateOrCreate(
-                    ['deal_id' => $data->id, 'user_id' => $val['id']],
-                    ['deal_id' => $data->id, 'user_id' => $val['id']],
-                );
-            }
-            foreach ($request->particapantLocal as $key => $val) {
-                $participant = \App\Models\DealParticipant::updateOrCreate(
-                    ['deal_id' => $data->id, 'user_id' => $val['id']],
-                    ['deal_id' => $data->id, 'user_id' => $val['id']],
-                );
-            }
-        }
-
-
 
         return response()->json(['success' => true, 'data' => $data], 200);
     }
