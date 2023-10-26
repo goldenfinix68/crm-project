@@ -178,12 +178,12 @@ const ActionMenu = ({ contact }: { contact: TContact }) => {
                 handleCancelAdd={() => setActivityModalOpen(false)}
             />
             <ModalAddDeal
-                isModalOpenAdd={dealModalOpen}
-                handleOkAdd={() => {
+                isModalOpen={dealModalOpen}
+                handleSubmit={() => {
                     setDealModalOpen(false);
                     queryClient.invalidateQueries("getContact");
                 }}
-                handleCancelAdd={() => setDealModalOpen(false)}
+                closeModal={() => setDealModalOpen(false)}
             />
         </Space>
     );
