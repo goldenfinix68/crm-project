@@ -65,7 +65,7 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
     const [isCreateNewTypeOpen, setIsCreateNewTypeOpen] = React.useState(false);
     const [form] = Form.useForm<TContact>();
     const { contactTypes, isLoading } = useContactTypesAll();
-    const contactTypelookupId = contact.fields.contactTypelookupIds
+    const contactTypelookupId = contact.fields?.contactTypelookupIds
         ? JSON.parse(contact.fields.contactTypelookupIds)[0]
         : "0";
     const contactType = contactTypes?.find(

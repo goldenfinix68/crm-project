@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Contact;
 use App\Models\Text;
+use App\Models\CustomFieldValue;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TextThread extends Model
@@ -30,12 +31,19 @@ class TextThread extends Model
 
     public function getContactAttribute()
     {
-        return Contact::with(['type'])->where('mobile', $this->contactNumber)->first();
+        $fieldValue = CustomFieldValue::with(['customField'])
+                    ->where('value', $this->contactNumber)
+                    ->where('customableType', 'contact')
+                    ->whereHas('customField', function ($query) {
+                        $query->where('type', 'mobile');
+                    })
+                    ->first();
+        return !empty($fieldValue) ? Contact::find($fieldValue->customableId) : false;
     }
 
     public function getContactNameAttribute()
     {
-        return !empty($this->contact) ? $this->contact->firstName . ' ' . $this->contact->lastName : $this->contactNumber;
+        return !empty($this->contact) ? $this->contact->fields['firstName'] . ' ' . $this->contact->fields['lastName'] : $this->contactNumber;
     }
 
     // public function getLastTextAttribute()

@@ -58,9 +58,17 @@ class Text extends Model
             return $names;
         }
         else{
-            $sender = Contact::where('mobile', $this->from)->first();
-            if(!empty($sender)){
-                return $sender->firstName . ' ' . $sender->lastName;
+            $fieldValue = CustomFieldValue::with(['customField'])
+                    ->where('value', $this->from)
+                    ->where('customableType', 'contact')
+                    ->whereHas('customField', function ($query) {
+                        $query->where('type', 'mobile');
+                    })
+                    ->first();
+
+            if(!empty($fieldValue)){
+                $contact = Contact::find($fieldValue->customableId);
+                return $contact->fields['firstName'] . ' ' . $contact->fields['lastName'];
             }
             
             return $this->from;
@@ -71,10 +79,17 @@ class Text extends Model
     {
         $to = $this->to;
         if($this->isFromApp){
+            $fieldValue = CustomFieldValue::with(['customField'])
+                    ->where('value', $this->to)
+                    ->where('customableType', 'contact')
+                    ->whereHas('customField', function ($query) {
+                        $query->where('type', 'mobile');
+                    })
+                    ->first();
 
-            $sender = Contact::where('mobile', $this->to)->first();
-            if(!empty($sender)){
-                return $sender->firstName . ' ' . $sender->lastName;
+            if(!empty($fieldValue)){
+                $contact = Contact::find($fieldValue->customableId);
+                return $contact->fields['firstName'] . ' ' . $contact->fields['lastName'];
             }
             return $this->to;
         }
