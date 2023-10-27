@@ -39,11 +39,12 @@ class CallsController extends Controller
             $callData = Call::where('telnyxCallSessionId', $call->telnyxCallSessionId)->get();
             $isFromApp = MobileNumber::where('mobileNumber', $call->from)->first();
             
-            $contact = Contact::where('mobile', !empty($isFromApp) ? $call->to : $call->from)->first();
+            $contact = $this->getContactByMobile(!empty($isFromApp) ? $call->to : $call->from);
+
             $contactName = !empty($isFromApp) ? $call->to : $call->from;
             
             if(!empty($contact)){
-                $contactName = $contact->firstName . ' ' . $contact->lastName;
+                $contactName = $contact->fields['firstName'] . ' ' . $contact->fields['lastName'];
             }
             $answeredData = $callData->where('type', 'call.answered')->first();
             $hangupData = $callData->where('type', 'call.hangup')->first();

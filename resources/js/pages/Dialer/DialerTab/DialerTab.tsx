@@ -68,7 +68,7 @@ const DialerTab = ({
         console.log(`${currentValue}${e}`);
     };
     const filteredOptions = contacts?.filter((contact) =>
-        contact?.mobile?.includes(
+        contact?.fields?.mobile?.includes(
             destinationNumber ? destinationNumber.replace(/[-\s+_]/g, "") : ""
         )
     );
@@ -134,14 +134,14 @@ const DialerTab = ({
                 >
                     <AutoComplete
                         options={filteredOptions?.map((option) => ({
-                            value: option.mobile,
+                            value: option.fields.mobile,
                             label: (
                                 <Space>
                                     <Typography.Text strong>
-                                        {`${option.firstName} ${option.lastName}`}
+                                        {`${option.fields.firstName} ${option.fields.lastName}`}
                                     </Typography.Text>
                                     <Typography.Text>
-                                        {option.mobile}
+                                        {option.fields.mobile}
                                     </Typography.Text>
                                 </Space>
                             ),
