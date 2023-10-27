@@ -21,6 +21,7 @@ use Carbon\Carbon;
 use League\Csv\Reaer;
 use App\Models\CustomField;
 use App\Models\CustomFieldValue;
+use DB;
 
 class ContactsController extends Controller
 {
@@ -373,53 +374,38 @@ class ContactsController extends Controller
             $mapping = $request->columnMappings;
 
             $result = [];
-            
             foreach ($data as $record) {
-                $contactData = new Contact();
-                $dealData = new Deal();
-                $activityData = new Activity();
-            
+                DB::beginTransaction();
+
+                $contact = new Contact();
+                $contact->save();
+
+                $continue = true;
                 foreach ($mapping as $sourceColumn => $targetColumn) {
-                    if (strpos($targetColumn['mergeField'], "contact.") !== false) {
-                        $column = preg_replace('/{{contact\.|\}}/', '', $targetColumn['mergeField']);
-                        $contactData->{$column} = $record[$sourceColumn];
+                    if($continue){
+                        $customFieldValue = CustomFieldValue::find($targetColumn);
+                        $customField = $customFieldValue->customField;
+
+
+                        if($customField->fieldName == 'mobile'){
+                            $verify = $this->getContactByMobile($record[$sourceColumn]);
+                            if(!empty($verify) && $verify->customableId != $contact->id){
+                                $continue = false;
+                                DB::rollBack();
+                                break;
+                            }
+                        }
+
+                        $this->createOrUpdateCustomFieldValue($contact->id, $customField, 'contact', $record[$sourceColumn]);
                     }
-                    if (strpos($targetColumn['mergeField'], "deal.") !== false) {
-                        $column = preg_replace('/{{deal\.|\}}/', '', $targetColumn['mergeField']);
-                        $dealData->{$column} = $record[$sourceColumn];
-                    }
-                    if (strpos($targetColumn['mergeField'], "activity.") !== false) {
-                        $column = preg_replace('/{{activity\.|\}}/', '', $targetColumn['mergeField']);
-                        $activityData->{$column} = $record[$sourceColumn];
-                    }
                 }
-                //save if required fields are present
-                $isContactSuccess = false;
-                if(!empty($contactData->firstName) && !empty($contactData->lastName)){
-                    $contactData->ownerId = Auth::id();
-                    $isContactSuccess =$contactData->save();
-                    
+                if($continue){
+                    $result[] = [
+                        'contactName' => $contact->fields['firstName'] . ' ' . $contact->fields['lastName']
+                    ];
+    
+                    DB::commit();
                 }
-                $isActivitySuccess = false;
-                if(!empty($contactData) && !empty($activityData->title)){
-                    $activityData->ownerId = Auth::id();
-                    $activityData->contact_id = $contactData->id;
-                    $isActivitySuccess = $contactData->save();
-                    
-                }
-                $isDealSuccess = false;
-                if(!empty($contactData) && !empty($dealData->title)){
-                    $dealData->owner = Auth::id();
-                    $dealData->contactId = $contactData->id;
-                    $isDealSuccess = $contactData->save();
-                    
-                }
-                $result[] = [
-                    'contactName' => $contactData->firstName . ' ' . $contactData->lastName,
-                    'isContactSuccess' => $isContactSuccess,
-                    'isActivitySuccess' => $isActivitySuccess,
-                    'isDealSuccess' => $isDealSuccess,
-                ];
             }
             
             return response()->json(['result' => $result], 200);

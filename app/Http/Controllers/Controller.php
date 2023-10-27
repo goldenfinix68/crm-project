@@ -41,4 +41,56 @@ class Controller extends BaseController
 
         return false;
     }
+    
+    public function createOrUpdateCustomFieldValue($customableId, $customField, $customableType, $value)
+    {
+        $fieldValue = CustomFieldValue::where('customableId', $customableId)->where('customFieldId', $customField->id)->first();
+        if(empty($fieldValue)){
+            $fieldValue = new CustomFieldValue();
+        }
+
+        $fieldValue->customableId = $customableId;
+        $fieldValue->customableType = $customableType;
+        $fieldValue->customFieldId = $customField->id;
+
+        if($customField->type == "userLookup" || $customField->type == "contactLookup" || $customField->type == "contactTypeLookup"){
+            //convert if type not multiple
+
+            if($customField->type == "userLookup"){
+                $data = User::whereIn('id', $value)
+                ->selectRaw('CONCAT(firstName, " ", lastName) as full_name')
+                ->pluck('full_name')
+                ->implode(', ');
+            }
+            if($customField->type == "contactTypeLookup"){
+                $data = ContactType::whereIn('id', $value)
+                ->select('name')
+                ->pluck('name')
+                ->implode(', ');
+            }
+            else{
+                $data = "";
+                $contacts = Contact::with(['customFieldValues', 'customFieldValues.customField'])
+                ->whereIn('id', $value)
+                ->get();
+
+                foreach($contacts as $index => $contact){
+                    $customFields = $contact->fields;
+                    $data = $data . ($index == 0 ? "" : ", ") . $customFields['firstName'] . ' ' . $customFields['lastName'];
+                }
+            }
+            $fieldValue->lookupIds = json_encode($value);
+            $fieldValue->value =  $data;
+        }
+        else{
+            if($customField->type == "multiSelect"){
+                $fieldValue->value = json_encode($value);
+            }
+            else{
+                $fieldValue->value =  $value;
+            }
+            $fieldValue->lookupIds = null;
+        }
+        $fieldValue->save();
+    }
 }

@@ -32,26 +32,39 @@ import {
 import { TTextTemplateFolder } from "../../../entities";
 import { createTextTemplateFolderMutation } from "../../../api/mutation/useTextTemplateMutation";
 import Search from "antd/es/input/Search";
+import { useCustomFields } from "../../../api/query/customFieldQuery";
 interface Props {
     handleSelect: (e) => void;
 }
 const AddAttributePopoverContent = ({ handleSelect }: Props) => {
     const [menu, setMenu] = useState("contact");
     const [searchKey, setSearchKey] = useState("");
+    const {
+        data: contactFields,
+        isLoading: isContactFieldsLoading,
+        refetch: refetchContactFields,
+    } = useCustomFields("contact");
 
     // const list = menu == "contact" ? CONTACT_COLUMNS : [];
 
     const list = () => {
         let data: any = [];
         if (menu == "contact") {
-            data = CONTACT_COLUMNS;
+            data = contactFields?.filter(
+                (field) =>
+                    ![
+                        "contactLookup",
+                        "userLookup",
+                        "contactTypeLookup",
+                    ].includes(field.type)
+            );
         }
-        if (menu == "deal") {
-            data = DEAL_COLUMNS;
-        }
-        if (menu == "activity") {
-            data = ACTIVITY_COLUMNS;
-        }
+        // if (menu == "deal") {
+        //     data = DEAL_COLUMNS;
+        // }
+        // if (menu == "activity") {
+        //     data = ACTIVITY_COLUMNS;
+        // }
 
         if (searchKey) {
             data = data?.filter((item) =>
@@ -64,14 +77,11 @@ const AddAttributePopoverContent = ({ handleSelect }: Props) => {
 
     return (
         <Space direction="vertical" size={"large"}>
-            <Radio.Group value={menu} onChange={(e) => setMenu(e.target.value)}>
+            {/* <Radio.Group value={menu} onChange={(e) => setMenu(e.target.value)}>
                 <Radio.Button value="contact">Contact</Radio.Button>
                 <Radio.Button value="activity">Activity</Radio.Button>
                 <Radio.Button value="deal">Deal</Radio.Button>
-                {/* <Radio.Button disabled value="owner">
-                    Owner
-                </Radio.Button> */}
-            </Radio.Group>
+            </Radio.Group> */}
 
             <Search
                 placeholder="Search"

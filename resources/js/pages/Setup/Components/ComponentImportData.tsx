@@ -13,6 +13,8 @@ import {
     Popover,
     Input,
     Modal,
+    Select,
+    Alert,
 } from "antd";
 import {
     CaretDownOutlined,
@@ -30,21 +32,32 @@ import { useArray } from "../../../helpers";
 import { useMutation } from "react-query";
 import { useContactBulkImportCsv } from "../../../api/mutation/useContactMutation";
 import { useNavigate } from "react-router-dom";
+import { useCustomFields } from "../../../api/query/customFieldQuery";
 
 const ComponentImportData: React.FC = () => {
     const navigate = useNavigate();
+    const {
+        data: contactFields,
+        isLoading: isContactFieldsLoading,
+        refetch: refetchContactFields,
+    } = useCustomFields("contact");
     const [loading, setLoading] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [csvData, setCsvData] = useState<any>([]);
     const [keyValues, setKeyValues] = useState<any>([]);
     const [columnMappings, setColumnMappings] = useState<any>({});
-    const requiredFields = ["firstName", "lastName"];
+    const requiredFields = contactFields?.filter(
+        (field) =>
+            field.isRequired &&
+            !["contactLookup", "userLookup", "contactTypeLookup"].includes(
+                field.type
+            )
+    );
     const [successModalVisible, setSuccessModalVisible] = useState(false);
     const [successModalData, setSuccessModalData] = useState();
 
     const contactBulkImportCsv = useMutation(useContactBulkImportCsv, {
         onSuccess: (res) => {
-            console.log(res);
             setSuccessModalVisible(true);
             setSuccessModalData(res.result);
             // navigate("/contacts"); // Redirect to the users list page after successful submission
@@ -92,10 +105,10 @@ const ComponentImportData: React.FC = () => {
             // uploadFile(selectedFile);
         }
     };
-    const requiredFieldsPresent = requiredFields.every((fieldName) => {
+    const requiredFieldsPresent = requiredFields?.every((requiredField) => {
         // Check if any key in data matches the value of "value" in the field object
         return Object.values(columnMappings).some(
-            (field: any) => field.value === fieldName
+            (value: any) => value == requiredField.id
         );
     });
 
@@ -103,92 +116,142 @@ const ComponentImportData: React.FC = () => {
         if (requiredFieldsPresent) {
             contactBulkImportCsv.mutate({ csvData, columnMappings });
         } else {
-            message.error("Contact first and last name is required");
+            console.log(requiredFields);
+            message.error(
+                requiredFields?.map((item) => item.label).join(", ") +
+                    ` required.`
+            );
         }
     };
-    const handleMappingChange = (
-        csvColumnName: string,
-        databaseField: string
-    ) => {
+    const handleMappingChange = (csvColumnName: string, fieldId: string) => {
         // Update the columnMappings object when the user selects a mapping
         setColumnMappings({
             ...columnMappings,
-            [csvColumnName]: databaseField,
+            [csvColumnName]: fieldId,
         });
     };
+    const isDuplicate =
+        Object.values(columnMappings).filter((value, index, self) => {
+            return self.indexOf(value) !== index;
+        }).length > 0;
+
+    console.log(requiredFields);
+    console.log(columnMappings);
 
     return (
         <>
             {csvData.length ? (
-                <Card title="Map columns with Speedlead fields ">
-                    <Table dataSource={keyValues} pagination={false}>
-                        <Table.Column
-                            title="File Columns"
-                            // dataIndex="column1"
-                            key="column1"
-                            render={([key, value]) => (
-                                <Space direction="vertical">
-                                    <Typography.Text>{key}</Typography.Text>
-                                    <Typography.Text
-                                        style={{ fontSize: "9px" }}
-                                    >
-                                        {String(value)}
-                                    </Typography.Text>
-                                </Space>
-                            )}
+                <Space direction="vertical" className="w-100">
+                    <Card title="Map columns with Speedlead fields ">
+                        {isDuplicate && (
+                            <Alert
+                                description="Same field selected for mapping."
+                                type="error"
+                            />
+                        )}
+                        <Alert
+                            description="Mobile number must be unique for each contact, and duplicates will be ignored."
+                            type="warning"
                         />
-                        <Table.Column
-                            title="Speedlead Fields"
-                            key="column2"
-                            render={([key, value]) => {
-                                return (
-                                    <Popover
-                                        content={
-                                            <AddAttributePopoverContent
-                                                handleSelect={(
-                                                    selectedValue
-                                                ) => {
-                                                    handleMappingChange(
-                                                        key,
-                                                        selectedValue
-                                                    );
-                                                }}
-                                            />
-                                        }
-                                        trigger={"click"}
-                                    >
-                                        <Input
-                                            placeholder="-- Select --"
-                                            readOnly={true}
-                                            prefix={
-                                                <InputPrefix
-                                                    mergeField={
-                                                        columnMappings[key]
-                                                            ?.mergeField
-                                                    }
-                                                />
-                                            }
-                                            value={
-                                                columnMappings[key]?.label ?? ""
-                                            }
-                                        />
-                                    </Popover>
-                                );
-                            }}
-                        />
-                    </Table>
+                        <Table dataSource={keyValues} pagination={false}>
+                            <Table.Column
+                                title="File Columns"
+                                // dataIndex="column1"
+                                key="column1"
+                                render={([key, value]) => (
+                                    <Space direction="vertical">
+                                        <Typography.Text>{key}</Typography.Text>
+                                        <Typography.Text
+                                            style={{ fontSize: "9px" }}
+                                        >
+                                            {String(value)}
+                                        </Typography.Text>
+                                    </Space>
+                                )}
+                            />
+                            <Table.Column
+                                title="Speedlead Fields"
+                                key="column2"
+                                render={([key, value]) => {
+                                    return (
+                                        <Select
+                                            showSearch
+                                            className="w-100"
+                                            value={columnMappings[key] ?? ""}
+                                            onChange={(fieldId) => {
+                                                handleMappingChange(
+                                                    key,
+                                                    fieldId
+                                                );
+                                            }}
+                                            allowClear
+                                        >
+                                            {contactFields
+                                                ?.filter(
+                                                    (field) =>
+                                                        ![
+                                                            "contactLookup",
+                                                            "userLookup",
+                                                            "contactTypeLookup",
+                                                        ].includes(field.type)
+                                                )
+                                                ?.map((field, index) => (
+                                                    <Select.Option
+                                                        value={field.id}
+                                                        key={index}
+                                                    >
+                                                        {field.label}
+                                                    </Select.Option>
+                                                ))}
+                                        </Select>
+                                        // <Popover
+                                        //     content={
+                                        //         <AddAttributePopoverContent
+                                        //             handleSelect={(
+                                        //                 selectedValue
+                                        //             ) => {
+                                        //                 handleMappingChange(
+                                        //                     key,
+                                        //                     selectedValue
+                                        //                 );
+                                        //             }}
+                                        //         />
+                                        //     }
+                                        //     trigger={"click"}
+                                        // >
+                                        //     <Input
+                                        //         placeholder="-- Select --"
+                                        //         readOnly={true}
+                                        //         prefix={
+                                        //             <InputPrefix
+                                        //                 mergeField={
+                                        //                     columnMappings[key]
+                                        //                         ?.mergeField
+                                        //                 }
+                                        //             />
+                                        //         }
+                                        //         value={
+                                        //             columnMappings[key]?.label ?? ""
+                                        //         }
+                                        //     />
+                                        // </Popover>
+                                    );
+                                }}
+                            />
+                        </Table>
 
-                    <Row className="m-t-xl">
-                        <Button
-                            type="primary"
-                            onClick={handleSubmit}
-                            disabled={!selectedFile} // Disable the button if no file is selected
-                            loading={contactBulkImportCsv.isLoading}
-                        >
-                            Import
-                        </Button>
-                    </Row>
-                </Card>
+                        <Row className="m-t-xl">
+                            <Button
+                                type="primary"
+                                onClick={handleSubmit}
+                                disabled={!selectedFile || isDuplicate} // Disable the button if no file is selected
+                                loading={contactBulkImportCsv.isLoading}
+                            >
+                                Import
+                            </Button>
+                        </Row>
+                    </Card>
+                </Space>
             ) : (
                 <Card>
                     <Typography.Title level={3}>
@@ -301,49 +364,13 @@ const ComponentImportData: React.FC = () => {
                             key="contactName"
                         />
                         <Table.Column
-                            title="Create Contact"
+                            title="Success"
                             key="deal"
-                            render={(text, record: any) =>
-                                record.isContactSuccess ? (
-                                    <CheckCircleOutlined
-                                        style={{ color: "green" }}
-                                    />
-                                ) : (
-                                    <CloseCircleOutlined
-                                        style={{ color: "red" }}
-                                    />
-                                )
-                            }
-                        />
-                        <Table.Column
-                            title="Create Deal"
-                            key="deal"
-                            render={(text, record: any) =>
-                                record.isDealSuccess ? (
-                                    <CheckCircleOutlined
-                                        style={{ color: "green" }}
-                                    />
-                                ) : (
-                                    <CloseCircleOutlined
-                                        style={{ color: "red" }}
-                                    />
-                                )
-                            }
-                        />
-                        <Table.Column
-                            title="Create Activity"
-                            key="activity"
-                            render={(text, record: any) =>
-                                record.isActivitySuccess ? (
-                                    <CheckCircleOutlined
-                                        style={{ color: "green" }}
-                                    />
-                                ) : (
-                                    <CloseCircleOutlined
-                                        style={{ color: "red" }}
-                                    />
-                                )
-                            }
+                            render={(text, record: any) => (
+                                <CheckCircleOutlined
+                                    style={{ color: "green" }}
+                                />
+                            )}
                         />
                     </Table>
                 </Card>
