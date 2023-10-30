@@ -36,6 +36,23 @@ export const sortCustomFieldsMutation = async (
     return data;
 };
 
+export const sortTableCustomFieldsMutation = async (fields: any) => {
+    const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+    const response = await fetch("/api/custom-fields/table-fields/sort", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(fields),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to add");
+    }
+    return data;
+};
+
 export const restoreCustomFieldMutation = async (customField: TCustomField) => {
     const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
     const response = await fetch("/api/custom-fields/restore", {

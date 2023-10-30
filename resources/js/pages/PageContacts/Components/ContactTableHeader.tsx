@@ -48,6 +48,7 @@ import ContactBulkUpdate from "./ContactBulkUpdate";
 import SendToManyModal from "../../../components/SentToManyModal";
 import Papa from "papaparse";
 import Filter from "../../Deal/components/Filter";
+import ContactsComponentsManageColumn from "./ContactsComponentsManageColumn";
 interface Props {
     selectedRows?: {
         [key: string]: any;
@@ -819,6 +820,16 @@ const ContactTableHeader = ({
                     </Col>
                 </Row>
             )}
+
+            <ContactsComponentsManageColumn
+                isModalManageColumnOpen={isManageColumnModalOpen}
+                closeModal={() => {
+                    setIsManageColumnModalOpen(false);
+                }}
+                handleSubmit={() => {
+                    queryClient.invalidateQueries("customFields");
+                }}
+            />
 
             <CustomFieldFormModal
                 isModalOpen={isAddModalOpen}

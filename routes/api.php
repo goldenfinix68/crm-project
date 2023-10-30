@@ -93,6 +93,7 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('/custom-field-sections', 'App\Http\Controllers\Api\CustomFieldSectionsController');
     Route::post('/custom-field-sections/sort', 'App\Http\Controllers\Api\CustomFieldSectionsController@sort');
 
+    Route::post('/custom-fields/table-fields/sort', 'App\Http\Controllers\Api\CustomFieldsController@tableFieldsSort');
     Route::get('/custom-fields/inactive', 'App\Http\Controllers\Api\CustomFieldsController@inactiveFields');
     Route::post('/custom-fields/restore', 'App\Http\Controllers\Api\CustomFieldsController@restore');
     Route::post('/custom-fields/sort', 'App\Http\Controllers\Api\CustomFieldsController@sort');

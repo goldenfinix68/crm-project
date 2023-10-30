@@ -178,6 +178,21 @@ class CustomFieldsController extends Controller
         return response()->json("Success", 200);
     }
     
+    public function tableFieldsSort(Request $request)
+    {
+        $user = Auth::user();
+        foreach($request->fields as $index => $data){
+            $customField = CustomField::find($data['id']);
+            if(!empty($customField) && $customField->section->userId == $user->id){
+                $customField->tableSort = $index+1;
+                $customField->isDisplayTable = $data['isSelected'];
+                $customField->save();
+            }
+        }
+
+        return response()->json("Success", 200);
+    }
+    
     public function restore(Request $request)
     {
         $user = Auth::user();

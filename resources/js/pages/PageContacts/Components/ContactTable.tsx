@@ -22,6 +22,9 @@ const ContactsTable = ({
     const [selectedContact, setSelectedContact] = useState<
         TContact | undefined
     >();
+    const firstNameField = contactFields.find(
+        (field) => field.fieldName == "firstName"
+    )!;
 
     const rowSelection = {
         selectedRowKeys,
@@ -35,40 +38,13 @@ const ContactsTable = ({
     };
 
     const columns = contactFields
-        ?.filter((field) => field.fieldName != "lastName")
-        ?.map((field) => {
-            if (field.fieldName == "firstName") {
-                return {
-                    title: field.label,
-                    dataIndex: field.fieldName,
-                    key: field.id,
-                    render: (text, record) => {
-                        return (
-                            <ContactsEditableTableCell
-                                record={record}
-                                field={field}
-                                lastNameField={contactFields.find(
-                                    (field) => field.fieldName == "lastName"
-                                )}
-                                isNameField
-                                handleUpdateContactClick={(contactId) => {
-                                    setSelectedContact(
-                                        contacts.find(
-                                            (contact) => contact.id == contactId
-                                        )
-                                    );
-                                    setisModalOpen(true);
-                                }}
-                            />
-                        );
-                    },
-                    sorter: (a, b) =>
-                        a[field.fieldName].length - b[field.fieldName].length,
-                    defaultSortOrder: "descend",
-                    fixed: "left",
-                    className: "custom-table-cell",
-                };
-            }
+        ?.filter(
+            (field) =>
+                !["firstName", "lastName"].includes(field.fieldName) &&
+                field.isDisplayTable
+        )
+        .sort((a, b) => a.tableSort - b.tableSort)
+        .map((field, index) => {
             return {
                 title: field.label,
                 dataIndex: field.fieldName,
@@ -94,7 +70,46 @@ const ContactsTable = ({
                 }}
                 rowKey={(record) => (record as any)?.contactId}
                 // columns={orderedColumns ? orderedColumns : columns}
-                columns={columns as ColumnsType<{ [key: string]: any }>}
+                columns={
+                    [
+                        {
+                            title: firstNameField?.label,
+                            dataIndex: firstNameField?.fieldName,
+                            key: firstNameField?.id,
+                            render: (text, record) => {
+                                return (
+                                    <ContactsEditableTableCell
+                                        record={record}
+                                        field={firstNameField}
+                                        lastNameField={contactFields.find(
+                                            (field) =>
+                                                field.fieldName == "lastName"
+                                        )}
+                                        isNameField
+                                        handleUpdateContactClick={(
+                                            contactId
+                                        ) => {
+                                            setSelectedContact(
+                                                contacts.find(
+                                                    (contact) =>
+                                                        contact.id == contactId
+                                                )
+                                            );
+                                            setisModalOpen(true);
+                                        }}
+                                    />
+                                );
+                            },
+                            sorter: (a, b) =>
+                                a[firstNameField?.fieldName]?.length -
+                                b[firstNameField?.fieldName]?.length,
+                            defaultSortOrder: "descend",
+                            fixed: "left",
+                            className: "custom-table-cell",
+                        },
+                        ...columns,
+                    ] as ColumnsType<{ [key: string]: any }>
+                }
                 dataSource={contacts.map((contact) => contact.fields)}
                 scroll={{ x: 1300 }}
             />
