@@ -24,20 +24,18 @@ import {
 } from "antd";
 import { TContact } from "../../../entities";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import menu from "antd/es/menu";
 import Search from "antd/es/input/Search";
 import { useArray } from "../../../helpers";
 import { FILTER_OPTIONS } from "../../../constants";
 
-const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
-};
-
 interface Props {
     openFilter: boolean;
     setOpenFilter: any;
     columns?: { label: string; value: string }[];
+    setFilters: any;
+    filters: any;
 }
 
 interface IFilter {
@@ -47,9 +45,15 @@ interface IFilter {
     value: string;
 }
 
-const Filter: React.FC<Props> = ({ openFilter, setOpenFilter, columns }) => {
+const Filter: React.FC<Props> = ({
+    openFilter,
+    setOpenFilter,
+    columns,
+    filters,
+    setFilters,
+}) => {
     const {
-        array: filters,
+        array: conditions,
         add,
         removeByKey,
         updateByKey,
@@ -57,6 +61,12 @@ const Filter: React.FC<Props> = ({ openFilter, setOpenFilter, columns }) => {
     } = useArray<IFilter>();
 
     const [searchKey, setSearchKey] = useState("");
+    const [condition, setCondition] = useState(filters.condition);
+
+    useEffect(() => {
+        console.log(conditions);
+        setFilters({ conditions, condition });
+    }, [conditions]);
     return (
         <>
             <Drawer
@@ -71,15 +81,15 @@ const Filter: React.FC<Props> = ({ openFilter, setOpenFilter, columns }) => {
                 <Select
                     defaultValue="Match all filters (AND)"
                     style={{ width: "100%" }}
-                    onChange={handleChange}
+                    onChange={(e) => setCondition(e)}
                     showSearch
                     options={[
                         {
-                            value: "Match all filters (AND)",
+                            value: "and",
                             label: "Match all filters (AND)",
                         },
                         {
-                            value: "Match any filters (OR)",
+                            value: "or",
                             label: "Match any filters (OR)",
                         },
                     ]}
@@ -88,8 +98,8 @@ const Filter: React.FC<Props> = ({ openFilter, setOpenFilter, columns }) => {
                 <Typography.Title className="m-t-md" level={5}>
                     SELECTED FILTERS
                 </Typography.Title>
-                {filters.length ? (
-                    filters.map((filter) => (
+                {conditions.length ? (
+                    conditions.map((filter) => (
                         <Space className="w-100" direction="vertical">
                             <Card
                                 extra={
@@ -104,7 +114,7 @@ const Filter: React.FC<Props> = ({ openFilter, setOpenFilter, columns }) => {
                                 title={
                                     <Space>
                                         <UserOutlined />
-                                        {` > ${filter.column.label} 1`}
+                                        {` > ${filter.column.label}`}
                                     </Space>
                                 }
                             >

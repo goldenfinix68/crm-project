@@ -11,13 +11,15 @@ interface Props {
     setSelectedRows: any;
     setSelectedRowKeys: any;
     selectedRowKeys: string[];
+    contacts?: TContact[];
 }
 const ContactsTable = ({
     setSelectedRows,
     setSelectedRowKeys,
     selectedRowKeys,
+    contacts,
 }: Props) => {
-    const { contacts, contactFields } = useAppContextProvider();
+    const { contactFields } = useAppContextProvider();
     const [isModalOpen, setisModalOpen] = useState(false);
     const [selectedContact, setSelectedContact] = useState<
         TContact | undefined
@@ -90,7 +92,7 @@ const ContactsTable = ({
                                             contactId
                                         ) => {
                                             setSelectedContact(
-                                                contacts.find(
+                                                contacts?.find(
                                                     (contact) =>
                                                         contact.id == contactId
                                                 )
@@ -110,7 +112,7 @@ const ContactsTable = ({
                         ...columns,
                     ] as ColumnsType<{ [key: string]: any }>
                 }
-                dataSource={contacts.map((contact) => contact.fields)}
+                dataSource={contacts?.map((contact) => contact.fields)}
                 scroll={{ x: 1300 }}
             />
 

@@ -35,7 +35,10 @@ import {
 import type { ColumnsType } from "antd/es/table";
 import ContactsComponentsAddContacts from "./Components/ContactsComponentsAddContacts";
 import ContactsComponentsManageColumn from "./Components/ContactsComponentsManageColumn";
-import { useContactsTableColumn } from "../../api/query/contactsQuery";
+import {
+    filteredContactsQuery,
+    useContactsTableColumn,
+} from "../../api/query/contactsQuery";
 import { useUserFavorites } from "../../api/query/userQuery";
 
 import { useMutation } from "react-query";
@@ -61,6 +64,8 @@ import Filter from "../Deal/components/Filter";
 import CustomFieldFormModal from "../../components/CustomFieldFormModal";
 import ContactsTable from "./Components/ContactTable";
 import ContactTableHeader from "./Components/ContactTableHeader";
+import { mutateGet } from "../../api/mutation/useSetupMutation";
+import { ENDPOINTS } from "../../endpoints";
 
 interface DataType {
     key: React.Key;
@@ -97,6 +102,24 @@ const Contacts = () => {
     const [selectedRows, setSelectedRows] = useState<any>([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState<any>([]);
 
+    const [filters, setFilters] = useState({
+        conditions: [],
+        condition: "and",
+    });
+    const {
+        data: filteredContacts,
+        isLoading: isFilteredContactsLoading,
+        refetch: refetchFilteredContacts,
+    } = mutateGet(
+        filters,
+        ENDPOINTS.filteredContacts.url,
+        ENDPOINTS.filteredContacts.cache
+    );
+
+    useEffect(() => {
+        refetchFilteredContacts();
+    }, [filters]);
+
     return (
         <Space direction="vertical" className="w-100">
             <HeaderMenu />
@@ -106,76 +129,19 @@ const Contacts = () => {
                     setSelectedRowKeys={setSelectedRowKeys}
                     selectedRows={selectedRows}
                     selectedRowKeys={selectedRowKeys}
+                    filters={filters}
+                    setFilters={setFilters}
                 />
                 <Row>
                     <Col md={24} lg={24}>
                         <ContactsTable
+                            contacts={filteredContacts}
                             setSelectedRows={setSelectedRows}
                             setSelectedRowKeys={setSelectedRowKeys}
                             selectedRowKeys={selectedRowKeys}
                         />
-                        {/* <Table
-                            className="tableCell"
-                            rowSelection={{
-                                type: selectionType,
-                                ...rowSelection,
-                            }}
-                            rowKey={(record) => record.id}
-                            columns={orderedColumns ? orderedColumns : columns}
-                            // columns={columns}
-                            dataSource={contacts}
-                            scroll={{ x: 1300 }}
-                        /> */}
                     </Col>
                 </Row>
-
-                {/* <CustomFieldFormModal
-                    isModalOpen={isModalOpen}
-                    closeModal={() => setisModalOpen(false)}
-                    handleSubmit={() => {
-                        console.log("qwe");
-                    }}
-                    type="contact"
-                />
-
-                <Filter
-                    openFilter={open}
-                    setOpenFilter={setOpen}
-                    columns={CONTACT_COLUMNS}
-                />
-
-                <ContactsComponentsUpdate
-                    isModalOpenUpdate={isModalOpenUpdate}
-                    setisModalOpenUpdate={setisModalOpenUpdate}
-                    record={isTContact}
-                    title={isTitle}
-                    selectedData={selectedData}
-                    setTContact={setTContact}
-                />
-                <ContactsComponentsAddtoList
-                    isModalOpenAddList={isModalOpenAddList}
-                    setisModalOpenAddList={setisModalOpenAddlist}
-                    record={isTContact}
-                    title={isTitle}
-                    selectedData={selectedData}
-                    setTContact={setTContact}
-                />
-                <ContactsComponentsManageColumn
-                    isModalManageColumnOpen={isModalManageColumnOpen}
-                    setIsModalManageColumnOpen={setIsModalManageColumnOpen}
-                    listData={listData}
-                    setListData={setListData}
-                    refetchContactsTable={refetchContactsTable}
-                    contactsTable={contactsTable}
-                    resetFields={resetFields}
-                    cancelFields={cancelFields}
-                />
-
-                <SendToManyModal
-                    isModalOpen={isSendToManyModalOpen}
-                    closeModal={() => setIsSendToManyModalOpen(false)}
-                    contacts={(selectedData as any) ?? []}
-                /> */}
             </Card>
         </Space>
     );

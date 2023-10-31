@@ -29,7 +29,6 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/contacts/get_contacts_table_column', 'App\Http\Controllers\Api\ContactsController@get_contacts_table_column');
     Route::post('/contacts/delete_contacts_table_column', 'App\Http\Controllers\Api\ContactsController@delete_contacts_table_column');
     Route::resource('/users', 'App\Http\Controllers\Api\UsersController');
-    Route::resource('/contacts', 'App\Http\Controllers\Api\ContactsController');
     Route::post('/contacts/delete', 'App\Http\Controllers\Api\ContactsController@delete_contacts');
     Route::post('/contacts/mergeContacts', 'App\Http\Controllers\Api\ContactsController@merge_contacts');
     Route::post('/contacts/favorite', 'App\Http\Controllers\Api\ContactsController@favorite');
@@ -39,6 +38,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/contacts/save_column_setting', 'App\Http\Controllers\Api\ContactsController@save_column_setting');
     Route::post('/contacts/bulk-contact-import-csv', 'App\Http\Controllers\Api\ContactsController@bulkContactImportCsv');
     Route::post('/contacts/bulk-update-field', 'App\Http\Controllers\Api\ContactsController@bulkUpdateField');
+    Route::get('/contacts/filtered', 'App\Http\Controllers\Api\ContactsController@filteredContacts');
+    Route::resource('/contacts', 'App\Http\Controllers\Api\ContactsController');
 
 
 

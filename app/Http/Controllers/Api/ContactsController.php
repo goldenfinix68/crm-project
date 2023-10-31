@@ -107,6 +107,31 @@ class ContactsController extends Controller
         //     'data' => $data
         // ], 200);
     }
+    
+
+    public function filteredContacts(Request $request)
+    {
+        // $currentWeekStart = Carbon::now()->startOfWeek();
+        // $currentWeekEnd = Carbon::now()->endOfWeek();
+        // $lastWeekStart = Carbon::now()->subWeek()->startOfWeek();
+        // $lastWeekEnd = Carbon::now()->subWeek()->endOfWeek();
+        // $startOfDay = Carbon::now()->startOfDay();
+        // $endOfDay = Carbon::now()->endOfDay();
+
+        $data = [];
+        $contacts = Contact::with(['customFieldValues', 'customFieldValues.customField']);
+
+        if(!empty($request->filters)){
+
+        }
+
+
+        $contacts = $contacts->get();
+
+        // dd($contacts->customFieldValues);
+        return response()->json($contacts, 200);
+
+    }
 
 
     /**

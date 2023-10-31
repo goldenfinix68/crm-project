@@ -104,3 +104,26 @@ export const useContactsTableColumn = () => {
         refetchContactsTable: refetch,
     };
 };
+
+export const filteredContactsQuery = (values: any) => {
+    const { data, isLoading, isError, refetch } = useQuery<TContact[]>(
+        "thread",
+        async () => {
+            const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+            const response = await axios.post("/api/contacts/filtered", {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify(values),
+            });
+            return response.data;
+        }
+    );
+
+    return {
+        data,
+        isLoading,
+        isError,
+        refetch,
+    };
+};
