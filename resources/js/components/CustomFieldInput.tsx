@@ -167,6 +167,7 @@ const CustomFieldInput = ({
         if (customField.type == "contactTypeLookup") {
             return (
                 <Select
+                    className="w-100"
                     showSearch
                     mode={
                         customField.associationType == "multiple"
@@ -174,7 +175,6 @@ const CustomFieldInput = ({
                             : undefined
                     }
                     dropdownStyle={{ zIndex: 999999 }}
-                    className="w-100"
                 >
                     {contactTypes?.map((contactType, index) => (
                         <Select.Option value={contactType.id} key={index}>
@@ -190,7 +190,11 @@ const CustomFieldInput = ({
 
     if (customField.type == "boolean") {
         return (
-            <Form.Item name={customField.fieldName} valuePropName="checked">
+            <Form.Item
+                className="w-100"
+                name={customField.fieldName}
+                valuePropName="checked"
+            >
                 {getCustomFieldInput()}
             </Form.Item>
         );
@@ -198,6 +202,7 @@ const CustomFieldInput = ({
     if (customField.type == "email") {
         return (
             <Form.Item
+                className="w-100"
                 name={customField.fieldName}
                 label={showLabel ? customField.label : null}
                 rules={[
@@ -220,6 +225,7 @@ const CustomFieldInput = ({
 
     return (
         <Form.Item
+            className="w-100"
             name={customField.fieldName}
             label={showLabel ? customField.label : null}
             rules={[

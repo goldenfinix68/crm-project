@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Table } from "antd";
+import { Avatar, Button, Space, Table } from "antd";
 
 import { useAppContextProvider } from "../../../context/AppContext";
 import { ColumnsType } from "antd/es/table";
@@ -7,6 +7,10 @@ import ContactsEditableTableCell from "./ContactsEditableTableCell";
 import CustomFieldFormModal from "../../../components/CustomFieldFormModal";
 import { TContact } from "../../../entities";
 import queryClient from "../../../queryClient";
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPen } from "@fortawesome/free-solid-svg-icons";
+import { ENDPOINTS } from "../../../endpoints";
 interface Props {
     setSelectedRows: any;
     setSelectedRowKeys: any;
@@ -21,8 +25,11 @@ const ContactsTable = ({
 }: Props) => {
     const { contactFields } = useAppContextProvider();
     const [isModalOpen, setisModalOpen] = useState(false);
-    const [selectedContact, setSelectedContact] = useState<
-        TContact | undefined
+    const [selectedContactFields, setSelectedContactFields] = useState<
+        | {
+              [key: string]: any;
+          }[]
+        | undefined
     >();
     const firstNameField = contactFields.find(
         (field) => field.fieldName == "firstName"
@@ -56,6 +63,11 @@ const ContactsTable = ({
                         <ContactsEditableTableCell
                             record={record}
                             field={field}
+                            handleSubmit={() => {
+                                queryClient.invalidateQueries(
+                                    ENDPOINTS.filteredContacts.cache
+                                );
+                            }}
                         />
                     );
                 },
@@ -75,31 +87,51 @@ const ContactsTable = ({
                 columns={
                     [
                         {
-                            title: firstNameField?.label,
-                            dataIndex: firstNameField?.fieldName,
-                            key: firstNameField?.id,
-                            render: (text, record) => {
+                            title: "Full name",
+                            dataIndex: "fullName",
+                            key: "fullName",
+                            render: (
+                                text,
+                                record: {
+                                    [key: string]: any;
+                                }[]
+                            ) => {
                                 return (
-                                    <ContactsEditableTableCell
-                                        record={record}
-                                        field={firstNameField}
-                                        lastNameField={contactFields.find(
-                                            (field) =>
-                                                field.fieldName == "lastName"
-                                        )}
-                                        isNameField
-                                        handleUpdateContactClick={(
-                                            contactId
-                                        ) => {
-                                            setSelectedContact(
-                                                contacts?.find(
-                                                    (contact) =>
-                                                        contact.id == contactId
-                                                )
-                                            );
-                                            setisModalOpen(true);
-                                        }}
-                                    />
+                                    <Space>
+                                        <Button
+                                            type="text"
+                                            size="small"
+                                            icon={
+                                                <FontAwesomeIcon icon={faPen} />
+                                            }
+                                            onClick={() => {
+                                                setisModalOpen(true);
+                                                setSelectedContactFields(
+                                                    record
+                                                );
+                                            }}
+                                        />
+                                        <Avatar
+                                            className="avatarText m-r-sm"
+                                            // src={record.avatar}
+                                            size={32}
+                                            style={{
+                                                backgroundColor: "#1677FF",
+                                                verticalAlign: "middle",
+                                            }}
+                                        >
+                                            {record["firstName"]?.charAt(0)}
+                                        </Avatar>
+
+                                        <Link
+                                            to={
+                                                "/contacts/" +
+                                                record["contactId"]
+                                            }
+                                        >
+                                            {`${record["firstName"]} ${record["lastName"]}`}
+                                        </Link>
+                                    </Space>
                                 );
                             },
                             sorter: (a, b) =>
@@ -120,13 +152,16 @@ const ContactsTable = ({
                 isModalOpen={isModalOpen}
                 closeModal={() => {
                     setisModalOpen(false);
-                    setSelectedContact(undefined);
+                    setSelectedContactFields(undefined);
                 }}
                 handleSubmit={() => {
                     queryClient.invalidateQueries("contacts");
+                    queryClient.invalidateQueries(
+                        ENDPOINTS.filteredContacts.cache
+                    );
                 }}
                 type="contact"
-                record={selectedContact?.fields}
+                record={selectedContactFields}
             />
         </>
     );

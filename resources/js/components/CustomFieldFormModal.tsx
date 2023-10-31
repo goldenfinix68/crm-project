@@ -64,15 +64,16 @@ const CustomFieldFormModal = ({
 
     useEffect(() => {
         if (record) {
-            const obj = {};
+            let obj = {};
             const entries = Object.entries(record);
             for (const [key, value] of entries) {
-                if (record[key + "lookupIds"]) {
-                    obj[key] = JSON.parse(record[key + "lookupIds"]);
-                }
-                console.log(`Key: ${key}, Value: ${value}`);
+                obj = {
+                    ...obj,
+                    [key]: record[key + "lookupIds"]
+                        ? JSON.parse(record[key + "lookupIds"])
+                        : value,
+                };
             }
-
             form.setFieldsValue(obj);
         } else {
             form.resetFields();
@@ -117,12 +118,7 @@ const CustomFieldFormModal = ({
                     />
                 </div>
                 <div className="modal-content">
-                    <Form
-                        form={form}
-                        onFinish={handleFinish}
-                        layout="vertical"
-                        initialValues={record ?? undefined}
-                    >
+                    <Form form={form} onFinish={handleFinish} layout="vertical">
                         {sections?.map((section) => {
                             // if (section.columnLayout == "two") {
                             const columnSpan =
@@ -167,18 +163,9 @@ const CustomFieldFormModal = ({
                                 // setSaveAndAdd(false);
                                 form.submit();
                             }}
+                            loading={save.isLoading}
                         >
                             Save and Close
-                        </Button>
-                        <Button
-                            className="m-r-xs"
-                            type="primary"
-                            onClick={() => {
-                                // setSaveAndAdd(true);
-                                form.submit();
-                            }}
-                        >
-                            Save and add other
                         </Button>
                         <Button onClick={resetFields}>Cancel</Button>
                     </div>

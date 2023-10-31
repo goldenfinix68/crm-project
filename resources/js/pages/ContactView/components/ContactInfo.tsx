@@ -36,6 +36,7 @@ import {
     Space,
     Tag,
     Typography,
+    Table,
 } from "antd";
 import React, { useContext } from "react";
 import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
@@ -263,26 +264,55 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                     <Typography.Text strong>Contact Details</Typography.Text>
                 </Space>
 
-                <Form form={form} onFinish={handleFinish} layout="vertical">
-                    <Form.Item name="typeId" style={{ display: "none" }}>
-                        <Input />
-                    </Form.Item>
-                    <Descriptions column={1}>
+                <Table
+                    dataSource={contactFields}
+                    pagination={false}
+                    showHeader={false}
+                    className="tableCell"
+                >
+                    <Table.Column
+                        key="label"
+                        render={(text, record: any) => (
+                            <b>{`${record.label}: `}</b>
+                        )}
+                        width={"30%"}
+                    />
+                    <Table.Column
+                        key="value"
+                        render={(text, record: any) => (
+                            <ContactsEditableTableCell
+                                record={contact.fields}
+                                field={record}
+                                handleSubmit={() => {
+                                    queryClient.invalidateQueries("getContact");
+                                }}
+                            />
+                        )}
+                        width={"70%"}
+                    />
+                </Table>
+                {/* <Descriptions column={1}>
                         {contactFields?.map((field, index) => {
                             return (
                                 <Descriptions.Item
                                     label={field.label}
                                     key={index}
                                 >
-                                    <ContactsEditableTableCell
-                                        record={contact.fields}
-                                        field={field}
-                                    />
+                                    <div className="w-100">
+                                        <ContactsEditableTableCell
+                                            record={contact.fields}
+                                            field={field}
+                                            handleSubmit={() => {
+                                                queryClient.invalidateQueries(
+                                                    "getContact"
+                                                );
+                                            }}
+                                        />
+                                    </div>
                                 </Descriptions.Item>
                             );
                         })}
-                    </Descriptions>
-                </Form>
+                    </Descriptions> */}
             </Space>
         </Card>
     );

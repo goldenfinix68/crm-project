@@ -100,7 +100,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/custom-fields/sort', 'App\Http\Controllers\Api\CustomFieldsController@sort');
     Route::resource('/custom-fields', 'App\Http\Controllers\Api\CustomFieldsController');
 
-    Route::post('/custom-field-values/quick-update', 'App\Http\Controllers\Api\CustomFieldValuesController@quickUpdate');
     Route::resource('/custom-field-values', 'App\Http\Controllers\Api\CustomFieldValuesController');
 
 

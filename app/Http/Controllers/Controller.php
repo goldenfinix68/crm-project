@@ -8,6 +8,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use App\Models\Contact;
 use App\Models\CustomFieldValue;
+use App\Models\ContactType;
 
 class Controller extends BaseController
 {
@@ -53,8 +54,12 @@ class Controller extends BaseController
         $fieldValue->customableType = $customableType;
         $fieldValue->customFieldId = $customField->id;
 
+
         if($customField->type == "userLookup" || $customField->type == "contactLookup" || $customField->type == "contactTypeLookup"){
             //convert if type not multiple
+            if($customField->associationType == "single"){
+                $value = [$value];
+            }
 
             if($customField->type == "userLookup"){
                 $data = User::whereIn('id', $value)
@@ -68,7 +73,7 @@ class Controller extends BaseController
                 ->pluck('name')
                 ->implode(', ');
             }
-            else{
+            if($customField->type == "contactLookup") {
                 $data = "";
                 $contacts = Contact::with(['customFieldValues', 'customFieldValues.customField'])
                 ->whereIn('id', $value)
