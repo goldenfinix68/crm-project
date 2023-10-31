@@ -52,6 +52,7 @@ import { useDeleteContactColumn } from "../../../api/mutation/useContactMutation
 import { json } from "react-router-dom";
 import { useCustomFields } from "../../../api/query/customFieldQuery";
 import { sortTableCustomFieldsMutation } from "../../../api/mutation/useCustomFieldMutation";
+import CustomFieldAddUpdateModal from "../../../components/CustomFieldAddUpdateModal";
 
 interface ContactsComponentsManageColumnProps {
     isModalManageColumnOpen: boolean;
@@ -158,23 +159,22 @@ const ContactsComponentsManageColumn: React.FC<
     };
 
     useEffect(() => {
-        if (!listData?.length && contactFields) {
-            setListData(
-                contactFields
-                    ?.filter(
-                        (field) =>
-                            !["firstName", "lastName"].includes(field.fieldName)
-                    )
-                    .sort((a, b) => a.tableSort - b.tableSort)
-                    .map((field) => {
-                        return {
-                            id: field.id!,
-                            key: field.id!,
-                            title: field.label,
-                            isSelected: field.isDisplayTable ?? false,
-                        };
-                    })
-            );
+        if (contactFields) {
+            const fields = contactFields
+                ?.filter(
+                    (field) =>
+                        !["firstName", "lastName"].includes(field.fieldName)
+                )
+                .sort((a, b) => a.tableSort - b.tableSort)
+                .map((field) => {
+                    return {
+                        id: field.id!,
+                        key: field.id!,
+                        title: field.label,
+                        isSelected: field.isDisplayTable ?? false,
+                    };
+                });
+            setListData(fields);
         }
     }, [contactFields]);
 
@@ -418,9 +418,13 @@ const ContactsComponentsManageColumn: React.FC<
                     </Col>
                 </div>
 
-                <ContactsComponentsAddCustomField
-                    isModalAddCustomField={isModalAddCustomField}
-                    setModalAddCustomField={setModalAddCustomField}
+                <CustomFieldAddUpdateModal
+                    isModalOpen={isModalAddCustomField}
+                    closeModal={() => setModalAddCustomField(false)}
+                    handleSubmit={() => {
+                        refetchContactFields();
+                    }}
+                    type={"contact"}
                 />
             </Modal>
         </>

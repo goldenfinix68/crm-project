@@ -184,6 +184,7 @@ const CustomFieldAddUpdateModal = ({
     const createCustomField = useMutation(createCustomFieldMutation, {
         onSuccess: () => {
             queryClient.invalidateQueries("customFieldSections");
+            handleSubmit();
             closeModal();
             resetFields();
         },

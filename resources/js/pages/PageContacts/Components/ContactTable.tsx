@@ -87,7 +87,7 @@ const ContactsTable = ({
                 columns={
                     [
                         {
-                            title: "Full name",
+                            title: "Full Name",
                             dataIndex: "fullName",
                             key: "fullName",
                             render: (
