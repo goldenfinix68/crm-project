@@ -22,51 +22,81 @@ import {
     List,
     Card,
 } from "antd";
-import { TContact } from "../../../entities";
+import {
+    TContact,
+    TFilter,
+    TFilterCondition,
+    TFilters,
+} from "../../../entities";
 
 import React, { useEffect, useState } from "react";
 import menu from "antd/es/menu";
 import Search from "antd/es/input/Search";
-import { useArray } from "../../../helpers";
-import { FILTER_OPTIONS } from "../../../constants";
+import { arraysAreEqual, useArray } from "../../../helpers";
+import { FILTER_OPTIONS, defaultFilter } from "../../../constants";
+import FilterAddUpdateModal from "../../../components/FilterAddUpdateModal";
+import { useMutation } from "react-query";
+import { deleteFilterMutation } from "../../../api/mutation/useFilterMutation";
+import queryClient from "../../../queryClient";
+import { Popconfirm } from "antd/lib";
 
 interface Props {
     openFilter: boolean;
     setOpenFilter: any;
     columns?: { label: string; value: string }[];
-    setFilters: any;
-    filters: any;
+    setFilter: any;
+    filter: TFilter;
+    type: string;
 }
-
-interface IFilter {
-    key: string;
-    column: { label: string; value: string };
-    condition: string;
-    value: string;
-}
-
 const Filter: React.FC<Props> = ({
     openFilter,
     setOpenFilter,
     columns,
-    filters,
-    setFilters,
+    filter,
+    setFilter,
+    type,
 }) => {
     const {
         array: conditions,
         add,
         removeByKey,
         updateByKey,
-        clear,
-    } = useArray<IFilter>();
+        setInitialArray,
+    } = useArray<TFilterCondition>();
 
     const [searchKey, setSearchKey] = useState("");
-    const [condition, setCondition] = useState(filters.condition);
+    const [conditionalOperator, setConditionalOperator] = useState(
+        filter.filters.conditionalOperator
+    );
+    const [isCreateFilterModalOpen, setIsCreateFilterModalOpen] =
+        useState(false);
+
+    const deleteFilter = useMutation((id: string) => deleteFilterMutation(id), {
+        onSuccess: () => {
+            queryClient.invalidateQueries("filters");
+            setFilter(defaultFilter);
+        },
+        onError: (e: any) => {
+            console.log(e.message || "An error occurred");
+        },
+    });
+    useEffect(() => {
+        setFilter({
+            ...filter,
+            filters: { conditions, conditionalOperator },
+        });
+    }, [conditions, conditionalOperator]);
 
     useEffect(() => {
-        console.log(conditions);
-        setFilters({ conditions, condition });
-    }, [conditions]);
+        if (filter.filters) {
+            if (!arraysAreEqual(conditions, filter.filters.conditions)) {
+                setInitialArray(filter.filters.conditions);
+            }
+            if (conditionalOperator !== filter.filters.conditionalOperator) {
+                setConditionalOperator(filter.filters.conditionalOperator);
+            }
+        }
+    }, [filter]);
     return (
         <>
             <Drawer
@@ -76,12 +106,36 @@ const Filter: React.FC<Props> = ({
                 open={openFilter}
                 mask={false}
                 extra={<Button type="link">Clear all</Button>}
-                footer={[<Button type="primary">Save as View</Button>]}
+                footer={
+                    <Space>
+                        <Button
+                            type="primary"
+                            onClick={() => setIsCreateFilterModalOpen(true)}
+                            disabled={!filter.filters.conditions.length}
+                        >
+                            Save as View
+                        </Button>
+
+                        {filter.id && (
+                            <Popconfirm
+                                title="Delete"
+                                description="Are you sure to delete this view?"
+                                onConfirm={() => deleteFilter.mutate(filter.id)}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <Button type="primary" danger>
+                                    {`Delete "${filter.name}"`}
+                                </Button>
+                            </Popconfirm>
+                        )}
+                    </Space>
+                }
             >
                 <Select
-                    defaultValue="Match all filters (AND)"
+                    defaultValue="and"
                     style={{ width: "100%" }}
-                    onChange={(e) => setCondition(e)}
+                    onChange={(e: "and" | "or") => setConditionalOperator(e)}
                     showSearch
                     options={[
                         {
@@ -99,13 +153,13 @@ const Filter: React.FC<Props> = ({
                     SELECTED FILTERS
                 </Typography.Title>
                 {conditions.length ? (
-                    conditions.map((filter) => (
+                    conditions.map((val) => (
                         <Space className="w-100" direction="vertical">
                             <Card
                                 extra={
                                     <Button
                                         type="link"
-                                        onClick={() => removeByKey(filter.key)}
+                                        onClick={() => removeByKey(val.key)}
                                         className="p-0"
                                     >
                                         <CloseCircleOutlined />
@@ -114,7 +168,7 @@ const Filter: React.FC<Props> = ({
                                 title={
                                     <Space>
                                         <UserOutlined />
-                                        {` > ${filter.column.label}`}
+                                        {` > ${val.column.label}`}
                                     </Space>
                                 }
                             >
@@ -122,24 +176,29 @@ const Filter: React.FC<Props> = ({
                                     <Select
                                         style={{ width: "100%" }}
                                         onChange={(e) =>
-                                            updateByKey(filter.key, {
-                                                ...filter,
+                                            updateByKey(val.key, {
+                                                ...val,
                                                 condition: e,
                                             })
                                         }
                                         options={FILTER_OPTIONS}
-                                        value={filter.condition}
+                                        value={val.condition}
                                         showSearch
                                     />
-                                    <Input
-                                        value={filter.value}
-                                        onBlur={(e) =>
-                                            updateByKey(filter.key, {
-                                                ...filter,
-                                                value: e.target.value,
-                                            })
-                                        }
-                                    />
+                                    {!["empty", "notEmpty"].includes(
+                                        val.condition
+                                    ) && (
+                                        <Input
+                                            value={val.value}
+                                            // placeholder={val.value}
+                                            onChange={(e) =>
+                                                updateByKey(val.key, {
+                                                    ...val,
+                                                    value: e.target.value,
+                                                })
+                                            }
+                                        />
+                                    )}
                                 </Space>
                             </Card>
                         </Space>
@@ -201,6 +260,14 @@ const Filter: React.FC<Props> = ({
                     </Button>
                 </Popover>
             </Drawer>
+
+            <FilterAddUpdateModal
+                isModalOpen={isCreateFilterModalOpen}
+                closeModal={() => setIsCreateFilterModalOpen(false)}
+                filter={filter}
+                type={type}
+                // templateFolder={templateFolder}
+            />
         </>
     );
 };

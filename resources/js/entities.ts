@@ -241,3 +241,21 @@ export type TContact = {
     wall?: TWallData[];
     deals?: TDeal[];
 };
+
+export type TFilterCondition = {
+    key: string;
+    column: { label: string; value: string };
+    condition: string;
+    value: string;
+};
+
+export type TFilters = {
+    conditions: Array<TFilterCondition>;
+    conditionalOperator: "and" | "or";
+};
+
+export type TFilter = {
+    id: string;
+    name: string;
+    filters: TFilters;
+};

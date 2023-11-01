@@ -1,3 +1,5 @@
+import { TFilter } from "./entities";
+
 export const DEFAULT_REQUIRED_MESSAGE = "This message is required";
 
 export const COLUMN_LIST = [
@@ -414,3 +416,12 @@ export const FILTER_OPTIONS = [
         label: "Has any value",
     },
 ];
+
+export const defaultFilter: TFilter = {
+    id: "", // Specify the default values for each property
+    name: "",
+    filters: {
+        conditions: [],
+        conditionalOperator: "and",
+    },
+};

@@ -569,10 +569,10 @@ const Deal = () => {
                         </Card>
                     )}
 
-                    <Filter
+                    {/* <Filter
                         openFilter={openFilter}
                         setOpenFilter={setOpenFilter}
-                    />
+                    /> */}
                     <ModalAddDeal
                         isModalOpen={isModalOpenAdd}
                         handleSubmit={() => {

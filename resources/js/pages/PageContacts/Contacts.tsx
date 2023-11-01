@@ -6,6 +6,10 @@ import ContactsTable from "./Components/ContactTable";
 import ContactTableHeader from "./Components/ContactTableHeader";
 import { mutateGet } from "../../api/mutation/useSetupMutation";
 import { ENDPOINTS } from "../../endpoints";
+import { TContact, TFilter, TFilters } from "../../entities";
+import { filterData } from "../../helpers";
+import FilterAddUpdateModal from "../../components/FilterAddUpdateModal";
+import { defaultFilter } from "../../constants";
 
 interface DataType {
     key: React.Key;
@@ -41,25 +45,39 @@ const { Search } = Input;
 const Contacts = () => {
     const [selectedRows, setSelectedRows] = useState<any>([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState<any>([]);
+    const [contacts, setContacts] = useState<TContact[] | undefined>();
 
-    const [filters, setFilters] = useState({
-        conditions: [],
-        condition: "and",
-    });
+    const [filter, setFilter] = useState<TFilter>(defaultFilter);
     const {
         data: filteredContacts,
         isLoading: isFilteredContactsLoading,
         refetch: refetchFilteredContacts,
     } = mutateGet(
-        filters,
+        JSON.stringify(filter),
         ENDPOINTS.filteredContacts.url,
         ENDPOINTS.filteredContacts.cache
     );
 
-    useEffect(() => {
-        refetchFilteredContacts();
-    }, [filters]);
+    const handleChangeViewAs = (filter?: TFilter) => {
+        if (!filter) {
+            setFilter(defaultFilter);
+        } else {
+            setFilter(filter);
+        }
+    };
 
+    useEffect(() => {
+        if (filter.filters.conditions.length) {
+            const result = filterData(filteredContacts, filter.filters);
+            setContacts(result);
+        } else {
+            setContacts(filteredContacts);
+        }
+    }, [filter]);
+
+    useEffect(() => {
+        setContacts(filteredContacts);
+    }, [filteredContacts]);
     return (
         <Space direction="vertical" className="w-100">
             <HeaderMenu />
@@ -69,13 +87,14 @@ const Contacts = () => {
                     setSelectedRowKeys={setSelectedRowKeys}
                     selectedRows={selectedRows}
                     selectedRowKeys={selectedRowKeys}
-                    filters={filters}
-                    setFilters={setFilters}
+                    filter={filter}
+                    setFilter={setFilter}
+                    handleChangeViewAs={handleChangeViewAs}
                 />
                 <Row>
                     <Col md={24} lg={24}>
                         <ContactsTable
-                            contacts={filteredContacts}
+                            contacts={contacts}
                             setSelectedRows={setSelectedRows}
                             setSelectedRowKeys={setSelectedRowKeys}
                             selectedRowKeys={selectedRowKeys}

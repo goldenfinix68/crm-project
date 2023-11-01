@@ -131,8 +131,8 @@ export function useArray<T>(initialArray: T[] = []): ArrayActions<T> {
         }
     };
 
-    const setInitialArray = (array: T[]) => {
-        setArray(array);
+    const setInitialArray = (val) => {
+        setArray(val);
     };
 
     return {
@@ -145,4 +145,90 @@ export function useArray<T>(initialArray: T[] = []): ArrayActions<T> {
         updateByIndex,
         setInitialArray,
     };
+}
+export function filterData(datas, filters) {
+    const filteredData = datas.filter((data) => {
+        // Initialize a variable to track if any condition matches (for OR operator)
+        let matchesAnyCondition = false;
+
+        // Loop through each condition in filters
+        for (const condition of filters.conditions) {
+            const { key, condition: operator, value } = condition;
+            const field = data.fields[key]?.toLowerCase(); // Convert field to lowercase
+            const lowercaseValue = value.toLowerCase(); // Convert value to lowercase
+
+            // If the field is missing, handle the "empty" condition
+            if (field === undefined || field === null) {
+                if (operator == "empty") {
+                    return true;
+                }
+                return false;
+            }
+
+            // Define a function to evaluate the condition
+            const evaluateCondition = (operator, field, value) => {
+                switch (operator) {
+                    case "contains":
+                        return field.includes(value);
+                    case "notContains":
+                        return !field.includes(value);
+                    case "equals":
+                        return field === value;
+                    case "notEquals":
+                        return field !== value;
+                    case "startsWith":
+                        return field.startsWith(value);
+                    case "endsWith":
+                        return field.endsWith(value);
+                    case "empty":
+                        return (
+                            field === null ||
+                            field === undefined ||
+                            field === ""
+                        );
+                    case "notEmpty":
+                        return (
+                            field !== null &&
+                            field !== undefined &&
+                            field !== ""
+                        );
+                    default:
+                        return false; // Invalid condition
+                }
+            };
+
+            // Check if the condition is met for this field
+            let conditionMet = evaluateCondition(
+                operator,
+                field,
+                lowercaseValue
+            );
+
+            // For the OR operator, include the contact if any condition is met
+            if (filters.conditionalOperator === "or" && conditionMet) {
+                matchesAnyCondition = true; // Mark that at least one condition is met for OR
+                break; // No need to check further conditions
+            }
+
+            // For the AND operator, all conditions must be met for a contact to be included
+            if (filters.conditionalOperator === "and" && !conditionMet) {
+                return false; // Skip this contact if any condition fails for AND
+            }
+        }
+
+        // If using the AND operator, include the contact since all conditions passed
+        // For the OR operator, include the contact if at least one condition is met
+        return filters.conditionalOperator === "and"
+            ? true
+            : matchesAnyCondition;
+    });
+
+    return filteredData;
+}
+export function arraysAreEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false;
+    for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) return false;
+    }
+    return true;
 }

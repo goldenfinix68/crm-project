@@ -37,6 +37,9 @@ import {
     CaretDownOutlined,
     PlusCircleOutlined,
     TableOutlined,
+    UserOutlined,
+    DownOutlined,
+    SearchOutlined,
 } from "@ant-design/icons";
 import TabPane from "antd/es/tabs/TabPane";
 import { Search, useNavigate } from "react-router-dom";
@@ -49,6 +52,8 @@ import SendToManyModal from "../../../components/SentToManyModal";
 import Papa from "papaparse";
 import Filter from "../../Deal/components/Filter";
 import ContactsComponentsManageColumn from "./ContactsComponentsManageColumn";
+import { filtersQuery } from "../../../api/query/useFilterQuery";
+import { MenuProps } from "antd/lib";
 interface Props {
     selectedRows?: {
         [key: string]: any;
@@ -56,16 +61,18 @@ interface Props {
     selectedRowKeys: string[];
     setSelectedRows: any;
     setSelectedRowKeys: any;
-    filters: any;
-    setFilters: any;
+    filter: any;
+    setFilter: any;
+    handleChangeViewAs: (filter?) => void;
 }
 const ContactTableHeader = ({
     selectedRows,
     setSelectedRows,
     setSelectedRowKeys,
     selectedRowKeys,
-    filters,
-    setFilters,
+    filter,
+    setFilter,
+    handleChangeViewAs,
 }: Props) => {
     const navigate = useNavigate();
     const [isBulkUpdateModalOpen, setIsBulkUpdateModalOpen] = useState(false);
@@ -75,6 +82,19 @@ const ContactTableHeader = ({
     const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
     const [isManageColumnModalOpen, setIsManageColumnModalOpen] =
         useState(false);
+
+    const { data: savedFilters, isLoading } = filtersQuery();
+
+    const filterViewItems: MenuProps["items"] = [
+        { key: 0, label: "All Contacts", onClick: () => handleChangeViewAs() },
+        ...(savedFilters?.map((val) => {
+            return {
+                key: val.id,
+                label: val.name,
+                onClick: () => handleChangeViewAs(val),
+            };
+        }) ?? []),
+    ];
 
     const { contactFields } = useAppContextProvider();
 
@@ -212,7 +232,31 @@ const ContactTableHeader = ({
                 </Row>
             ) : (
                 <Row style={{ marginBottom: "20px" }}>
-                    <Col md={12} lg={12}></Col>
+                    <Col md={12} lg={12}>
+                        <>
+                            <Dropdown
+                                menu={{
+                                    items: filterViewItems,
+                                }}
+                                placement="bottomLeft"
+                            >
+                                <Button
+                                    icon={<FunnelPlotOutlined />}
+                                    style={{
+                                        marginRight: "10px",
+                                        display: "flex",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    {filter.id
+                                        ? savedFilters?.find(
+                                              (val) => val.id == filter.id
+                                          )?.name
+                                        : "All Contacts"}
+                                </Button>
+                            </Dropdown>
+                        </>
+                    </Col>
                     <Col
                         md={12}
                         lg={12}
@@ -307,10 +351,11 @@ const ContactTableHeader = ({
                 openFilter={isFilterModalOpen}
                 setOpenFilter={setIsFilterModalOpen}
                 columns={contactFields.map((field) => {
-                    return { label: field.label, value: field.id! };
+                    return { label: field.label, value: field.fieldName };
                 })}
-                filters={filters}
-                setFilters={setFilters}
+                filter={filter}
+                setFilter={setFilter}
+                type="contact"
             />
             <ContactBulkUpdate
                 isModalOpen={isBulkUpdateModalOpen}
