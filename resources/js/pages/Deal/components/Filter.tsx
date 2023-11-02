@@ -105,7 +105,16 @@ const Filter: React.FC<Props> = ({
                 onClose={() => setOpenFilter(false)}
                 open={openFilter}
                 mask={false}
-                extra={<Button type="link">Clear all</Button>}
+                extra={
+                    <Button
+                        type="link"
+                        onClick={() => {
+                            setInitialArray([]);
+                        }}
+                    >
+                        Clear all
+                    </Button>
+                }
                 footer={
                     <Space>
                         <Button
