@@ -343,6 +343,7 @@ const ContactTableHeader = ({
                 }}
                 handleSubmit={() => {
                     queryClient.invalidateQueries("contacts");
+                    queryClient.invalidateQueries("filteredContacts");
                 }}
                 type="contact"
             />
