@@ -184,6 +184,22 @@ const CustomFieldInput = ({
                 </Select>
             );
         }
+        if (customField.type == "tag") {
+            return (
+                <Select
+                    className="w-100"
+                    showSearch
+                    mode="tags"
+                    dropdownStyle={{ zIndex: 999999 }}
+                >
+                    {/* {contactTypes?.map((contactType, index) => (
+                        <Select.Option value={contactType.id} key={index}>
+                            {contactType.name}
+                        </Select.Option>
+                    ))} */}
+                </Select>
+            );
+        }
 
         return <></>;
     };

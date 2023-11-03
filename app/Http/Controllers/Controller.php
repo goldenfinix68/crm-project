@@ -55,7 +55,7 @@ class Controller extends BaseController
         $fieldValue->customFieldId = $customField->id;
 
 
-        if($customField->type == "userLookup" || $customField->type == "contactLookup" || $customField->type == "contactTypeLookup"){
+        if(in_array($customField->type, ["userLookup", 'contactLookup', 'contactTypeLookup', 'multiSelect', 'tag'])){
             //convert if type not multiple
             if($customField->associationType == "single"){
                 $value = [$value];
@@ -84,16 +84,14 @@ class Controller extends BaseController
                     $data = $data . ($index == 0 ? "" : ", ") . $customFields['firstName'] . ' ' . $customFields['lastName'];
                 }
             }
+            if(in_array($customField->type, ['multiSelect', 'tag'])){
+                $data = implode(", ", $value);
+            }
             $fieldValue->lookupIds = json_encode($value);
             $fieldValue->value =  $data;
         }
         else{
-            if($customField->type == "multiSelect"){
-                $fieldValue->value = json_encode($value);
-            }
-            else{
-                $fieldValue->value =  $value;
-            }
+            $fieldValue->value =  $value;
             $fieldValue->lookupIds = null;
         }
         $fieldValue->save();

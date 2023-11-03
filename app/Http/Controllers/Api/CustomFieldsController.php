@@ -76,7 +76,6 @@ class CustomFieldsController extends Controller
 
         $user = Auth::user();
         $data = $request->all();
-
         //check highest sort
         $highestSort = CustomField::where('customFieldSectionId', $data['customFieldSectionId'])->orderBy('sort', 'desc')->first();
 

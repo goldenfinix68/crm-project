@@ -159,6 +159,13 @@ export const FIELD_TYPE_LIST = [
             "The field lets you create a numeric value with decimals that appears with the organization's currency symbol during display.",
         icon: "currency",
     },
+    {
+        label: "Tag",
+        type: "tag",
+        description:
+            "The field lets you enter custom values or tags that are not part of the predefined options.",
+        icon: "tag",
+    },
 ];
 
 export const CONTACT_LIST_ACTION = [
