@@ -28,7 +28,10 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/contacts/get_favorite', 'App\Http\Controllers\Api\ContactsController@get_favorite');
     Route::get('/contacts/get_contacts_table_column', 'App\Http\Controllers\Api\ContactsController@get_contacts_table_column');
     Route::post('/contacts/delete_contacts_table_column', 'App\Http\Controllers\Api\ContactsController@delete_contacts_table_column');
+
+    Route::get('/users/tags', 'App\Http\Controllers\Api\UsersController@usedTags');
     Route::resource('/users', 'App\Http\Controllers\Api\UsersController');
+
     Route::post('/contacts/delete', 'App\Http\Controllers\Api\ContactsController@delete_contacts');
     Route::post('/contacts/mergeContacts', 'App\Http\Controllers\Api\ContactsController@merge_contacts');
     Route::post('/contacts/favorite', 'App\Http\Controllers\Api\ContactsController@favorite');

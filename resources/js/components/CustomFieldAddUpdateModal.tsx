@@ -12,6 +12,7 @@ import {
     List,
     Checkbox,
     Radio,
+    Tooltip,
 } from "antd";
 
 import { useMutation } from "react-query";
@@ -39,7 +40,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import validateRules from "../providers/validateRules";
 import { useCustomFieldSections } from "../api/query/customFieldQuery";
-import { TCustomField } from "../entities";
+import { TCustomField, TCustomFieldSection } from "../entities";
 interface Props {
     isModalOpen: boolean;
     closeModal: () => void;
@@ -212,7 +213,6 @@ const CustomFieldAddUpdateModal = ({
             );
             setStep(2);
             form.setFieldsValue(customField);
-            console.log(customField);
         } else {
             setSelectedFieldType(undefined);
             setStep(1);
@@ -282,6 +282,7 @@ const CustomFieldAddUpdateModal = ({
                                     setStep(2);
                                     setSelectedFieldType(fieldType);
                                 }}
+                                sections={sections}
                             />
                         </Col>
                     </Row>
@@ -319,9 +320,11 @@ const CustomFieldAddUpdateModal = ({
 const FieldTypeListComponent = ({
     fieldTypeList,
     handleSelectField,
+    sections,
 }: {
     fieldTypeList: any;
     handleSelectField: any;
+    sections?: TCustomFieldSection[];
 }) => {
     return (
         <>
@@ -332,22 +335,57 @@ const FieldTypeListComponent = ({
                 footer={false}
                 bordered
                 dataSource={fieldTypeList}
-                renderItem={(item: any) => (
-                    <List.Item
-                        onClick={() => {
-                            handleSelectField(item);
-                        }}
-                    >
-                        <Space direction="vertical" size={0}>
-                            <Typography.Text strong>
-                                {item.label}
-                            </Typography.Text>
-                            <Typography.Text>
-                                {item.description}
-                            </Typography.Text>
-                        </Space>
-                    </List.Item>
-                )}
+                renderItem={(item: any) => {
+                    let isItemDisabled = false;
+                    if (item.creationLimit) {
+                        let count = 0;
+                        sections?.forEach((section) => {
+                            // Check if the section has fields
+                            if (section.fields && section.fields.length > 0) {
+                                // Loop through the fields in the section
+                                section.fields.forEach((field) => {
+                                    if (field.type === item.type) {
+                                        // If the field type matches the target type, increment the count
+                                        count++;
+                                    }
+                                });
+                            }
+                        });
+                        isItemDisabled = count >= item.creationLimit;
+                    }
+                    return (
+                        <Tooltip
+                            title={
+                                isItemDisabled
+                                    ? `Creation limit reached. You can only create ${item.creationLimit} of this field`
+                                    : ""
+                            }
+                        >
+                            <List.Item
+                                style={{
+                                    cursor: isItemDisabled
+                                        ? "not-allowed"
+                                        : "pointer",
+                                    opacity: isItemDisabled ? 0.5 : 1,
+                                }}
+                                onClick={() => {
+                                    if (!isItemDisabled) {
+                                        handleSelectField(item);
+                                    }
+                                }}
+                            >
+                                <Space direction="vertical" size={0}>
+                                    <Typography.Text strong>
+                                        {item.label}
+                                    </Typography.Text>
+                                    <Typography.Text>
+                                        {item.description}
+                                    </Typography.Text>
+                                </Space>
+                            </List.Item>
+                        </Tooltip>
+                    );
+                }}
             />
         </>
     );

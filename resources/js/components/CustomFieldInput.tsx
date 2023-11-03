@@ -16,7 +16,7 @@ import { CloseOutlined } from "@ant-design/icons";
 import { TCustomField } from "../entities";
 import TextArea from "antd/es/input/TextArea";
 import { useAppContextProvider } from "../context/AppContext";
-import { useUsersAll } from "../api/query/userQuery";
+import { useUsedTags, useUsersAll } from "../api/query/userQuery";
 import { DEFAULT_REQUIRED_MESSAGE } from "../constants";
 import { useContactTypesAll } from "../api/query/contactsQuery";
 
@@ -31,6 +31,10 @@ const CustomFieldInput = ({
     const { users, isLoading } = useUsersAll();
     const { contactTypes, isLoading: isContactTypeLoading } =
         useContactTypesAll();
+
+    const { data: usedTags } = useUsedTags();
+
+    console.log({ usedTags });
 
     const validateEmail = (rule, value) => {
         if (
@@ -192,11 +196,11 @@ const CustomFieldInput = ({
                     mode="tags"
                     dropdownStyle={{ zIndex: 999999 }}
                 >
-                    {/* {contactTypes?.map((contactType, index) => (
-                        <Select.Option value={contactType.id} key={index}>
-                            {contactType.name}
+                    {usedTags?.map((tag, index) => (
+                        <Select.Option value={tag} key={index}>
+                            {tag}
                         </Select.Option>
-                    ))} */}
+                    ))}
                 </Select>
             );
         }

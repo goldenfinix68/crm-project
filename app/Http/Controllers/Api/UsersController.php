@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\User;
 use App\Models\MobileNumber;
+use App\Models\CustomFieldValue;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Telnyx\Telnyx;
+use Auth;
 
 class UsersController extends Controller
 {
@@ -119,5 +121,37 @@ class UsersController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function usedTags()
+    {
+        $user = Auth::user();
+
+        if(empty($user)){
+            abort(404);
+        }
+
+        
+        $tags = CustomFieldValue::select('lookupIds')->with(['customField'])
+                    ->whereNotNull('lookupIds')
+                    ->whereHas('customField', function ($query) use ($user) {
+                        $query->where('userId', $user->id);
+                        $query->where('type', 'tag');
+                    })
+                    ->distinct()
+                    ->get();
+
+        $resultArray = [];
+        foreach ($tags as $item) {
+            $decodedData = json_decode($item->lookupIds, true);
+            
+            if (is_array($decodedData)) {
+                $resultArray = array_merge($resultArray, $decodedData);
+            } 
+        }
+    
+        $uniqueResultArray = array_values(array_unique($resultArray));
+
+        return response()->json($uniqueResultArray, 200);
     }
 }

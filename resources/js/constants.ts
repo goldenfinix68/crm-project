@@ -165,6 +165,7 @@ export const FIELD_TYPE_LIST = [
         description:
             "The field lets you enter custom values or tags that are not part of the predefined options.",
         icon: "tag",
+        creationLimit: 1,
     },
 ];
 
