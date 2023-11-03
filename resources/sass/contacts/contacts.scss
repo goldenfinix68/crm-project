@@ -205,3 +205,28 @@
 tbody tr .custom-table-cell {
     height: 35px !important;
 }
+
+#app
+    > div
+    > div
+    > main
+    > div
+    > div:nth-child(2)
+    > div
+    > div
+    > div:nth-child(2)
+    > div
+    > div
+    > div
+    > div
+    > div
+    > div
+    > div
+    > table
+    > tbody
+    > tr:nth-child(8)
+    > td.ant-table-cell.custom-table-cell.ant-table-column-sort.ant-table-cell-fix-left.ant-table-cell-fix-left-last
+    > div
+    > div {
+    overflow-wrap: anywhere;
+}
