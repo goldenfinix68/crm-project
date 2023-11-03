@@ -1,6 +1,7 @@
 .setup-menu .ant-menu-item-selected .ant-menu-title-content {
   color: #ffffff !important;
 }
+
 .setup-menu .ant-menu-item:active .ant-menu-title-content {
   color: #ffffff !important;
 }
@@ -8,11 +9,13 @@
 .list-activity-type .list-item-activity-type {
   padding: 0px !important;
 }
+
 .list-activity-type .list-item-activity-type .ant-card {
   border-radius: 0px;
   border: 0px !important;
   border-top: 1px solid #f0f0f0 !important;
 }
+
 .list-activity-type .list-item-activity-type .ant-card .ant-card-body {
   padding: 10px !important;
 }
@@ -28,6 +31,11 @@
   border-color: #dfe1e6 !important;
 }
 
-:where(.css-dev-only-do-not-override-1m62vyb).ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before {
+:where(
+.css-dev-only-do-not-override-1m62vyb
+).ant-radio-button-wrapper-checked:not(
+.ant-radio-button-wrapper-disabled
+)::before {
   background-color: #dfe1e6 !important;
-}/*# sourceMappingURL=setup.css.map */
+}
+/*# sourceMappingURL=setup.css.map */

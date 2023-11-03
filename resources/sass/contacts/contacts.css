@@ -12147,3 +12147,18 @@ textarea.form-control-lg {
 .upload .ant-upload {
   width: 100% !important;
 }/*# sourceMappingURL=contacts.css.map */
+
+
+
+:where(.css-dev-only-do-not-override-pr0fja).ant-table-wrapper .ant-table-tbody >tr >th, :where(.css-dev-only-do-not-override-pr0fja).ant-table-wrapper .ant-table-tbody >tr >td {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+}
+
+tbody tr .custom-table-cell {
+    height: 35px !important;
+}
+
+#app > div > div > main > div > div:nth-child(2) > div > div > div:nth-child(2) > div > div > div > div > div > div > div > table > tbody > tr:nth-child(8) > td.ant-table-cell.custom-table-cell.ant-table-column-sort.ant-table-cell-fix-left.ant-table-cell-fix-left-last > div > div {
+    overflow-wrap: anywhere;
+}

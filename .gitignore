@@ -15,3 +15,5 @@ yarn-error.log
 /.vscode
 
 /socketServer/node_modules
+
+/telnyxListener

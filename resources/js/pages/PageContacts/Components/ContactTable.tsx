@@ -82,6 +82,7 @@ const ContactsTable = ({
                     type: "checkbox",
                     ...rowSelection,
                 }}
+                // size="small"
                 rowKey={(record) => (record as any)?.contactId}
                 // columns={orderedColumns ? orderedColumns : columns}
                 columns={
@@ -111,7 +112,7 @@ const ContactsTable = ({
                                                 );
                                             }}
                                         />
-                                        <Avatar
+                                        {/* <Avatar
                                             className="avatarText m-r-sm"
                                             // src={record.avatar}
                                             size={32}
@@ -121,7 +122,7 @@ const ContactsTable = ({
                                             }}
                                         >
                                             {record["firstName"]?.charAt(0)}
-                                        </Avatar>
+                                        </Avatar> */}
 
                                         <Link
                                             to={
