@@ -75,22 +75,8 @@ const TextTemplatesTable = ({ handleEditBtnClicked }: Props) => {
         {
             title: "Created By",
             key: "created_at",
-            render: (_, record) => (
-                <div>
-                    <Avatar
-                        className="avatarText m-r-sm"
-                        size={32}
-                        style={{
-                            backgroundColor: "#1677FF",
-                            verticalAlign: "middle",
-                            flexShrink: 0, // Prevent the Avatar from being shrunk
-                        }}
-                    >
-                        {record.user?.firstName.charAt(0)}
-                    </Avatar>{" "}
-                    {record.user?.firstName + " " + record.user?.lastName}
-                </div>
-            ),
+            render: (_, record) =>
+                record.user?.firstName + " " + record.user?.lastName,
         },
         {
             title: "Sent",

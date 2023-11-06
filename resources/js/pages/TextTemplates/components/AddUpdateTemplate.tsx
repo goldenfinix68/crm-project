@@ -200,14 +200,11 @@ const AddUpdateTemplateModal = ({
                                                 );
                                             form.setFieldValue(
                                                 "textMessage",
-                                                `${
-                                                    currentMessage ?? ""
-                                                }${value}`
+                                                `${currentMessage ?? ""}{{${
+                                                    value.fieldName
+                                                }}}`
                                             );
                                             setIsAttributePopoverOpen(false);
-                                            console.log(
-                                                `${currentMessage}${value}`
-                                            );
                                         }}
                                     />
                                 }

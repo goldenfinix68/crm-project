@@ -92,7 +92,7 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
         : "";
 
     const filteredOptions = contacts?.filter((contact) =>
-        contact?.mobile?.includes(
+        contact?.fields?.mobile?.includes(
             toFormValue ? toFormValue.replace(/[-\s+_]/g, "") : ""
         )
     );
@@ -129,14 +129,14 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
                             ) : (
                                 <AutoComplete
                                     options={filteredOptions?.map((option) => ({
-                                        value: option.mobile,
+                                        value: option.fields?.mobile,
                                         label: (
                                             <Space>
                                                 <Typography.Text strong>
-                                                    {`${option.firstName} ${option.lastName}`}
+                                                    {`${option.fields?.firstName} ${option.fields?.lastName}`}
                                                 </Typography.Text>
                                                 <Typography.Text>
-                                                    {option.mobile}
+                                                    {option.fields?.mobile}
                                                 </Typography.Text>
                                             </Space>
                                         ),
@@ -214,13 +214,13 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
                                                 form.getFieldValue("message");
                                             currentMessage = `${
                                                 currentMessage ?? ""
-                                            }${value}`;
+                                            }{{${value.fieldName}}}`;
 
                                             form.setFieldValue(
                                                 "message",
                                                 replacePlaceholders(
                                                     currentMessage,
-                                                    contact
+                                                    contact.fields
                                                 )
                                             );
                                             setIsAttributePopoverOpen(false);
@@ -258,12 +258,17 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
                                                 "message",
                                                 replacePlaceholders(
                                                     value,
-                                                    contact
+                                                    contact.fields
                                                 )
                                             );
                                             setIsTemplatePopoverOpen(false);
                                         }}
-                                        contact={contact}
+                                        contact={Object.keys(
+                                            contact.fields
+                                        ).map((key) => ({
+                                            key,
+                                            value: contact.fields[key],
+                                        }))}
                                     />
                                 }
                                 title={

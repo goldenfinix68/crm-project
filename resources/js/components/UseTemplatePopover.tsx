@@ -63,7 +63,10 @@ const UseTemplatePopover = ({
                                 <Typography.Text>
                                     {replacePlaceholders(
                                         item.textMessage,
-                                        contact
+                                        contact.reduce((obj, item) => {
+                                            obj[item.key] = item.value;
+                                            return obj;
+                                        }, {})
                                     )}
                                 </Typography.Text>
                             }
