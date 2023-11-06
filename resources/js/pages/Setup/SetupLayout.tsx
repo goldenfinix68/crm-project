@@ -17,6 +17,7 @@ import {
     VideoCameraOutlined,
     DatabaseOutlined,
     PlusCircleOutlined,
+    SettingOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import CustomFieldAddUpdateModal from "../../components/CustomFieldAddUpdateModal";
@@ -80,21 +81,21 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                     path: "/setup/customizations/contact",
                     label: "Contact",
                 },
-                {
-                    key: "/setup/customizations/deal",
-                    path: "/setup/customizations/deal",
-                    label: "Deal",
-                },
-                {
-                    key: "/setup/customizations/activity",
-                    path: "/setup/customizations/activity",
-                    label: "Activity",
-                },
-                {
-                    key: "/setup/customizations/tag",
-                    path: "/setup/customizations/tag",
-                    label: "Tag Management",
-                },
+                // {
+                //     key: "/setup/customizations/deal",
+                //     path: "/setup/customizations/deal",
+                //     label: "Deal",
+                // },
+                // {
+                //     key: "/setup/customizations/activity",
+                //     path: "/setup/customizations/activity",
+                //     label: "Activity",
+                // },
+                // {
+                //     key: "/setup/customizations/tag",
+                //     path: "/setup/customizations/tag",
+                //     label: "Tag Management",
+                // },
                 {
                     key: "/setup/customizations/deal-pipeline",
                     path: "/setup/customizations/deal-pipeline",
@@ -127,6 +128,18 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                     key: "/setup/data-administration/import-file",
                     path: "/setup/data-administration/import-file",
                     label: "Import Data",
+                },
+            ],
+        },
+        {
+            key: "/setup/users-security",
+            icon: <SettingOutlined />,
+            label: "Users & Security",
+            children: [
+                {
+                    key: "/setup/customizations/users",
+                    path: "/setup/customizations/users",
+                    label: "Users",
                 },
             ],
         },

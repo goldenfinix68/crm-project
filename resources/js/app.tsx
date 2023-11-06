@@ -145,26 +145,35 @@ const App: React.FC = () => {
                                     }
                                 />
                                 <Route
-                                    path="/setup/users"
+                                    path="/setup/customizations/users"
                                     element={
                                         <PrivateRoute>
-                                            <Users />
+                                            <SetupLayout
+                                                content={<Users />}
+                                                title="Tag Management"
+                                            />
                                         </PrivateRoute>
                                     }
                                 />
                                 <Route
-                                    path="/setup/users/new"
+                                    path="/setup/customizations/users/new"
                                     element={
                                         <PrivateRoute>
-                                            <AddEditUser />
+                                            <SetupLayout
+                                                content={<AddEditUser />}
+                                                title="Tag Management"
+                                            />
                                         </PrivateRoute>
                                     }
                                 />
                                 <Route
-                                    path="/setup/users/:userId"
+                                    path="/setup/customizations/users/:userId"
                                     element={
                                         <PrivateRoute>
-                                            <AddEditUser />
+                                            <SetupLayout
+                                                content={<AddEditUser />}
+                                                title="Tag Management"
+                                            />
                                         </PrivateRoute>
                                     }
                                 />

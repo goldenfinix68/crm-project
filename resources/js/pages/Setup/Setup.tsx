@@ -25,14 +25,19 @@ const Setup: React.FC = (props) => {
         },
         {
             icon: <DollarCircleOutlined />,
-            title: "Deal",
-            link: "/setup/customizations/deal",
+            title: "Deal Pipeline",
+            link: "/setup/customizations/deal-pipeline",
         },
-        {
-            icon: <CheckCircleOutlined />,
-            title: "Activity",
-            link: "/setup/customizations/activity",
-        },
+        // {
+        //     icon: <DollarCircleOutlined />,
+        //     title: "Deal",
+        //     link: "/setup/customizations/deal",
+        // },
+        // {
+        //     icon: <CheckCircleOutlined />,
+        //     title: "Activity",
+        //     link: "/setup/customizations/activity",
+        // },
         // {
         //     icon: <DollarOutlined />,
         //     title: "Deal",
@@ -74,7 +79,7 @@ const Setup: React.FC = (props) => {
         {
             icon: <UserOutlined />,
             title: "Users",
-            link: "/setup/users",
+            link: "/setup/customizations/users",
         },
     ];
 

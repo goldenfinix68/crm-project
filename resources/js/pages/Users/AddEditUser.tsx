@@ -33,7 +33,7 @@ const AddEditUser = () => {
 
     const mutation = useMutation(addUserMutation, {
         onSuccess: () => {
-            navigate("/setup/users"); // Redirect to the users list page after successful submission
+            navigate("/setup/customizations/users"); // Redirect to the users list page after successful submission
         },
     });
 
@@ -67,7 +67,7 @@ const AddEditUser = () => {
         <Card
             title={`${user ? "Edit" : "Add"} user`}
             extra={
-                <Link to="/setup/users">
+                <Link to="/setup/customizations/users">
                     <Button type="link">
                         <ArrowLeftOutlined /> &nbsp;Back
                     </Button>

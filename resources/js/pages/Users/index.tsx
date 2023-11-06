@@ -14,7 +14,7 @@ const Users = () => {
         <Card
             title="Users List"
             extra={
-                <Link to="/setup/users/new">
+                <Link to="/setup/customizations/users/new">
                     <Button type="link">
                         <UserAddOutlined /> &nbsp;Add
                     </Button>

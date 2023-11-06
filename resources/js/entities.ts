@@ -3,6 +3,7 @@ export type TUser = {
     firstName: string;
     lastName: string;
     email: string;
+    role: string;
 } & TSipTrunkingConnection;
 
 export type TMobileNumber = {
