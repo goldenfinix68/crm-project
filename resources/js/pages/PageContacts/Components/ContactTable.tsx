@@ -23,7 +23,7 @@ const ContactsTable = ({
     selectedRowKeys,
     contacts,
 }: Props) => {
-    const { contactFields } = useAppContextProvider();
+    const { contactFields, isRoleStats } = useAppContextProvider();
     const [isModalOpen, setisModalOpen] = useState(false);
     const [selectedContactFields, setSelectedContactFields] = useState<
         | {
@@ -111,6 +111,7 @@ const ContactsTable = ({
                                                     record
                                                 );
                                             }}
+                                            disabled={isRoleStats}
                                         />
                                         {/* <Avatar
                                             className="avatarText m-r-sm"

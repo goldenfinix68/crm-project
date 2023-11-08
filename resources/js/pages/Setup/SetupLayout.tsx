@@ -27,6 +27,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import CustomFieldFormModal from "../../components/CustomFieldFormModal";
 import PipelineAddUpdateModal from "../DealPipelineSetup/components/PipelineAddUpdateModal";
+import { useAppContextProvider } from "../../context/AppContext";
 
 const { SubMenu } = Menu;
 
@@ -36,6 +37,7 @@ interface SetupLayoutProps {
 }
 
 const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
+    const { loggedInUser } = useAppContextProvider();
     const { content, title } = props;
     const navigate = useNavigate();
 
@@ -131,7 +133,19 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                 },
             ],
         },
-        {
+    ];
+
+    const removeLastWordSeparatedByBackslash = (str) => {
+        const words = str.split("/"); // Split the string into an array of words using backslash as the separator
+        words.pop(); // Remove the last word from the array
+        return words.join("/"); // Join the remaining words back together using backslash as the separator
+    };
+
+    if (
+        loggedInUser &&
+        ["superAdmin", "mainUser"].includes(loggedInUser.role)
+    ) {
+        sideMenuItems.push({
             key: "/setup/users-security",
             icon: <SettingOutlined />,
             label: "Users & Security",
@@ -142,14 +156,8 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                     label: "Users",
                 },
             ],
-        },
-    ];
-
-    const removeLastWordSeparatedByBackslash = (str) => {
-        const words = str.split("/"); // Split the string into an array of words using backslash as the separator
-        words.pop(); // Remove the last word from the array
-        return words.join("/"); // Join the remaining words back together using backslash as the separator
-    };
+        });
+    }
 
     return (
         <Layout className="setup-layout">

@@ -75,7 +75,7 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
     // const { contact } = useContext(ContactContext);
     const [tagSearchKey, setTagSearchKey] = React.useState("");
 
-    const { loggedInUser, contactFields } = useAppContextProvider();
+    const { isRoleStats, contactFields } = useAppContextProvider();
 
     const save = useMutation(saveCustomFieldValuesMutation, {
         onSuccess: () => {
@@ -126,14 +126,16 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
     };
 
     const handleTypeChange = async (e) => {
-        const fields = {
-            contactType: [e.key],
-        };
-        save.mutate({
-            fields,
-            customableId: contact.id,
-            customableType: "contact",
-        });
+        if (e.key != "new") {
+            const fields = {
+                contactType: [e.key],
+            };
+            save.mutate({
+                fields,
+                customableId: contact.id,
+                customableType: "contact",
+            });
+        }
     };
 
     return (
@@ -162,7 +164,7 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                                         </Typography.Text>
                                     </Menu.Item>
 
-                                    <Menu.Item key={0}>
+                                    <Menu.Item key={0} disabled={isRoleStats}>
                                         <Tag>No Type</Tag>
                                     </Menu.Item>
                                     {contactTypes
@@ -170,14 +172,17 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                                             tag.name.includes(tagSearchKey)
                                         )
                                         ?.map((type) => (
-                                            <Menu.Item key={type.id}>
+                                            <Menu.Item
+                                                key={type.id}
+                                                disabled={isRoleStats}
+                                            >
                                                 <Tag color={type.highlight}>
                                                     {type.name}
                                                 </Tag>
                                             </Menu.Item>
                                         ))}
                                     <Menu.Divider />
-                                    <Menu.Item key="new">
+                                    <Menu.Item key="new" disabled={isRoleStats}>
                                         <a
                                             onClick={(e) => {
                                                 e.preventDefault();
@@ -225,6 +230,7 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                             menuList={actionMenuList}
                             label="Actions"
                             floatRight
+                            disabled={isRoleStats}
                         />
                     </Col>
                 </Row>
@@ -255,6 +261,7 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                             <Typography.Text>Jesse Ashley</Typography.Text>
                         </Space>
                     }
+                    disabled={isRoleStats}
                 />
                 <ActionMenu contact={contact} />
 

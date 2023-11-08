@@ -96,7 +96,7 @@ const ContactTableHeader = ({
         }) ?? []),
     ];
 
-    const { contactFields } = useAppContextProvider();
+    const { contactFields, isRoleStats } = useAppContextProvider();
 
     const deleteContact = useMutation(deleteContactMutation, {
         onSuccess: () => {
@@ -288,6 +288,7 @@ const ContactTableHeader = ({
                             onClick={() => {
                                 setIsAddModalOpen(true);
                             }}
+                            disabled={isRoleStats}
                         >
                             Contact
                         </Button>

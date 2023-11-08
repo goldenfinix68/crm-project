@@ -20,9 +20,11 @@ import queryClient from "../../queryClient";
 import TextTemplatesContent from "./components/TextTemplatesContent";
 import AddUpdateTemplateFolderModal from "./components/AddUpdateFolderModal";
 import { useTextTemplateFolders } from "../../api/query/textTemplateQuery";
+import { useAppContextProvider } from "../../context/AppContext";
 
 const TextTemplates = () => {
     const { route } = useParams();
+    const { isRoleStats } = useAppContextProvider();
     const navigate = useNavigate();
     const [menu, setMenu] = useState(route ?? "All");
     const [templateFolder, setTemplateFolder] = useState<
@@ -58,6 +60,7 @@ const TextTemplates = () => {
                                             setTemplateFolder(undefined);
                                             setIsCreateFolderModalOpen(true);
                                         }}
+                                        disabled={isRoleStats}
                                     >
                                         <PlusCircleOutlined />
                                     </Button>
@@ -126,6 +129,7 @@ const TextTemplates = () => {
     );
 };
 const MenuItemHover = ({ template, handleRename }) => {
+    const { isRoleStats } = useAppContextProvider();
     const [isHovered, setIsHovered] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -146,7 +150,7 @@ const MenuItemHover = ({ template, handleRename }) => {
     );
 
     const menu = (
-        <Menu>
+        <Menu disabled={isRoleStats}>
             <Menu.Item
                 key="rename"
                 onClick={() => {

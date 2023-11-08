@@ -9,10 +9,12 @@ import { TContact } from "../../entities";
 import LoadingComponent from "../../components/LoadingComponent";
 import ContactContext from "./context";
 import CollapsibleDetails from "./components/CollapsbileDetails";
+import { useAppContextProvider } from "../../context/AppContext";
 
 const ContactView = () => {
     const { contactId } = useParams();
     const { contact, isLoading } = useGetContact(contactId ?? "");
+    const { isRoleStats } = useAppContextProvider();
 
     if (isLoading || !contact) {
         return <LoadingComponent />;
@@ -24,7 +26,7 @@ const ContactView = () => {
                     <ContactInfo contact={contact} />
                 </Col>
                 <Col span={10}>
-                    <ActionsTabs />
+                    {!isRoleStats && <ActionsTabs />}
                     <div style={{ paddingTop: "15px" }}>
                         <ContactsWall />
                     </div>

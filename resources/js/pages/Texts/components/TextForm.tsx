@@ -53,7 +53,7 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
     const messageTextAreaRef = useRef<HTMLInputElement | null>(null);
     const [isAttributePopoverOpen, setIsAttributePopoverOpen] = useState(false);
 
-    const { contacts } = useAppContextProvider();
+    const { contacts, isRoleStats } = useAppContextProvider();
 
     const resetFields = () => {
         setIsFocused(false);
@@ -319,6 +319,7 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
                         type="primary"
                         htmlType="submit"
                         loading={sendText.isLoading}
+                        disabled={isRoleStats}
                     >
                         Send
                     </Button>
@@ -349,7 +350,10 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
                         placement="topRight"
                         visible={isScheduledMessage}
                     >
-                        <Button onClick={() => setIsScheduledMessage(true)}>
+                        <Button
+                            onClick={() => setIsScheduledMessage(true)}
+                            disabled={isRoleStats}
+                        >
                             Schedule
                         </Button>
                     </Popover>

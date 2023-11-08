@@ -10,6 +10,7 @@ import ModalAddDeal from "./ModalAddDeal";
 import { useMutation, useQueryClient } from "react-query";
 import ContactsComponentsUpdate from "./ContactsComponentsUpdate";
 import { TDeal } from "../../../entities";
+import { useAppContextProvider } from "../../../context/AppContext";
 
 const DealsTable = ({
     deals,
@@ -45,6 +46,7 @@ const DealsTable = ({
     setTitle: any;
 }) => {
     const queryClient = useQueryClient();
+    const { isRoleStats } = useAppContextProvider();
     const onChange: TableProps<TDeal>["onChange"] = (
         pagination: any,
         sorter: any,
@@ -115,6 +117,7 @@ const DealsTable = ({
                                         setIsModalOpenAdd(true);
                                         setSelectedDeal(record);
                                     }}
+                                    disabled={isRoleStats}
                                 />
 
                                 <span>

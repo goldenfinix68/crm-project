@@ -25,6 +25,7 @@ import {
     ExportOutlined,
     MobileOutlined,
     CheckCircleOutlined,
+    FunnelPlotOutlined,
 } from "@ant-design/icons";
 import ModalAddDeal from "./components/ModalAddDeal";
 import Filter from "./components/Filter";
@@ -40,6 +41,7 @@ import moment from "moment";
 import DealsTable from "./components/DealsTable";
 import { TDeal } from "../../entities";
 import LoadingComponent from "../../components/LoadingComponent";
+import { useAppContextProvider } from "../../context/AppContext";
 
 interface Card {
     id: number;
@@ -67,6 +69,7 @@ interface TDeals {
 }
 const Deal = () => {
     const navigate = useNavigate();
+    const { isRoleStats } = useAppContextProvider();
     const queryClient = useQueryClient();
     const [filterPage, setFilterPage] = useState({
         pipelineId: "",
@@ -444,12 +447,16 @@ const Deal = () => {
                                 <div>
                                     <span style={{ marginRight: 10 }}>
                                         <Button
-                                            icon={<FilterOutlined />}
+                                            style={{
+                                                alignItems: "center",
+                                            }}
                                             onClick={() => {
                                                 setOpenFilter(true);
                                             }}
                                             disabled
-                                        ></Button>
+                                        >
+                                            <FunnelPlotOutlined />
+                                        </Button>
                                     </span>
                                     <span style={{ marginRight: 10 }}>
                                         <Radio.Group
@@ -469,6 +476,7 @@ const Deal = () => {
                                         <Button
                                             type="primary"
                                             onClick={showModalAdd}
+                                            disabled={isRoleStats}
                                         >
                                             <PlusCircleOutlined /> &nbsp;Deal
                                         </Button>
@@ -510,7 +518,9 @@ const Deal = () => {
 
                     {deals?.length ? (
                         <>
-                            {boardData && listBoard != "List" ? (
+                            {boardData &&
+                            listBoard != "List" &&
+                            !isRoleStats ? (
                                 <div>
                                     <div className="mainDealArrow">
                                         <div

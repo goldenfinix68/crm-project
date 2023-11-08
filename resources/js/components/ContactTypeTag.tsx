@@ -27,7 +27,7 @@ const ContactTypeTag = ({ fields }: ContactTypeTagProps) => {
             {contactTypelookupId && contactTypelookupId != 0 ? (
                 <Tag color={contactType?.highlight}>{contactType?.name}</Tag>
             ) : (
-                <Tag style={{ cursor: "pointer" }}>No Type</Tag>
+                <Tag>No Type</Tag>
             )}
         </>
     );

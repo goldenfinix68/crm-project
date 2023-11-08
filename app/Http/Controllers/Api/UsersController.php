@@ -40,6 +40,7 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
+        $authUser = Auth::user();
         if(empty($request->id)){
             $user = new User();
         }
@@ -49,27 +50,30 @@ class UsersController extends Controller
         $user->firstName = $request->firstName;
         $user->lastName = $request->lastName;
         $user->email = $request->email;
+        $user->role = $request->role;
         $user->password = bcrypt($request->password);
 
-        $user->telnyxConnectionId = $request->sipTrunkingConnection['telnyxConnectionId'];
-        $user->telnyxConnectionName = $request->sipTrunkingConnection['telnyxConnectionName'];
-        $user->telnyxConnectionUserName = $request->sipTrunkingConnection['telnyxConnectionUserName'];
-        $user->telnyxConnectionPassword = $request->sipTrunkingConnection['telnyxConnectionPassword'];
-        $user->save();
-
-        $mobileNumbers = collect($request->sipTrunkingConnection['numbers'])->pluck('mobileNumber')->toArray();
-        
-        foreach($mobileNumbers as $number){
-            $isExisting = MobileNumber::where('mobileNumber', $number)->where('userId', $user->id)->first();
-            if(empty($isExisting)){
-                $newMobile = new MobileNumber();
-                $newMobile->userId = $user->id;
-                $newMobile->mobileNumber = $number;
-                $newMobile->save();
+        if($authUser->role == "superAdmin"){
+            $user->telnyxConnectionId = $request->sipTrunkingConnection['telnyxConnectionId'];
+            $user->telnyxConnectionName = $request->sipTrunkingConnection['telnyxConnectionName'];
+            $user->telnyxConnectionUserName = $request->sipTrunkingConnection['telnyxConnectionUserName'];
+            $user->telnyxConnectionPassword = $request->sipTrunkingConnection['telnyxConnectionPassword'];
+            $user->save();
+    
+            $mobileNumbers = collect($request->sipTrunkingConnection['numbers'])->pluck('mobileNumber')->toArray();
+            
+            foreach($mobileNumbers as $number){
+                $isExisting = MobileNumber::where('mobileNumber', $number)->where('userId', $user->id)->first();
+                if(empty($isExisting)){
+                    $newMobile = new MobileNumber();
+                    $newMobile->userId = $user->id;
+                    $newMobile->mobileNumber = $number;
+                    $newMobile->save();
+                }
             }
+            $user->numbers()->whereNotIn('mobileNumber', $mobileNumbers)->delete();
+    
         }
-        $user->numbers()->whereNotIn('mobileNumber', $mobileNumbers)->delete();
-
         if(empty($request->id)){
             $user->markEmailAsVerified();
         }

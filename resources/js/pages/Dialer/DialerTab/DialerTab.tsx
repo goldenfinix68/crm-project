@@ -34,7 +34,8 @@ const DialerTab = ({
 }) => {
     const { contactId } = useParams();
     const { user, isLoading: isLogginUserLoading } = useLoggedInUser();
-    const { contacts, isContactsLoading } = useAppContextProvider();
+    const { contacts, isContactsLoading, isRoleStats } =
+        useAppContextProvider();
 
     const [form] = Form.useForm();
 
@@ -169,6 +170,7 @@ const DialerTab = ({
                         type="primary"
                         htmlType="submit"
                         loading={isCallBtnLoading}
+                        disabled={isRoleStats}
                     >
                         Call <PhoneOutlined />
                     </Button>

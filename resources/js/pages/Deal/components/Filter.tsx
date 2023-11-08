@@ -39,6 +39,7 @@ import { useMutation } from "react-query";
 import { deleteFilterMutation } from "../../../api/mutation/useFilterMutation";
 import queryClient from "../../../queryClient";
 import { Popconfirm } from "antd/lib";
+import { useAppContextProvider } from "../../../context/AppContext";
 
 interface Props {
     openFilter: boolean;
@@ -64,6 +65,7 @@ const Filter: React.FC<Props> = ({
         setInitialArray,
     } = useArray<TFilterCondition>();
 
+    const { isRoleStats } = useAppContextProvider();
     const [searchKey, setSearchKey] = useState("");
     const [conditionalOperator, setConditionalOperator] = useState(
         filter.filters.conditionalOperator
@@ -120,7 +122,9 @@ const Filter: React.FC<Props> = ({
                         <Button
                             type="primary"
                             onClick={() => setIsCreateFilterModalOpen(true)}
-                            disabled={!filter.filters.conditions.length}
+                            disabled={
+                                !filter.filters.conditions.length || isRoleStats
+                            }
                         >
                             Save as View
                         </Button>
@@ -133,7 +137,11 @@ const Filter: React.FC<Props> = ({
                                 okText="Yes"
                                 cancelText="No"
                             >
-                                <Button type="primary" danger>
+                                <Button
+                                    type="primary"
+                                    danger
+                                    disabled={isRoleStats}
+                                >
                                     {`Delete "${filter.name}"`}
                                 </Button>
                             </Popconfirm>

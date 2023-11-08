@@ -30,7 +30,7 @@ const Navigation: React.FC = () => {
     const navigate = useNavigate();
     const [searchKeyword, setSearchKey] = useState("");
 
-    const { contacts } = useAppContextProvider();
+    const { contacts, isRoleStats } = useAppContextProvider();
 
     const [isDropdownVisible, setDropdownVisible] = useState(false);
     const handleSignOut = () => {
@@ -85,6 +85,7 @@ const Navigation: React.FC = () => {
                                 navigate("/setup");
                                 setDropdownVisible(false);
                             }}
+                            disabled={isRoleStats}
                         >
                             <Space>
                                 <Button shape="circle">

@@ -10,6 +10,7 @@ import queryClient from "../../../queryClient";
 import { TCustomField } from "../../../entities";
 import { Link } from "react-router-dom";
 import ContactTypeTag from "../../../components/ContactTypeTag";
+import { useAppContextProvider } from "../../../context/AppContext";
 
 interface ContactsEditableTableCellProps {
     record: any;
@@ -23,6 +24,7 @@ const ContactsEditableTableCell = ({
     handleSubmit,
 }: ContactsEditableTableCellProps) => {
     const [form] = Form.useForm();
+    const { isRoleStats } = useAppContextProvider();
 
     const save = useMutation(saveCustomFieldValuesMutation, {
         onSuccess: () => {
@@ -107,6 +109,7 @@ const ContactsEditableTableCell = ({
                     }}
                     className="cell-hover-btn"
                     type="text"
+                    disabled={isRoleStats}
                 >
                     {<FontAwesomeIcon icon={faPen} />}
                 </Button>

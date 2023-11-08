@@ -29,6 +29,7 @@ import { Link } from "react-router-dom";
 import AddUpdateTemplateModal from "./AddUpdateTemplate";
 import { TTextTemplate, TTextTemplateFolder } from "../../../entities";
 import TextTemplatesTable from "./TextTemplateTable";
+import { useAppContextProvider } from "../../../context/AppContext";
 interface Props {
     folders?: TTextTemplateFolder[];
 }
@@ -74,39 +75,47 @@ type TopNavProps = {
     handleAdd: () => void;
 };
 
-const TopNav = ({ folder, handleAdd }: TopNavProps) => (
-    <div
-        style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "16px",
-            backgroundColor: "white",
-        }}
-    >
+const TopNav = ({ folder, handleAdd }: TopNavProps) => {
+    const { isRoleStats } = useAppContextProvider();
+
+    return (
         <div
             style={{
-                flexGrow: 1,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: "16px",
+                backgroundColor: "white",
             }}
         >
-            <Breadcrumb style={{ fontSize: "20px" }}>
-                <Breadcrumb.Item>
-                    <Link to="/text-threads">Text Threads</Link>
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>{folder}</Breadcrumb.Item>
-            </Breadcrumb>
-        </div>
+            <div
+                style={{
+                    flexGrow: 1,
+                }}
+            >
+                <Breadcrumb style={{ fontSize: "20px" }}>
+                    <Breadcrumb.Item>
+                        <Link to="/text-threads">Text Threads</Link>
+                    </Breadcrumb.Item>
+                    <Breadcrumb.Item>{folder}</Breadcrumb.Item>
+                </Breadcrumb>
+            </div>
 
-        <div
-            style={{
-                marginLeft: "16px",
-            }}
-        >
-            <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
-                Add Template
-            </Button>
+            <div
+                style={{
+                    marginLeft: "16px",
+                }}
+            >
+                <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={handleAdd}
+                    disabled={isRoleStats}
+                >
+                    Add Template
+                </Button>
+            </div>
         </div>
-    </div>
-);
-
+    );
+};
 export default TextTemplatesContent;

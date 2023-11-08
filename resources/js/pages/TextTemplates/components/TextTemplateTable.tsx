@@ -40,6 +40,7 @@ import LoadingComponent from "../../../components/LoadingComponent";
 import moment from "moment";
 import { deleteTextTemplateMutation } from "../../../api/mutation/useTextTemplateMutation";
 import ConfirmModal from "../../../components/ConfirmModal";
+import { useAppContextProvider } from "../../../context/AppContext";
 interface Props {
     handleEditBtnClicked: (template: TTextTemplate) => void;
 }
@@ -52,6 +53,7 @@ const TextTemplatesTable = ({ handleEditBtnClicked }: Props) => {
     const [template, setTemplate] = useState<TTextTemplate | undefined>();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleteBtnLoading, setIsDeleteBtnLoading] = useState(false);
+    const { isRoleStats } = useAppContextProvider();
 
     const deleteTemplate = useMutation(
         (id: string) => deleteTextTemplateMutation(id),
@@ -97,6 +99,7 @@ const TextTemplatesTable = ({ handleEditBtnClicked }: Props) => {
                         type="link"
                         style={{ padding: "0" }}
                         onClick={() => handleEditBtnClicked(record)}
+                        disabled={isRoleStats}
                     >
                         <EditOutlined />
                     </Button>
@@ -107,6 +110,7 @@ const TextTemplatesTable = ({ handleEditBtnClicked }: Props) => {
                             setTemplate(record);
                             setIsDeleteModalOpen(true);
                         }}
+                        disabled={isRoleStats}
                     >
                         <DeleteOutlined />
                     </Button>

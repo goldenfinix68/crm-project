@@ -21,6 +21,7 @@ interface IAppContext {
     refetchContacts: any;
     loggedInUser: TUser | null;
     contactFields: TCustomField[];
+    isRoleStats: boolean;
 }
 
 // Create the context
@@ -54,6 +55,7 @@ export function AppContextProvider({ children }: AppContextProviderProps) {
                 refetchContacts,
                 loggedInUser: user ?? null,
                 contactFields: contactFields ?? [],
+                isRoleStats: user?.role == "stats",
             }}
         >
             {children}

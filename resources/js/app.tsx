@@ -147,7 +147,12 @@ const App: React.FC = () => {
                                 <Route
                                     path="/setup/customizations/users"
                                     element={
-                                        <PrivateRoute>
+                                        <PrivateRoute
+                                            accessibleTo={[
+                                                "superAdmin",
+                                                "mainUser",
+                                            ]}
+                                        >
                                             <SetupLayout
                                                 content={<Users />}
                                                 title="Tag Management"
@@ -158,7 +163,12 @@ const App: React.FC = () => {
                                 <Route
                                     path="/setup/customizations/users/new"
                                     element={
-                                        <PrivateRoute>
+                                        <PrivateRoute
+                                            accessibleTo={[
+                                                "superAdmin",
+                                                "mainUser",
+                                            ]}
+                                        >
                                             <SetupLayout
                                                 content={<AddEditUser />}
                                                 title="Tag Management"
@@ -169,7 +179,12 @@ const App: React.FC = () => {
                                 <Route
                                     path="/setup/customizations/users/:userId"
                                     element={
-                                        <PrivateRoute>
+                                        <PrivateRoute
+                                            accessibleTo={[
+                                                "superAdmin",
+                                                "mainUser",
+                                            ]}
+                                        >
                                             <SetupLayout
                                                 content={<AddEditUser />}
                                                 title="Tag Management"
@@ -301,7 +316,12 @@ const App: React.FC = () => {
                                 <Route
                                     path="/setup/customizations/tag"
                                     element={
-                                        <PrivateRoute>
+                                        <PrivateRoute
+                                            accessibleTo={[
+                                                "superAdmin",
+                                                "mainUser",
+                                            ]}
+                                        >
                                             <SetupLayout
                                                 content={
                                                     <ComponentTagManagement />
@@ -314,7 +334,12 @@ const App: React.FC = () => {
                                 <Route
                                     path="/setup/customizations/contact"
                                     element={
-                                        <PrivateRoute>
+                                        <PrivateRoute
+                                            accessibleTo={[
+                                                "superAdmin",
+                                                "mainUser",
+                                            ]}
+                                        >
                                             <SetupLayout
                                                 content={<ContactSetup />}
                                                 title="Contact"
@@ -325,7 +350,12 @@ const App: React.FC = () => {
                                 <Route
                                     path="/setup/customizations/activity"
                                     element={
-                                        <PrivateRoute>
+                                        <PrivateRoute
+                                            accessibleTo={[
+                                                "superAdmin",
+                                                "mainUser",
+                                            ]}
+                                        >
                                             <SetupLayout
                                                 content={<ActivitySetup />}
                                                 title="Activity"
@@ -336,7 +366,12 @@ const App: React.FC = () => {
                                 <Route
                                     path="/setup/customizations/deal"
                                     element={
-                                        <PrivateRoute>
+                                        <PrivateRoute
+                                            accessibleTo={[
+                                                "superAdmin",
+                                                "mainUser",
+                                            ]}
+                                        >
                                             <SetupLayout
                                                 content={<DealSetup />}
                                                 title="Deal"
@@ -347,7 +382,12 @@ const App: React.FC = () => {
                                 <Route
                                     path="/setup/customizations/deal-pipeline"
                                     element={
-                                        <PrivateRoute>
+                                        <PrivateRoute
+                                            accessibleTo={[
+                                                "superAdmin",
+                                                "mainUser",
+                                            ]}
+                                        >
                                             <SetupLayout
                                                 content={<DealPipelineSetup />}
                                                 title="Deal Pipeline"
@@ -358,7 +398,12 @@ const App: React.FC = () => {
                                 <Route
                                     path="/setup/customizations/activity-types"
                                     element={
-                                        <PrivateRoute>
+                                        <PrivateRoute
+                                            accessibleTo={[
+                                                "superAdmin",
+                                                "mainUser",
+                                            ]}
+                                        >
                                             <SetupLayout
                                                 content={
                                                     <ComponentActivityType />
@@ -390,14 +435,31 @@ const App: React.FC = () => {
     );
 };
 
-const PrivateRoute = ({ children }) => {
+const PrivateRoute = ({
+    children,
+    accessibleTo,
+}: {
+    children: any;
+    accessibleTo?: string[];
+}) => {
     const { user, isLoading } = useLoggedInUser();
 
     if (isLoading) {
         return <LoadingComponent />;
     }
 
-    return user ? children : <Navigate to="/" />;
+    if (user) {
+        if (
+            !accessibleTo ||
+            (accessibleTo && accessibleTo.includes(user.role))
+        ) {
+            return children;
+        } else {
+            return <Navigate to="/dashboard" />;
+        }
+    } else {
+        return <Navigate to="/" />;
+    }
 };
 
 ReactDOM.render(

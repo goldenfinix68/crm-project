@@ -14,9 +14,11 @@ import {
     UsergroupAddOutlined,
 } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
+import { useAppContextProvider } from "../../context/AppContext";
 
 const Setup: React.FC = (props) => {
     const navigate = useNavigate();
+    const { loggedInUser } = useAppContextProvider();
     const customizationButtons: any = [
         {
             icon: <UsergroupAddOutlined />,
@@ -173,46 +175,56 @@ const Setup: React.FC = (props) => {
                 })}
             </Row>
 
-            <br />
-            <br />
-            <Divider
-                orientation="left"
-                orientationMargin="0"
-                style={{ fontSize: 20 }}
-            >
-                Users & Security
-            </Divider>
-            <Row gutter={[12, 20]}>
-                {usersAndSecurityButtons.map((item: any, key: React.Key) => {
-                    return (
-                        <Col xs={6} sm={6} md={4} key={key}>
-                            <Space
-                                direction="vertical"
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <Button
-                                    className="button-link"
-                                    shape="circle"
-                                    size="large"
-                                    icon={item.icon}
-                                    style={{
-                                        height: 80,
-                                        width: 80,
-                                    }}
-                                    onClick={() => navigate(item.link)}
-                                />
+            {["superAdmin", "mainUser"].includes(loggedInUser?.role ?? "") && (
+                <>
+                    <br />
+                    <br />
+                    <Divider
+                        orientation="left"
+                        orientationMargin="0"
+                        style={{ fontSize: 20 }}
+                    >
+                        Users & Security
+                    </Divider>
+                    <Row gutter={[12, 20]}>
+                        {usersAndSecurityButtons.map(
+                            (item: any, key: React.Key) => {
+                                return (
+                                    <Col xs={6} sm={6} md={4} key={key}>
+                                        <Space
+                                            direction="vertical"
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <Button
+                                                className="button-link"
+                                                shape="circle"
+                                                size="large"
+                                                icon={item.icon}
+                                                style={{
+                                                    height: 80,
+                                                    width: 80,
+                                                }}
+                                                onClick={() =>
+                                                    navigate(item.link)
+                                                }
+                                            />
 
-                                <Typography.Text style={{ fontSize: 16 }}>
-                                    {item.title}
-                                </Typography.Text>
-                            </Space>
-                        </Col>
-                    );
-                })}
-            </Row>
+                                            <Typography.Text
+                                                style={{ fontSize: 16 }}
+                                            >
+                                                {item.title}
+                                            </Typography.Text>
+                                        </Space>
+                                    </Col>
+                                );
+                            }
+                        )}
+                    </Row>
+                </>
+            )}
         </>
     );
 };
