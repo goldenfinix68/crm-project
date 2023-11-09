@@ -22,6 +22,7 @@ interface IAppContext {
     loggedInUser: TUser | null;
     contactFields: TCustomField[];
     isRoleStats: boolean;
+    isSUperAdmin: boolean;
 }
 
 // Create the context
@@ -56,6 +57,7 @@ export function AppContextProvider({ children }: AppContextProviderProps) {
                 loggedInUser: user ?? null,
                 contactFields: contactFields ?? [],
                 isRoleStats: user?.role == "stats",
+                isSUperAdmin: user?.role == "superAdmin",
             }}
         >
             {children}

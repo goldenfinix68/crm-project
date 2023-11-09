@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "react-query";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeftOutlined, UserAddOutlined } from "@ant-design/icons";
 
-import { DEFAULT_REQUIRED_MESSAGE } from "../../constants";
+import { DEFAULT_REQUIRED_MESSAGE, userRoleOption } from "../../constants";
 import { addUserMutation } from "../../api/mutation/useUserMutation";
 import { TUser } from "../../entities";
 import { useForm } from "antd/es/form/Form";
@@ -26,7 +26,7 @@ const AddEditUser = () => {
     const [form] = useForm();
 
     const { user, isLoading } = usefindUser(userId ?? "");
-    const { loggedInUser } = useAppContextProvider();
+    const { loggedInUser, isSUperAdmin } = useAppContextProvider();
 
     const {
         data: sipTrunkingConnections,
@@ -42,6 +42,7 @@ const AddEditUser = () => {
     const onFinish = (values: TUser) => {
         mutation.mutate({
             ...values,
+            mainUserId: loggedInUser?.id,
             sipTrunkingConnection: sipTrunkingConnections?.find(
                 (connection) =>
                     connection.telnyxConnectionId == values.telnyxConnectionId
@@ -174,10 +175,13 @@ const AddEditUser = () => {
                         placeholder="Select Role"
                         style={{ width: "100%" }}
                         showSearch
-                        options={[
-                            { value: "user", label: "User" },
-                            { value: "stats", label: "Stats" },
-                        ]}
+                        options={
+                            isSUperAdmin
+                                ? userRoleOption
+                                : userRoleOption.filter(
+                                      (option) => option.value != "mainUser"
+                                  )
+                        }
                     />
                 </Form.Item>
 

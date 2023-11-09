@@ -30,6 +30,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/contacts/delete_contacts_table_column', 'App\Http\Controllers\Api\ContactsController@delete_contacts_table_column');
 
     Route::get('/users/tags', 'App\Http\Controllers\Api\UsersController@usedTags');
+    Route::post('/users/sort-call-forwarding', 'App\Http\Controllers\Api\UsersController@sortCallForwarding');
     Route::resource('/users', 'App\Http\Controllers\Api\UsersController');
 
     Route::post('/contacts/delete', 'App\Http\Controllers\Api\ContactsController@delete_contacts');

@@ -47,12 +47,17 @@ class UsersController extends Controller
         else{
             $user = User::find($request->id);
         }
+        $lastUser = User::orderBy('id', 'desc')->first();
+
+
         $user->firstName = $request->firstName;
         $user->lastName = $request->lastName;
         $user->email = $request->email;
         $user->role = $request->role;
+        $user->mainUserId = $authUser->role == "superAdmin" ? $request->mainUserId : $authUser->id;
         $user->password = bcrypt($request->password);
-
+        $user->sortCallForwarding = $lastUser ? $lastUser->id + 1 : 1;
+        
         if($authUser->role == "superAdmin"){
             $user->telnyxConnectionId = $request->sipTrunkingConnection['telnyxConnectionId'];
             $user->telnyxConnectionName = $request->sipTrunkingConnection['telnyxConnectionName'];
@@ -157,5 +162,19 @@ class UsersController extends Controller
         $uniqueResultArray = array_values(array_unique($resultArray));
 
         return response()->json($uniqueResultArray, 200);
+    }
+
+    public function sortCallForwarding(Request $request)
+    {
+        $mainUserId = "";
+        foreach($request->users as $user){
+            $savedUser = User::find($user['id']);
+            $savedUser->sortCallForwarding = $user['sortCallForwarding'];
+            $savedUser->save();
+            $mainUserId = $savedUser->mainUserId;
+        }
+        $users = User::where('id', $mainUserId)->orWhere('mainUserId', $mainUserId)->update(['forwardingType' => $request->forwardingType]);
+
+        return response()->json("Success", 200);
     }
 }

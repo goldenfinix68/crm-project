@@ -28,6 +28,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import CustomFieldFormModal from "../../components/CustomFieldFormModal";
 import PipelineAddUpdateModal from "../DealPipelineSetup/components/PipelineAddUpdateModal";
 import { useAppContextProvider } from "../../context/AppContext";
+import { allowedroleToAccess } from "../../constants";
 
 const { SubMenu } = Menu;
 
@@ -141,10 +142,7 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
         return words.join("/"); // Join the remaining words back together using backslash as the separator
     };
 
-    if (
-        loggedInUser &&
-        ["superAdmin", "mainUser"].includes(loggedInUser.role)
-    ) {
+    if (loggedInUser && allowedroleToAccess.includes(loggedInUser.role)) {
         sideMenuItems.push({
             key: "/setup/users-security",
             icon: <SettingOutlined />,

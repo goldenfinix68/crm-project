@@ -15,6 +15,7 @@ import {
 } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppContextProvider } from "../../context/AppContext";
+import { allowedroleToAccess } from "../../constants";
 
 const Setup: React.FC = (props) => {
     const navigate = useNavigate();
@@ -175,7 +176,7 @@ const Setup: React.FC = (props) => {
                 })}
             </Row>
 
-            {["superAdmin", "mainUser"].includes(loggedInUser?.role ?? "") && (
+            {allowedroleToAccess.includes(loggedInUser?.role ?? "") && (
                 <>
                     <br />
                     <br />

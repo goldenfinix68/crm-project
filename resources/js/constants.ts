@@ -433,3 +433,11 @@ export const defaultFilter: TFilter = {
         conditionalOperator: "and",
     },
 };
+
+export const allowedroleToAccess = ["superAdmin", "mainUser", "user"];
+
+export const userRoleOption = [
+    { value: "mainUser", label: "Main User" },
+    { value: "user", label: "User" },
+    { value: "stats", label: "Stats" },
+];
