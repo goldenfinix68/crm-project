@@ -11,6 +11,7 @@ use App\Models\DealFavorite;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Auth;
 
 class DealsController extends Controller
 {
@@ -25,8 +26,13 @@ class DealsController extends Controller
         if(empty($request->pipelineId)){
             return response()->json([], 200);
         }
-
-        $deals = Deal::with(['contact', 'pipeline', 'stage'])->where('pipelineId', $request->pipelineId)->get();
+        $mainUserId = $this->getMainUserId();
+        $deals = Deal::with(['contact', 'pipeline', 'stage'])
+            ->where('pipelineId', $request->pipelineId)
+            ->whereHas('contact', function ($query) use($mainUserId) {
+                $query->where('userId', $mainUserId);
+            })
+            ->get();
 
         return response()->json($deals, 200);
     }

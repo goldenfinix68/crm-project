@@ -17,7 +17,9 @@ class DealPipelinesController extends Controller
      */
     public function index()
     {
-        return DealPipeline::with(['stages', 'stages.deals', 'stages.deals.contact'])->get();
+        return DealPipeline::where('userId', $this->getMainUserId())
+            ->with(['stages', 'stages.deals', 'stages.deals.contact'])
+            ->get();
     }
 
     /**
@@ -42,16 +44,14 @@ class DealPipelinesController extends Controller
             'name' => 'required',
         ]);
 
-        $user = Auth::user();
         $data = $request->all();
 
         $pipeline = DealPipeline::updateOrCreate(
             ['id' => isset($data['id'])? $data['id'] : null],
             array_merge($data, [
-                'userId' => $user->id, 
+                'userId' => $this->getMainUserId(), 
             ])
         );
-
         
         return response()->json($pipeline, 200);
     }

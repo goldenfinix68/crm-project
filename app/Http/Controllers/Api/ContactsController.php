@@ -43,7 +43,8 @@ class ContactsController extends Controller
         $endOfDay = Carbon::now()->endOfDay();
 
         $data = [];
-        $contacts = Contact::with(['customFieldValues', 'customFieldValues.customField'])
+        $contacts = Contact::where('userId', $this->getMainUserId())
+            ->with(['customFieldValues', 'customFieldValues.customField'])
             // ->where('id', 1)
             // ->whereHas('customFieldValues', function ($query) {
             //     $query->where('value', 'qweqweqwe');
@@ -119,7 +120,7 @@ class ContactsController extends Controller
         // $endOfDay = Carbon::now()->endOfDay();
 
         $data = [];
-        $contacts = Contact::with(['customFieldValues', 'customFieldValues.customField']);
+        $contacts = Contact::where('userId', $this->getMainUserId())->with(['customFieldValues', 'customFieldValues.customField']);
 
         if(!empty($request->filters)){
 
@@ -150,26 +151,31 @@ class ContactsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'firstName' => 'required',
-            'lastName' => 'required',
-            'ownerId' => 'required',
-        ]);
+    // public function store(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'firstName' => 'required',
+    //         'lastName' => 'required',
+    //         'ownerId' => 'required',
+    //     ]);
 
-        $data = $request->all();
+    //     $data = $request->all();
 
-        if (isset($data['tags'])) {
-            $data['tags'] = json_encode($data['tags']);
-        }
-
-
-        $contact = Contact::updateOrCreate(['id' => isset($data['id']) ? $data['id'] : null], $data);
+    //     if (isset($data['tags'])) {
+    //         $data['tags'] = json_encode($data['tags']);
+    //     }
 
 
-        return response()->json($contact, 200);
-    }
+    //     $contact = Contact::updateOrCreate([
+    //         'id' => isset($data['id']) ? $data['id'] : null], 
+    //         array_merge($data, [
+    //             'userId' => $this->getMainUserId(), 
+    //         ])
+    //     );
+
+
+    //     return response()->json($contact, 200);
+    // }
 
     /**
      * Display the specified resource.
@@ -206,36 +212,36 @@ class ContactsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        $from = Contact::find($id);
-        $contact = Contact::updateOrCreate(
-            ['id' => $id],
-            $request->all()
-        );
+    // public function update(Request $request, $id)
+    // {
+    //     $from = Contact::find($id);
+    //     $contact = Contact::updateOrCreate(
+    //         ['id' => $id],
+    //         $request->all()
+    //     );
 
-        foreach ($request->all() as $key => $value) {
-            if ($key != "id" && $key != "typeId" && $from->{$key} != $contact->{$key}) {
-                $update = new ContactUpdate();
-                $update->userId = Auth::id();
-                $update->contactId = $id;
+    //     foreach ($request->all() as $key => $value) {
+    //         if ($key != "id" && $key != "typeId" && $from->{$key} != $contact->{$key}) {
+    //             $update = new ContactUpdate();
+    //             $update->userId = Auth::id();
+    //             $update->contactId = $id;
                 
-                if($key == 'defaultMobileNumberId'){
-                    $update->from = $from->defaultMobile ? $from->defaultMobile->mobileNumber : "";
-                    $update->to = $contact->defaultMobile->mobileNumber;
-                    $update->title = "Default Mobile Number Updated";
-                }
-                else{
-                    $update->from = $from->{$key};
-                    $update->to = $contact->{$key};
-                    $update->title = Str::title(Str::camel($key)) . " Updated";
-                }
-                $update->save();
-            }
-        }
+    //             if($key == 'defaultMobileNumberId'){
+    //                 $update->from = $from->defaultMobile ? $from->defaultMobile->mobileNumber : "";
+    //                 $update->to = $contact->defaultMobile->mobileNumber;
+    //                 $update->title = "Default Mobile Number Updated";
+    //             }
+    //             else{
+    //                 $update->from = $from->{$key};
+    //                 $update->to = $contact->{$key};
+    //                 $update->title = Str::title(Str::camel($key)) . " Updated";
+    //             }
+    //             $update->save();
+    //         }
+    //     }
 
-        return response()->json($contact, 200);
-    }
+    //     return response()->json($contact, 200);
+    // }
 
     /**
      * Remove the specified resource from storage.
@@ -362,35 +368,35 @@ class ContactsController extends Controller
         return response()->json($ret, 200);
     }
 
-    public function save_column_setting(Request $request)
-    {
-        $data = ContactTableColumn::updateOrCreate(['user_id' => auth()->user()->id],
-            [ 
-            'table_columns' => $request->table_columns,
-            // 'user_id' => $request->user_id
+    // public function save_column_setting(Request $request)
+    // {
+    //     $data = ContactTableColumn::updateOrCreate(['user_id' => auth()->user()->id],
+    //         [ 
+    //         'table_columns' => $request->table_columns,
+    //         // 'user_id' => $request->user_id
             
-        ],
+    //     ],
            
-        );
-        return response()->json(['success' => true, 'data' => $data], 200);
-    }
+    //     );
+    //     return response()->json(['success' => true, 'data' => $data], 200);
+    // }
 
-    public function get_contacts_table_column(Request $request)
-    {
-        return [];
-        $contacts_table_column= ContactTableColumn::where('user_id', auth()->user()->id)->get();
-        return response()->json($contacts_table_column, 200);
-    }
+    // public function get_contacts_table_column(Request $request)
+    // {
+    //     return [];
+    //     $contacts_table_column= ContactTableColumn::where('user_id', auth()->user()->id)->get();
+    //     return response()->json($contacts_table_column, 200);
+    // }
 
-    public function delete_contacts_table_column(Request $request)
-    {
-        $data = ContactTableColumn::where('user_id',auth()->user()->id)->delete();
+    // public function delete_contacts_table_column(Request $request)
+    // {
+    //     $data = ContactTableColumn::where('user_id',auth()->user()->id)->delete();
     
-        return response()->json([
-            'success' => true,
-            'data' => $data 
-        ]);
-    }
+    //     return response()->json([
+    //         'success' => true,
+    //         'data' => $data 
+    //     ]);
+    // }
 
     public function bulkContactImportCsv(Request $request)
     {
@@ -403,6 +409,7 @@ class ContactsController extends Controller
                 DB::beginTransaction();
 
                 $contact = new Contact();
+                $contact->userId = $this->getMainUserId();
                 $contact->save();
 
                 $continue = true;

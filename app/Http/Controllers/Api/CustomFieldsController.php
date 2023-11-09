@@ -18,12 +18,8 @@ class CustomFieldsController extends Controller
      */
     public function index(Request $request)
     {
-        $user = auth()->user();
-        if(empty($user)){
-            abort(401, 'Unauthorized');
-        }
 
-        $fields =  CustomField::where('userId', $user->id)->where('isActive', true)->orderBy('sort');
+        $fields =  CustomField::where('userId', $this->getMainUserId())->where('isActive', true)->orderBy('sort');
 
         if(!empty($request->type)){
             $fields = $fields->where('customFieldSectionType', $request->type);
@@ -35,12 +31,7 @@ class CustomFieldsController extends Controller
 
     public function inactiveFields(Request $request)
     {
-        $user = auth()->user();
-        if(empty($user)){
-            abort(401, 'Unauthorized');
-        }
-
-        $inactiveFields =  CustomField::where('userId', $user->id)
+        $inactiveFields =  CustomField::where('userId', $this->getMainUserId())
             ->where('isActive', false)
             ->where('customFieldSectionType', $request->type)
             ->orderBy('updated_at', 'desc')
@@ -74,7 +65,6 @@ class CustomFieldsController extends Controller
             'type' => 'required',
         ]);
 
-        $user = Auth::user();
         $data = $request->all();
         //check highest sort
         $highestSort = CustomField::where('customFieldSectionId', $data['customFieldSectionId'])->orderBy('sort', 'desc')->first();
@@ -92,7 +82,7 @@ class CustomFieldsController extends Controller
         $customField = CustomField::updateOrCreate(
             ['id' => isset($data['id'])? $data['id'] : null],
             array_merge($data, [
-                'userId' => $user->id, 
+                'userId' => $this->getMainUserId(), 
                 'sort' => $sort,
                 'customFieldSectionType' => $section->type,
 
@@ -147,14 +137,13 @@ class CustomFieldsController extends Controller
      */
     public function destroy($id)
     {
-        $user = Auth::user();
         $customField = CustomField::find($id);
 
         if(empty($customField)){
             abort(404);
         }
 
-        if(empty($user) || $user->id != $customField->section->userId){
+        if($this->getMainUserId() != $customField->section->userId){
             abort(401, 'Unauthorized');
         }
         $customField->isActive = false;
@@ -165,10 +154,9 @@ class CustomFieldsController extends Controller
     
     public function sort(Request $request)
     {
-        $user = Auth::user();
         foreach($request->all() as $index => $data){
             $customField = CustomField::find($data['id']);
-            if(!empty($customField) && $customField->section->userId == $user->id){
+            if(!empty($customField) && $customField->section->userId == $this->getMainUserId()){
                 $customField->sort = $index+1;
                 $customField->save();
             }
@@ -179,10 +167,9 @@ class CustomFieldsController extends Controller
     
     public function tableFieldsSort(Request $request)
     {
-        $user = Auth::user();
         foreach($request->fields as $index => $data){
             $customField = CustomField::find($data['id']);
-            if(!empty($customField) && $customField->section->userId == $user->id){
+            if(!empty($customField) && $customField->section->userId == $this->getMainUserId()){
                 $customField->tableSort = $index+1;
                 $customField->isDisplayTable = $data['isSelected'];
                 $customField->save();
@@ -194,14 +181,13 @@ class CustomFieldsController extends Controller
     
     public function restore(Request $request)
     {
-        $user = Auth::user();
         $customField = CustomField::find($request->id);
 
         if(empty($customField)){
             abort(404);
         }
 
-        if(empty($user) || $user->id != $customField->section->userId){
+        if($this->getMainUserId() != $customField->section->userId){
             abort(401, 'Unauthorized');
         }
         $customField->customFieldSectionId = $request->customFieldSectionId;

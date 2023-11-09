@@ -9,6 +9,7 @@ use Illuminate\Routing\Controller as BaseController;
 use App\Models\Contact;
 use App\Models\CustomFieldValue;
 use App\Models\ContactType;
+use Auth;
 
 class Controller extends BaseController
 {
@@ -96,4 +97,16 @@ class Controller extends BaseController
         }
         $fieldValue->save();
     }
+    
+    public function getMainUserId() {
+
+        $user = Auth::user();
+
+        if($user->role == 'superAdmin'){
+            return 0;
+        }
+        return $user->role == 'mainUser' ? $user->id : $user->mainUserId;
+
+    }
+    
 }

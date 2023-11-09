@@ -16,7 +16,9 @@ class TextTemplateFoldersController extends Controller
      */
     public function index()
     {
-        return TextTemplateFolder::orderBy('name', 'asc')->get();
+        return TextTemplateFolder::where('userId', $this->getMainUserId())
+            ->orderBy('name', 'asc')
+            ->get();
     }
 
     /**
@@ -42,7 +44,12 @@ class TextTemplateFoldersController extends Controller
         ]);
 
         $data = $request->all();
-        $template = TextTemplateFolder::updateOrCreate(['id' => isset($data['id'])? $data['id'] : null],$data);
+        $template = TextTemplateFolder::updateOrCreate([
+            'id' => isset($data['id'])? $data['id'] : null],
+            array_merge($data, [
+                'userId' => $this->getMainUserId(), 
+            ])
+        );
 
         
         return response()->json($template, 200);

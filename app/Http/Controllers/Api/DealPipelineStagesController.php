@@ -18,7 +18,13 @@ class DealPipelineStagesController extends Controller
      */
     public function index()
     {
-        return DealPipelineStage::all();
+        $mainUserId = $this->getMainUserId();
+
+        return DealPipelineStage::with(['pipeline'])
+            ->whereHas('pipeline', function ($query) use($mainUserId) {
+                $query->where('userId', $mainUserId);
+            })
+            ->get();
     }
 
     /**
@@ -44,8 +50,8 @@ class DealPipelineStagesController extends Controller
         ]);
         $data = $request->all();
         $pipeline = DealPipeline::find($data['dealPipelineId']);
-        $user = Auth::user();
-        if($user->id != $pipeline->userId){
+
+        if($this->getMainUserId() != $pipeline->userId){
             abort(401);
         }
         //check highest sort
@@ -62,7 +68,7 @@ class DealPipelineStagesController extends Controller
         $stage = DealPipelineStage::updateOrCreate(
             ['id' => isset($data['id'])? $data['id'] : null],
             array_merge($data, [
-                'userId' => $user->id, 
+                'userId' => $this->getMainUserId(), 
                 'sort' => $sort,
             ])
         );
@@ -118,10 +124,9 @@ class DealPipelineStagesController extends Controller
     
     public function sort(Request $request)
     {
-        $user = Auth::user();
         foreach($request->all() as $index => $data){
             $stage = DealPipelineStage::find($data['id']);
-            if(!empty($stage) && $stage->pipeline->userId == $user->id){
+            if(!empty($stage) && $stage->pipeline->userId == $this->getMainUserId()){
                 $stage->sort = $index+1;
                 $stage->save();
             }

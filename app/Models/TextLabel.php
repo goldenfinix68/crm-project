@@ -11,6 +11,7 @@ class TextLabel extends Model
     
     protected $fillable = [
         'name',
+        'userId',
     ];
 
     public function threads()

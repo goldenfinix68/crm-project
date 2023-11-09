@@ -16,7 +16,7 @@ class ContactTypesController extends Controller
      */
     public function index()
     {
-        return ContactType::all();
+        return ContactType::where('userId', $this->getMainUserId())->get();
     }
 
     /**
@@ -43,7 +43,11 @@ class ContactTypesController extends Controller
             'color' => 'required',
         ]);
         
-        $contactType = ContactType::create($request->all());
+        $data = $request->all();
+        $contactType = ContactType::create(array_merge($data, [
+            'userId' => $this->getMainUserId(), 
+
+        ]));
 
         
         return response()->json($contactType, 200);

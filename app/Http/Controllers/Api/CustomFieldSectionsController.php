@@ -23,7 +23,7 @@ class CustomFieldSectionsController extends Controller
             abort(401, 'Unauthorized');
         }
 
-        $sections =  CustomFieldSection::with(['fields'])->where('userId', $user->id)->where('type', $request->type)->orderBy('sort')->get();
+        $sections =  CustomFieldSection::with(['fields'])->where('userId', $this->getMainUserId())->where('type', $request->type)->orderBy('sort')->get();
         
         return $sections;
     }
@@ -52,11 +52,10 @@ class CustomFieldSectionsController extends Controller
             'type' => 'required',
         ]);
 
-        $user = Auth::user();
         $data = $request->all();
 
         //check highest sort
-        $highestSort = CustomFieldSection::where('userId', $user->id)->where('type', $request->type)->orderBy('sort', 'desc')->first();
+        $highestSort = CustomFieldSection::where('userId', $this->getMainUserId())->where('type', $request->type)->orderBy('sort', 'desc')->first();
 
         $sort = 1;
         if(!empty($data['sort'])){
@@ -69,7 +68,7 @@ class CustomFieldSectionsController extends Controller
         $customFieldSection = CustomFieldSection::updateOrCreate(
             ['id' => isset($data['id'])? $data['id'] : null],
             array_merge($data, [
-                'userId' => $user->id, 
+                'userId' => $this->getMainUserId(), 
                 'sort' => $sort,
             ])
         );
@@ -120,10 +119,9 @@ class CustomFieldSectionsController extends Controller
      */
     public function destroy($id)
     {
-        $user = Auth::user();
         $section = CustomFieldSection::find($id);
 
-        if(empty($user) || $user->id != $section->userId){
+        if(empty($user) || $this->getMainUserId() != $section->userId){
             abort(401, 'Unauthorized');
         }
 
@@ -136,10 +134,9 @@ class CustomFieldSectionsController extends Controller
     
     public function sort(Request $request)
     {
-        $user = Auth::user();
         foreach($request->all() as $index => $data){
             $section = CustomFieldSection::find($data['id']);
-            if(!empty($section) && $section->userId == $user->id){
+            if(!empty($section) && $section->userId == $this->getMainUserId()){
                 $section->sort = $index+1;
                 $section->save();
             }

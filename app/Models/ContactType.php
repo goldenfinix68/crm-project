@@ -12,5 +12,6 @@ class ContactType extends Model
     protected $fillable = [
         'name',
         'highlight',
+        'userId',
     ];
 }

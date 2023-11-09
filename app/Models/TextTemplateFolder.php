@@ -12,5 +12,6 @@ class TextTemplateFolder extends Model
 
     protected $fillable = [
         'name',
+        'userId',
     ];
 }

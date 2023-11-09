@@ -17,8 +17,7 @@ class FiltersController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
-        $filters = Filter::where('userId', $user->id)->orderBy('name', 'asc')->get();
+        $filters = Filter::where('userId', $this->getMainUserId())->orderBy('name', 'asc')->get();
 
         return $filters;
     }
@@ -46,13 +45,12 @@ class FiltersController extends Controller
             'filters' => 'required',
         ]);
 
-        $user = Auth::user();
         $data = $request->all();
         
         $filter = Filter::updateOrCreate(
             ['id' => isset($data['id'])? $data['id'] : null],
             array_merge($data, [
-                'userId' => $user->id, 
+                'userId' => $this->getMainUserId(), 
             ])
         );
 
@@ -103,12 +101,11 @@ class FiltersController extends Controller
      */
     public function destroy($id)
     {
-        $user = Auth::user();
         $filter = Filter::find($id);
         if(empty($filter)){
             abort(404);
         }
-        if($filter->userId != $user->id){
+        if($filter->userId != $this->getMainUserId()){
             abort(401);
         }
         

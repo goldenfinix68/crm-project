@@ -19,7 +19,7 @@ class UsersController extends Controller
      */
     public function index()
     {
-        return User::with('numbers')->get();
+        return User::where('id', $this->getMainUserId())->orWhere('mainUserId', $this->getMainUserId())->with('numbers')->get();
     }
 
     /**
@@ -134,17 +134,13 @@ class UsersController extends Controller
 
     public function usedTags()
     {
-        $user = Auth::user();
 
-        if(empty($user)){
-            abort(404);
-        }
-
+        $mainUserId = $this->getMainUserId();
         
         $tags = CustomFieldValue::select('lookupIds')->with(['customField'])
                     ->whereNotNull('lookupIds')
-                    ->whereHas('customField', function ($query) use ($user) {
-                        $query->where('userId', $user->id);
+                    ->whereHas('customField', function ($query) use ($mainUserId) {
+                        $query->where('userId', $mainUserId);
                         $query->where('type', 'tag');
                     })
                     ->distinct()

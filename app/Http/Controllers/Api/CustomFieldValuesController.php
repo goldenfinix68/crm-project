@@ -55,6 +55,7 @@ class CustomFieldValuesController extends Controller
                 }
                 else{
                     $record = new Contact();
+                    $record->userId = $this->getMainUserId();
                     $record->save();
                 }
                 if(!empty($fields['mobile'])){
@@ -82,6 +83,7 @@ class CustomFieldValuesController extends Controller
             DB::commit();
             return response()->json(['message' => "Success"], 200);
         } catch (\Exception $e) {
+            dd($e);
             // Something went wrong, so we'll roll back the transaction
             DB::rollBack();
             

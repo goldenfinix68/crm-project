@@ -20,7 +20,8 @@ class WorkflowsController extends Controller
      */
     public function index()
     {
-        $workflows = Workflow::with(['items', 'user'])
+        $workflows = Workflow::where('userId', $this->getMainUserId())
+            ->with(['items', 'user'])
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -65,12 +66,11 @@ class WorkflowsController extends Controller
             'contactIds' => 'required',
         ]);
 
-        $user = Auth::user();
         $data = $request->all();
         $workflow = Workflow::updateOrCreate(
             ['id' => isset($data['id'])? $data['id'] : null],
             array_merge($data, [
-                'userId' => $user->id, 
+                'userId' => $this->getMainUserId(), 
             ])
         );
 

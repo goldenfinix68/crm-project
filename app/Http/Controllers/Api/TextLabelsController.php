@@ -16,7 +16,9 @@ class TextLabelsController extends Controller
      */
     public function index()
     {
-        return TextLabel::orderBy('name', 'asc')->get();
+        return TextLabel::where('userId', $this->getMainUserId())
+            ->orderBy('name', 'asc')
+            ->get();
     }
 
     /**
@@ -41,7 +43,12 @@ class TextLabelsController extends Controller
         ]);
 
         $data = $request->all();
-        $label = TextLabel::updateOrCreate(['id' => isset($data['id'])? $data['id'] : null],$data);
+        $label = TextLabel::updateOrCreate([
+            'id' => isset($data['id'])? $data['id'] : null],
+            array_merge($data, [
+                'userId' => $this->getMainUserId(), 
+            ])
+        );
 
         
         return response()->json($label, 200);
