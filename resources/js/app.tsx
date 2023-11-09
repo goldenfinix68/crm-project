@@ -70,6 +70,7 @@ import DealSetup from "./pages/DealSetup";
 import ActivitySetup from "./pages/ActivitySetup";
 import DealPipelineSetup from "./pages/DealPipelineSetup";
 import { allowedroleToAccess } from "./constants";
+import CallForwarding from "./pages/Setup/CallForwarding";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isForgotPassword = window.location.pathname === "/forgot-password";
@@ -142,6 +143,19 @@ const App: React.FC = () => {
                                     element={
                                         <PrivateRoute>
                                             <Dialer />
+                                        </PrivateRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/setup/customizations/call-forwarding"
+                                    element={
+                                        <PrivateRoute
+                                            accessibleTo={allowedroleToAccess}
+                                        >
+                                            <SetupLayout
+                                                content={<CallForwarding />}
+                                                title="Call Forwarding"
+                                            />
                                         </PrivateRoute>
                                     }
                                 />

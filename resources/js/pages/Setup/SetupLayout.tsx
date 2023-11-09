@@ -18,6 +18,7 @@ import {
     DatabaseOutlined,
     PlusCircleOutlined,
     SettingOutlined,
+    PhoneOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import CustomFieldAddUpdateModal from "../../components/CustomFieldAddUpdateModal";
@@ -152,6 +153,11 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                     key: "/setup/customizations/users",
                     path: "/setup/customizations/users",
                     label: "Users",
+                },
+                {
+                    key: "/setup/customizations/call-forwarding",
+                    path: "/setup/customizations/call-forwarding",
+                    label: "Call Forwarding",
                 },
             ],
         });

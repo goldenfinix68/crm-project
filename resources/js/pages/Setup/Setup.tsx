@@ -84,6 +84,11 @@ const Setup: React.FC = (props) => {
             title: "Users",
             link: "/setup/customizations/users",
         },
+        {
+            icon: <PhoneOutlined />,
+            title: "Call Forwarding",
+            link: "/setup/customizations/call-forwarding",
+        },
     ];
 
     const dataAdministration: any = [
