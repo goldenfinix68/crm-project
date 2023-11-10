@@ -24,14 +24,12 @@ class TextThreadsController extends Controller
         if(empty($user)){
             abort(401, 'Unauthorized');
         }
-        $userNumbers = $user->numbers->pluck('mobileNumber');
 
-        $threads =  TextThread::with('labels')->whereIn('userNumber', $userNumbers)->get()->unique('contactNumber');
+        $threads =  TextThread::with('labels')->whereIn('userNumber', $this->getMainUserNumbers())->get()->unique('contactNumber');
 
         foreach($threads as $thread){
             $thread = $this->prepareThreadTexts($thread);
         }
-
         return $threads->sortByDesc('lastTextId')->values();
     }
 

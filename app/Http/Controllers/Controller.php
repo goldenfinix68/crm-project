@@ -9,6 +9,7 @@ use Illuminate\Routing\Controller as BaseController;
 use App\Models\Contact;
 use App\Models\CustomFieldValue;
 use App\Models\ContactType;
+use App\Models\User;
 use Auth;
 
 class Controller extends BaseController
@@ -107,6 +108,16 @@ class Controller extends BaseController
         }
         return $user->role == 'mainUser' ? $user->id : $user->mainUserId;
 
+    }
+    
+    public function getMainUserNumbers($isRawNumbers = false) {
+
+       $mainUserId = $this->getMainUserId();
+
+       $users = User::where('id', $this->getMainUserId())->orWhere('mainUserId', $this->getMainUserId())->get();
+        // dd($users->pluck('numbers')->flatten()->pluck('mobileNumber'));
+    
+       return  $isRawNumbers ? $users->pluck('numbers')->flatten() : $users->pluck('numbers')->flatten()->pluck('mobileNumber');
     }
     
 }

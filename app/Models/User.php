@@ -50,9 +50,16 @@ class User extends Authenticatable implements MustVerifyEmail
     //     'numbers', 
     // ];
 
+    //depreciated, 1 user 1 number
     public function numbers()
     {
         return $this->hasMany(\App\Models\MobileNumber::class, 'userId', 'id');
+        
+    }
+
+    public function number()
+    {
+        return $this->hasOne(\App\Models\MobileNumber::class, 'userId', 'id');
         
     }
 

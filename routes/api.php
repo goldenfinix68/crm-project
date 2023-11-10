@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use ElephantIO\Client;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Api\UsersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,7 +74,12 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/activities_contacts', 'App\Http\Controllers\Api\ActivityController@get_contact');
     Route::get('/activities_deals', 'App\Http\Controllers\Api\ActivityController@get_deal');
     Route::get('/user', function (Request $request) {
-        return App\Models\User::with('numbers')->find($request->user()->id);
+        $user = App\Models\User::find($request->user()->id);
+        if(!empty($user)){
+            $userController = new UsersController();
+            return $userController->show($user->id);
+        }
+        return [];
     });
 
     Route::resource('/activity_custome_fields', 'App\Http\Controllers\Api\ActivityCustomFieldController');
@@ -125,6 +131,8 @@ Route::post('/telnyx/sms/webhook', 'App\Http\Controllers\Api\TextsController@tex
 Route::get('/telnyx/sms/webhook', 'App\Http\Controllers\Api\TextsController@textReceived');
 Route::get('/telnyx/call/webhook', 'App\Http\Controllers\Api\CallsController@webhook');
 Route::get('/telnyx/call/webhook/fail', 'App\Http\Controllers\Api\CallsController@webhook');
+Route::post('/telnyx/call/webhook', 'App\Http\Controllers\Api\CallsController@webhook');
+Route::post('/telnyx/call/webhook/fail', 'App\Http\Controllers\Api\CallsController@webhook');
 
 Route::get('/telnyx/sms/webhook/fail', function (Request $request) {
     \Log::error('INCOMING SMS FAIL');

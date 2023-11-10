@@ -16,7 +16,7 @@ class AddSortCallForwardingUsers extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->integer('sortCallForwarding')->default(0);
             $table->string('mainUserId')->nullable();
-            $table->string('forwardingType')->default('Do not forward');
+            $table->string('forwardingType')->default('off');
         });
     }
 

@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\MobileNumber;
 use App\Models\CustomFieldValue;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\TelnyxController;
 use Illuminate\Http\Request;
 use Telnyx\Telnyx;
 use Auth;
@@ -65,17 +66,17 @@ class UsersController extends Controller
             $user->telnyxConnectionPassword = $request->sipTrunkingConnection['telnyxConnectionPassword'];
             $user->save();
     
-            $mobileNumbers = collect($request->sipTrunkingConnection['numbers'])->pluck('mobileNumber')->toArray();
-            
-            foreach($mobileNumbers as $number){
-                $isExisting = MobileNumber::where('mobileNumber', $number)->where('userId', $user->id)->first();
+            foreach($request->sipTrunkingConnection['numbers'] as $number){
+                $isExisting = MobileNumber::where('mobileNumber', $number['mobileNumber'])->where('userId', $user->id)->first();
                 if(empty($isExisting)){
                     $newMobile = new MobileNumber();
                     $newMobile->userId = $user->id;
-                    $newMobile->mobileNumber = $number;
+                    $newMobile->mobileNumber = $number['mobileNumber'];
+                    $newMobile->telnyxMobileId = $number['id'];
                     $newMobile->save();
                 }
             }
+            $mobileNumbers = collect($request->sipTrunkingConnection['numbers'])->pluck('mobileNumber')->toArray();
             $user->numbers()->whereNotIn('mobileNumber', $mobileNumbers)->delete();
     
         }
@@ -95,7 +96,10 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        return User::with('numbers')->find($id);
+        $user = User::find($id);
+        $user->numbers = $this->getMainUserNumbers(true);
+
+        return $user;
     }
 
     /**
@@ -162,15 +166,32 @@ class UsersController extends Controller
 
     public function sortCallForwarding(Request $request)
     {
-        $mainUserId = "";
+        $telnyxController = new TelnyxController();
+
+        $mainUserId = $this->getMainUserId();
+        $users = User::where('id', $mainUserId)->orWhere('mainUserId', $mainUserId)->update(['forwardingType' => $request->forwardingType]);
+
+        $mainUser = User::find($mainUserId);
+
+        $numberId = $mainUser->number->telnyxMobileId;
+        
+        if($request->forwardingType != 'off' && empty($request->users)){
+            return response()->json([
+                'success' => false,
+                'message' => 'Enabling call forwarding need requires another user phone number to forward call',
+            ], 400);
+        }
+
+        $result = $telnyxController->updateCallForwardingType($numberId, $request->forwardingType, $request->users[0]['numbers'][0]['mobileNumber']);
+        dd($result);
         foreach($request->users as $user){
             $savedUser = User::find($user['id']);
             $savedUser->sortCallForwarding = $user['sortCallForwarding'];
             $savedUser->save();
-            $mainUserId = $savedUser->mainUserId;
-        }
-        $users = User::where('id', $mainUserId)->orWhere('mainUserId', $mainUserId)->update(['forwardingType' => $request->forwardingType]);
 
+            $result = $telnyxController->updateCallForwardingType($numberId, $request->forwardingType, $savedUser->number->mobileNumber);
+            $numberId = $savedUser->number->telnyxMobileId;
+        }
         return response()->json("Success", 200);
     }
 }

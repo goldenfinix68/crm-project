@@ -87,7 +87,7 @@ const CallForwarding: React.FC = ({}) => {
 
     const [data, setData] = useState([]);
     const [forwardingType, setForwardingType] = useState(
-        loggedInUser?.forwardingType ?? "Do not forward"
+        loggedInUser?.forwardingType ?? "off"
     );
 
     const handleDragEnd = (result: {
@@ -105,7 +105,7 @@ const CallForwarding: React.FC = ({}) => {
 
         let resetID = selectResetID(items);
         setData(resetID);
-        saveCallForwardSort({ users: resetID, forwardingType });
+        // saveCallForwardSort({ users: resetID, forwardingType });
     };
 
     const selectResetID = (items: any) => {
@@ -136,7 +136,10 @@ const CallForwarding: React.FC = ({}) => {
     useEffect(() => {
         setData(
             users
-                ?.filter((user) => user.role != "mainUser")
+                ?.filter(
+                    (user: TUser) =>
+                        user.role != "mainUser" && user.numbers.length
+                )
                 ?.sort((a, b) => a.sortCallForwarding - b.sortCallForwarding)
         );
     }, [users]);
@@ -155,29 +158,29 @@ const CallForwarding: React.FC = ({}) => {
                     showSearch
                     options={[
                         {
-                            value: "Do not forward",
+                            value: "off",
                             label: "Do not forward",
                         },
                         {
-                            value: "Forward on failure",
+                            value: "on-failure",
                             label: "Forward on failure",
                         },
                         {
-                            value: "Forward always",
+                            value: "always",
                             label: "Forward always",
                         },
                     ]}
                     value={forwardingType}
                     onChange={(e) => {
                         setForwardingType(e);
-                        saveCallForwardSort({
-                            users: data,
-                            forwardingType: e,
-                        });
+                        // saveCallForwardSort({
+                        //     users: data,
+                        //     forwardingType: e,
+                        // });
                     }}
                 />
 
-                {forwardingType != "Do not forward" && (
+                {forwardingType != "off" && (
                     <>
                         <Alert
                             message="Prioritize users who will receive the call first."
@@ -190,6 +193,20 @@ const CallForwarding: React.FC = ({}) => {
                         </DragDropContext>
                     </>
                 )}
+
+                <Button
+                    type="primary"
+                    onClick={() => {
+                        saveCallForwardSort({
+                            users: data,
+                            forwardingType,
+                        });
+                    }}
+                    loading={callForwardSort.isLoading}
+                    style={{ float: "right" }}
+                >
+                    Save
+                </Button>
             </Space>
         </Card>
     );
