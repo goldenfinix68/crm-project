@@ -16,14 +16,22 @@ import {
     Checkbox,
     TimePicker,
     Popover,
+    Tooltip,
+    Dropdown,
+    Menu,
+    List,
 } from "antd";
 
-import { CaretDownOutlined, CloseOutlined } from "@ant-design/icons";
+import {
+    CaretDownOutlined,
+    CloseOutlined,
+    InfoCircleOutlined,
+} from "@ant-design/icons";
 import { DEFAULT_REQUIRED_MESSAGE } from "../../constants";
 import moment from "moment-timezone";
 import { TContact, TWorkflow } from "../../entities";
 import UseTemplatePopover from "../UseTemplatePopover";
-import { replacePlaceholders } from "../../helpers";
+import { replacePlaceholders, spinContent } from "../../helpers";
 import { useMutation } from "react-query";
 import { createWorkflowMutation } from "../../api/mutation/useWorkflowMutation";
 import queryClient from "../../queryClient";
@@ -103,8 +111,7 @@ const ModalForm = ({
 }) => {
     const [form] = Form.useForm();
     const message = Form.useWatch("message", form);
-    const [isTemplatePopoverOpen, setIsTemplatePopoverOpen] = useState(false);
-    const [isAttributePopoverOpen, setIsAttributePopoverOpen] = useState(false);
+    const allSpunVariations = spinContent(message);
     // const timezoneOptions = moment.tz.names().map((tz) => (
     //     <Select.Option key={tz} value={tz}>
     //         {tz}
@@ -339,7 +346,20 @@ const ModalForm = ({
 
             <Form.Item
                 name="message"
-                label="Message"
+                label={
+                    <>
+                        Message
+                        <Tooltip
+                            title='You can use content spinner using "[" and "]". E.g. My [green|blue|yellow] bird is sitting [there|overthere|on the ground].
+'
+                        >
+                            <InfoCircleOutlined
+                                className="m-l-sm"
+                                type="default"
+                            />
+                        </Tooltip>
+                    </>
+                }
                 rules={[
                     {
                         required: true,
@@ -364,70 +384,87 @@ const ModalForm = ({
                 }}
             >
                 <Typography.Text>Count: {message?.length}</Typography.Text>
-                <div>
-                    <Popover
-                        content={
-                            <AddAttributePopoverContent
-                                handleSelect={(value) => {
-                                    const currentMessage =
-                                        form.getFieldValue("message");
-                                    form.setFieldValue(
-                                        "message",
-                                        `${currentMessage ?? ""}${value}`
-                                    );
-                                    setIsAttributePopoverOpen(false);
-                                }}
-                            />
-                        }
-                        title={
-                            <Button
-                                type="link"
-                                style={{ padding: 0 }}
-                                onClick={() => setIsAttributePopoverOpen(false)}
-                            >
-                                Cancel
-                            </Button>
-                        }
-                        trigger={"click"}
-                        open={isAttributePopoverOpen}
-                    >
-                        <Button
-                            type="link"
-                            onClick={() => setIsAttributePopoverOpen(true)}
-                        >
-                            Merge Fields <CaretDownOutlined />
-                        </Button>
-                    </Popover>
-                    <Popover
-                        content={
-                            <UseTemplatePopover
-                                handleSelect={(value) => {
-                                    form.setFieldValue("message", value);
-                                    setIsTemplatePopoverOpen(false);
-                                }}
-                                contact={contacts}
-                            />
-                        }
-                        title={
-                            <Button
-                                type="link"
-                                style={{ padding: 0 }}
-                                onClick={() => setIsTemplatePopoverOpen(false)}
-                            >
-                                Cancel
-                            </Button>
-                        }
-                        trigger={"click"}
-                        open={isTemplatePopoverOpen}
-                    >
-                        <Button
-                            type="link"
-                            onClick={() => setIsTemplatePopoverOpen(true)}
-                        >
-                            Use Template <CaretDownOutlined />
-                        </Button>
-                    </Popover>
-                </div>
+
+                <Dropdown.Button
+                    overlay={
+                        <Menu>
+                            <Menu.Item key="1">
+                                <Popover
+                                    content={
+                                        <AddAttributePopoverContent
+                                            handleSelect={(value) => {
+                                                const currentMessage =
+                                                    form.getFieldValue(
+                                                        "message"
+                                                    );
+                                                form.setFieldValue(
+                                                    "message",
+                                                    `${currentMessage ?? ""}{{${
+                                                        value.fieldName
+                                                    }}}`
+                                                );
+                                            }}
+                                        />
+                                    }
+                                    trigger={"click"}
+                                >
+                                    Merge Fields
+                                </Popover>
+                            </Menu.Item>
+                            <Menu.Item key="2">
+                                <Popover
+                                    content={
+                                        <UseTemplatePopover
+                                            handleSelect={(value) => {
+                                                form.setFieldValue(
+                                                    "message",
+                                                    value
+                                                );
+                                            }}
+                                            contact={contacts}
+                                        />
+                                    }
+                                    trigger={"click"}
+                                >
+                                    Text Template
+                                </Popover>
+                            </Menu.Item>
+                            {allSpunVariations?.length ? (
+                                <Menu.Item key="3">
+                                    <Popover
+                                        content={
+                                            <div>
+                                                <p>Original: {message}</p>
+                                                <p>
+                                                    All Possible Spun
+                                                    Variations:
+                                                </p>
+                                                <List
+                                                    dataSource={
+                                                        allSpunVariations
+                                                    }
+                                                    renderItem={(
+                                                        item: any,
+                                                        index
+                                                    ) => (
+                                                        <List.Item key={index}>
+                                                            {item}
+                                                        </List.Item>
+                                                    )}
+                                                />
+                                            </div>
+                                        }
+                                        trigger={"click"}
+                                    >
+                                        Content Spinner Preview
+                                    </Popover>
+                                </Menu.Item>
+                            ) : null}
+                        </Menu>
+                    }
+                >
+                    Tools
+                </Dropdown.Button>
             </Space>
 
             <Space style={{ paddingTop: "5px" }}>

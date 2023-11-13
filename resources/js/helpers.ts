@@ -232,3 +232,38 @@ export function arraysAreEqual(arr1, arr2) {
     }
     return true;
 }
+
+export function spinContent(content) {
+    // Use a regular expression to find and replace the spin syntax
+    const pattern = /\[([^\[\]]+)\]/g;
+    if (!pattern.test(content)) {
+        return null; // Return null if no placeholders are found
+    }
+    const matches = content?.match(pattern);
+
+    // If there are matches, generate all possible spun versions
+    if (matches) {
+        const allSpunVersions: any = [];
+
+        const generateSpunVersions = (currentContent, currentIndex) => {
+            if (currentIndex === matches.length) {
+                allSpunVersions.push(currentContent);
+                return;
+            }
+
+            const options = matches[currentIndex].slice(1, -1).split("|");
+            options.forEach((option) => {
+                generateSpunVersions(
+                    currentContent.replace(matches[currentIndex], option),
+                    currentIndex + 1
+                );
+            });
+        };
+
+        generateSpunVersions(content, 0);
+        return allSpunVersions;
+    }
+
+    // If there are no matches, return the original content
+    return [content];
+}

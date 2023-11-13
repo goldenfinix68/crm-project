@@ -120,4 +120,33 @@ class Controller extends BaseController
        return  $isRawNumbers ? $users->pluck('numbers')->flatten() : $users->pluck('numbers')->flatten()->pluck('mobileNumber');
     }
     
+    public function spinContent($content) {
+        // Use a regular expression to find and replace the spin syntax
+        $pattern = '/\[([^\[\]]+)\]/';
+        preg_match_all($pattern, $content, $matches);
+        if (empty($matches[0])) {
+            return array($content);
+        }
+    
+        // Initialize an array to store spun content variations
+        $variations = array($content);
+    
+        // Iterate through each match and generate all possible combinations
+        foreach ($matches[0] as $match) {
+            $options = explode('|', trim($match, '{}'));
+            $newVariations = array();
+            
+            foreach ($variations as $variant) {
+                foreach ($options as $option) {
+                    $newVariations[] = str_replace($match, $option, $variant);
+                }
+            }
+    
+            // Update the array of variations
+            $variations = $newVariations;
+        }
+    
+        return $variations;
+    }
+
 }

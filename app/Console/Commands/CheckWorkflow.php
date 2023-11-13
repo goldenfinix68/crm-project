@@ -46,23 +46,23 @@ class CheckWorkflow extends Command
     public function handle()
     {
 		$now = Carbon::now();
-		$workflowItems = WorkflowItem::where(DB::raw('trigger_at - INTERVAL 5 MINUTE'), '<=', $now)
-			->where('queue_lock', false)
+		$workflowItems = WorkflowItem::where('queue_lock', false)
+            // ->where(DB::raw('trigger_at - INTERVAL 5 MINUTE'), '<=', $now)
 			->get();
 		if ($workflowItems) {
 			foreach ($workflowItems as $workflowItem) {
                 $workflow = $workflowItem->workflow;
                 $timeStartSeconds = Carbon::parse($workflowItem->trigger_at)->diffInSeconds($now);
                 foreach($workflowItem->contactIds as $id){
-                    $sum++;
                     $contact = Contact::find($id);
                     $user = User::find($workflow->userId);
                     if(!empty($contact)){
-                        $message = $this->replace_text($workflow->message, $contact);
-
+                        $message = $this->replacePlaceholders($workflow->message, $contact->fields);
+                        $spunContents = $this->spinContent($message);
+                        $message = $spunContents[array_rand($spunContents)];
                         $text = new Text();
-                        $text->from = $user->numbers->first();
-                        $text->to = $contact->mobile;
+                        $text->from = $user->number->mobileNumber;
+                        $text->to = $contact->fields['mobile'];
                         $text->message = $message;
                         $text->type = 'SMS';
                         $text->status = 'queued';
@@ -70,7 +70,7 @@ class CheckWorkflow extends Command
                         $text->workflowItemId = $workflowItem->id;
                         $text->save();
 
-                        SendText::dispatch($text, ($sum == $workflowItems))->delay(now()->addSeconds($timeStartSeconds + 1));
+                        SendText::dispatch($text)->delay(now()->addSeconds($timeStartSeconds + 1));
                     }
                 }
                 $workflowItem->queue_lock = true;
@@ -83,16 +83,56 @@ class CheckWorkflow extends Command
 		$this->info('DONE');
     }
     
-    private function replace_text($message, $contact) {
-         // Use a regular expression to match placeholders like {{column_name}}
-        $pattern = '/\{\{(\w+)\}\}/';
+    private function replacePlaceholders($text, $data)
+    {
+        // Define a callback function to replace placeholders with values
+        $replaceCallback = function ($matches) use ($data) {
+            $key = trim($matches[1]);
+            return isset($data[$key]) ? $data[$key] : '';
+        };
 
-        // Use preg_replace_callback to replace each placeholder with its corresponding value
-        $replacedText = preg_replace_callback($pattern, function ($matches) use ($contact) {
-            $columnName = $matches[1]; // Extract the column name from the placeholder
-            return $contact->{$columnName}; // Replace with the value from the database record
-        }, $message);
+        // Replace dynamic placeholders (e.g., {{firstName}})
+        $text = preg_replace_callback('/{{\s*([^\s}]+)\s*}}/', $replaceCallback, $text);
 
-        return $replacedText;
+        // Replace dynamic placeholders with options (e.g., [green|blue|yellow])
+        $text = preg_replace_callback('/\[(.*?)\]/', function ($matches) {
+            $options = explode('|', $matches[1]);
+            $randomIndex = array_rand($options);
+            return $options[$randomIndex];
+        }, $text);
+
+        return $text;
     }
+    
+    private function spinContent($content) {
+        // Use a regular expression to find and replace the spin syntax
+        $pattern = '/\[([^\[\]]+)\]/';
+    
+        preg_match_all($pattern, $content, $matches);
+    
+        // If there are matches, generate all possible spun versions
+        if ($matches) {
+            $allSpunVersions = [];
+    
+            $generateSpunVersions = function ($currentContent, $currentIndex) use (&$generateSpunVersions, &$allSpunVersions, $matches, $pattern) {
+                if ($currentIndex === count($matches[0])) {
+                    $allSpunVersions[] = $currentContent;
+                    return;
+                }
+    
+                $options = explode('|', $matches[1][$currentIndex]);
+                foreach ($options as $option) {
+                    $newContent = preg_replace($pattern, $option, $currentContent, 1);
+                    $generateSpunVersions($newContent, $currentIndex + 1);
+                }
+            };
+    
+            $generateSpunVersions($content, 0);
+            return $allSpunVersions;
+        }
+    
+        // If there are no matches, return the original content
+        return [$content];
+    }
+    
 }
