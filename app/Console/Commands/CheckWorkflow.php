@@ -47,7 +47,7 @@ class CheckWorkflow extends Command
     {
 		$now = Carbon::now();
 		$workflowItems = WorkflowItem::where('queue_lock', false)
-            // ->where(DB::raw('trigger_at - INTERVAL 5 MINUTE'), '<=', $now)
+            ->where(DB::raw('trigger_at - INTERVAL 5 MINUTE'), '<=', $now)
 			->get();
 		if ($workflowItems) {
 			foreach ($workflowItems as $workflowItem) {
