@@ -11983,3 +11983,39 @@ textarea.form-control-lg {
 .no-resize {
   resize: none;
 }/*# sourceMappingURL=app.css.map */
+
+
+
+.updateAvailableDiv {
+    background: white;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    /* width: 390px; */
+    z-index: 9999999;
+    padding: 15px 17px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0px 0px 18px -3px rgba(0, 0, 0, 0.47);
+    -moz-box-shadow: 0px 0px 18px -3px rgba(0, 0, 0, 0.47);
+    box-shadow: 0px 0px 18px -3px rgba(0, 0, 0, 0.47);
+    display: flex;
+    gap: 10px;
+}
+
+.updateAvailableDiv .div1 {
+    padding-top: 6px;
+}
+
+.updateAvailableDiv .div1 span {
+    font-size: 20px;
+}
+
+.updateAvailableDiv .div2 h3 {
+    font-weight: 600;
+    margin-bottom: 0px;
+}
+.updateAvailableDiv .div2 p {
+    color: #b5b5b5;
+    line-height: 1.3;
+    margin-bottom: 7px;
+}
