@@ -1,9 +1,6 @@
 {
     "private": true,
     "scripts": {
-        "predev": "npm run generate-build-meta",
-        "preprod": "npm run generate-build-meta",
-        "generate-build-meta": "node_modules/react-clear-cache/bin/cli.js",
         "dev": "vite",
         "build": "vite build"
     },
@@ -55,13 +52,11 @@
         "bootstrap-icons": "^1.10.5",
         "force": "^0.0.3",
         "jquery": "^3.7.0",
-        "mkdirp": "^3.0.1",
         "moment": "^2.29.4",
         "moment-timezone": "^0.5.43",
         "papaparse": "^5.4.1",
         "pusher-js": "^8.3.0",
         "react-beautiful-dnd": "^13.1.1",
-        "react-clear-cache": "^1.4.14",
         "react-dnd": "^16.0.1",
         "react-dnd-html5-backend": "^16.0.1",
         "react-draggable-list": "^4.1.0",
