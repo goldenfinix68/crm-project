@@ -61,11 +61,11 @@ const Setup: React.FC = (props) => {
         //     title: "Deal Pipeline",
         //     link: "/setup/customizations/tag",
         // },
-        {
-            icon: <ZoomInOutlined />,
-            title: "Activity Types",
-            link: "/setup/customizations/activity-types",
-        },
+        // {
+        //     icon: <ZoomInOutlined />,
+        //     title: "Activity Types",
+        //     link: "/setup/customizations/activity-types",
+        // },
         // {
         //     icon: <AppstoreOutlined />,
         //     title: "System Modules",

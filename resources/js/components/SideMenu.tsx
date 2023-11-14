@@ -72,11 +72,11 @@ const SideMenu = ({ children }) => {
                             icon: <UsergroupAddOutlined />,
                             label: "Contacts",
                         },
-                        {
-                            key: "/activities",
-                            icon: <CheckCircleOutlined />,
-                            label: "Activities",
-                        },
+                        // {
+                        //     key: "/activities",
+                        //     icon: <CheckCircleOutlined />,
+                        //     label: "Activities",
+                        // },
                         {
                             key: "/deals",
                             icon: <DollarCircleOutlined />,

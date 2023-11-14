@@ -5,6 +5,7 @@ import {
     EllipsisOutlined,
     PhoneOutlined,
     GlobalOutlined,
+    DollarCircleOutlined,
 } from "@ant-design/icons";
 import { Button, Popover, Space, Typography } from "antd";
 import React, { useContext } from "react";
@@ -37,52 +38,18 @@ const ActionMenu = ({ contact }: { contact: TContact }) => {
                 padding: "8px",
             }}
         >
-            <DropdownComponent
-                menuList={[
-                    {
-                        label: (
-                            <Space
-                                onClick={() => {
-                                    setCallerNumber(
-                                        contact?.defaultMobileNumber
-                                            ?.mobileNumber ?? ""
-                                    );
-                                    setDestinationNumber(
-                                        contact?.fields.mobile ?? ""
-                                    );
-                                    setIsModalOpen(true);
-                                }}
-                            >
-                                <GlobalOutlined />
-                                Call Via Browser
-                            </Space>
-                        ),
-                        key: "41",
-                    },
-                    {
-                        label: (
-                            <Space>
-                                <PhoneOutlined />
-                                Call Via Phone
-                            </Space>
-                        ),
-                        key: "42",
-                    },
-                ]}
-                showCarret={false}
-                label={
-                    <ActionMenuBtn
-                        handleClick={() => {
-                            console.log("phone");
-                        }}
-                        icon={
-                            <PhoneFilled
-                                style={{ color: "white", fontSize: "10px" }}
-                            />
-                        }
-                        tooltip="Click to call"
-                    />
+            <ActionMenuBtn
+                handleClick={() => {
+                    setCallerNumber(
+                        contact?.defaultMobileNumber?.mobileNumber ?? ""
+                    );
+                    setDestinationNumber(contact?.fields.mobile ?? "");
+                    setIsModalOpen(true);
+                }}
+                icon={
+                    <PhoneFilled style={{ color: "white", fontSize: "10px" }} />
                 }
+                tooltip="Click to call"
             />
 
             <ActionMenuBtn
@@ -108,61 +75,14 @@ const ActionMenu = ({ contact }: { contact: TContact }) => {
             />
             <ActionMenuBtn
                 handleClick={() => {
-                    console.log("phone");
+                    setDealModalOpen(true);
                 }}
                 icon={
-                    <span
-                        style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                        }}
-                    >
-                        <MailFilled
-                            style={{ color: "white", fontSize: "10px" }}
-                        />
-                        <MailFilled
-                            style={{ color: "white", fontSize: "10px" }}
-                        />
-                        <MailFilled
-                            style={{ color: "white", fontSize: "10px" }}
-                        />
-                    </span>
-                }
-                tooltip="Enroll to sequence"
-            />
-            <DropdownComponent
-                menuList={[
-                    {
-                        label: (
-                            <Typography.Text
-                                onClick={() => setActivityModalOpen(true)}
-                            >
-                                Add Activity
-                            </Typography.Text>
-                        ),
-                        key: "1",
-                    },
-                    {
-                        label: (
-                            <Typography.Text
-                                onClick={() => setDealModalOpen(true)}
-                            >
-                                Add Deal
-                            </Typography.Text>
-                        ),
-                        key: "2",
-                    },
-                ]}
-                showCarret={false}
-                label={
-                    <ActionMenuBtn
-                        handleClick={() => {
-                            console.log("phone");
-                        }}
-                        icon={<EllipsisOutlined style={{ color: "white" }} />}
+                    <DollarCircleOutlined
+                        style={{ color: "white", fontSize: "10px" }}
                     />
                 }
+                tooltip="Click to add deal"
             />
 
             <TextModal

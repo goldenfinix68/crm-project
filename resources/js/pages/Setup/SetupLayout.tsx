@@ -105,11 +105,11 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                     path: "/setup/customizations/deal-pipeline",
                     label: "Deal Pipeline",
                 },
-                {
-                    key: "/setup/customizations/activity-types",
-                    path: "/setup/customizations/activity-types",
-                    label: "Activity Types",
-                },
+                // {
+                //     key: "/setup/customizations/activity-types",
+                //     path: "/setup/customizations/activity-types",
+                //     label: "Activity Types",
+                // },
                 // {
                 //     key: "/setup/customizations/modules",
                 //     path: "/setup/customizations/modules",
