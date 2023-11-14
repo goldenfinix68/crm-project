@@ -85,7 +85,7 @@ const ActionMenu = ({ contact }: { contact: TContact }) => {
                 }
                 tooltip="Click to add deal"
             />
-            <ActionMenuBtn
+            {/* <ActionMenuBtn
                 handleClick={() => {
                     setDefaultMobileNumberModal(true);
                 }}
@@ -95,7 +95,7 @@ const ActionMenu = ({ contact }: { contact: TContact }) => {
                     />
                 }
                 tooltip="Click to set the default mobile number for contacting this contact. This number will be automatically selected when initiating communication."
-            />
+            /> */}
 
             <TextModal
                 closeModal={() => setTextModalOpen(false)}
