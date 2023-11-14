@@ -199,7 +199,9 @@ const ModalAddDeal = ({
                         </Button>
                     )}
 
-                    <Button onClick={resetFields}>Cancel</Button>
+                    <Button onClick={resetFields}>
+                        {deal ? "No" : "Cancel"}
+                    </Button>
                 </div>
             </Form>
         </Modal>

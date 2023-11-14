@@ -165,9 +165,11 @@ const CustomFieldFormModal = ({
                             }}
                             loading={save.isLoading}
                         >
-                            Save and Close
+                            Save
                         </Button>
-                        <Button onClick={resetFields}>Cancel</Button>
+                        <Button onClick={resetFields}>
+                            {record ? "No" : "Cancel"}
+                        </Button>
                     </div>
                 )}
             </Modal>

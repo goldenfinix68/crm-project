@@ -154,7 +154,9 @@ const CustomFieldSectionAddUpdateModal = ({
                             Save
                         </Button>
 
-                        <Button onClick={resetFields}>Cancel</Button>
+                        <Button onClick={resetFields}>
+                            {cutomFieldSection ? "No" : "Cancel"}
+                        </Button>
                     </Space>
                 </Form>
             </Space>

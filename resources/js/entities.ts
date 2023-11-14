@@ -5,6 +5,7 @@ export type TUser = {
     email: string;
     role: string;
     sortCallForwarding: number;
+    forwardingType?: string;
 } & TSipTrunkingConnection;
 
 export type TMobileNumber = {
@@ -188,7 +189,7 @@ export type TCustomField = {
     relatedRecordLabel?: string;
     fieldType?: string;
     isDisplayTable?: boolean;
-    tableSort: number;
+    tableSort?: number;
 };
 
 export type TCustomFieldValue = {

@@ -46,7 +46,6 @@ interface Props {
 }
 const SendToManyModal = ({ isModalOpen, closeModal, contacts }: Props) => {
     const colors = ["#FF5733", "#00AC7C", "#3498DB", "#E74C3C", "#9B59B6"];
-    console.log("contacts", contacts);
     return (
         <Modal
             className="your-modal"
