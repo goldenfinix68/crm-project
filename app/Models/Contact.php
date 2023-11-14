@@ -76,13 +76,12 @@ class Contact extends Model
         'mailingZip',
         'wetlandsStatus',
         'county',
-        'defaultMobileNumberId'
+        'defaultMobileNumber'
     ];
 
     protected $appends = [
         'wall',
         'texts',
-        'defaultMobileNumber',
         'fields',
     ];
 
@@ -103,7 +102,7 @@ class Contact extends Model
             $customFields[$value->customField->fieldName.'Id'] = $value->id;
         }
         $customFields['contactId'] = $this->id;
-        $customFields['defaultMobileNumberId'] = $this->defaultMobileNumberId;
+        $customFields['defaultMobileNumber'] = $this->defaultMobileNumber;
 
         return $customFields;
 
@@ -122,11 +121,6 @@ class Contact extends Model
     public function notes()
     {
         return $this->hasMany(\App\Models\Note::class, 'contactId', 'id');
-    }
-
-    public function defaultMobile()
-    {
-        return $this->hasOne(\App\Models\MobileNumber::class, 'id', 'defaultMobileNumberId');
     }
 
     public function texts()
@@ -187,13 +181,6 @@ class Contact extends Model
     {
         return $this->texts();
     }
-
-
-    public function getDefaultMobileNumberAttribute()
-    {
-        return $this->defaultMobile;
-    }
-
     public function getWallAttribute()
     {
         $data = new Collection();

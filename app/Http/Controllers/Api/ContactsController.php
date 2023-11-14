@@ -212,36 +212,36 @@ class ContactsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    // public function update(Request $request, $id)
-    // {
-    //     $from = Contact::find($id);
-    //     $contact = Contact::updateOrCreate(
-    //         ['id' => $id],
-    //         $request->all()
-    //     );
+    public function update(Request $request, $id)
+    {
+        $from = Contact::find($id);
+        $contact = Contact::updateOrCreate(
+            ['id' => $id],
+            $request->all()
+        );
 
-    //     foreach ($request->all() as $key => $value) {
-    //         if ($key != "id" && $key != "typeId" && $from->{$key} != $contact->{$key}) {
-    //             $update = new ContactUpdate();
-    //             $update->userId = Auth::id();
-    //             $update->contactId = $id;
+        foreach ($request->all() as $key => $value) {
+            if ($key != "id" && $key != "typeId" && $from->{$key} != $contact->{$key}) {
+                $update = new ContactUpdate();
+                $update->userId = Auth::id();
+                $update->contactId = $id;
                 
-    //             if($key == 'defaultMobileNumberId'){
-    //                 $update->from = $from->defaultMobile ? $from->defaultMobile->mobileNumber : "";
-    //                 $update->to = $contact->defaultMobile->mobileNumber;
-    //                 $update->title = "Default Mobile Number Updated";
-    //             }
-    //             else{
-    //                 $update->from = $from->{$key};
-    //                 $update->to = $contact->{$key};
-    //                 $update->title = Str::title(Str::camel($key)) . " Updated";
-    //             }
-    //             $update->save();
-    //         }
-    //     }
+                if($key == 'defaultMobileNumber'){
+                    $update->from = $from->defaultMobileNumber ?? "";
+                    $update->to = $contact->defaultMobileNumber;
+                    $update->title = "Default Mobile Number Updated";
+                }
+                else{
+                    $update->from = $from->{$key};
+                    $update->to = $contact->{$key};
+                    $update->title = Str::title(Str::camel($key)) . " Updated";
+                }
+                $update->save();
+            }
+        }
 
-    //     return response()->json($contact, 200);
-    // }
+        return response()->json($contact, 200);
+    }
 
     /**
      * Remove the specified resource from storage.

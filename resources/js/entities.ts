@@ -236,8 +236,7 @@ export type TWallData = {
 
 export type TContact = {
     id: string;
-    defaultMobileNumber?: TMobileNumber;
-    defaultMobileNumberId?: string;
+    defaultMobileNumber?: string;
     fields: {
         [key: string]: any;
     };

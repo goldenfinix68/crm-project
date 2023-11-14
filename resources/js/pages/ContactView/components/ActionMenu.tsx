@@ -6,6 +6,7 @@ import {
     PhoneOutlined,
     GlobalOutlined,
     DollarCircleOutlined,
+    ApartmentOutlined,
 } from "@ant-design/icons";
 import { Button, Popover, Space, Typography } from "antd";
 import React, { useContext } from "react";
@@ -19,14 +20,16 @@ import { useCallContext } from "../../../context/CallContext";
 import { useLoggedInUser } from "../../../api/query/userQuery";
 import ContactContext from "../context";
 import { TContact } from "../../../entities";
+import ModalSetDefaultMobile from "./ModalSetDefaultMobile";
 
 const ActionMenu = ({ contact }: { contact: TContact }) => {
     const [textModalOpen, setTextModalOpen] = React.useState(false);
     const [activityModalOpen, setActivityModalOpen] = React.useState(false);
     const [dealModalOpen, setDealModalOpen] = React.useState(false);
+    const [defaultMobileNumberModal, setDefaultMobileNumberModal] =
+        React.useState(false);
     const { setIsModalOpen, setCallerNumber, setDestinationNumber } =
         useCallContext();
-    const { user, isLoading: isLogginUserLoading } = useLoggedInUser();
 
     return (
         <Space
@@ -40,9 +43,7 @@ const ActionMenu = ({ contact }: { contact: TContact }) => {
         >
             <ActionMenuBtn
                 handleClick={() => {
-                    setCallerNumber(
-                        contact?.defaultMobileNumber?.mobileNumber ?? ""
-                    );
+                    setCallerNumber(contact?.defaultMobileNumber ?? "");
                     setDestinationNumber(contact?.fields.mobile ?? "");
                     setIsModalOpen(true);
                 }}
@@ -84,11 +85,28 @@ const ActionMenu = ({ contact }: { contact: TContact }) => {
                 }
                 tooltip="Click to add deal"
             />
+            <ActionMenuBtn
+                handleClick={() => {
+                    setDefaultMobileNumberModal(true);
+                }}
+                icon={
+                    <ApartmentOutlined
+                        style={{ color: "white", fontSize: "10px" }}
+                    />
+                }
+                tooltip="Click to set the default mobile number for contacting this contact. This number will be automatically selected when initiating communication."
+            />
 
             <TextModal
                 closeModal={() => setTextModalOpen(false)}
                 isModalOpen={textModalOpen}
                 to={contact.fields.mobile ?? ""}
+                contact={contact}
+            />
+
+            <ModalSetDefaultMobile
+                isModalOpen={defaultMobileNumberModal}
+                closeModal={() => setDefaultMobileNumberModal(false)}
                 contact={contact}
             />
 

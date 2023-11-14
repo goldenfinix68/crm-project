@@ -104,13 +104,12 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
                 labelWrap
                 initialValues={{
                     to: to,
-                    from: contact?.defaultMobileNumber
-                        ? contact?.defaultMobileNumber.mobileNumber
-                        : null,
+                    from: contact?.defaultMobileNumber ?? "",
                 }}
                 onFinish={onFinish}
                 autoComplete="off"
                 form={form}
+                className="p-t-md"
             >
                 <Row gutter={12}>
                     <Col span={12}>
