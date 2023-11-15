@@ -46,6 +46,15 @@ class CallsController extends Controller
             if(!empty($contact)){
                 $contactName = $contact->fields['firstName'] . ' ' . $contact->fields['lastName'];
             }
+
+            if(!empty($isFromApp)){
+                $user = $isFromApp->user;
+            }
+            else{
+                $user = MobileNumber::where('mobileNumber', $call->to)->first()->user;
+            }
+            $userName = $user->firstName . ' ' . $user->lastName;
+
             $answeredData = $callData->where('type', 'call.answered')->first();
             $hangupData = $callData->where('type', 'call.hangup')->first();
             $isAnswered = !empty($answeredData) && !empty($hangupData);
@@ -57,7 +66,8 @@ class CallsController extends Controller
                 'contactName' => $contactName,
                 'to' => $call->to,
                 'from' => $call->from,
-                'duration' => $isAnswered ? $hangupData->created_at->diffInSeconds($answeredData->created_at) : "0"
+                'duration' => $isAnswered ? $hangupData->created_at->diffInSeconds($answeredData->created_at) : "0",
+                'userName' => $userName,
             ];
         }
         
