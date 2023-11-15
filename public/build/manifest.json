@@ -13,19 +13,14 @@
   },
   "resources/js/app.tsx": {
     "assets": [
-      "assets/deal-arrow-b5bb7f1a.png",
       "assets/bootstrap-icons-bacd70af.woff2",
       "assets/bootstrap-icons-4d4572ef.woff"
     ],
     "css": [
       "assets/app-dbb242b8.css"
     ],
-    "file": "assets/app-d81835d5.js",
+    "file": "assets/app-fc95f68a.js",
     "isEntry": true,
     "src": "resources/js/app.tsx"
-  },
-  "resources/js/assets/images/deal-arrow.png": {
-    "file": "assets/deal-arrow-b5bb7f1a.png",
-    "src": "resources/js/assets/images/deal-arrow.png"
   }
 }
