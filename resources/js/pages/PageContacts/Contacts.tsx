@@ -81,7 +81,7 @@ const Contacts = () => {
     return (
         <Space direction="vertical" className="w-100">
             <HeaderMenu />
-            <Card>
+            <Card loading={isFilteredContactsLoading}>
                 <ContactTableHeader
                     setSelectedRows={setSelectedRows}
                     setSelectedRowKeys={setSelectedRowKeys}

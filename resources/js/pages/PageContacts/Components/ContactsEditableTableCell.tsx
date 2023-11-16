@@ -97,7 +97,7 @@ const ContactsEditableTableCell = ({
                     form.submit();
                 }}
                 okText="Save"
-                cancelText="No"
+                cancelText="Cancel"
             >
                 <Button
                     style={{
