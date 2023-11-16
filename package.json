@@ -4,7 +4,7 @@
     "scripts": {
         "predev": "npm run generate-build-meta",
         "preprod": "npm run generate-build-meta",
-        "generate-build-meta": "./node_modules/react-clear-cache/bin/cli.js",
+        "generate-build-meta": "node ./node_modules/react-clear-cache/bin/cli.js",
         "dev": "vite",
         "build": "vite build"
     },
