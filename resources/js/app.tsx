@@ -73,7 +73,11 @@ import CallForwarding from "./pages/Setup/CallForwarding";
 import { GiftOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 
-import { ClearCacheProvider, useClearCacheCtx } from "react-clear-cache";
+import {
+    ClearCacheProvider,
+    useClearCache,
+    useClearCacheCtx,
+} from "react-clear-cache";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isForgotPassword = window.location.pathname === "/forgot-password";
