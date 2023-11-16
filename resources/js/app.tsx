@@ -41,6 +41,7 @@ import Activity from "./pages/Activity";
 import Deal from "./pages/Deal";
 import Inbox from "./pages/Inbox/Inbox";
 // css
+
 //
 import { useLoggedInUser } from "./api/query/userQuery";
 import Dialer from "./pages/Dialer/Dialer";
@@ -70,14 +71,6 @@ import ActivitySetup from "./pages/ActivitySetup";
 import DealPipelineSetup from "./pages/DealPipelineSetup";
 import { allowedroleToAccess } from "./constants";
 import CallForwarding from "./pages/Setup/CallForwarding";
-import { GiftOutlined } from "@ant-design/icons";
-import { Button } from "antd";
-
-import {
-    ClearCacheProvider,
-    useClearCache,
-    useClearCacheCtx,
-} from "react-clear-cache";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isForgotPassword = window.location.pathname === "/forgot-password";
@@ -103,10 +96,7 @@ const App: React.FC = () => {
             pusher.unsubscribe("text-channel");
         };
     }, []);
-    const { isLatestVersion, emptyCacheStorage } = useClearCacheCtx();
-    useEffect(() => {
-        console.log("isLatestVersion", isLatestVersion);
-    }, []);
+
     return (
         <Router>
             {isLoginPage ? (
@@ -130,32 +120,6 @@ const App: React.FC = () => {
             ) : (
                 <AppContextProvider>
                     <CallProvider>
-                        {/* {!isLatestVersion && (
-                            <div className="updateAvailableDiv">
-                                <div className="div1">
-                                    <GiftOutlined />
-                                </div>
-                                <div className="div2">
-                                    <h3>Updates available</h3>
-                                    <p>
-                                        A new and better version of the app is
-                                        installed
-                                        <br />
-                                        and ready. Reload the page to get all
-                                        the changes.
-                                    </p>
-                                    <Button
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            emptyCacheStorage();
-                                        }}
-                                        type="primary"
-                                    >
-                                        Reload
-                                    </Button>
-                                </div>
-                            </div>
-                        )} */}
                         <SideMenu>
                             <Routes>
                                 <Route
@@ -488,9 +452,7 @@ const PrivateRoute = ({
 
 ReactDOM.render(
     <QueryClientProvider client={queryClient}>
-        <ClearCacheProvider duration={5000}>
-            <App />
-        </ClearCacheProvider>
+        <App />
     </QueryClientProvider>,
     document.getElementById("app")
 );
