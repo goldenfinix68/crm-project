@@ -71,6 +71,8 @@ import ActivitySetup from "./pages/ActivitySetup";
 import DealPipelineSetup from "./pages/DealPipelineSetup";
 import { allowedroleToAccess } from "./constants";
 import CallForwarding from "./pages/Setup/CallForwarding";
+import { GiftOutlined } from "@ant-design/icons";
+import { Button } from "antd";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isForgotPassword = window.location.pathname === "/forgot-password";

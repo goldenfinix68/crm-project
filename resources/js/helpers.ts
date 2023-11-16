@@ -267,3 +267,49 @@ export function spinContent(content) {
     // If there are no matches, return the original content
     return [content];
 }
+
+async function getLatestAppVersion() {
+    try {
+        const response = await fetch("/meta.json");
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch data");
+        }
+
+        const data = await response.json();
+
+        const latestVersion = data.version;
+        return latestVersion;
+    } catch (error) {
+        console.error("Error checking app version:", error);
+        return false; // Handle the error appropriately in your application
+    }
+}
+
+export async function isAppLatestVersion() {
+    const latestVersion = await getLatestAppVersion();
+    const currentVersion = localStorage.getItem("appVersion") || "";
+    console.log(latestVersion === currentVersion);
+    return latestVersion === currentVersion;
+}
+
+export async function updateAppVersion() {
+    try {
+        // Clear the cache
+        if (caches) {
+            const cacheNames = await caches.keys();
+            await Promise.all(
+                cacheNames.map((cacheName) => caches.delete(cacheName))
+            );
+            console.log("Cache cleared");
+        }
+
+        const latestVersion = await getLatestAppVersion();
+        localStorage.setItem("appVersion", latestVersion);
+        console.log("App version updated in local storage");
+
+        window.location.reload();
+    } catch (error) {
+        console.error("Error updating app version:", error);
+    }
+}
