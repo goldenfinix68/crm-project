@@ -168,7 +168,7 @@ const CustomFieldFormModal = ({
                             Save
                         </Button>
                         <Button onClick={resetFields}>
-                            {record ? "No" : "Cancel"}
+                            {record ? "Cancel" : "No"}
                         </Button>
                     </div>
                 )}

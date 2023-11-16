@@ -143,7 +143,7 @@ const FilterAddUpdateModal = ({
                         </Button>
 
                         <Button onClick={resetFields}>
-                            {filter?.id ? "No" : "Cancel"}
+                            {filter?.id ? "Cancel" : "No"}
                         </Button>
                     </Space>
                 </Form>

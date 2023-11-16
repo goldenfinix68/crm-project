@@ -150,7 +150,7 @@ const CustomFieldAddUpdateModal = ({
                         </Button>
 
                         <Button onClick={resetFields}>
-                            {customField ? "No" : "Cancel"}
+                            {customField ? "Cancel" : "No"}
                         </Button>
                     </Space>
                 )
