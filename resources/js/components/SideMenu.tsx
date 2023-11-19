@@ -29,6 +29,7 @@ import { faUser } from "@fortawesome/free-solid-svg-icons";
 import IncomingCallListener from "../pages/Dialer/DialerTab/IncomingCallListener";
 import { useAppContextProvider } from "../context/AppContext";
 import { updateAppVersion } from "../helpers";
+import ReactClearCache from "./ReactClearCache";
 
 const { Header, Sider, Content } = Layout;
 
@@ -37,37 +38,14 @@ const SideMenu = ({ children }) => {
     const { setIsModalOpen, setCallerNumber, setDestinationNumber } =
         useCallContext();
 
-    const { loggedInUser, isAppLatestVersion } = useAppContextProvider();
+    const { loggedInUser } = useAppContextProvider();
     const {
         token: { colorBgContainer },
     } = theme.useToken();
 
     return (
         <>
-            {!isAppLatestVersion && (
-                <div className="updateAvailableDiv">
-                    <div className="div1">
-                        <GiftOutlined />
-                    </div>
-                    <div className="div2">
-                        <h5>Updates available</h5>
-                        <p>
-                            A new and better version of the app is installed
-                            <br />
-                            and ready. Reload the page to get all the changes.
-                        </p>
-                        <Button
-                            onClick={(e) => {
-                                e.preventDefault();
-                                updateAppVersion();
-                            }}
-                            type="primary"
-                        >
-                            Reload
-                        </Button>
-                    </div>
-                </div>
-            )}
+            <ReactClearCache />
             <Layout style={{ minHeight: "100vh" }}>
                 <Sider
                     trigger={null}
