@@ -125,42 +125,6 @@ const AddEditUser = () => {
                 >
                     <Input type="email" />
                 </Form.Item>
-                {loggedInUser?.role == "superAdmin" && (
-                    <Form.Item
-                        label="SIP Trunking Connection"
-                        name="telnyxConnectionId"
-                        rules={[
-                            {
-                                required: true,
-                                message: DEFAULT_REQUIRED_MESSAGE,
-                            },
-                        ]}
-                    >
-                        <Select
-                            placeholder="Select SIP Trunking Connection"
-                            defaultValue={[]}
-                            style={{ width: "100%" }}
-                            showSearch
-                            options={sipTrunkingConnections?.map(
-                                (connection) => ({
-                                    label: `${
-                                        connection.telnyxConnectionName
-                                    } (${
-                                        connection.numbers?.length
-                                            ? connection.numbers
-                                                  ?.map(
-                                                      (number) =>
-                                                          number.mobileNumber
-                                                  )
-                                                  .join(", ")
-                                            : "No number associated with this connection"
-                                    })`,
-                                    value: connection.telnyxConnectionId,
-                                })
-                            )}
-                        />
-                    </Form.Item>
-                )}
                 <Form.Item
                     label="Role"
                     name="role"
@@ -175,13 +139,11 @@ const AddEditUser = () => {
                         placeholder="Select Role"
                         style={{ width: "100%" }}
                         showSearch
-                        options={
-                            isSUperAdmin
-                                ? userRoleOption
-                                : userRoleOption.filter(
-                                      (option) => option.value != "mainUser"
-                                  )
-                        }
+                        options={userRoleOption.filter(
+                            (option) =>
+                                option.value != "mainUser" &&
+                                option.value != "superAdmin"
+                        )}
                     />
                 </Form.Item>
 

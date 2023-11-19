@@ -437,6 +437,7 @@ export const defaultFilter: TFilter = {
 export const allowedroleToAccess = ["superAdmin", "mainUser", "user"];
 
 export const userRoleOption = [
+    { value: "superAdmin", label: "Super Admin" },
     { value: "mainUser", label: "Main User" },
     { value: "user", label: "User" },
     { value: "stats", label: "Stats" },

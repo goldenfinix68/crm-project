@@ -18,8 +18,29 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $user = Auth::user();
+        if($user->role == "superAdmin"){
+            $query = User::with(['numbers', 'mainUser']);
+
+            // Apply search filter
+            if ($request->has('search')) {
+                $search = $request->input('search');
+                $query->where(function ($q) use ($search) {
+                    $q->where('firstName', 'like', '%' . $search . '%')
+                        ->orWhere('lastName', 'like', '%' . $search . '%')
+                        ->orWhere('email', 'like', '%' . $search . '%');
+                    // Add more fields as needed for searching
+                });
+            }
+        
+            // Apply pagination
+            $perPage = $request->input('perPage', 10); // You can adjust the default perPage value
+            $users = $query->paginate($perPage);
+        
+            return $users;
+        }
         return User::where('id', $this->getMainUserId())->orWhere('mainUserId', $this->getMainUserId())->with('numbers')->get();
     }
 

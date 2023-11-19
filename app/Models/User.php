@@ -63,6 +63,12 @@ class User extends Authenticatable implements MustVerifyEmail
         
     }
 
+    public function mainUser()
+    {
+        return $this->hasOne(\App\Models\User::class, 'id', 'mainUserId');
+        
+    }
+
     protected static function boot()
     {
         parent::boot();

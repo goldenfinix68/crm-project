@@ -20,21 +20,28 @@ export const useLoggedInUser = () => {
     };
 };
 
-export const useUsersAll = () => {
-    const { data, isLoading, isError } = useQuery("users", async () => {
-        const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
-        const response = await axios.get("/api/users", {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        });
-        return response.data;
-    });
+export const useUsersAll = (page = 1, search = "") => {
+    const { data, isLoading, isError, refetch } = useQuery(
+        "users",
+        async () => {
+            const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+            const response = await axios.get(
+                `/api/users?page=${page}&search=${search}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            );
+            return response.data;
+        }
+    );
 
     return {
         users: data,
         isLoading,
         isError,
+        refetch,
     };
 };
 

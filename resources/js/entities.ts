@@ -6,6 +6,7 @@ export type TUser = {
     role: string;
     sortCallForwarding: number;
     forwardingType?: string;
+    main_user?: TUser;
 } & TSipTrunkingConnection;
 
 export type TMobileNumber = {
