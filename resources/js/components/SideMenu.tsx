@@ -1,35 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 import {
     HomeOutlined,
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
-    UploadOutlined,
-    UserOutlined,
-    VideoCameraOutlined,
-    CheckCircleOutlined,
     PhoneOutlined,
     DollarCircleOutlined,
-    MailOutlined,
-    MessageOutlined,
     MobileOutlined,
-    PhoneFilled,
     UsergroupAddOutlined,
-    GiftOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, Button, theme } from "antd";
+import { Layout, Menu, theme } from "antd";
 import { useNavigate } from "react-router-dom";
-import Deal from "../pages/Deal";
 import Navigation from "./Navigation";
 import { useCallContext } from "../context/CallContext";
-import { useLoggedInUser } from "../api/query/userQuery";
-import { faPhone } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { faUser } from "@fortawesome/free-solid-svg-icons";
 import IncomingCallListener from "../pages/Dialer/DialerTab/IncomingCallListener";
 import { useAppContextProvider } from "../context/AppContext";
-import { updateAppVersion } from "../helpers";
 import ReactClearCache from "./ReactClearCache";
+import ImpersonateBanner from "./ImpersonateBanner";
 
 const { Header, Sider, Content } = Layout;
 
@@ -46,6 +31,7 @@ const SideMenu = ({ children }) => {
     return (
         <>
             <ReactClearCache />
+            <ImpersonateBanner />
             <Layout style={{ minHeight: "100vh" }}>
                 <Sider
                     trigger={null}

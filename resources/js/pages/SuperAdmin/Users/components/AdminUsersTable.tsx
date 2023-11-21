@@ -1,12 +1,18 @@
 import React, { useState } from "react";
-import { Button, Table, Space, Input } from "antd";
+import { Button, Table, Space, Input, Tooltip } from "antd";
 import type { ColumnsType, TableProps } from "antd/es/table";
 import { Link } from "react-router-dom";
-import { EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import {
+    EditOutlined,
+    LoginOutlined,
+    PlusCircleOutlined,
+} from "@ant-design/icons";
 import { TUser } from "../../../../entities";
 import { userRoleOption } from "../../../../constants";
 import AdminUsersAddUpdateModal from "./AdminUsersAddUpdateModal";
 import { useUsersAll } from "../../../../api/query/userQuery";
+import { useMutation } from "react-query";
+import { userImpersonate } from "../../../../api/mutation/useUserMutation";
 
 const AdminUsersTable = () => {
     const [isCreateUserModalOpen, setIsCreateUserModalOpen] =
@@ -16,6 +22,20 @@ const AdminUsersTable = () => {
     const [search, setSearch] = useState("");
 
     const { users, isLoading, refetch } = useUsersAll(page, search);
+
+    const impersonate = useMutation(userImpersonate, {
+        onSuccess: (data) => {
+            localStorage.setItem(
+                "impersonator_access_token",
+                localStorage.getItem("access_token")!
+            );
+            localStorage.setItem("access_token", data.access_token);
+            window.location.replace("/dashboard");
+        },
+        onError: (e: any) => {
+            console.log(e.message || "An error occurred");
+        },
+    });
 
     const columns: ColumnsType<TUser> = [
         {
@@ -67,15 +87,28 @@ const AdminUsersTable = () => {
             key: "action",
             render: (key: any, record: any) => {
                 return (
-                    <Button
-                        type="link"
-                        onClick={() => {
-                            setSelectedUser(record);
-                            setIsCreateUserModalOpen(true);
-                        }}
-                    >
-                        <EditOutlined />
-                    </Button>
+                    <Space>
+                        <Tooltip title="Edit">
+                            <Button
+                                type="link"
+                                onClick={() => {
+                                    setSelectedUser(record);
+                                    setIsCreateUserModalOpen(true);
+                                }}
+                                icon={<EditOutlined />}
+                            />
+                        </Tooltip>
+                        <Tooltip title="Impersonate">
+                            <Button
+                                type="link"
+                                onClick={() => {
+                                    impersonate.mutate(record);
+                                }}
+                                loading={impersonate.isLoading}
+                                icon={<LoginOutlined />}
+                            />
+                        </Tooltip>
+                    </Space>
                 );
             },
         },

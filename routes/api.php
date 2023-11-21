@@ -24,6 +24,8 @@ Route::post('/forgotpassword', 'App\Http\Controllers\Api\AuthController@forgotpa
 
 
 Route::middleware('auth:api')->group(function () {
+    Route::post('/user-impersonate', 'App\Http\Controllers\Api\AuthController@impersonate');
+
     Route::post('/forgotpassword_verify', 'App\Http\Controllers\Api\AuthController@forgotpassword_verify');
     Route::post('/forgot_password_set_password', 'App\Http\Controllers\Api\AuthController@forgot_password_set_password');
     Route::get('/contacts/get_favorite', 'App\Http\Controllers\Api\ContactsController@get_favorite');

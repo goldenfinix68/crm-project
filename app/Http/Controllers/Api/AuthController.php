@@ -26,6 +26,25 @@ class AuthController extends Controller
         }
     }
 
+    public function impersonate(Request $request)
+    {
+        $user = Auth::user();
+
+        if($user->role != 'superAdmin'){
+            abort(401);
+        }
+
+        $userImpersonate = User::find($request->id);
+
+        if(empty($userImpersonate)){
+            abort(404, 'User not found');
+        }
+
+        $token = $userImpersonate->createToken('CRMPROJECT')->accessToken;
+
+        return response()->json(['access_token' => $token, 'user' => $userImpersonate], 200);
+    }
+
 
     public function logout(Request $request)
     {
