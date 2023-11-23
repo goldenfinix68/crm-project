@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
     HomeOutlined,
     PhoneOutlined,
@@ -6,15 +6,17 @@ import {
     MobileOutlined,
     UsergroupAddOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, theme } from "antd";
+import { Layout, Menu, theme, notification } from "antd";
 import { useNavigate } from "react-router-dom";
 import Navigation from "./Navigation";
 import { useCallContext } from "../context/CallContext";
+import Pusher from "pusher-js";
 
 import IncomingCallListener from "../pages/Dialer/DialerTab/IncomingCallListener";
 import { useAppContextProvider } from "../context/AppContext";
 import ReactClearCache from "./ReactClearCache";
 import ImpersonateBanner from "./ImpersonateBanner";
+import queryClient from "../queryClient";
 
 const { Header, Sider, Content } = Layout;
 
@@ -22,14 +24,58 @@ const SideMenu = ({ children }) => {
     const navigate = useNavigate();
     const { setIsModalOpen, setCallerNumber, setDestinationNumber } =
         useCallContext();
+    const [api, contextHolder] = notification.useNotification();
 
     const { loggedInUser } = useAppContextProvider();
     const {
         token: { colorBgContainer },
     } = theme.useToken();
 
+    const pusher = new Pusher((window as any).PUSHER_APP_KEY, {
+        cluster: (window as any).PUSHER_APP_CLUSTER,
+    });
+
+    useEffect(() => {
+        // Subscribe to the Pusher channel and bind to the event
+        const channel = pusher.subscribe("text-channel");
+        channel.bind("text-received", (data) => {
+            console.log("Received a text:", data);
+            queryClient.invalidateQueries("callHistory");
+        });
+
+        // Clean up the subscription when the component unmounts
+        return () => {
+            channel.unbind("text-received");
+            pusher.unsubscribe("text-channel");
+        };
+    }, []);
+
+    useEffect(() => {
+        const mainUserId =
+            loggedInUser?.role == "mainUser"
+                ? loggedInUser.id
+                : loggedInUser?.main_user?.id;
+        // Subscribe to the Pusher channel and bind to the event
+        const channel = pusher.subscribe(`notif-channel-${mainUserId}`);
+        channel.bind(`notif-received-${mainUserId}`, (data) => {
+            console.log("Call webhook receive:", data);
+            api.open({
+                message: data?.message ?? "Default",
+                description: data?.description ?? "Default",
+                duration: 0,
+            });
+        });
+
+        // Clean up the subscription when the component unmounts
+        return () => {
+            channel.unbind("text-received");
+            pusher.unsubscribe("text-channel");
+        };
+    }, []);
+
     return (
         <>
+            {contextHolder}
             <ReactClearCache />
             <ImpersonateBanner />
             <Layout style={{ minHeight: "100vh" }}>

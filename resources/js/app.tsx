@@ -59,7 +59,6 @@ import ComponentTagManagement from "./pages/Setup/Components/ComponentTagManagem
 import ComponentImportData from "./pages/Setup/Components/ComponentImportData";
 import TextTemplates from "./pages/TextTemplates";
 import ComponentActivityType from "./pages/Setup/Components/ComponentActivityType";
-import Pusher from "pusher-js";
 import ActivityCalendar from "./pages/Activity/ActivityCalendar";
 import BulkAction from "./pages/PageContacts/BulkAction";
 import TextBoxView from "./pages/Texts/components/TextBoxView";
@@ -82,26 +81,6 @@ const App: React.FC = () => {
         window.location.pathname === "/forgot-password-verify";
 
     const { user, isLoading } = useLoggedInUser();
-
-    const pusher = new Pusher((window as any).PUSHER_APP_KEY, {
-        cluster: (window as any).PUSHER_APP_CLUSTER,
-    });
-
-    useEffect(() => {
-        // Subscribe to the Pusher channel and bind to the event
-        const channel = pusher.subscribe("text-channel");
-        channel.bind("text-received", (data) => {
-            console.log("Received a text:", data);
-            queryClient.invalidateQueries("textThreads");
-            queryClient.invalidateQueries("thread");
-        });
-
-        // Clean up the subscription when the component unmounts
-        return () => {
-            channel.unbind("text-received");
-            pusher.unsubscribe("text-channel");
-        };
-    }, []);
 
     if (isLoading) {
         return <LoadingComponent />;

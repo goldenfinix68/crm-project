@@ -9,6 +9,7 @@ use App\Models\Contact;
 use App\Models\MobileNumber;
 use Carbon\Carbon;
 use DB;
+use App\Business\Pusher;
 
 class CallsController extends Controller
 {
@@ -36,42 +37,46 @@ class CallsController extends Controller
             ->get();
 
         foreach($calls as $call){
-            $callData = Call::where('telnyxCallSessionId', $call->telnyxCallSessionId)->get();
-            $isFromApp = MobileNumber::where('mobileNumber', $call->from)->first();
-            
-            $contact = $this->getContactByMobile(!empty($isFromApp) ? $call->to : $call->from);
-
-            $contactName = !empty($isFromApp) ? $call->to : $call->from;
-            
-            if(!empty($contact)){
-                $contactName = $contact->fields['firstName'] . ' ' . $contact->fields['lastName'];
-            }
-
-            if(!empty($isFromApp)){
-                $user = $isFromApp->user;
-            }
-            else{
-                $user = MobileNumber::where('mobileNumber', $call->to)->first()->user;
-            }
-            $userName = $user->firstName . ' ' . $user->lastName;
-
-            $answeredData = $callData->where('type', 'call.answered')->first();
-            $hangupData = $callData->where('type', 'call.hangup')->first();
-            $isAnswered = !empty($answeredData) && !empty($hangupData);
-            
-            $data[] = [
-                'telnyxCallSessionId' => $call->telnyxCallSessionId,
-                'dateTime' => $call->created_at->format('M j, Y h:i a'),
-                'isFromApp' => !empty($isFromApp),
-                'contactName' => $contactName,
-                'to' => $call->to,
-                'from' => $call->from,
-                'duration' => $isAnswered ? $hangupData->created_at->diffInSeconds($answeredData->created_at) : "0",
-                'userName' => $userName,
-            ];
+            $data[] = $this->prepareCall($call);
         }
         
         return response()->json($data, 200);
+    }
+
+    private function prepareCall ($call) {
+        $callData = Call::where('telnyxCallSessionId', $call->telnyxCallSessionId)->get();
+        $isFromApp = MobileNumber::where('mobileNumber', $call->from)->first();
+        
+        $contact = $this->getContactByMobile(!empty($isFromApp) ? $call->to : $call->from);
+
+        $contactName = !empty($isFromApp) ? $call->to : $call->from;
+        
+        if(!empty($contact)){
+            $contactName = $contact->fields['firstName'] . ' ' . $contact->fields['lastName'];
+        }
+
+        if(!empty($isFromApp)){
+            $user = $isFromApp->user;
+        }
+        else{
+            $user = MobileNumber::where('mobileNumber', $call->to)->first()->user;
+        }
+        $userName = $user->firstName . ' ' . $user->lastName;
+
+        $answeredData = $callData->where('type', 'call.answered')->first();
+        $hangupData = $callData->where('type', 'call.hangup')->first();
+        $isAnswered = !empty($answeredData) && !empty($hangupData);
+        
+        return [
+            'telnyxCallSessionId' => $call->telnyxCallSessionId,
+            'dateTime' => $call->created_at->format('M j, Y h:i a'),
+            'isFromApp' => !empty($isFromApp),
+            'contactName' => $contactName,
+            'to' => $call->to,
+            'from' => $call->from,
+            'duration' => $isAnswered ? $hangupData->created_at->diffInSeconds($answeredData->created_at) : "0",
+            'userName' => $userName,
+        ];
     }
 
     /**
@@ -154,5 +159,24 @@ class CallsController extends Controller
         $call->to = $payload['to'];
         $call->telnyxResponse = json_encode($json);
         $call->save();
+
+        $callDetails = $this->prepareCall($call);
+
+        $isFromApp = MobileNumber::where('mobileNumber', $call->from)->first();
+        
+        if(!empty($isFromApp)){
+            $mainUser = $isFromApp->user->mainUser;
+        }
+        else{
+            $mainUser = MobileNumber::where('mobileNumber', $call->to)->first()->user->mainUser;
+        }
+
+        if(in_array($call->type, ['call.initiated', 'call.answered', 'call.hangup'])){
+            $pusher = new Pusher();
+            $pusher->trigger('notif-channel-'.$mainUser->id, 'notif-received-'.$mainUser->id, [
+                'message' => "Call Information",
+                'description' => 'Call '.str_replace('call.', "", $call->type).' from contact ' . $callDetails['contactName'] . ' to user ' . $callDetails['userName'],
+            ]);
+        }
     }
 }
