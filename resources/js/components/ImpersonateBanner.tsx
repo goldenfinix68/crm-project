@@ -32,7 +32,7 @@ const ImpersonateBanner = () => {
                                         );
                                         window.location.replace("/users");
                                     }}
-                                    icon={<LogoutOutlined className="p-t-xs" />}
+                                    icon={<LogoutOutlined />}
                                 />
                             </Tooltip>
                         </Space>
