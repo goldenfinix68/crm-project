@@ -12534,3 +12534,9 @@ fieldset:disabled .btn {
 .ant-table-tbody > tr > td {
     padding: 2px 2px !important;
 }
+
+.ant-btn:has(.ant-btn-icon) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

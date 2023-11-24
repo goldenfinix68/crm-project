@@ -218,7 +218,7 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                         </Col>
                         <Col span={12} className="text-right p-r-md">
                             {title == "Deal Pipeline" && (
-                                <>
+                                <Space>
                                     <Button
                                         type="primary"
                                         icon={<PlusCircleOutlined />}
@@ -238,7 +238,7 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                                             console.log("qwe");
                                         }}
                                     />
-                                </>
+                                </Space>
                             )}
                             {(title == "Contact" ||
                                 title == "Deal" ||
