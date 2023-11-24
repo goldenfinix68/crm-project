@@ -29,6 +29,7 @@ import { useAppContextProvider } from "../context/AppContext";
 const Navigation: React.FC = () => {
     const navigate = useNavigate();
     const [searchKeyword, setSearchKey] = useState("");
+    const { loggedInUser } = useAppContextProvider();
 
     const { contacts, isRoleStats } = useAppContextProvider();
 
@@ -65,7 +66,11 @@ const Navigation: React.FC = () => {
                                     size={0}
                                     className="card-dropdown-space"
                                 >
-                                    <Typography.Text>Full Name</Typography.Text>
+                                    <Typography.Text>
+                                        {loggedInUser?.lastName +
+                                            ", " +
+                                            loggedInUser?.firstName}
+                                    </Typography.Text>
                                     <Typography.Link
                                         style={{
                                             fontWeight: 300,
