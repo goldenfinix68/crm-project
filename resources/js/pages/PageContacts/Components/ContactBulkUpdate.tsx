@@ -72,6 +72,7 @@ const ContactBulkUpdate = ({
         onSuccess: () => {
             resetFields();
             queryClient.invalidateQueries("contacts");
+            queryClient.invalidateQueries("filteredContacts");
         },
     });
 
