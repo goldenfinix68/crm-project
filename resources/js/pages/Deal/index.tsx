@@ -10,6 +10,8 @@ import {
     Popconfirm,
     Typography,
     Empty,
+    Avatar,
+    Tooltip,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import {
@@ -42,6 +44,7 @@ import DealsTable from "./components/DealsTable";
 import { TDeal } from "../../entities";
 import LoadingComponent from "../../components/LoadingComponent";
 import { useAppContextProvider } from "../../context/AppContext";
+import { useCallContext } from "../../context/CallContext";
 
 interface Card {
     id: number;
@@ -86,6 +89,9 @@ const Deal = () => {
     const selectedpipeline = pipelines?.find(
         (pipeline) => pipeline.id === filterPage.pipelineId
     );
+
+    const { setIsModalOpen, setCallerNumber, setDestinationNumber } =
+        useCallContext();
 
     const [showDeleteButton, setShowDeleteButton] = useState(false);
 
@@ -213,12 +219,7 @@ const Deal = () => {
     const cardDiv = (deal: TDeal) => {
         return (
             <div>
-                <Card
-                    style={{ width: "100%", cursor: "pointer" }}
-                    onClick={() => {
-                        navigate("/contacts/" + deal.contact?.id);
-                    }}
-                >
+                <Card style={{ width: "100%", cursor: "pointer" }}>
                     <div>
                         {deal.contact?.fields.firstName +
                             " " +
@@ -241,44 +242,33 @@ const Deal = () => {
                             cursor: "pointer",
                         }}
                     >
-                        <span
-                            style={{
-                                marginLeft: 5,
-                                padding: 4,
-                                border: " 1px solid #e5e5e5",
-                                borderRadius: "53%",
-                            }}
-                            title="click to call"
-                        >
-                            <Dropdown
-                                menu={{ items: phone }}
-                                placement="bottomLeft"
-                                trigger={["click"]}
-                            >
-                                <PhoneOutlined />
-                            </Dropdown>
-                        </span>
-                        <span
-                            style={{
-                                marginLeft: 5,
-                                padding: 4,
-                                border: " 1px solid #e5e5e5",
-                                borderRadius: "53%",
-                            }}
-                            title="send email"
-                        >
-                            <MailOutlined />
-                        </span>
-                        <span
-                            style={{
-                                marginLeft: 5,
-                                padding: 4,
-                                border: " 1px solid #e5e5e5",
-                                borderRadius: "53%",
-                            }}
-                        >
-                            <UserOutlined />
-                        </span>
+                        <Space>
+                            <Tooltip title="Call contact">
+                                <Avatar
+                                    icon={<PhoneOutlined className="p-t-xs" />}
+                                    onClick={() => {
+                                        setCallerNumber(
+                                            deal.contact?.fields
+                                                ?.defaultMobileNumber ?? ""
+                                        );
+                                        setDestinationNumber(
+                                            deal.contact?.fields.mobile ?? ""
+                                        );
+                                        setIsModalOpen(true);
+                                    }}
+                                />
+                            </Tooltip>
+                            <Tooltip title="Contact profile">
+                                <Avatar
+                                    icon={<UserOutlined className="p-t-xs" />}
+                                    onClick={() => {
+                                        navigate(
+                                            "/contacts/" + deal.contact?.id
+                                        );
+                                    }}
+                                />
+                            </Tooltip>
+                        </Space>
                     </div>
                 </Card>
             </div>
