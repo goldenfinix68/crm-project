@@ -337,7 +337,7 @@ const Deal = () => {
     return (
         <Row className="deal-group-row">
             <Col md={24}>
-                <Card title="Deals">
+                <Card title="Deals" loading={isLoading}>
                     {showDeleteButton ? (
                         <Row
                             style={{
@@ -436,19 +436,6 @@ const Deal = () => {
 
                                 <div>
                                     <span style={{ marginRight: 10 }}>
-                                        <Button
-                                            style={{
-                                                alignItems: "center",
-                                            }}
-                                            onClick={() => {
-                                                setOpenFilter(true);
-                                            }}
-                                            disabled
-                                        >
-                                            <FunnelPlotOutlined />
-                                        </Button>
-                                    </span>
-                                    <span style={{ marginRight: 10 }}>
                                         <Radio.Group
                                             value={listBoard}
                                             buttonStyle="solid"
@@ -470,21 +457,6 @@ const Deal = () => {
                                         >
                                             <PlusCircleOutlined /> &nbsp;Deal
                                         </Button>
-                                    </span>
-
-                                    <span style={{ marginRight: 10 }}>
-                                        <Dropdown
-                                            menu={{ items: action }}
-                                            placement="bottomLeft"
-                                            disabled
-                                        >
-                                            <Button>
-                                                <Space>
-                                                    Action
-                                                    <DownOutlined />
-                                                </Space>
-                                            </Button>
-                                        </Dropdown>
                                     </span>
                                 </div>
                             </div>
