@@ -22,9 +22,11 @@ import {
     PoweroffOutlined,
     SettingOutlined,
 } from "@ant-design/icons";
+import { useLoggedInUser } from "../../api/query/userQuery";
 const TopNavigation: React.FC = () => {
     const navigate = useNavigate();
     const [searchKeyword, setSearchKey] = useState("");
+    const { user } = useLoggedInUser();
 
     const [isDropdownVisible, setDropdownVisible] = useState(false);
     const handleSignOut = () => {
@@ -59,7 +61,11 @@ const TopNavigation: React.FC = () => {
                                     size={0}
                                     className="card-dropdown-space"
                                 >
-                                    <Typography.Text>Full Name</Typography.Text>
+                                    <Typography.Text>
+                                        {user?.lastName +
+                                            ", " +
+                                            user?.firstName}
+                                    </Typography.Text>
                                     <Typography.Link
                                         style={{
                                             fontWeight: 300,
