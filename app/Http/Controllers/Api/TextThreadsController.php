@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TextThread;
 use App\Models\Text;
+use App\Models\CustomField;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -150,6 +151,34 @@ class TextThreadsController extends Controller
             })
             ->update(['seen_at' => Carbon::now()]);
         } 
+
+        return response()->json(['success' => true]);
+    }
+    
+    public function addTag(Request $request)
+    {
+        $threads = TextThread::whereIn('id', $request->threadIds)->get();
+
+        $customField = CustomField::find($request->customField['id']);
+
+        if (!$threads || !$customField) {
+            return response()->json(['error' => 'Not found'], 404);
+        }
+
+        $value = $request->{$customField->fieldName};
+
+        if($value){
+            foreach($threads as $thread){
+                $contact = $thread->contact;
+                if(!empty($contact)){
+                    $existingValues = $contact['fields'][$customField->fieldName.'lookupIds'];
+                    if(!empty($existingValues)){
+                        $value = array_merge($value, json_decode($existingValues));
+                    }
+                    $this->createOrUpdateCustomFieldValue($contact->id, $customField, 'contact', $value);
+                }
+            }
+        }
 
         return response()->json(['success' => true]);
     }

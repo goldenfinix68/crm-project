@@ -32,7 +32,7 @@ const CustomFieldInput = ({
     const { contactTypes, isLoading: isContactTypeLoading } =
         useContactTypesAll();
 
-    const { data: usedTags } = useUsedTags();
+    const { data: usedTags, isLoading: isUsedTagsLoading } = useUsedTags();
 
     const validateEmail = (rule, value) => {
         if (

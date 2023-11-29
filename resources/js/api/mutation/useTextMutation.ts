@@ -84,3 +84,20 @@ export const useDeleteThread = async (threadIds: any) => {
     }
     return data;
 };
+
+export const addTagMutation = async (threadIds: any) => {
+    const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+    const response = await fetch("/api/text-threads/add-tag", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(threadIds),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || "Failed1");
+    }
+    return data;
+};

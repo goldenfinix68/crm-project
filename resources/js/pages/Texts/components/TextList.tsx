@@ -19,6 +19,7 @@ import {
     EllipsisOutlined,
     CloseOutlined,
     TagFilled,
+    PlusCircleOutlined,
 } from "@ant-design/icons"; // Step 1
 import { useNavigate } from "react-router-dom";
 import { getTimeAgo } from "../../../helpers";
@@ -29,12 +30,15 @@ import queryClient from "../../../queryClient";
 import { useTextThreads } from "../../../api/query/textQuery";
 import { useDeleteThread } from "../../../api/mutation/useTextMutation";
 import AssignLabelModal from "./AssignLabelModal";
+import { useAppContextProvider } from "../../../context/AppContext";
+import AddTagModal from "./AddTagModal";
 
 const TextList = ({ label }) => {
     const [searchKey, setSearchKey] = useState("");
     const { textThreads, isLoading } = useTextThreads();
     const navigate = useNavigate();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isAddTagModalOpen, setIsAddTagModalOpen] = useState(false);
     const [isDeleteBtnLoading, setIsDeleteBtnLoading] = useState(false);
     const [selectedThread, setSelectedThread] = useState<
         TTextThread | undefined
@@ -42,6 +46,7 @@ const TextList = ({ label }) => {
     const [selectedThreadIds, setSelectedThreadIds] = useState<string[]>([]);
     const [isAssignLabelModalOpen, setIsAssignLabelModalOpen] = useState(false);
     const [isViaMultiple, setIsViaMultiple] = useState(false);
+    const { contactFields } = useAppContextProvider();
 
     const archiveThread = useMutation(useDeleteThread, {
         onSuccess: () => {
@@ -164,6 +169,17 @@ const TextList = ({ label }) => {
                     >
                         Labels
                     </Button>
+                    {contactFields.find((field) => field.type == "tag") && (
+                        <Button
+                            icon={<PlusCircleOutlined />}
+                            type="text"
+                            onClick={() => {
+                                setIsAddTagModalOpen(true);
+                            }}
+                        >
+                            Tag
+                        </Button>
+                    )}
                 </Space>
             ) : (
                 <div style={{ height: "32px" }}></div>
@@ -360,6 +376,16 @@ const TextList = ({ label }) => {
                         : undefined
                 }
                 isViaMultiple={isViaMultiple}
+            />
+
+            <AddTagModal
+                isModalOpen={isAddTagModalOpen}
+                closeModal={() => {
+                    setIsAddTagModalOpen(false);
+                    setSelectedThread(undefined);
+                    setSelectedThreadIds([]);
+                }}
+                threadIds={selectedThreadIds}
             />
         </>
     );

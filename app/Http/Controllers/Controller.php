@@ -86,7 +86,12 @@ class Controller extends BaseController
                     $data = $data . ($index == 0 ? "" : ", ") . $customFields['firstName'] . ' ' . $customFields['lastName'];
                 }
             }
-            if(in_array($customField->type, ['multiSelect', 'tag'])){
+            //tag should be unique, remove duplicates
+            if($customField->type == "tag") {
+                $value = array_unique($value);
+                $data = implode(", ", $value);
+            }
+            if(in_array($customField->type, ['multiSelect'])){
                 $data = implode(", ", $value);
             }
             $fieldValue->lookupIds = json_encode($value);
