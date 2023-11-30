@@ -402,6 +402,8 @@ const TextEllipsis = ({
         whiteSpace: "nowrap",
         overflow: "hidden",
         textOverflow: "ellipsis",
+        alignItems: "center",
+        justifyContent: "center",
     };
     const combinedStyles = { ...defaultStyles, ...style };
     return <div style={combinedStyles}>{children}</div>;

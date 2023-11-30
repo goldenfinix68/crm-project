@@ -46,9 +46,9 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
 
-    // protected $appends = [
-    //     'numbers', 
-    // ];
+    protected $appends = [
+        'mainId', 
+    ];
 
     //depreciated, 1 user 1 number
     public function numbers()
@@ -67,6 +67,13 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'mainUserId');
         
+    }
+    public function getMainIdAttribute()
+    {
+        if($this->role == 'superAdmin'){
+            return 0;
+        }
+        return $this->role == 'mainUser' ? $this->id : $this->mainUserId;
     }
 
     protected static function boot()

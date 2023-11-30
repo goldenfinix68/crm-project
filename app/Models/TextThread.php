@@ -8,6 +8,7 @@ use App\Models\Contact;
 use App\Models\Text;
 use App\Models\CustomFieldValue;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Auth;
 
 class TextThread extends Model
 {
@@ -38,7 +39,15 @@ class TextThread extends Model
                         $query->where('type', 'mobile');
                     })
                     ->first();
-        return !empty($fieldValue) ? Contact::find($fieldValue->customableId) : false;
+
+        if(!empty($fieldValue)){
+            $contact = Contact::find($fieldValue->customableId);
+            $user = Auth::user();
+            if($contact->userId == $user->mainId){
+                return $contact;
+            }
+        }
+        return false;
     }
 
     public function getContactNameAttribute()
