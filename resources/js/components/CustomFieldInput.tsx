@@ -124,23 +124,9 @@ const CustomFieldInput = ({
                 >
                     {contacts?.map((contact, index) => (
                         <Select.Option value={contact.id} key={index}>
-                            <Space style={{ verticalAlign: "middle" }}>
-                                <Avatar
-                                    size={24}
-                                    style={{
-                                        backgroundColor: "#1677FF",
-                                        verticalAlign: "middle",
-                                    }}
-                                >
-                                    <p style={{ fontSize: "9px" }}>
-                                        {contact.fields?.firstName?.charAt(0) ??
-                                            ""}
-                                    </p>
-                                </Avatar>
-                                {contact.fields?.firstName +
-                                    " " +
-                                    contact.fields?.lastName}
-                            </Space>
+                            {contact.fields?.firstName +
+                                " " +
+                                contact.fields?.lastName}
                         </Select.Option>
                     ))}
                 </Select>

@@ -45,6 +45,8 @@ import { TDeal } from "../../entities";
 import LoadingComponent from "../../components/LoadingComponent";
 import { useAppContextProvider } from "../../context/AppContext";
 import { useCallContext } from "../../context/CallContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPen } from "@fortawesome/free-solid-svg-icons";
 
 interface Card {
     id: number;
@@ -72,10 +74,10 @@ interface TDeals {
 }
 const Deal = () => {
     const navigate = useNavigate();
-    const { isRoleStats } = useAppContextProvider();
+    const { isRoleStats, pipelines } = useAppContextProvider();
     const queryClient = useQueryClient();
     const [filterPage, setFilterPage] = useState({
-        pipelineId: "",
+        pipelineId: pipelines?.length ? pipelines[0].id : "",
         title: "",
         status: "All Deals",
         page: 1,
@@ -85,13 +87,16 @@ const Deal = () => {
         sort_order: "asc",
     });
     const { deals, isLoading, refetch } = useDealsAll(filterPage);
-    const { data: pipelines, isLoading: isPipelinesLoading } = dealPipelines();
     const selectedpipeline = pipelines?.find(
         (pipeline) => pipeline.id === filterPage.pipelineId
     );
 
     const { setIsModalOpen, setCallerNumber, setDestinationNumber } =
         useCallContext();
+
+    const [selectedDeal, setSelectedDeal] = useState<TDeal | undefined>(
+        undefined
+    );
 
     const [showDeleteButton, setShowDeleteButton] = useState(false);
 
@@ -105,34 +110,6 @@ const Deal = () => {
         refetch();
     }, [filterPage]);
 
-    const [openFilter, setOpenFilter] = useState(false);
-
-    const action: MenuProps["items"] = [
-        {
-            key: "1",
-            label: <div>Mass Transfer Deals</div>,
-        },
-        {
-            key: "2",
-            label: <div>Mass Delete Deals</div>,
-        },
-        {
-            key: "3",
-            label: <div>Mass Update Deals</div>,
-        },
-        {
-            key: "4",
-            label: <div>Import From Excel or CSV file</div>,
-        },
-        {
-            key: "5",
-            label: <div>Export Deals</div>,
-        },
-        {
-            key: "6",
-            label: <div>View Recent Deleted Records</div>,
-        },
-    ];
     const pipelineDropdownItem: MenuProps["items"] = pipelines?.map(
         (pipeline) => {
             return {
@@ -152,21 +129,6 @@ const Deal = () => {
             };
         }
     );
-
-    const phone: MenuProps["items"] = [
-        {
-            key: "1",
-            label: <div>Call Via Browser</div>,
-        },
-        {
-            key: "2",
-            label: <div>Call Via Phone</div>,
-        },
-        {
-            key: "3",
-            label: <div>Send Text</div>,
-        },
-    ];
 
     const [listBoard, setListBoard] = useState("Board");
     const [boardData, setBoardData] = useState<{ lanes: Lane[] } | undefined>();
@@ -268,6 +230,15 @@ const Deal = () => {
                                     }}
                                 />
                             </Tooltip>
+                            <Tooltip title="Edit deal">
+                                <Avatar
+                                    icon={<FontAwesomeIcon icon={faPen} />}
+                                    onClick={() => {
+                                        setSelectedDeal(deal);
+                                        setIsModalOpenAdd(true);
+                                    }}
+                                />
+                            </Tooltip>
                         </Space>
                     </div>
                 </Card>
@@ -331,9 +302,6 @@ const Deal = () => {
         }
     }, [pipelines]);
 
-    if (isPipelinesLoading) {
-        <LoadingComponent />;
-    }
     return (
         <Row className="deal-group-row">
             <Col md={24}>
@@ -552,8 +520,10 @@ const Deal = () => {
                         }}
                         closeModal={() => {
                             setIsModalOpenAdd(false);
+                            setSelectedDeal(undefined);
                         }}
-                        selectedRows={selectedRowsData}
+                        deal={selectedDeal}
+                        selectedRows={!selectedDeal ? selectedRowsData : []}
                     />
                 </Card>
             </Col>

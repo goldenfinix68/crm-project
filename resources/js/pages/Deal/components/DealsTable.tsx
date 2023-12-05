@@ -109,22 +109,29 @@ const DealsTable = ({
                     render={(text: string, record: TDeal) => {
                         return (
                             <>
-                                <Button
-                                    type="text"
-                                    className="m-r-sm"
-                                    icon={<FontAwesomeIcon icon={faPen} />}
-                                    onClick={() => {
-                                        setIsModalOpenAdd(true);
-                                        setSelectedDeal(record);
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
                                     }}
-                                    disabled={isRoleStats}
-                                />
+                                >
+                                    <Button
+                                        type="text"
+                                        className="m-r-sm"
+                                        icon={<FontAwesomeIcon icon={faPen} />}
+                                        onClick={() => {
+                                            setIsModalOpenAdd(true);
+                                            setSelectedDeal(record);
+                                        }}
+                                        disabled={isRoleStats}
+                                    />
 
-                                <span>
-                                    {record.contact?.fields.firstName +
-                                        " " +
-                                        record.contact?.fields.lastName}
-                                </span>
+                                    <span>
+                                        {record.contact?.fields.firstName +
+                                            " " +
+                                            record.contact?.fields.lastName}
+                                    </span>
+                                </div>
                             </>
                         );
                     }}
