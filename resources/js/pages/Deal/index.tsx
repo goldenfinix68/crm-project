@@ -180,69 +180,65 @@ const Deal = () => {
 
     const cardDiv = (deal: TDeal) => {
         return (
-            <div>
-                <Card style={{ width: "100%", cursor: "pointer" }}>
-                    <div>
-                        {deal.contact?.fields.firstName +
-                            " " +
-                            deal.contact?.fields.lastName}
-                    </div>
+            <Card style={{ width: "100%", cursor: "pointer" }}>
+                <div>
+                    {deal.contact?.fields.firstName +
+                        " " +
+                        deal.contact?.fields.lastName}
+                </div>
 
-                    <div
-                        style={{
-                            fontSize: 10,
-                            color: "#9b9999",
-                        }}
-                    >
-                        {moment(deal?.created_at).format("LL")}
-                    </div>
+                <div
+                    style={{
+                        fontSize: 10,
+                        color: "#9b9999",
+                    }}
+                >
+                    {moment(deal?.created_at).format("LL")}
+                </div>
 
-                    <div
-                        style={{
-                            marginTop: 10,
-                            float: "right",
-                            cursor: "pointer",
-                        }}
-                    >
-                        <Space>
-                            <Tooltip title="Call contact">
-                                <Avatar
-                                    icon={<PhoneOutlined className="p-t-xs" />}
-                                    onClick={() => {
-                                        setCallerNumber(
-                                            deal.contact?.fields
-                                                ?.defaultMobileNumber ?? ""
-                                        );
-                                        setDestinationNumber(
-                                            deal.contact?.fields.mobile ?? ""
-                                        );
-                                        setIsModalOpen(true);
-                                    }}
-                                />
-                            </Tooltip>
-                            <Tooltip title="Contact profile">
-                                <Avatar
-                                    icon={<UserOutlined className="p-t-xs" />}
-                                    onClick={() => {
-                                        navigate(
-                                            "/contacts/" + deal.contact?.id
-                                        );
-                                    }}
-                                />
-                            </Tooltip>
-                            <Tooltip title="Edit deal">
-                                <Avatar
-                                    icon={<FontAwesomeIcon icon={faPen} />}
-                                    onClick={() => {
-                                        setSelectedDeal(deal);
-                                        setIsModalOpenAdd(true);
-                                    }}
-                                />
-                            </Tooltip>
-                        </Space>
-                    </div>
-                </Card>
-            </div>
+                <div
+                    style={{
+                        marginTop: 10,
+                        float: "right",
+                        cursor: "pointer",
+                    }}
+                >
+                    <Space>
+                        <Tooltip title="Call contact">
+                            <Avatar
+                                icon={<PhoneOutlined className="p-t-xs" />}
+                                onClick={() => {
+                                    setCallerNumber(
+                                        deal.contact?.fields
+                                            ?.defaultMobileNumber ?? ""
+                                    );
+                                    setDestinationNumber(
+                                        deal.contact?.fields.mobile ?? ""
+                                    );
+                                    setIsModalOpen(true);
+                                }}
+                            />
+                        </Tooltip>
+                        <Tooltip title="Contact profile">
+                            <Avatar
+                                icon={<UserOutlined className="p-t-xs" />}
+                                onClick={() => {
+                                    navigate("/contacts/" + deal.contact?.id);
+                                }}
+                            />
+                        </Tooltip>
+                        <Tooltip title="Edit deal">
+                            <Avatar
+                                icon={<FontAwesomeIcon icon={faPen} />}
+                                onClick={() => {
+                                    setSelectedDeal(deal);
+                                    setIsModalOpenAdd(true);
+                                }}
+                            />
+                        </Tooltip>
+                    </Space>
+                </div>
+            </Card>
         );
     };
 

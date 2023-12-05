@@ -22,6 +22,8 @@ use League\Csv\Reaer;
 use App\Models\CustomField;
 use App\Models\CustomFieldValue;
 use DB;
+use \Exception;
+
 
 class ContactsController extends Controller
 {
@@ -415,20 +417,25 @@ class ContactsController extends Controller
                 $continue = true;
                 foreach ($mapping as $sourceColumn => $targetColumn) {
                     if($continue){
-                        $customFieldValue = CustomFieldValue::find($targetColumn);
-                        $customField = $customFieldValue->customField;
+                        try {
+                            $customFieldValue = CustomFieldValue::find($targetColumn);
+                            $customField = $customFieldValue->customField;
 
-
-                        if($customField->fieldName == 'mobile'){
-                            $verify = $this->getContactByMobile($record[$sourceColumn]);
-                            if(!empty($verify) && $verify->customableId != $contact->id){
-                                $continue = false;
-                                DB::rollBack();
-                                break;
+                            if($customField->fieldName == 'mobile'){
+                                $verify = $this->getContactByMobile($record[$sourceColumn]);
+                                if(!empty($verify) && $verify->customableId != $contact->id){
+                                    $continue = false;
+                                    DB::rollBack();
+                                    break;
+                                }
                             }
+                            $this->createOrUpdateCustomFieldValue($contact->id, $customField, 'contact', $record[$sourceColumn]);
                         }
-
-                        $this->createOrUpdateCustomFieldValue($contact->id, $customField, 'contact', $record[$sourceColumn]);
+                        catch (Exception $e) {
+                            $continue = false;
+                            DB::rollBack();
+                            break;
+                        } 
                     }
                 }
                 if($continue){
