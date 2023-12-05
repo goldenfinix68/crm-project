@@ -302,7 +302,7 @@ const Deal = () => {
     return (
         <Row className="deal-group-row">
             <Col md={24}>
-                <Card title="Deals" loading={isLoading}>
+                <Card loading={isLoading}>
                     {showDeleteButton ? (
                         <Row
                             style={{

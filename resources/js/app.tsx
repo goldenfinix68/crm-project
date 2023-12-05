@@ -109,361 +109,347 @@ const App: React.FC = () => {
             ) : (
                 <>
                     {user?.role == "superAdmin" ? (
-                        <AdminSideMenu>
-                            <Routes>
-                                <Route
-                                    path="/dashboard"
-                                    element={
-                                        <PrivateRoute
-                                            accessibleTo={["superAdmin"]}
-                                        >
-                                            <AdminDashboard />
-                                        </PrivateRoute>
-                                    }
-                                />
-                                <Route
-                                    path="/users"
-                                    element={
-                                        <PrivateRoute
-                                            accessibleTo={["superAdmin"]}
-                                        >
-                                            <AdminUsers />
-                                        </PrivateRoute>
-                                    }
-                                />
-                            </Routes>
-                        </AdminSideMenu>
+                        <Routes>
+                            <Route
+                                path="/dashboard"
+                                element={
+                                    <PrivateRoute accessibleTo={["superAdmin"]}>
+                                        <AdminDashboard />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/users"
+                                element={
+                                    <PrivateRoute accessibleTo={["superAdmin"]}>
+                                        <AdminUsers />
+                                    </PrivateRoute>
+                                }
+                            />
+                        </Routes>
                     ) : (
                         <AppContextProvider>
                             <CallProvider>
-                                <SideMenu>
-                                    <Routes>
-                                        <Route
-                                            path="/dashboard"
-                                            element={
-                                                <PrivateRoute>
-                                                    <PageDashboard props={""} />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/dialer/:contactId"
-                                            element={
-                                                <PrivateRoute>
-                                                    <Dialer />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/dialer"
-                                            element={
-                                                <PrivateRoute>
-                                                    <Dialer />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/setup/customizations/call-forwarding"
-                                            element={
-                                                <PrivateRoute
-                                                    accessibleTo={
-                                                        allowedroleToAccess
-                                                    }
-                                                >
-                                                    <SetupLayout
-                                                        content={
-                                                            <CallForwarding />
-                                                        }
-                                                        title="Call Forwarding"
-                                                    />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/setup/customizations/users"
-                                            element={
-                                                <PrivateRoute
-                                                    accessibleTo={
-                                                        allowedroleToAccess
-                                                    }
-                                                >
-                                                    <SetupLayout
-                                                        content={<Users />}
-                                                        title="Users"
-                                                    />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/setup/customizations/users/new"
-                                            element={
-                                                <PrivateRoute
-                                                    accessibleTo={
-                                                        allowedroleToAccess
-                                                    }
-                                                >
-                                                    <SetupLayout
-                                                        content={
-                                                            <AddEditUser />
-                                                        }
-                                                        title="Users"
-                                                    />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/setup/customizations/users/:userId"
-                                            element={
-                                                <PrivateRoute
-                                                    accessibleTo={
-                                                        allowedroleToAccess
-                                                    }
-                                                >
-                                                    <SetupLayout
-                                                        content={
-                                                            <AddEditUser />
-                                                        }
-                                                        title="Users"
-                                                    />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/contacts/:contactId"
-                                            element={
-                                                <PrivateRoute>
-                                                    <ContactView />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/home"
-                                            element={
-                                                <PrivateRoute>
-                                                    <Home />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/contacts"
-                                            element={<Contacts />}
-                                        />
-                                        <Route
-                                            path="/contacts/mergeContacts"
-                                            element={<MergeContacts />}
-                                        />
+                                <Routes>
+                                    <Route
+                                        path="/dashboard"
+                                        element={
+                                            <PrivateRoute title="Dashboard">
+                                                <PageDashboard props={""} />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/dialer/:contactId"
+                                        element={
+                                            <PrivateRoute>
+                                                <Dialer />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/dialer"
+                                        element={
+                                            <PrivateRoute>
+                                                <Dialer />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/setup/customizations/call-forwarding"
+                                        element={
+                                            <PrivateRoute
+                                                accessibleTo={
+                                                    allowedroleToAccess
+                                                }
+                                            >
+                                                <SetupLayout
+                                                    content={<CallForwarding />}
+                                                    title="Call Forwarding"
+                                                />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/setup/customizations/users"
+                                        element={
+                                            <PrivateRoute
+                                                accessibleTo={
+                                                    allowedroleToAccess
+                                                }
+                                            >
+                                                <SetupLayout
+                                                    content={<Users />}
+                                                    title="Users"
+                                                />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/setup/customizations/users/new"
+                                        element={
+                                            <PrivateRoute
+                                                accessibleTo={
+                                                    allowedroleToAccess
+                                                }
+                                            >
+                                                <SetupLayout
+                                                    content={<AddEditUser />}
+                                                    title="Users"
+                                                />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/setup/customizations/users/:userId"
+                                        element={
+                                            <PrivateRoute
+                                                accessibleTo={
+                                                    allowedroleToAccess
+                                                }
+                                            >
+                                                <SetupLayout
+                                                    content={<AddEditUser />}
+                                                    title="Users"
+                                                />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/contacts/:contactId"
+                                        element={
+                                            <PrivateRoute title="Contacts">
+                                                <ContactView />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/home"
+                                        element={
+                                            <PrivateRoute>
+                                                <Home />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/contacts"
+                                        element={
+                                            <PrivateRoute title="Contacts">
+                                                <Contacts />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/contacts/mergeContacts"
+                                        element={<MergeContacts />}
+                                    />
 
-                                        <Route
-                                            path="/activities"
-                                            element={
-                                                <PrivateRoute>
-                                                    <Activity />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/activities/calendar"
-                                            element={
-                                                <PrivateRoute>
-                                                    <ActivityCalendar />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/deals"
-                                            element={
-                                                <PrivateRoute>
-                                                    <Deal />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/bulk-action"
-                                            element={
-                                                <PrivateRoute>
-                                                    <BulkAction />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/deals/:dealId"
-                                            element={
-                                                <PrivateRoute>
-                                                    <DealDetail />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/inbox"
-                                            element={
-                                                <PrivateRoute>
-                                                    <Inbox />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/text-templates"
-                                            element={
-                                                <PrivateRoute>
-                                                    <TextTemplates />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/text-templates/:route"
-                                            element={
-                                                <PrivateRoute>
-                                                    <TextTemplates />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/text-threads"
-                                            element={
-                                                <PrivateRoute>
-                                                    <Texts />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/text-threads/:threadId"
-                                            element={
-                                                <PrivateRoute>
-                                                    <TextBoxView />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/texts/:route"
-                                            element={
-                                                <PrivateRoute>
-                                                    <Texts />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/setup"
-                                            element={
-                                                <PrivateRoute>
-                                                    <Setup />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/setup/customizations/tag"
-                                            element={
-                                                <PrivateRoute
-                                                    accessibleTo={
-                                                        allowedroleToAccess
+                                    <Route
+                                        path="/activities"
+                                        element={
+                                            <PrivateRoute>
+                                                <Activity />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/activities/calendar"
+                                        element={
+                                            <PrivateRoute>
+                                                <ActivityCalendar />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/deals"
+                                        element={
+                                            <PrivateRoute title="Deals">
+                                                <Deal />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/bulk-action"
+                                        element={
+                                            <PrivateRoute>
+                                                <BulkAction />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/deals/:dealId"
+                                        element={
+                                            <PrivateRoute>
+                                                <DealDetail />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/inbox"
+                                        element={
+                                            <PrivateRoute>
+                                                <Inbox />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/text-templates"
+                                        element={
+                                            <PrivateRoute>
+                                                <TextTemplates />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/text-templates/:route"
+                                        element={
+                                            <PrivateRoute>
+                                                <TextTemplates />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/text-threads"
+                                        element={
+                                            <PrivateRoute title="Texts">
+                                                <Texts />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/text-threads/:threadId"
+                                        element={
+                                            <PrivateRoute title="Texts">
+                                                <TextBoxView />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/texts/:route"
+                                        element={
+                                            <PrivateRoute>
+                                                <Texts />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/setup"
+                                        element={
+                                            <PrivateRoute>
+                                                <Setup />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/setup/customizations/tag"
+                                        element={
+                                            <PrivateRoute
+                                                accessibleTo={
+                                                    allowedroleToAccess
+                                                }
+                                            >
+                                                <SetupLayout
+                                                    content={
+                                                        <ComponentTagManagement />
                                                     }
-                                                >
-                                                    <SetupLayout
-                                                        content={
-                                                            <ComponentTagManagement />
-                                                        }
-                                                        title="Tag Management"
-                                                    />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/setup/customizations/contact"
-                                            element={
-                                                <PrivateRoute
-                                                    accessibleTo={
-                                                        allowedroleToAccess
+                                                    title="Tag Management"
+                                                />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/setup/customizations/contact"
+                                        element={
+                                            <PrivateRoute
+                                                accessibleTo={
+                                                    allowedroleToAccess
+                                                }
+                                            >
+                                                <SetupLayout
+                                                    content={<ContactSetup />}
+                                                    title="Contact"
+                                                />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/setup/customizations/activity"
+                                        element={
+                                            <PrivateRoute
+                                                accessibleTo={
+                                                    allowedroleToAccess
+                                                }
+                                            >
+                                                <SetupLayout
+                                                    content={<ActivitySetup />}
+                                                    title="Activity"
+                                                />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/setup/customizations/deal"
+                                        element={
+                                            <PrivateRoute
+                                                accessibleTo={
+                                                    allowedroleToAccess
+                                                }
+                                            >
+                                                <SetupLayout
+                                                    content={<DealSetup />}
+                                                    title="Deal"
+                                                />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/setup/customizations/deal-pipeline"
+                                        element={
+                                            <PrivateRoute
+                                                accessibleTo={
+                                                    allowedroleToAccess
+                                                }
+                                            >
+                                                <SetupLayout
+                                                    content={
+                                                        <DealPipelineSetup />
                                                     }
-                                                >
-                                                    <SetupLayout
-                                                        content={
-                                                            <ContactSetup />
-                                                        }
-                                                        title="Contact"
-                                                    />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/setup/customizations/activity"
-                                            element={
-                                                <PrivateRoute
-                                                    accessibleTo={
-                                                        allowedroleToAccess
+                                                    title="Deal Pipeline"
+                                                />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/setup/customizations/activity-types"
+                                        element={
+                                            <PrivateRoute
+                                                accessibleTo={
+                                                    allowedroleToAccess
+                                                }
+                                            >
+                                                <SetupLayout
+                                                    content={
+                                                        <ComponentActivityType />
                                                     }
-                                                >
-                                                    <SetupLayout
-                                                        content={
-                                                            <ActivitySetup />
-                                                        }
-                                                        title="Activity"
-                                                    />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/setup/customizations/deal"
-                                            element={
-                                                <PrivateRoute
-                                                    accessibleTo={
-                                                        allowedroleToAccess
+                                                    title="Activity Types"
+                                                />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/setup/data-administration/import-file"
+                                        element={
+                                            <PrivateRoute>
+                                                <SetupLayout
+                                                    content={
+                                                        <ComponentImportData />
                                                     }
-                                                >
-                                                    <SetupLayout
-                                                        content={<DealSetup />}
-                                                        title="Deal"
-                                                    />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/setup/customizations/deal-pipeline"
-                                            element={
-                                                <PrivateRoute
-                                                    accessibleTo={
-                                                        allowedroleToAccess
-                                                    }
-                                                >
-                                                    <SetupLayout
-                                                        content={
-                                                            <DealPipelineSetup />
-                                                        }
-                                                        title="Deal Pipeline"
-                                                    />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/setup/customizations/activity-types"
-                                            element={
-                                                <PrivateRoute
-                                                    accessibleTo={
-                                                        allowedroleToAccess
-                                                    }
-                                                >
-                                                    <SetupLayout
-                                                        content={
-                                                            <ComponentActivityType />
-                                                        }
-                                                        title="Activity Types"
-                                                    />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                        <Route
-                                            path="/setup/data-administration/import-file"
-                                            element={
-                                                <PrivateRoute>
-                                                    <SetupLayout
-                                                        content={
-                                                            <ComponentImportData />
-                                                        }
-                                                        title="Import Data"
-                                                    />
-                                                </PrivateRoute>
-                                            }
-                                        />
-                                    </Routes>
-                                </SideMenu>
+                                                    title="Import Data"
+                                                />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                </Routes>
                             </CallProvider>
                         </AppContextProvider>
                     )}
@@ -476,9 +462,11 @@ const App: React.FC = () => {
 const PrivateRoute = ({
     children,
     accessibleTo,
+    title,
 }: {
     children: any;
     accessibleTo?: string[];
+    title?: string;
 }) => {
     const { user, isLoading } = useLoggedInUser();
 
@@ -491,7 +479,11 @@ const PrivateRoute = ({
             !accessibleTo ||
             (accessibleTo && accessibleTo.includes(user.role))
         ) {
-            return children;
+            if (user?.role == "superAdmin") {
+                return <AdminSideMenu>{children}</AdminSideMenu>;
+            } else {
+                return <SideMenu title={title}>{children}</SideMenu>;
+            }
         } else {
             return <Navigate to="/dashboard" />;
         }

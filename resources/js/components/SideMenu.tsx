@@ -20,7 +20,7 @@ import queryClient from "../queryClient";
 
 const { Header, Sider, Content } = Layout;
 
-const SideMenu = ({ children }) => {
+const SideMenu = ({ children, title }: { children: any; title?: string }) => {
     const navigate = useNavigate();
     const { setIsModalOpen, setCallerNumber, setDestinationNumber } =
         useCallContext();
@@ -157,7 +157,7 @@ const SideMenu = ({ children }) => {
                             background: colorBgContainer,
                         }}
                     >
-                        <Navigation />
+                        <Navigation title={title} />
                     </Header>
                     <Content
                         style={{
