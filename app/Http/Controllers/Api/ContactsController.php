@@ -418,8 +418,7 @@ class ContactsController extends Controller
                 foreach ($mapping as $sourceColumn => $targetColumn) {
                     if($continue){
                         try {
-                            $customFieldValue = CustomFieldValue::find($targetColumn);
-                            $customField = $customFieldValue->customField;
+                            $customField = CustomField::find($targetColumn);
 
                             if($customField->fieldName == 'mobile'){
                                 $verify = $this->getContactByMobile($record[$sourceColumn]);
@@ -428,6 +427,9 @@ class ContactsController extends Controller
                                     DB::rollBack();
                                     break;
                                 }
+                            }
+                            if($customField->type == 'tag'){
+                                $record[$sourceColumn] = [$record[$sourceColumn]];
                             }
                             $this->createOrUpdateCustomFieldValue($contact->id, $customField, 'contact', $record[$sourceColumn]);
                         }
