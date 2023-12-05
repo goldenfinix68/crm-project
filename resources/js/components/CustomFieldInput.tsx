@@ -119,7 +119,7 @@ const CustomFieldInput = ({
                             ? "multiple"
                             : undefined
                     }
-                    dropdownStyle={{ zIndex: 999999 }}
+                    dropdownStyle={{ zIndex: 99999999 }}
                     className="w-100"
                 >
                     {contacts?.map((contact, index) => (

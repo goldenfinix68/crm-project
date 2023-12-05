@@ -11,6 +11,7 @@ import { useMutation, useQueryClient } from "react-query";
 import ContactsComponentsUpdate from "./ContactsComponentsUpdate";
 import { TDeal } from "../../../entities";
 import { useAppContextProvider } from "../../../context/AppContext";
+import TextEllipsis from "../../../components/TextEllipsis";
 
 const DealsTable = ({
     deals,
@@ -141,13 +142,17 @@ const DealsTable = ({
                 <Table.Column
                     title="Pipeline"
                     render={(text: string, record: TDeal) => {
-                        return <>{record.pipeline?.name}</>;
+                        return (
+                            <TextEllipsis>{record.pipeline?.name}</TextEllipsis>
+                        );
                     }}
                 />
                 <Table.Column
                     title="Stage"
                     render={(text: string, record: TDeal) => {
-                        return <>{record.stage?.name}</>;
+                        return (
+                            <TextEllipsis>{record.stage?.name}</TextEllipsis>
+                        );
                     }}
                 />
             </Table>

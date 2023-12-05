@@ -68,7 +68,9 @@ class Text extends Model
 
             if(!empty($fieldValue)){
                 $contact = Contact::find($fieldValue->customableId);
-                return $contact->fields['firstName'] . ' ' . $contact->fields['lastName'];
+                if(!empty($contact)){
+                    return $contact->fields['firstName'] . ' ' . $contact->fields['lastName'];
+                }
             }
             
             return $this->from;
@@ -89,7 +91,9 @@ class Text extends Model
 
             if(!empty($fieldValue)){
                 $contact = Contact::find($fieldValue->customableId);
-                return $contact->fields['firstName'] . ' ' . $contact->fields['lastName'];
+                if(!empty($contact)){
+                    return $contact->fields['firstName'] . ' ' . $contact->fields['lastName'];
+                }
             }
             return $this->to;
         }

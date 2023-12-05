@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { ENDPOINTS } from "../../../endpoints";
+import TextEllipsis from "../../../components/TextEllipsis";
 interface Props {
     setSelectedRows: any;
     setSelectedRowKeys: any;
@@ -60,15 +61,17 @@ const ContactsTable = ({
                 key: field.id,
                 render: (text, record) => {
                     return (
-                        <ContactsEditableTableCell
-                            record={record}
-                            field={field}
-                            handleSubmit={() => {
-                                queryClient.invalidateQueries(
-                                    ENDPOINTS.filteredContacts.cache
-                                );
-                            }}
-                        />
+                        <TextEllipsis>
+                            <ContactsEditableTableCell
+                                record={record}
+                                field={field}
+                                handleSubmit={() => {
+                                    queryClient.invalidateQueries(
+                                        ENDPOINTS.filteredContacts.cache
+                                    );
+                                }}
+                            />
+                        </TextEllipsis>
                     );
                 },
             };
@@ -98,42 +101,35 @@ const ContactsTable = ({
                                 }[]
                             ) => {
                                 return (
-                                    <Space>
-                                        <Button
-                                            type="text"
-                                            size="small"
-                                            icon={
-                                                <FontAwesomeIcon icon={faPen} />
-                                            }
-                                            onClick={() => {
-                                                setisModalOpen(true);
-                                                setSelectedContactFields(
-                                                    record
-                                                );
-                                            }}
-                                            disabled={isRoleStats}
-                                        />
-                                        {/* <Avatar
-                                            className="avatarText m-r-sm"
-                                            // src={record.avatar}
-                                            size={32}
-                                            style={{
-                                                backgroundColor: "#1677FF",
-                                                verticalAlign: "middle",
-                                            }}
-                                        >
-                                            {record["firstName"]?.charAt(0)}
-                                        </Avatar> */}
+                                    <TextEllipsis>
+                                        <Space>
+                                            <Button
+                                                type="text"
+                                                size="small"
+                                                icon={
+                                                    <FontAwesomeIcon
+                                                        icon={faPen}
+                                                    />
+                                                }
+                                                onClick={() => {
+                                                    setisModalOpen(true);
+                                                    setSelectedContactFields(
+                                                        record
+                                                    );
+                                                }}
+                                                disabled={isRoleStats}
+                                            />
 
-                                        <Link
-                                            to={
-                                                "/contacts/" +
-                                                record["contactId"]
-                                            }
-                                        >
-                                            {`${record["firstName"]} ${record["lastName"]}`}
-                                        </Link>
-                                    </Space>
+                                            <Link
+                                                to={
+                                                    "/contacts/" +
+                                                    record["contactId"]
+                                                }
+                                            >
+                                                {`${record["firstName"]} ${record["lastName"]}`}
+                                            </Link>
+                                        </Space>
+                                    </TextEllipsis>
                                 );
                             },
                             sorter: (a, b) =>

@@ -5,44 +5,62 @@ import { TUser } from "../../../entities";
 import { Link } from "react-router-dom";
 import { EditOutlined } from "@ant-design/icons";
 import { userRoleOption } from "../../../constants";
+import TextEllipsis from "../../../components/TextEllipsis";
 
 const columns: ColumnsType<TUser> = [
     {
         key: "firstName",
         title: "First Name",
-        dataIndex: "firstName",
+        render: (key: any, record: TUser) => {
+            return <TextEllipsis>{record.firstName}</TextEllipsis>;
+        },
     },
     {
         key: "lastName",
         title: "Last Name",
-        dataIndex: "lastName",
+        render: (key: any, record: TUser) => {
+            return <TextEllipsis>{record.lastName}</TextEllipsis>;
+        },
     },
     {
         key: "email",
         title: "Email Address",
-        dataIndex: "email",
+        render: (key: any, record: TUser) => {
+            return <TextEllipsis>{record.email}</TextEllipsis>;
+        },
     },
     {
         key: "role",
         title: "Role",
         render: (key: any, record: TUser) => {
-            return userRoleOption.find((option) => option.value == record.role)
-                ?.label;
+            return (
+                <TextEllipsis>
+                    {
+                        userRoleOption.find(
+                            (option) => option.value == record.role
+                        )?.label
+                    }
+                </TextEllipsis>
+            );
         },
     },
     {
         key: "telnyxConnectionName",
         title: "SIP Trunking / Mobile Numbers",
         render: (key: any, record: TUser) => {
-            return record.telnyxConnectionName
-                ? `${record.telnyxConnectionName} (${
-                      record.numbers?.length
-                          ? record.numbers
-                                .map((number) => number.mobileNumber)
-                                .join(", ")
-                          : ""
-                  })`
-                : "Not Set";
+            return (
+                <TextEllipsis>
+                    {record.telnyxConnectionName
+                        ? `${record.telnyxConnectionName} (${
+                              record.numbers?.length
+                                  ? record.numbers
+                                        .map((number) => number.mobileNumber)
+                                        .join(", ")
+                                  : ""
+                          })`
+                        : "Not Set"}
+                </TextEllipsis>
+            );
         },
     },
     {

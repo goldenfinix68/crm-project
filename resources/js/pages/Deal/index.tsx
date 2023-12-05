@@ -47,6 +47,7 @@ import { useAppContextProvider } from "../../context/AppContext";
 import { useCallContext } from "../../context/CallContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
+import TextEllipsis from "../../components/TextEllipsis";
 
 interface Card {
     id: number;
