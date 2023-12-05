@@ -74,6 +74,7 @@ import { Button } from "antd";
 import AdminSideMenu from "./components/SuperAdmin/AdminSideMenu";
 import AdminDashboard from "./pages/SuperAdmin/Dashboard/AdminDashboard";
 import AdminUsers from "./pages/SuperAdmin/Users/AdminUsers";
+import ImportDataGSheet from "./pages/Setup/Components/ImportDataGSheet";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isForgotPassword = window.location.pathname === "/forgot-password";
@@ -458,6 +459,19 @@ const App: React.FC = () => {
                                                             <ComponentImportData />
                                                         }
                                                         title="Import Data"
+                                                    />
+                                                </PrivateRoute>
+                                            }
+                                        />
+                                        <Route
+                                            path="/setup/data-administration/import-file-gsheet"
+                                            element={
+                                                <PrivateRoute>
+                                                    <SetupLayout
+                                                        content={
+                                                            <ImportDataGSheet />
+                                                        }
+                                                        title="Import Data From Google Sheet"
                                                     />
                                                 </PrivateRoute>
                                             }

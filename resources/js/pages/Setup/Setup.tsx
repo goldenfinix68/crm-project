@@ -94,8 +94,13 @@ const Setup: React.FC = (props) => {
     const dataAdministration: any = [
         {
             icon: <DatabaseOutlined />,
-            title: "Import Data",
+            title: "Import Data from Excel or CSV",
             link: "/setup/data-administration/import-file",
+        },
+        {
+            icon: <DatabaseOutlined />,
+            title: "Import Data from Google Sheet",
+            link: "/setup/data-administration/import-file-gsheet",
         },
     ];
 
@@ -172,8 +177,12 @@ const Setup: React.FC = (props) => {
                                     onClick={() => navigate(item.link)}
                                 />
 
-                                <Typography.Text style={{ fontSize: 16 }}>
-                                    {item.title}
+                                <Typography.Text
+                                    style={{
+                                        fontSize: 16,
+                                    }}
+                                >
+                                    <center>{item.title}</center>
                                 </Typography.Text>
                             </Space>
                         </Col>

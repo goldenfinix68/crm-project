@@ -131,7 +131,12 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                 {
                     key: "/setup/data-administration/import-file",
                     path: "/setup/data-administration/import-file",
-                    label: "Import Data",
+                    label: "Import Data from csv/excel",
+                },
+                {
+                    key: "/setup/data-administration/import-file-gsheet",
+                    path: "/setup/data-administration/import-file-gsheet",
+                    label: "Import Data from google sheet",
                 },
             ],
         },
