@@ -45,6 +45,9 @@ import { TDeal } from "../../entities";
 import LoadingComponent from "../../components/LoadingComponent";
 import { useAppContextProvider } from "../../context/AppContext";
 import { useCallContext } from "../../context/CallContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPen } from "@fortawesome/free-solid-svg-icons";
+import TextEllipsis from "../../components/TextEllipsis";
 
 interface Card {
     id: number;
@@ -72,10 +75,10 @@ interface TDeals {
 }
 const Deal = () => {
     const navigate = useNavigate();
-    const { isRoleStats } = useAppContextProvider();
+    const { isRoleStats, pipelines } = useAppContextProvider();
     const queryClient = useQueryClient();
     const [filterPage, setFilterPage] = useState({
-        pipelineId: "",
+        pipelineId: pipelines?.length ? pipelines[0].id : "",
         title: "",
         status: "All Deals",
         page: 1,
@@ -85,13 +88,16 @@ const Deal = () => {
         sort_order: "asc",
     });
     const { deals, isLoading, refetch } = useDealsAll(filterPage);
-    const { data: pipelines, isLoading: isPipelinesLoading } = dealPipelines();
     const selectedpipeline = pipelines?.find(
         (pipeline) => pipeline.id === filterPage.pipelineId
     );
 
     const { setIsModalOpen, setCallerNumber, setDestinationNumber } =
         useCallContext();
+
+    const [selectedDeal, setSelectedDeal] = useState<TDeal | undefined>(
+        undefined
+    );
 
     const [showDeleteButton, setShowDeleteButton] = useState(false);
 
@@ -105,34 +111,6 @@ const Deal = () => {
         refetch();
     }, [filterPage]);
 
-    const [openFilter, setOpenFilter] = useState(false);
-
-    const action: MenuProps["items"] = [
-        {
-            key: "1",
-            label: <div>Mass Transfer Deals</div>,
-        },
-        {
-            key: "2",
-            label: <div>Mass Delete Deals</div>,
-        },
-        {
-            key: "3",
-            label: <div>Mass Update Deals</div>,
-        },
-        {
-            key: "4",
-            label: <div>Import From Excel or CSV file</div>,
-        },
-        {
-            key: "5",
-            label: <div>Export Deals</div>,
-        },
-        {
-            key: "6",
-            label: <div>View Recent Deleted Records</div>,
-        },
-    ];
     const pipelineDropdownItem: MenuProps["items"] = pipelines?.map(
         (pipeline) => {
             return {
@@ -152,21 +130,6 @@ const Deal = () => {
             };
         }
     );
-
-    const phone: MenuProps["items"] = [
-        {
-            key: "1",
-            label: <div>Call Via Browser</div>,
-        },
-        {
-            key: "2",
-            label: <div>Call Via Phone</div>,
-        },
-        {
-            key: "3",
-            label: <div>Send Text</div>,
-        },
-    ];
 
     const [listBoard, setListBoard] = useState("Board");
     const [boardData, setBoardData] = useState<{ lanes: Lane[] } | undefined>();
@@ -218,60 +181,65 @@ const Deal = () => {
 
     const cardDiv = (deal: TDeal) => {
         return (
-            <div>
-                <Card style={{ width: "100%", cursor: "pointer" }}>
-                    <div>
-                        {deal.contact?.fields.firstName +
-                            " " +
-                            deal.contact?.fields.lastName}
-                    </div>
+            <Card style={{ width: "100%", cursor: "pointer" }}>
+                <div>
+                    {deal.contact?.fields.firstName +
+                        " " +
+                        deal.contact?.fields.lastName}
+                </div>
 
-                    <div
-                        style={{
-                            fontSize: 10,
-                            color: "#9b9999",
-                        }}
-                    >
-                        {moment(deal?.created_at).format("LL")}
-                    </div>
+                <div
+                    style={{
+                        fontSize: 10,
+                        color: "#9b9999",
+                    }}
+                >
+                    {moment(deal?.created_at).format("LL")}
+                </div>
 
-                    <div
-                        style={{
-                            marginTop: 10,
-                            float: "right",
-                            cursor: "pointer",
-                        }}
-                    >
-                        <Space>
-                            <Tooltip title="Call contact">
-                                <Avatar
-                                    icon={<PhoneOutlined className="p-t-xs" />}
-                                    onClick={() => {
-                                        setCallerNumber(
-                                            deal.contact?.fields
-                                                ?.defaultMobileNumber ?? ""
-                                        );
-                                        setDestinationNumber(
-                                            deal.contact?.fields.mobile ?? ""
-                                        );
-                                        setIsModalOpen(true);
-                                    }}
-                                />
-                            </Tooltip>
-                            <Tooltip title="Contact profile">
-                                <Avatar
-                                    icon={<UserOutlined className="p-t-xs" />}
-                                    onClick={() => {
-                                        navigate(
-                                            "/contacts/" + deal.contact?.id
-                                        );
-                                    }}
-                                />
-                            </Tooltip>
-                        </Space>
-                    </div>
-                </Card>
-            </div>
+                <div
+                    style={{
+                        marginTop: 10,
+                        float: "right",
+                        cursor: "pointer",
+                    }}
+                >
+                    <Space>
+                        <Tooltip title="Call contact">
+                            <Avatar
+                                icon={<PhoneOutlined className="p-t-xs" />}
+                                onClick={() => {
+                                    setCallerNumber(
+                                        deal.contact?.fields
+                                            ?.defaultMobileNumber ?? ""
+                                    );
+                                    setDestinationNumber(
+                                        deal.contact?.fields.mobile ?? ""
+                                    );
+                                    setIsModalOpen(true);
+                                }}
+                            />
+                        </Tooltip>
+                        <Tooltip title="Contact profile">
+                            <Avatar
+                                icon={<UserOutlined className="p-t-xs" />}
+                                onClick={() => {
+                                    navigate("/contacts/" + deal.contact?.id);
+                                }}
+                            />
+                        </Tooltip>
+                        <Tooltip title="Edit deal">
+                            <Avatar
+                                icon={<FontAwesomeIcon icon={faPen} />}
+                                onClick={() => {
+                                    setSelectedDeal(deal);
+                                    setIsModalOpenAdd(true);
+                                }}
+                            />
+                        </Tooltip>
+                    </Space>
+                </div>
+            </Card>
         );
     };
 
@@ -331,13 +299,10 @@ const Deal = () => {
         }
     }, [pipelines]);
 
-    if (isPipelinesLoading) {
-        <LoadingComponent />;
-    }
     return (
         <Row className="deal-group-row">
             <Col md={24}>
-                <Card title="Deals" loading={isLoading}>
+                <Card loading={isLoading}>
                     {showDeleteButton ? (
                         <Row
                             style={{
@@ -552,8 +517,10 @@ const Deal = () => {
                         }}
                         closeModal={() => {
                             setIsModalOpenAdd(false);
+                            setSelectedDeal(undefined);
                         }}
-                        selectedRows={selectedRowsData}
+                        deal={selectedDeal}
+                        selectedRows={!selectedDeal ? selectedRowsData : []}
                     />
                 </Card>
             </Col>

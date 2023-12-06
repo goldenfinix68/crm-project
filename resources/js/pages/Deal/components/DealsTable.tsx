@@ -11,6 +11,7 @@ import { useMutation, useQueryClient } from "react-query";
 import ContactsComponentsUpdate from "./ContactsComponentsUpdate";
 import { TDeal } from "../../../entities";
 import { useAppContextProvider } from "../../../context/AppContext";
+import TextEllipsis from "../../../components/TextEllipsis";
 
 const DealsTable = ({
     deals,
@@ -101,6 +102,11 @@ const DealsTable = ({
                 rowKey={(record) => record?.id ?? ""}
                 rowSelection={{ ...rowSelection }}
                 scroll={{ x: 800 }}
+                pagination={{
+                    defaultPageSize: 100,
+                    pageSizeOptions: ["100", "250"],
+                    showSizeChanger: true,
+                }}
             >
                 <Table.Column
                     title="Contact"
@@ -109,22 +115,29 @@ const DealsTable = ({
                     render={(text: string, record: TDeal) => {
                         return (
                             <>
-                                <Button
-                                    type="text"
-                                    className="m-r-sm"
-                                    icon={<FontAwesomeIcon icon={faPen} />}
-                                    onClick={() => {
-                                        setIsModalOpenAdd(true);
-                                        setSelectedDeal(record);
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
                                     }}
-                                    disabled={isRoleStats}
-                                />
+                                >
+                                    <Button
+                                        type="text"
+                                        className="m-r-sm"
+                                        icon={<FontAwesomeIcon icon={faPen} />}
+                                        onClick={() => {
+                                            setIsModalOpenAdd(true);
+                                            setSelectedDeal(record);
+                                        }}
+                                        disabled={isRoleStats}
+                                    />
 
-                                <span>
-                                    {record.contact?.fields.firstName +
-                                        " " +
-                                        record.contact?.fields.lastName}
-                                </span>
+                                    <span>
+                                        {record.contact?.fields.firstName +
+                                            " " +
+                                            record.contact?.fields.lastName}
+                                    </span>
+                                </div>
                             </>
                         );
                     }}
@@ -134,13 +147,17 @@ const DealsTable = ({
                 <Table.Column
                     title="Pipeline"
                     render={(text: string, record: TDeal) => {
-                        return <>{record.pipeline?.name}</>;
+                        return (
+                            <TextEllipsis>{record.pipeline?.name}</TextEllipsis>
+                        );
                     }}
                 />
                 <Table.Column
                     title="Stage"
                     render={(text: string, record: TDeal) => {
-                        return <>{record.stage?.name}</>;
+                        return (
+                            <TextEllipsis>{record.stage?.name}</TextEllipsis>
+                        );
                     }}
                 />
             </Table>

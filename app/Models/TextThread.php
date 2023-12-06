@@ -43,7 +43,7 @@ class TextThread extends Model
         if(!empty($fieldValue)){
             $contact = Contact::find($fieldValue->customableId);
             $user = Auth::user();
-            if($contact->userId == $user->mainId){
+            if(!empty($contact) && $contact->userId == $user->mainId){
                 return $contact;
             }
         }

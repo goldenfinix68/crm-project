@@ -16,6 +16,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppContextProvider } from "../../context/AppContext";
 import { allowedroleToAccess } from "../../constants";
+import CustomLink from "../../components/CustomLink";
 
 const Setup: React.FC = (props) => {
     const navigate = useNavigate();
@@ -117,29 +118,30 @@ const Setup: React.FC = (props) => {
                 {customizationButtons.map((item: any, key: React.Key) => {
                     return (
                         <Col xs={6} sm={6} md={4} key={key}>
-                            <Space
-                                direction="vertical"
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <Button
-                                    className="button-link"
-                                    shape="circle"
-                                    size="large"
-                                    icon={item.icon}
+                            <CustomLink to={item.link}>
+                                <Space
+                                    direction="vertical"
                                     style={{
-                                        height: 80,
-                                        width: 80,
+                                        display: "flex",
+                                        alignItems: "center",
                                     }}
-                                    onClick={() => navigate(item.link)}
-                                />
+                                >
+                                    <Button
+                                        className="button-link"
+                                        shape="circle"
+                                        size="large"
+                                        icon={item.icon}
+                                        style={{
+                                            height: 80,
+                                            width: 80,
+                                        }}
+                                    />
 
-                                <Typography.Text style={{ fontSize: 16 }}>
-                                    {item.title}
-                                </Typography.Text>
-                            </Space>
+                                    <Typography.Text style={{ fontSize: 16 }}>
+                                        {item.title}
+                                    </Typography.Text>
+                                </Space>
+                            </CustomLink>
                         </Col>
                     );
                 })}
@@ -158,33 +160,30 @@ const Setup: React.FC = (props) => {
                 {dataAdministration.map((item: any, key: React.Key) => {
                     return (
                         <Col xs={6} sm={6} md={4} key={key}>
-                            <Space
-                                direction="vertical"
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <Button
-                                    className="button-link"
-                                    shape="circle"
-                                    size="large"
-                                    icon={item.icon}
+                            <CustomLink to={item.link}>
+                                <Space
+                                    direction="vertical"
                                     style={{
-                                        height: 80,
-                                        width: 80,
-                                    }}
-                                    onClick={() => navigate(item.link)}
-                                />
-
-                                <Typography.Text
-                                    style={{
-                                        fontSize: 16,
+                                        display: "flex",
+                                        alignItems: "center",
                                     }}
                                 >
-                                    <center>{item.title}</center>
-                                </Typography.Text>
-                            </Space>
+                                    <Button
+                                        className="button-link"
+                                        shape="circle"
+                                        size="large"
+                                        icon={item.icon}
+                                        style={{
+                                            height: 80,
+                                            width: 80,
+                                        }}
+                                    />
+
+                                    <Typography.Text style={{ fontSize: 16 }}>
+                                        <center>{item.title}</center>
+                                    </Typography.Text>
+                                </Space>
+                            </CustomLink>
                         </Col>
                     );
                 })}
@@ -206,33 +205,32 @@ const Setup: React.FC = (props) => {
                             (item: any, key: React.Key) => {
                                 return (
                                     <Col xs={6} sm={6} md={4} key={key}>
-                                        <Space
-                                            direction="vertical"
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                            }}
-                                        >
-                                            <Button
-                                                className="button-link"
-                                                shape="circle"
-                                                size="large"
-                                                icon={item.icon}
+                                        <CustomLink to={item.link}>
+                                            <Space
+                                                direction="vertical"
                                                 style={{
-                                                    height: 80,
-                                                    width: 80,
+                                                    display: "flex",
+                                                    alignItems: "center",
                                                 }}
-                                                onClick={() =>
-                                                    navigate(item.link)
-                                                }
-                                            />
-
-                                            <Typography.Text
-                                                style={{ fontSize: 16 }}
                                             >
-                                                {item.title}
-                                            </Typography.Text>
-                                        </Space>
+                                                <Button
+                                                    className="button-link"
+                                                    shape="circle"
+                                                    size="large"
+                                                    icon={item.icon}
+                                                    style={{
+                                                        height: 80,
+                                                        width: 80,
+                                                    }}
+                                                />
+
+                                                <Typography.Text
+                                                    style={{ fontSize: 16 }}
+                                                >
+                                                    {item.title}
+                                                </Typography.Text>
+                                            </Space>
+                                        </CustomLink>
                                     </Col>
                                 );
                             }

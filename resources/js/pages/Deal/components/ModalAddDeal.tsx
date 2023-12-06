@@ -100,7 +100,7 @@ const ModalAddDeal = ({
                         {selectedRows?.length
                             ? "Bulk update"
                             : deal
-                            ? "Update New Deal"
+                            ? "Update Deal"
                             : "Add New Deal"}
                     </Typography.Title>
                     <Button

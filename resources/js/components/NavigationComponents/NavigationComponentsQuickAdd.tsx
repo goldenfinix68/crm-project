@@ -152,20 +152,20 @@ const NavigationComponentsQuickAdd: React.FC = () => {
                 setIsModalOpen={setIsAddModalContactOpen}
                 title="Add Contact"
             />
-
+            {/* 
             <ModalAddActivity
                 isModalOpenAdd={isModalOpenAdd}
                 handleOkAdd={handleOkAdd}
                 handleCancelAdd={handleCancelAdd}
-            />
-
+            /> */}
+            {/* 
             <ModalAddDeal
                 isModalOpenAdd={isAddDealModalOpen}
                 handleOkAdd={() => {
                     setIsAddDealModalOpen(false);
                 }}
                 handleCancelAdd={() => setIsAddDealModalOpen(false)}
-            />
+            /> */}
 
             <TextModal
                 closeModal={() => setIsTextModalOpen(false)}

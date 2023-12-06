@@ -41,7 +41,13 @@ class UsersController extends Controller
         
             return $users;
         }
-        return User::where('id', $this->getMainUserId())->orWhere('mainUserId', $this->getMainUserId())->with('numbers')->get();
+        return User::where(function ($q) {
+                    $q->where('id', $this->getMainUserId())
+                        ->orWhere('mainUserId', $this->getMainUserId());
+                })
+                ->where('role', '!=', 'superAdmin')
+                ->with('numbers')
+                ->get();
     }
 
     /**
