@@ -147,7 +147,9 @@ const AdminUsersTable = () => {
                 dataSource={users.data}
                 pagination={{
                     current: page,
-                    pageSize: 10,
+                    defaultPageSize: 100,
+                    pageSizeOptions: ["100", "250"],
+                    showSizeChanger: true,
                     total: users?.total || 0,
                     onChange: (newPage) => {
                         setPage(newPage);

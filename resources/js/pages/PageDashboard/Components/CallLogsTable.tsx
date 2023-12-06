@@ -172,6 +172,11 @@ const CallLogsTable = () => {
                 columns={columns}
                 dataSource={dataSource}
                 onChange={onChange}
+                pagination={{
+                    defaultPageSize: 100,
+                    pageSizeOptions: ["100", "250"],
+                    showSizeChanger: true,
+                }}
             />
         </Space>
     );

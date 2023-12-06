@@ -102,6 +102,11 @@ const DealsTable = ({
                 rowKey={(record) => record?.id ?? ""}
                 rowSelection={{ ...rowSelection }}
                 scroll={{ x: 800 }}
+                pagination={{
+                    defaultPageSize: 100,
+                    pageSizeOptions: ["100", "250"],
+                    showSizeChanger: true,
+                }}
             >
                 <Table.Column
                     title="Contact"

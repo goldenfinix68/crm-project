@@ -88,7 +88,18 @@ const onChange: TableProps<TUser>["onChange"] = (
 };
 
 const UsersTable = ({ users }: { users: Array<TUser> }) => {
-    return <Table columns={columns} dataSource={users} onChange={onChange} />;
+    return (
+        <Table
+            columns={columns}
+            dataSource={users}
+            onChange={onChange}
+            pagination={{
+                defaultPageSize: 100,
+                pageSizeOptions: ["100", "250"],
+                showSizeChanger: true,
+            }}
+        />
+    );
 };
 
 export default UsersTable;

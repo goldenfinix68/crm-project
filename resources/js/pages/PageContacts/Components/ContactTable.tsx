@@ -53,7 +53,7 @@ const ContactsTable = ({
                 !["firstName", "lastName"].includes(field.fieldName) &&
                 field.isDisplayTable
         )
-        .sort((a, b) => a.tableSort - b.tableSort)
+        .sort((a, b) => a?.tableSort! - b?.tableSort!)
         .map((field, index) => {
             return {
                 title: field.label,
@@ -144,6 +144,11 @@ const ContactsTable = ({
                 }
                 dataSource={contacts?.map((contact) => contact.fields)}
                 scroll={{ x: 1300 }}
+                pagination={{
+                    defaultPageSize: 100,
+                    pageSizeOptions: ["100", "250"],
+                    showSizeChanger: true,
+                }}
             />
 
             <CustomFieldFormModal
