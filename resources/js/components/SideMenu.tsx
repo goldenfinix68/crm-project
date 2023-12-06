@@ -17,6 +17,8 @@ import { useAppContextProvider } from "../context/AppContext";
 import ReactClearCache from "./ReactClearCache";
 import ImpersonateBanner from "./ImpersonateBanner";
 import queryClient from "../queryClient";
+import { Link } from "react-router-dom";
+import CustomLink from "./CustomLink";
 
 const { Header, Sider, Content } = Layout;
 
@@ -102,12 +104,20 @@ const SideMenu = ({ children, title }: { children: any; title?: string }) => {
                             {
                                 key: "/dashboard",
                                 icon: <HomeOutlined />,
-                                label: "Dashboard",
+                                label: (
+                                    <CustomLink to="/dashboard">
+                                        Dashboard
+                                    </CustomLink>
+                                ),
                             },
                             {
                                 key: "/contacts",
                                 icon: <UsergroupAddOutlined />,
-                                label: "Contacts",
+                                label: (
+                                    <CustomLink to="/contacts">
+                                        Contacts
+                                    </CustomLink>
+                                ),
                             },
                             // {
                             //     key: "/activities",
@@ -117,7 +127,9 @@ const SideMenu = ({ children, title }: { children: any; title?: string }) => {
                             {
                                 key: "/deals",
                                 icon: <DollarCircleOutlined />,
-                                label: "Deals",
+                                label: (
+                                    <CustomLink to="/deals">Deals</CustomLink>
+                                ),
                             },
                             // {
                             //     key: "/inbox",
@@ -127,27 +139,28 @@ const SideMenu = ({ children, title }: { children: any; title?: string }) => {
                             {
                                 key: "/text-threads",
                                 icon: <MobileOutlined />,
-                                label: "Text Threads",
+                                label: (
+                                    <CustomLink to="/text-threads">
+                                        Texts
+                                    </CustomLink>
+                                ),
                             },
-                            {
-                                key: "/dialer",
-                                icon: <PhoneOutlined />,
-                                label: "Dialer",
-                            },
+                            // {
+                            //     key: "/dialer",
+                            //     icon: <PhoneOutlined />,
+                            //     label: "Dialer",
+                            //     onClick: () => {
+                            //         setCallerNumber(
+                            //             loggedInUser?.numbers?.length
+                            //                 ? loggedInUser.numbers[0]
+                            //                       .mobileNumber
+                            //                 : ""
+                            //         );
+                            //         setDestinationNumber("");
+                            //         setIsModalOpen(true);
+                            //     },
+                            // },
                         ]}
-                        onClick={(e) => {
-                            if (e.key == "/dialer") {
-                                setCallerNumber(
-                                    loggedInUser?.numbers?.length
-                                        ? loggedInUser.numbers[0].mobileNumber
-                                        : ""
-                                );
-                                setDestinationNumber("");
-                                setIsModalOpen(true);
-                            } else {
-                                navigate(e.key);
-                            }
-                        }}
                     />
                 </Sider>
                 <Layout>

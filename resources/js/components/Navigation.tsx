@@ -25,6 +25,7 @@ import {
 import NavigationComponentsQuickAdd from "./NavigationComponents/NavigationComponentsQuickAdd";
 import NavigationComponentsCall from "./NavigationComponents/NavigationComponentsCall";
 import { useAppContextProvider } from "../context/AppContext";
+import CustomLink from "./CustomLink";
 
 type NavigationProps = {
     title?: string; // Add this line to include the 'title' prop
@@ -90,17 +91,18 @@ const Navigation: React.FC<NavigationProps> = ({ title }) => {
                     <Menu className="dropdowmn-menu">
                         <Menu.Item
                             onClick={() => {
-                                navigate("/setup");
                                 setDropdownVisible(false);
                             }}
                             disabled={isRoleStats}
                         >
-                            <Space>
-                                <Button shape="circle">
-                                    <SettingOutlined />
-                                </Button>
-                                Setup
-                            </Space>
+                            <CustomLink to="/setup">
+                                <Space>
+                                    <Button shape="circle">
+                                        <SettingOutlined />
+                                    </Button>
+                                    Setup
+                                </Space>
+                            </CustomLink>
                         </Menu.Item>
                         <Menu.Item
                             onClick={() => {

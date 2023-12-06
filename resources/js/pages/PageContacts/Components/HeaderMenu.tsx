@@ -7,23 +7,27 @@ import {
     UserOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import CustomLink from "../../../components/CustomLink";
 
 const HeaderMenu = () => {
     const [currentMenu, setCurrentMenu] = useState("mail");
     const navigate = useNavigate();
     return (
         <Menu
-            onClick={(e) => navigate("/" + e.key)}
+            // onClick={(e) => navigate("/" + e.key)}
             selectedKeys={[currentMenu]}
             mode="horizontal"
             items={[
                 {
-                    label: "Contacts",
+                    label: <CustomLink to="/contacts">Contacts</CustomLink>,
                     key: "contacts",
                     icon: <UserOutlined />,
                 },
                 {
-                    label: "Bulk Action",
+                    label: (
+                        <CustomLink to="/bulk-action">Bulk Action</CustomLink>
+                    ),
                     key: "bulk-action",
                     icon: <PullRequestOutlined />,
                 },

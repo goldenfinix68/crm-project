@@ -21,6 +21,7 @@ import TextTemplatesContent from "./components/TextTemplatesContent";
 import AddUpdateTemplateFolderModal from "./components/AddUpdateFolderModal";
 import { useTextTemplateFolders } from "../../api/query/textTemplateQuery";
 import { useAppContextProvider } from "../../context/AppContext";
+import CustomLink from "../../components/CustomLink";
 
 const TextTemplates = () => {
     const { route } = useParams();
@@ -67,21 +68,25 @@ const TextTemplates = () => {
                                 </Space>
                                 <Menu
                                     mode="vertical"
-                                    onClick={(e) => {
-                                        if (e.key == "All") {
-                                            navigate("/text-templates");
-                                        } else {
-                                            navigate(
-                                                "/text-templates/" + e.key
-                                            );
-                                        }
-                                        setMenu(e.key);
-                                    }}
+                                    // onClick={(e) => {
+                                    //     if (e.key == "All") {
+                                    //         navigate("/text-templates");
+                                    //     } else {
+                                    //         navigate(
+                                    //             "/text-templates/" + e.key
+                                    //         );
+                                    //     }
+                                    //     setMenu(e.key);
+                                    // }}
                                     selectedKeys={[menu]}
                                     style={{ height: "80vh" }}
                                 >
                                     {/* Set mode to 'vertical' for a vertical menu */}
-                                    <Menu.Item key="All">All</Menu.Item>
+                                    <Menu.Item key="All">
+                                        <CustomLink to="/text-templates">
+                                            All
+                                        </CustomLink>
+                                    </Menu.Item>
                                     {folders &&
                                         folders?.map((template) => {
                                             return (
@@ -101,7 +106,9 @@ const TextTemplates = () => {
                                             );
                                         })}
                                     <Menu.Item key="Archived">
-                                        Archived
+                                        <CustomLink to="/text-templates/Archived">
+                                            Archived
+                                        </CustomLink>
                                     </Menu.Item>
                                 </Menu>
                             </Col>
@@ -172,12 +179,6 @@ const MenuItemHover = ({ template, handleRename }) => {
         </Menu>
     );
 
-    const handleEllipsisClick = (e) => {
-        e.preventDefault(); // Prevent the default behavior
-        // You can add your custom logic here for the ellipsis button click
-        console.log("Ellipsis button clicked");
-    };
-
     return (
         <>
             <Menu.Item
@@ -192,9 +193,12 @@ const MenuItemHover = ({ template, handleRename }) => {
                         justifyContent: "space-between",
                         alignItems: "center",
                     }}
-                    onClick={() => navigate("/text-templates/" + template.name)}
                 >
-                    <Typography.Text>{template.name}</Typography.Text>
+                    <Typography.Text>
+                        <CustomLink to={"/text-templates/" + template.name}>
+                            {template.name}
+                        </CustomLink>
+                    </Typography.Text>
                     {isHovered && (
                         <Dropdown
                             overlay={menu}

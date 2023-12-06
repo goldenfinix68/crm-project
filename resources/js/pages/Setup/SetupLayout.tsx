@@ -30,6 +30,7 @@ import CustomFieldFormModal from "../../components/CustomFieldFormModal";
 import PipelineAddUpdateModal from "../DealPipelineSetup/components/PipelineAddUpdateModal";
 import { useAppContextProvider } from "../../context/AppContext";
 import { allowedroleToAccess } from "../../constants";
+import CustomLink from "../../components/CustomLink";
 
 const { SubMenu } = Menu;
 
@@ -173,9 +174,9 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                     mode="inline"
                     defaultSelectedKeys={[window.location.pathname]}
                     defaultOpenKeys={["/setup/customizations"]} // Set the default open keys here
-                    onSelect={(info) => {
-                        navigate(info.key);
-                    }}
+                    // onSelect={(info) => {
+                    //     navigate(info.key);
+                    // }}
                 >
                     {sideMenuItems.map((item) => {
                         if (item.children) {
@@ -190,7 +191,9 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                                             key={child.key}
                                             icon={child.icon}
                                         >
-                                            {child.label}
+                                            <CustomLink to={child.key}>
+                                                {child.label}
+                                            </CustomLink>
                                         </Menu.Item>
                                     ))}
                                 </SubMenu>
@@ -198,7 +201,9 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                         } else {
                             return (
                                 <Menu.Item key={item.key} icon={item.icon}>
-                                    {item.label}
+                                    <CustomLink to={item.key}>
+                                        {item.label}
+                                    </CustomLink>
                                 </Menu.Item>
                             );
                         }

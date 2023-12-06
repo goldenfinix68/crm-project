@@ -13,6 +13,7 @@ import { useTextLabels } from "../../../api/query/textQuery";
 import { useNavigate } from "react-router-dom";
 import AddUpdateTextLabelModal from "../../PageContacts/Components/AddUpdateTextLabelModal";
 import { TTextLabel } from "../../../entities";
+import CustomLink from "../../../components/CustomLink";
 
 const TextsHeaderMenu = ({
     handleLabelChange,
@@ -48,19 +49,19 @@ const TextsHeaderMenu = ({
                 mode="horizontal"
             >
                 <Menu.Item key="inbox" icon={<InboxOutlined />}>
-                    Inbox
+                    <CustomLink to="/text-threads">Inbox</CustomLink>
                 </Menu.Item>
                 <Menu.Item key="scheduled" icon={<ClockCircleOutlined />}>
-                    Scheduled
+                    <CustomLink to="/texts/scheduled">Scheduled</CustomLink>
                 </Menu.Item>
                 <Menu.Item key="sent" icon={<SendOutlined />}>
-                    Sent
+                    <CustomLink to="/texts/sent">Sent</CustomLink>
                 </Menu.Item>
                 <Menu.Item key="failed" icon={<DeleteOutlined />}>
-                    Failed
+                    <CustomLink to="/texts/failed">Failed</CustomLink>
                 </Menu.Item>
                 <Menu.Item key="templates" icon={<FolderOutlined />}>
-                    Templates
+                    <CustomLink to="/text-templates">Templates</CustomLink>
                 </Menu.Item>
                 <Menu.Item
                     key="labels"
