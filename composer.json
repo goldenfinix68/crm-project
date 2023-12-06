@@ -12,6 +12,7 @@
         "doctrine/dbal": "^3.7",
         "elephantio/elephant.io": "^4.2",
         "fruitcake/laravel-cors": "^2.0",
+        "google/apiclient": "^2.15",
         "guzzlehttp/guzzle": "^7.0.1",
         "innocenzi/laravel-vite": "^0.1.27",
         "laravel/framework": "^8.75",

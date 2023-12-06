@@ -23,11 +23,7 @@ use App\Models\CustomField;
 use App\Models\CustomFieldValue;
 use DB;
 use \Exception;
-
-
-
-use Google_Client;
-use Google_Service_Sheets;
+use App\Jobs\ProcessContactImportGSheet;
 
 class ContactsController extends Controller
 {
@@ -403,36 +399,23 @@ class ContactsController extends Controller
     //         'data' => $data 
     //     ]);
     // }
-
     public function bulkContactImportGSheet(Request $request)
-    {
-        $keyFilePath = public_path('gSheetCredentials.json');
-
-        $client = new Google_Client();
-        $client->setAuthConfig($keyFilePath);
-        $client->addScope(Google_Service_Sheets::SPREADSHEETS_READONLY);
-        $service = new Google_Service_Sheets($client);
-        
+{
+        // Validate the presence of the required 'gSheetId' parameter
         $spreadsheetId = $request->gSheedId;
-
-        $sheetName = 'Sheet1';
-
-        $response = $service->spreadsheets_values->get($spreadsheetId, $sheetName);
-        $values = $response->getValues();
-        $data = [];
-        // Process the data as needed
-        if (!empty($values)) {
-            foreach ($values as $row) {
-                // Process each row of data
-                $data[] = $row;
-            }
-        } else {
-            dd("No data found in the sheet.");
+        $user = Auth::user();
+        if (empty($spreadsheetId)) {
+            return response()->json(['error' => 'The "gSheetId" parameter is required.'], 400);
         }
 
-        dd($keyFilePath);
-        
+        // Dispatch the job to process the data asynchronously
+        $mainUser = $user->mainUser;
+        dispatch(new \App\Jobs\ProcessContactImportGSheet($spreadsheetId, $mainUser, $user));
+
+        // Return a response indicating that the job has been dispatched
+        return response()->json(['message' => 'Data processing job has been dispatched.']);
     }
+    
     public function bulkContactImportCsv(Request $request)
     {
         if (!empty($request->csvData) && !empty($request->columnMappings)) {

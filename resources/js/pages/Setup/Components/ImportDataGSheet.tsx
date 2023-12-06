@@ -186,10 +186,8 @@ const ImportDataGSheet: React.FC = () => {
                     />
                 </div>
                 <ol className="p-t-xl">
-                    <li>Create a new Google Sheet.</li>
-
                     <li>
-                        Duplicate the "QWEQWE" sheet
+                        Duplicate the "Speedlead sample spreadsheet" sheet
                         {/* <ul>
                             <li>Child instruction 2.1</li>
                             <li>Child instruction 2.2</li>
