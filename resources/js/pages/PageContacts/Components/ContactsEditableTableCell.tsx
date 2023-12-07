@@ -11,6 +11,7 @@ import { TCustomField } from "../../../entities";
 import { Link } from "react-router-dom";
 import ContactTypeTag from "../../../components/ContactTypeTag";
 import { useAppContextProvider } from "../../../context/AppContext";
+import { EditOutlined } from "@ant-design/icons";
 
 interface ContactsEditableTableCellProps {
     record: any;
@@ -65,9 +66,9 @@ const ContactsEditableTableCell = ({
                 borderRadius: "5px",
                 paddingTop: "0px",
                 paddingBottom: "0px",
-                height: "40px", // Set a fixed height for the cell
                 width: "100%", // Set the width to 100%
                 overflow: "hidden",
+                height: "27px",
             }}
         >
             {getLabel()}
@@ -99,7 +100,7 @@ const ContactsEditableTableCell = ({
                 okText="Save"
                 cancelText="Cancel"
             >
-                <Button
+                {/* <Button
                     style={{
                         margin: "2px",
                         padding: "8px",
@@ -112,9 +113,9 @@ const ContactsEditableTableCell = ({
                     disabled={isRoleStats}
                 >
                     {<FontAwesomeIcon icon={faPen} />}
-                </Button>
+                </Button> */}
+                <EditOutlined className="cell-hover-btn" />
             </Popconfirm>
-            {/* // )} */}
         </div>
     );
 };

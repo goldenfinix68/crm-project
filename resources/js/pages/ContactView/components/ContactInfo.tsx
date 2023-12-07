@@ -61,6 +61,7 @@ import {
 } from "../../../api/mutation/useCustomFieldMutation";
 import ContactsEditableTableCell from "../../PageContacts/Components/ContactsEditableTableCell";
 import ContactTypeTag from "../../../components/ContactTypeTag";
+import TextEllipsis from "../../../components/TextEllipsis";
 
 const ContactInfo = ({ contact }: { contact: TContact }) => {
     const [isCreateNewTypeOpen, setIsCreateNewTypeOpen] = React.useState(false);
@@ -280,7 +281,7 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                     <Table.Column
                         key="label"
                         render={(text, record: any) => (
-                            <b>{`${record.label}: `}</b>
+                            <TextEllipsis>{`${record.label}: `}</TextEllipsis>
                         )}
                         width={"30%"}
                     />

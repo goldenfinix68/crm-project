@@ -121,16 +121,15 @@ const DealsTable = ({
                                         alignItems: "center",
                                     }}
                                 >
-                                    <Button
-                                        type="text"
-                                        className="m-r-sm"
-                                        icon={<FontAwesomeIcon icon={faPen} />}
-                                        onClick={() => {
-                                            setIsModalOpenAdd(true);
-                                            setSelectedDeal(record);
-                                        }}
-                                        disabled={isRoleStats}
-                                    />
+                                    {!isRoleStats && (
+                                        <EditOutlined
+                                            onClick={() => {
+                                                setIsModalOpenAdd(true);
+                                                setSelectedDeal(record);
+                                            }}
+                                            className="m-r-sm"
+                                        />
+                                    )}
 
                                     <span>
                                         {record.contact?.fields.firstName +

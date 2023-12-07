@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { ENDPOINTS } from "../../../endpoints";
 import TextEllipsis from "../../../components/TextEllipsis";
+import { EditOutlined } from "@ant-design/icons";
 interface Props {
     setSelectedRows: any;
     setSelectedRowKeys: any;
@@ -102,23 +103,23 @@ const ContactsTable = ({
                             ) => {
                                 return (
                                     <TextEllipsis>
-                                        <Space className="p-0">
-                                            <Button
-                                                type="text"
-                                                size="small"
-                                                icon={
-                                                    <FontAwesomeIcon
-                                                        icon={faPen}
-                                                    />
-                                                }
-                                                onClick={() => {
-                                                    setisModalOpen(true);
-                                                    setSelectedContactFields(
-                                                        record
-                                                    );
-                                                }}
-                                                disabled={isRoleStats}
-                                            />
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            {!isRoleStats && (
+                                                <EditOutlined
+                                                    onClick={() => {
+                                                        setisModalOpen(true);
+                                                        setSelectedContactFields(
+                                                            record
+                                                        );
+                                                    }}
+                                                    className="m-r-sm"
+                                                />
+                                            )}
 
                                             <Link
                                                 to={
@@ -128,7 +129,7 @@ const ContactsTable = ({
                                             >
                                                 {`${record["firstName"]} ${record["lastName"]}`}
                                             </Link>
-                                        </Space>
+                                        </div>
                                     </TextEllipsis>
                                 );
                             },
@@ -137,7 +138,6 @@ const ContactsTable = ({
                                 b[firstNameField?.fieldName]?.length,
                             defaultSortOrder: "descend",
                             fixed: "left",
-                            className: "custom-table-cell",
                         },
                         ...columns,
                     ] as ColumnsType<{ [key: string]: any }>
