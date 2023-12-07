@@ -254,11 +254,12 @@ class ContactsController extends Controller
      */
     public function delete_contacts(Request $request)
     {
-        //
-
         foreach ($request->contactId as $id) {
+            $contact = Contact::find($id);
+            
+            $contact->customFieldValues->delete();
 
-            $data = Contact::find($id)->delete();
+            $data = $contact->delete();
         }
         return response()->json([
             'success' => true,

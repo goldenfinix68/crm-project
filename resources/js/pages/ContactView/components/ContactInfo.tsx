@@ -37,6 +37,8 @@ import {
     Tag,
     Typography,
     Table,
+    Popconfirm,
+    message,
 } from "antd";
 import React, { useContext } from "react";
 import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
@@ -47,12 +49,13 @@ import ActionMenu from "./ActionMenu";
 import { useMutation } from "react-query";
 import {
     addTypeMutation,
+    deleteContactMutation,
     updateContactMutation,
 } from "../../../api/mutation/useContactMutation";
 import { TContact, TContactType } from "../../../entities";
 import { useContactTypesAll } from "../../../api/query/contactsQuery";
 import queryClient from "../../../queryClient";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ContactContext from "../context";
 import { useAppContextProvider } from "../../../context/AppContext";
 import {
@@ -62,9 +65,13 @@ import {
 import ContactsEditableTableCell from "../../PageContacts/Components/ContactsEditableTableCell";
 import ContactTypeTag from "../../../components/ContactTypeTag";
 import TextEllipsis from "../../../components/TextEllipsis";
+import CustomFieldFormModal from "../../../components/CustomFieldFormModal";
 
 const ContactInfo = ({ contact }: { contact: TContact }) => {
+    const navigate = useNavigate();
     const [isCreateNewTypeOpen, setIsCreateNewTypeOpen] = React.useState(false);
+    const [isEditContactModalOpen, setIsEditContactModalOpen] =
+        React.useState(false);
     const [form] = Form.useForm<TContact>();
     const { contactTypes, isLoading } = useContactTypesAll();
     const contactTypelookupId = contact.fields?.contactTypelookupIds
@@ -87,29 +94,44 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
         },
     });
 
+    const deleteContact = useMutation(deleteContactMutation, {
+        onSuccess: () => {
+            queryClient.invalidateQueries("contacts");
+            queryClient.invalidateQueries("filteredContacts");
+            navigate("/contacts");
+        },
+    });
+
     const actionMenuList = [
         {
-            label: <a href="https://www.antgroup.com">Edit Contact</a>,
+            label: (
+                <div
+                    onClick={() => {
+                        setIsEditContactModalOpen(true);
+                    }}
+                >
+                    Edit
+                </div>
+            ),
             key: "0",
         },
         {
-            label: <a href="https://www.aliyun.com">Clone</a>,
+            label: "Clone",
             key: "1",
         },
         {
-            label: <a href="https://www.aliyun.com">Add to List</a>,
-            key: "3",
-        },
-        {
-            type: "divider",
-        },
-        {
-            label: "Delete",
+            label: (
+                <Popconfirm
+                    title="Delete Contact"
+                    description="Are you sure to delete this contact?"
+                    onConfirm={() => {
+                        deleteContact.mutate({ contactId: [contact.id] });
+                    }}
+                >
+                    <div>Delete</div>
+                </Popconfirm>
+            ),
             key: "4",
-        },
-        {
-            label: "Delete Tracking Logs",
-            key: "5",
         },
     ];
 
@@ -246,7 +268,7 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                     </Typography.Title>
                 </Space>
 
-                <DropdownComponent
+                {/* <DropdownComponent
                     menuList={actionMenuList}
                     label={
                         <Space>
@@ -263,7 +285,7 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                         </Space>
                     }
                     disabled={isRoleStats}
-                />
+                /> */}
                 <ActionMenu contact={contact} />
 
                 <Space
@@ -322,6 +344,20 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                         })}
                     </Descriptions> */}
             </Space>
+
+            <CustomFieldFormModal
+                isModalOpen={isEditContactModalOpen}
+                closeModal={() => {
+                    setIsEditContactModalOpen(false);
+                }}
+                handleSubmit={() => {
+                    queryClient.invalidateQueries("contacts");
+                    queryClient.invalidateQueries("filteredContacts");
+                    queryClient.invalidateQueries("getContact");
+                }}
+                type="contact"
+                record={contact.fields}
+            />
         </Card>
     );
 };
