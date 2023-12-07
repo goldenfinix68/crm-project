@@ -269,6 +269,7 @@ export type TGSheetCrawlHistory = {
     user: TUser;
     triggeredBy: string;
     gSheetId: string;
+    gSheetData?: string;
     created_at: string;
     result: TGSheetCrawlResult[];
 };

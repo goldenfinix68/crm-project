@@ -47,7 +47,7 @@ const ImportDataGSheet: React.FC = () => {
     };
 
     useEffect(() => {
-        if (crawl) {
+        if (crawl?.id) {
             form.setFieldValue("gSheedId", crawl.gSheetId);
             form.setFieldValue("interval", crawl.interval);
             form.setFieldValue("isAddToQueue", true);

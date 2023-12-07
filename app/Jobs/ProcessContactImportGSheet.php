@@ -85,7 +85,7 @@ class ProcessContactImportGSheet implements ShouldQueue
                         "isSuccess" => empty($errors),
                         "errors" => $errors,
                         // "customFields" => $customFields,
-                        // "result" => $result,
+                        "data" => $result,
                     ];
 
                     if(empty($errors)){

@@ -1,29 +1,11 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import {
-    Badge,
-    Button,
-    Card,
-    Dropdown,
-    Menu,
-    Modal,
-    Space,
-    Table,
-    TableColumnsType,
-    Typography,
-} from "antd";
+import React from "react";
+import { Button, Space, Table, TableColumnsType, message } from "antd";
 
-import {
-    CloseOutlined,
-    DownOutlined,
-    PullRequestOutlined,
-    UserOutlined,
-} from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
-import { data } from "jquery";
 import moment from "moment";
 import { gSheetCrawlResults } from "../../../api/query/importDataQuery";
 import { TGSheetCrawlHistory, TGSheetCrawlResult } from "../../../entities";
 import TextEllipsis from "../../../components/TextEllipsis";
+import copy from "copy-to-clipboard";
 
 const ImportDataGSheetHistory = () => {
     const { data: crawlResults, isLoading } = gSheetCrawlResults();
@@ -105,6 +87,22 @@ const ImportDataGSheetHistory = () => {
                     </TextEllipsis>
                 );
             },
+        },
+        {
+            title: "Action",
+            key: "initiated_by",
+            render: (_, result) => (
+                <Button
+                    size="small"
+                    disabled={!result.gSheetData}
+                    onClick={() => {
+                        copy(JSON.stringify(result.gSheetData) || "");
+                        message.success("Text copied to clipboard");
+                    }}
+                >
+                    Copy Google Sheet data as JSON
+                </Button>
+            ),
         },
     ];
 
