@@ -24,6 +24,7 @@ import { data } from "jquery";
 import { useWorkflowsQuery } from "../../api/query/workflowQuery";
 import { TWorkflow, TWorkflowItem } from "../../entities";
 import moment from "moment";
+import TextEllipsis from "../../components/TextEllipsis";
 
 interface ExpandedDataType {
     key: React.Key;
@@ -45,15 +46,20 @@ const BulkAction = () => {
             {
                 title: "Trigger At",
                 key: "trigger_at",
-                render: (data) => {
-                    const parsedDate = moment(
-                        data.trigger_at,
+
+                render: (_, record) => {
+                    const utcDate = moment.utc(
+                        record.trigger_at,
                         "YYYY-MM-DD HH:mm:ss"
                     );
+                    const localDate = utcDate.clone().local(); // Convert to local timezone
+
                     return (
-                        <Typography.Text>
-                            {parsedDate.format("MMM DD, YYYY hh:mm A")}
-                        </Typography.Text>
+                        <div className="p-xs">
+                            <TextEllipsis>
+                                {localDate.format("MMM DD, YYYY hh:mm A")}
+                            </TextEllipsis>
+                        </div>
                     );
                 },
             },
@@ -76,18 +82,18 @@ const BulkAction = () => {
                 title: "Success",
                 key: "success",
                 render: (data) => (
-                    <Typography.Text style={{ color: "green" }}>
+                    <TextEllipsis style={{ color: "green" }}>
                         {data.success}
-                    </Typography.Text>
+                    </TextEllipsis>
                 ),
             },
             {
                 title: "Failed",
                 key: "failed",
                 render: (data) => (
-                    <Typography.Text style={{ color: "red" }}>
+                    <TextEllipsis style={{ color: "red" }}>
                         {data.failed}
-                    </Typography.Text>
+                    </TextEllipsis>
                 ),
             },
             {
@@ -95,9 +101,7 @@ const BulkAction = () => {
                 key: "contactIds",
                 render: (data) => {
                     const parsedData = JSON.parse(data.contactIds);
-                    return (
-                        <Typography.Text>{parsedData.length}</Typography.Text>
-                    );
+                    return <TextEllipsis>{parsedData.length}</TextEllipsis>;
                 },
             },
         ];
@@ -136,7 +140,11 @@ const BulkAction = () => {
         {
             title: "Bulk Operation (Type)",
             key: "operation",
-            render: () => <Typography.Text>Bulk Workflow</Typography.Text>,
+            render: () => (
+                <div className="p-xs">
+                    <TextEllipsis>Bulk Workflow</TextEllipsis>
+                </div>
+            ),
         },
         {
             title: "Status",
@@ -155,16 +163,16 @@ const BulkAction = () => {
             title: "Created",
             key: "created_at",
             render: (text) => (
-                <Typography.Text>
+                <TextEllipsis>
                     {moment(text).format("MMM D, YYYY")}
-                </Typography.Text>
+                </TextEllipsis>
             ),
         },
         {
             title: "User",
             key: "user",
             render: (_, workflow) => (
-                <Typography.Text>{`${workflow.user?.firstName} ${workflow.user?.lastName}`}</Typography.Text>
+                <TextEllipsis>{`${workflow.user?.firstName} ${workflow.user?.lastName}`}</TextEllipsis>
             ),
         },
         {
@@ -176,9 +184,9 @@ const BulkAction = () => {
                     "YYYY-MM-DD HH:mm:ss"
                 );
                 return isWorkflowCompleted(data) == "completed" ? (
-                    <Typography.Text>
+                    <TextEllipsis>
                         {parsedDate.format("MMM DD, YYYY hh:mm A")}
-                    </Typography.Text>
+                    </TextEllipsis>
                 ) : null;
             },
         },

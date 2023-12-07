@@ -12,6 +12,7 @@ const TextEllipsis = ({
         overflow: "hidden",
         textOverflow: "ellipsis",
         maxWidth: "calc(100% - 10px)",
+        padding: 0,
     };
     const combinedStyles = { ...defaultStyles, ...style };
     return <div style={combinedStyles}>{children}</div>;

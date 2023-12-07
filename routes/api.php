@@ -129,6 +129,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/deal-pipeline-stages/sort', 'App\Http\Controllers\Api\DealPipelineStagesController@sort');
     
     Route::resource('/filters', 'App\Http\Controllers\Api\FiltersController');
+    Route::resource('/gSheet-crawl-results', 'App\Http\Controllers\Api\GSheetCrawlResultsController');
 });
 
 Route::post('/telnyx/sms/webhook', 'App\Http\Controllers\Api\TextsController@textReceived');

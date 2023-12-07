@@ -70,11 +70,13 @@ import DealPipelineSetup from "./pages/DealPipelineSetup";
 import { allowedroleToAccess } from "./constants";
 import CallForwarding from "./pages/Setup/CallForwarding";
 import { GiftOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+import { Space } from "antd";
 import AdminSideMenu from "./components/SuperAdmin/AdminSideMenu";
 import AdminDashboard from "./pages/SuperAdmin/Dashboard/AdminDashboard";
 import AdminUsers from "./pages/SuperAdmin/Users/AdminUsers";
 import ImportDataGSheet from "./pages/Setup/Components/ImportDataGSheet";
+import ImportDataGSheetHeader from "./components/ImportDataGSheetHeader";
+import ImportDataGSheetHistory from "./pages/Setup/Components/ImportDataGSheetHistory";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isForgotPassword = window.location.pathname === "/forgot-password";
@@ -457,7 +459,33 @@ const App: React.FC = () => {
                                             <PrivateRoute>
                                                 <SetupLayout
                                                     content={
-                                                        <ImportDataGSheet />
+                                                        <Space
+                                                            direction="vertical"
+                                                            className="w-100"
+                                                        >
+                                                            <ImportDataGSheetHeader />
+                                                            <ImportDataGSheet />
+                                                        </Space>
+                                                    }
+                                                    title="Import Data From Google Sheet"
+                                                />
+                                            </PrivateRoute>
+                                        }
+                                    />
+
+                                    <Route
+                                        path="/setup/data-administration/import-file-gsheet/history"
+                                        element={
+                                            <PrivateRoute>
+                                                <SetupLayout
+                                                    content={
+                                                        <Space
+                                                            direction="vertical"
+                                                            className="w-100"
+                                                        >
+                                                            <ImportDataGSheetHeader />
+                                                            <ImportDataGSheetHistory />
+                                                        </Space>
                                                     }
                                                     title="Import Data From Google Sheet"
                                                 />

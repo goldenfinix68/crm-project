@@ -102,7 +102,7 @@ const ContactsTable = ({
                             ) => {
                                 return (
                                     <TextEllipsis>
-                                        <Space>
+                                        <Space className="p-0">
                                             <Button
                                                 type="text"
                                                 size="small"

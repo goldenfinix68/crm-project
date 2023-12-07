@@ -263,3 +263,17 @@ export type TFilter = {
     name: string;
     filters: TFilters;
 };
+
+export type TGSheetCrawlHistory = {
+    id: string;
+    user: TUser;
+    triggeredBy: string;
+    gSheetId: string;
+    created_at: string;
+    result: TGSheetCrawlResult[];
+};
+
+export type TGSheetCrawlResult = {
+    isSuccess: boolean;
+    errors?: string[];
+};

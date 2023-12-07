@@ -18,16 +18,17 @@ import {
     Steps,
     Form,
     Checkbox,
+    Menu,
 } from "antd";
 import {
     CaretDownOutlined,
     CheckCircleOutlined,
     CloseCircleOutlined,
     CloseOutlined,
-    DollarCircleOutlined,
+    HistoryOutlined,
     LoadingOutlined,
     UploadOutlined,
-    UserOutlined,
+    DatabaseOutlined,
 } from "@ant-design/icons";
 import Papa from "papaparse";
 import AddAttributePopoverContent from "../../TextTemplates/components/AddAttributePopoverContent";
@@ -44,6 +45,7 @@ import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
 import { createFilterMutation } from "../../../api/mutation/useFilterMutation";
 import queryClient from "../../../queryClient";
 import validateRules from "../../../providers/validateRules";
+import CustomLink from "../../../components/CustomLink";
 
 const ImportDataGSheet: React.FC = () => {
     const navigate = useNavigate();
@@ -56,6 +58,7 @@ const ImportDataGSheet: React.FC = () => {
         onSuccess: () => {
             queryClient.invalidateQueries("contacts");
             queryClient.invalidateQueries("filteredContacts");
+            message.success("Crawl is queued.");
         },
         onError: (e: any) => {
             console.log(e.message || "An error occurred");
@@ -67,7 +70,7 @@ const ImportDataGSheet: React.FC = () => {
         });
     };
     return (
-        <>
+        <Space direction="vertical">
             <Card>
                 <Typography.Title level={3}>
                     Import from Google Sheet
@@ -284,7 +287,7 @@ const ImportDataGSheet: React.FC = () => {
                     </Table>
                 </Card> */}
             </Modal>
-        </>
+        </Space>
     );
 };
 export default ImportDataGSheet;

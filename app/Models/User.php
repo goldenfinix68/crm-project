@@ -48,6 +48,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $appends = [
         'mainId', 
+        'fullName',
     ];
 
     //depreciated, 1 user 1 number
@@ -79,6 +80,11 @@ class User extends Authenticatable implements MustVerifyEmail
             return 0;
         }
         return $this->role == 'mainUser' ? $this->id : $this->mainUserId;
+    }
+
+    public function getFullNameAttribute()
+    {
+        return $this->firstName . ' ' . $this->lastName;
     }
 
     protected static function boot()
