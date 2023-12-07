@@ -127,7 +127,7 @@ const ImportDataGSheet: React.FC = () => {
                     </Form.Item>
                     {isAddToQueue && (
                         <Form.Item
-                            name={"customFieldSectionId"}
+                            name={"interval"}
                             label="Crawl interval"
                             rules={[validateRules.required]}
                             initialValue={"5"}
@@ -155,7 +155,7 @@ const ImportDataGSheet: React.FC = () => {
                             htmlType="submit"
                             loading={save.isLoading}
                         >
-                            Crawl
+                            {!isAddToQueue ? "Crawl" : "Crawl and Save"}
                         </Button>
                     </Space>
                 </Form>

@@ -76,7 +76,7 @@ class ProcessContactImportGSheet implements ShouldQueue
             }
 
             $importResult = [];
-            if(!empty($results)){
+            if(!empty($results) && isset($mainUser->customFields)){
                 $customFields = $mainUser->customFields;
                 foreach($results as $result){
 
@@ -134,7 +134,17 @@ class ProcessContactImportGSheet implements ShouldQueue
             // You can store it in the database or perform other actions
 
         } catch (\Exception $e) {
-            \Log::info($e ?? "Error!");
+             
+            $crawlResult = new GSheetCrawlResult();
+            $crawlResult->gSheetData = [];
+            $crawlResult->mainUserId = $this->mainUser->id;
+            $crawlResult->gSheetId = $this->spreadsheetId;
+            $crawlResult->result =  [[
+                "isSuccess" => false,
+                "errors" => ["Something went wrong upon crawling spreadsheet!"],
+            ]];
+            $crawlResult->initiatedBy = !empty($initiatedBy) ? $initiatedBy->id : null;
+            $crawlResult->save();
             // Handle exceptions (log or notify)
             // You might want to retry the job or mark it as failed based on your needs
             // You can use Laravel's retry() method for automatic retries

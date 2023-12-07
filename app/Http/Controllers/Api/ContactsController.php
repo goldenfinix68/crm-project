@@ -21,6 +21,7 @@ use Carbon\Carbon;
 use League\Csv\Reaer;
 use App\Models\CustomField;
 use App\Models\CustomFieldValue;
+use App\Models\GSheetCrawl;
 use DB;
 use \Exception;
 use App\Jobs\ProcessContactImportGSheet;
@@ -407,10 +408,24 @@ class ContactsController extends Controller
         if (empty($spreadsheetId)) {
             return response()->json(['error' => 'The "gSheetId" parameter is required.'], 400);
         }
-
         // Dispatch the job to process the data asynchronously
         $mainUser = $user->mainUser;
         dispatch(new \App\Jobs\ProcessContactImportGSheet($spreadsheetId, $mainUser, $user));
+
+        if($request->isAddToQueue){
+            $crawl = GSheetCrawl::where('mainUserId', $mainUser->id)->first();
+            if(empty($crawl)){
+                $crawl = new GSheetCrawl;
+            }
+            $crawl->mainUserId = $mainUser->id;
+            $crawl->gSheetId = $spreadsheetId;
+            $crawl->interval = $request->interval;
+            $crawl->last_trigger = Carbon::now();
+            $crawl->save();
+        }
+        else{
+            GSheetCrawl::where('mainUserId', $mainUser->id)->delete();
+        }
 
         // Return a response indicating that the job has been dispatched
         return response()->json(['message' => 'Data processing job has been dispatched.']);
