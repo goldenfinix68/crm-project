@@ -28,6 +28,7 @@ import {
     MobileOutlined,
     CheckCircleOutlined,
     FunnelPlotOutlined,
+    EditOutlined,
 } from "@ant-design/icons";
 import ModalAddDeal from "./components/ModalAddDeal";
 import Filter from "./components/Filter";
@@ -48,6 +49,7 @@ import { useCallContext } from "../../context/CallContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import TextEllipsis from "../../components/TextEllipsis";
+import CustomButtonIcon from "../../components/CustomButtonIcon";
 
 interface Card {
     id: number;
@@ -206,8 +208,7 @@ const Deal = () => {
                 >
                     <Space>
                         <Tooltip title="Call contact">
-                            <Avatar
-                                icon={<PhoneOutlined className="p-t-xs" />}
+                            <PhoneOutlined
                                 onClick={() => {
                                     setCallerNumber(
                                         deal.contact?.fields
@@ -221,16 +222,14 @@ const Deal = () => {
                             />
                         </Tooltip>
                         <Tooltip title="Contact profile">
-                            <Avatar
-                                icon={<UserOutlined className="p-t-xs" />}
+                            <UserOutlined
                                 onClick={() => {
                                     navigate("/contacts/" + deal.contact?.id);
                                 }}
                             />
                         </Tooltip>
                         <Tooltip title="Edit deal">
-                            <Avatar
-                                icon={<FontAwesomeIcon icon={faPen} />}
+                            <EditOutlined
                                 onClick={() => {
                                     setSelectedDeal(deal);
                                     setIsModalOpenAdd(true);
