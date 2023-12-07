@@ -50,6 +50,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import TextEllipsis from "../../components/TextEllipsis";
 import CustomButtonIcon from "../../components/CustomButtonIcon";
+import { Link } from "react-router-dom";
+import CustomLink from "../../components/CustomLink";
 
 interface Card {
     id: number;
@@ -221,13 +223,14 @@ const Deal = () => {
                                 }}
                             />
                         </Tooltip>
-                        <Tooltip title="Contact profile">
-                            <UserOutlined
-                                onClick={() => {
-                                    navigate("/contacts/" + deal.contact?.id);
-                                }}
-                            />
-                        </Tooltip>
+                        <CustomLink
+                            to={"/contacts/" + deal.contact?.id}
+                            style={{ color: "black" }}
+                        >
+                            <Tooltip title="Contact profile">
+                                <UserOutlined />
+                            </Tooltip>
+                        </CustomLink>
                         <Tooltip title="Edit deal">
                             <EditOutlined
                                 onClick={() => {
