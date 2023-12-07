@@ -272,6 +272,11 @@ export type TGSheetCrawlHistory = {
     created_at: string;
     result: TGSheetCrawlResult[];
 };
+export type TGSheetCrawl = {
+    id: string;
+    gSheetId: string;
+    interval: number;
+};
 
 export type TGSheetCrawlResult = {
     isSuccess: boolean;

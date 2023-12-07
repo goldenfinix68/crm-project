@@ -1,51 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Button,
     Typography,
     Card,
     Divider,
     Row,
-    Upload,
     message,
-    List,
-    Table,
     Space,
-    Popover,
     Input,
     Modal,
     Select,
-    Alert,
-    Steps,
     Form,
     Checkbox,
-    Menu,
 } from "antd";
-import {
-    CaretDownOutlined,
-    CheckCircleOutlined,
-    CloseCircleOutlined,
-    CloseOutlined,
-    HistoryOutlined,
-    LoadingOutlined,
-    UploadOutlined,
-    DatabaseOutlined,
-} from "@ant-design/icons";
-import Papa from "papaparse";
-import AddAttributePopoverContent from "../../TextTemplates/components/AddAttributePopoverContent";
-import { useArray } from "../../../helpers";
+import { CloseOutlined } from "@ant-design/icons";
 import { useMutation } from "react-query";
-import {
-    bulkImportGSheet,
-    useContactBulkImportCsv,
-} from "../../../api/mutation/useContactMutation";
+import { bulkImportGSheet } from "../../../api/mutation/useContactMutation";
 import { useNavigate } from "react-router-dom";
-import { useCustomFields } from "../../../api/query/customFieldQuery";
-import form from "antd/es/form";
 import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
-import { createFilterMutation } from "../../../api/mutation/useFilterMutation";
 import queryClient from "../../../queryClient";
 import validateRules from "../../../providers/validateRules";
-import CustomLink from "../../../components/CustomLink";
+import { gSheetCrawl } from "../../../api/query/importDataQuery";
 
 const ImportDataGSheet: React.FC = () => {
     const navigate = useNavigate();
@@ -53,6 +28,7 @@ const ImportDataGSheet: React.FC = () => {
     const isAddToQueue = Form.useWatch("isAddToQueue", form);
     const [successModalVisible, setSuccessModalVisible] = useState(false);
     const [isInstructionModalOpen, setIsInstructionModalOpen] = useState(false);
+    const { data: crawl, isLoading } = gSheetCrawl();
 
     const save = useMutation(bulkImportGSheet, {
         onSuccess: () => {
@@ -69,6 +45,14 @@ const ImportDataGSheet: React.FC = () => {
             ...values,
         });
     };
+
+    useEffect(() => {
+        if (crawl) {
+            form.setFieldValue("gSheedId", crawl.gSheetId);
+            form.setFieldValue("interval", crawl.interval);
+            form.setFieldValue("isAddToQueue", true);
+        }
+    }, [crawl]);
     return (
         <Space direction="vertical">
             <Card>
