@@ -110,11 +110,11 @@ const ActionMenu = ({ contact }: { contact: TContact }) => {
                 contact={contact}
             />
 
-            <ModalAddActivity
+            {/* <ModalAddActivity
                 isModalOpenAdd={activityModalOpen}
                 handleOkAdd={() => setActivityModalOpen(false)}
                 handleCancelAdd={() => setActivityModalOpen(false)}
-            />
+            /> */}
             <ModalAddDeal
                 isModalOpen={dealModalOpen}
                 handleSubmit={() => {

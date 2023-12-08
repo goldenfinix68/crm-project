@@ -85,28 +85,33 @@ const ContactsEditableTableCell = ({
                 title={null}
                 icon={null}
                 description={
-                    <Form
-                        form={form}
-                        onFinish={handleFinish}
-                        initialValues={{
-                            [field.fieldName]: record[
-                                field.fieldName + "lookupIds"
-                            ]
-                                ? JSON.parse(
-                                      record[field.fieldName + "lookupIds"]
-                                  )
-                                : record[field.fieldName],
-                        }}
-                        layout="vertical"
-                    >
-                        <CustomFieldInput customField={field} />
-                    </Form>
+                    <div className="w-100">
+                        <Form
+                            form={form}
+                            onFinish={handleFinish}
+                            initialValues={{
+                                [field.fieldName]: record[
+                                    field.fieldName + "lookupIds"
+                                ]
+                                    ? JSON.parse(
+                                          record[field.fieldName + "lookupIds"]
+                                      )
+                                    : record[field.fieldName],
+                            }}
+                            layout="vertical"
+                        >
+                            <CustomFieldInput customField={field} />
+                        </Form>
+                    </div>
                 }
                 onConfirm={() => {
                     form.submit();
                 }}
                 okText="Save"
                 cancelText="Cancel"
+                overlayInnerStyle={{ zIndex: 999 }}
+                style={{ zIndex: 999 }}
+                overlayStyle={{ zIndex: 999 }}
             >
                 {/* <Button
                     style={{

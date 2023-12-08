@@ -67,6 +67,7 @@ import ContactsEditableTableCell from "../../PageContacts/Components/ContactsEdi
 import ContactTypeTag from "../../../components/ContactTypeTag";
 import TextEllipsis from "../../../components/TextEllipsis";
 import CustomFieldFormModal from "../../../components/CustomFieldFormModal";
+import ContactInfoEditableText from "../../../components/ContactInfoEditableText";
 
 const ContactInfo = ({ contact }: { contact: TContact }) => {
     const navigate = useNavigate();
@@ -328,7 +329,7 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                     <Table.Column
                         key="value"
                         render={(text, record: any) => (
-                            <ContactsEditableTableCell
+                            <ContactInfoEditableText
                                 record={contact.fields}
                                 field={record}
                                 handleSubmit={() => {
@@ -339,28 +340,6 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                         width={"70%"}
                     />
                 </Table>
-                {/* <Descriptions column={1}>
-                        {contactFields?.map((field, index) => {
-                            return (
-                                <Descriptions.Item
-                                    label={field.label}
-                                    key={index}
-                                >
-                                    <div className="w-100">
-                                        <ContactsEditableTableCell
-                                            record={contact.fields}
-                                            field={field}
-                                            handleSubmit={() => {
-                                                queryClient.invalidateQueries(
-                                                    "getContact"
-                                                );
-                                            }}
-                                        />
-                                    </div>
-                                </Descriptions.Item>
-                            );
-                        })}
-                    </Descriptions> */}
             </Space>
 
             <CustomFieldFormModal

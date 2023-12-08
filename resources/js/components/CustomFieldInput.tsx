@@ -34,6 +34,7 @@ const CustomFieldInput = ({
 
     const { data: usedTags, isLoading: isUsedTagsLoading } = useUsedTags();
 
+    const inputRef = useRef(null);
     const validateEmail = (rule, value) => {
         if (
             /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/.test(value) ||
@@ -44,33 +45,47 @@ const CustomFieldInput = ({
         return Promise.reject("Please enter a valid email address.");
     };
 
+    useEffect(() => {
+        // Focus on the input element when the component mounts
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, []);
+
     const getCustomFieldInput = () => {
         if (customField.type == "text") {
-            return <Input />;
+            return <Input ref={inputRef} />;
         }
         if (customField.type == "textArea") {
-            return <Input.TextArea rows={4} />;
+            return <Input.TextArea rows={4} ref={inputRef} />;
         }
         if (customField.type == "int") {
-            return <InputNumber step={1} precision={0} className="w-100" />;
+            return (
+                <InputNumber
+                    step={1}
+                    precision={0}
+                    className="w-100"
+                    ref={inputRef}
+                />
+            );
         }
         if (customField.type == "decimal") {
-            return <InputNumber className="w-100" />;
+            return <InputNumber className="w-100" ref={inputRef} />;
         }
         if (customField.type == "date") {
-            return <DatePicker className="w-100" />;
+            return <DatePicker className="w-100" ref={inputRef} />;
         }
         if (customField.type == "dateTime") {
             return <DatePicker showTime className="w-100" />;
         }
         if (customField.type == "email") {
-            return <Input />;
+            return <Input ref={inputRef} />;
         }
         if (customField.type == "phone") {
-            return <Input />;
+            return <Input ref={inputRef} />;
         }
         if (customField.type == "mobile") {
-            return <Input />;
+            return <Input ref={inputRef} />;
         }
         if (customField.type == "select" || customField.type == "multiSelect") {
             const stringArray = customField.options?.split("\n");
@@ -84,6 +99,7 @@ const CustomFieldInput = ({
                     }
                     dropdownStyle={{ zIndex: 999999 }}
                     className="w-100"
+                    ref={inputRef}
                 >
                     {stringArray?.map((option, index) => (
                         <Select.Option value={option} key={index}>
@@ -94,13 +110,27 @@ const CustomFieldInput = ({
             );
         }
         if (customField.type == "url") {
-            return <Input addonBefore="https://" />;
+            return <Input addonBefore="https://" ref={inputRef} />;
         }
         if (customField.type == "bigInt") {
-            return <InputNumber step={1} precision={0} className="w-100" />;
+            return (
+                <InputNumber
+                    step={1}
+                    precision={0}
+                    className="w-100"
+                    ref={inputRef}
+                />
+            );
         }
         if (customField.type == "percentage") {
-            return <InputNumber max={100} min={0} className="w-100" />;
+            return (
+                <InputNumber
+                    max={100}
+                    min={0}
+                    className="w-100"
+                    ref={inputRef}
+                />
+            );
         }
         if (customField.type == "boolean") {
             return (
@@ -108,7 +138,7 @@ const CustomFieldInput = ({
             );
         }
         if (customField.type == "currency") {
-            return <InputNumber min={0} className="w-100" />;
+            return <InputNumber min={0} className="w-100" ref={inputRef} />;
         }
         if (customField.type == "contactLookup") {
             return (
@@ -121,6 +151,7 @@ const CustomFieldInput = ({
                     }
                     dropdownStyle={{ zIndex: 99999999 }}
                     className="w-100"
+                    ref={inputRef}
                 >
                     {contacts?.map((contact, index) => (
                         <Select.Option value={contact.id} key={index}>
@@ -143,6 +174,7 @@ const CustomFieldInput = ({
                     }
                     dropdownStyle={{ zIndex: 999999 }}
                     className="w-100"
+                    ref={inputRef}
                 >
                     {users?.map((user, index) => (
                         <Select.Option value={user.id} key={index}>
@@ -163,6 +195,7 @@ const CustomFieldInput = ({
                             : undefined
                     }
                     dropdownStyle={{ zIndex: 999999 }}
+                    ref={inputRef}
                 >
                     {contactTypes?.map((contactType, index) => (
                         <Select.Option value={contactType.id} key={index}>
@@ -179,6 +212,7 @@ const CustomFieldInput = ({
                     showSearch
                     mode="tags"
                     dropdownStyle={{ zIndex: 999999 }}
+                    ref={inputRef}
                 >
                     {usedTags?.map((tag, index) => (
                         <Select.Option value={tag} key={index}>
@@ -195,7 +229,7 @@ const CustomFieldInput = ({
     if (customField.type == "boolean") {
         return (
             <Form.Item
-                className="w-100"
+                className="w-100 p-0 m-0"
                 name={customField.fieldName}
                 valuePropName="checked"
             >
@@ -206,7 +240,7 @@ const CustomFieldInput = ({
     if (customField.type == "email") {
         return (
             <Form.Item
-                className="w-100"
+                className="w-100 p-0 m-0"
                 name={customField.fieldName}
                 label={showLabel ? customField.label : null}
                 rules={[
@@ -229,7 +263,7 @@ const CustomFieldInput = ({
 
     return (
         <Form.Item
-            className="w-100"
+            className="w-100 p-0 m-0"
             name={customField.fieldName}
             label={showLabel ? customField.label : null}
             rules={[

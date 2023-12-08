@@ -12541,3 +12541,7 @@ fieldset:disabled .btn {
     align-items: center;
     justify-content: center;
 }
+
+.ant-popconfirm-message-text {
+    width: 100%;
+}
