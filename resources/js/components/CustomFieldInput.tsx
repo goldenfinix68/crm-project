@@ -48,7 +48,8 @@ const CustomFieldInput = ({
     useEffect(() => {
         // Focus on the input element when the component mounts
         if (inputRef.current) {
-            inputRef.current.focus();
+            const current = inputRef.current as any;
+            current.focus();
         }
     }, []);
 
