@@ -8,6 +8,7 @@ import {
     Form,
     Select,
     notification,
+    message,
 } from "antd";
 
 import { CloseOutlined } from "@ant-design/icons";
@@ -60,7 +61,12 @@ const ModalAddDeal = ({
                 queryClient.invalidateQueries("deals");
                 handleSubmit();
                 resetFields();
+            } else {
+                message.error(res.message);
             }
+        },
+        onError: (error: any) => {
+            message.error(error.message);
         },
     });
 
@@ -189,15 +195,6 @@ const ModalAddDeal = ({
                     >
                         Save
                     </Button>
-                    {!selectedRows?.length && !deal && (
-                        <Button
-                            className="m-r-xs"
-                            type="primary"
-                            loading={saveDeal.isLoading}
-                        >
-                            Save and add other
-                        </Button>
-                    )}
 
                     <Button onClick={resetFields}>
                         {deal ? "Cancel" : "No"}

@@ -17,6 +17,7 @@ class DealPipeline extends Model
 
     public function stages()
     {
-        return $this->hasMany('\App\Models\DealPipelineStage', 'dealPipelineId', 'id')->orderBy('sort');
+        return $this->hasMany('\App\Models\DealPipelineStage', 'dealPipelineId', 'id')
+                    ->orderByRaw("CAST(`sort` AS SIGNED)");
     }
 }

@@ -54,11 +54,24 @@ class DealsController extends Controller
             }
         }
         else{
+
+            if(empty($request->id)){
+                $existingDeal = Deal::where('contactId', $request->contactId)->first();
+                if(!empty($existingDeal)){
+                    return response()->json(['success' => false, 'message' => "Deal already exist."], 400);
+                }
+
+                $data = new Deal;
+            }
+            else{
+                $data = Deal::find($request->id);
+            }
             $user = Auth::user();
-            $data = Deal::updateOrCreate(['id' => $request->id], 
-                array_merge($request->except('dealIds'), [
-                    'createdByUserId' => $user->id, 
-                ]));
+            
+            $data->contactId = $request->contactId;
+            $data->pipelineId = $request->pipelineId;
+            $data->stageId = $request->stageId;
+            $data->createdByUserId = $user->id;
             $data->save();
         }
 

@@ -188,7 +188,7 @@ class ContactsController extends Controller
      */
     public function show($id)
     {
-        $contact = Contact::with(['type', 'deals'])->find($id);
+        $contact = Contact::with(['type', 'deals', 'deal'])->find($id);
 
         // if (empty($contact)) {
         //     abort(404);

@@ -155,6 +155,10 @@ class Contact extends Model
     {
         return $this->hasMany(\App\Models\Deal::class, 'contactId', 'id')->with(['creator', 'stage']);
     }
+    public function deal()
+    {
+        return $this->hasOne(\App\Models\Deal::class, 'contactId', 'id')->with(['creator', 'stage', 'pipeline', 'pipeline.stages']);
+    }
 
     public function updates()
     {

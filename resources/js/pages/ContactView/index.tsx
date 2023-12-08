@@ -10,6 +10,7 @@ import LoadingComponent from "../../components/LoadingComponent";
 import ContactContext from "./context";
 import CollapsibleDetails from "./components/CollapsbileDetails";
 import { useAppContextProvider } from "../../context/AppContext";
+import DealSteps from "./components/DealSteps";
 
 const ContactView = () => {
     const { contactId } = useParams();
@@ -21,20 +22,24 @@ const ContactView = () => {
     }
     return (
         <ContactContext.Provider value={{ contact }}>
-            <Row gutter={24}>
-                <Col span={7}>
-                    <ContactInfo contact={contact} />
-                </Col>
-                <Col span={10}>
-                    {!isRoleStats && <ActionsTabs />}
-                    <div style={{ paddingTop: "15px" }}>
-                        <ContactsWall />
-                    </div>
-                </Col>
-                <Col span={7}>
-                    <CollapsibleDetails />
-                </Col>
-            </Row>
+            <Space direction="vertical" className="w-100">
+                {contact.deal && <DealSteps deal={contact.deal} />}
+
+                <Row gutter={24} className="p-t-lg">
+                    <Col span={7}>
+                        <ContactInfo contact={contact} />
+                    </Col>
+                    <Col span={10}>
+                        {!isRoleStats && <ActionsTabs />}
+                        <div style={{ paddingTop: "15px" }}>
+                            <ContactsWall />
+                        </div>
+                    </Col>
+                    <Col span={7}>
+                        <CollapsibleDetails />
+                    </Col>
+                </Row>
+            </Space>
         </ContactContext.Provider>
     );
 };

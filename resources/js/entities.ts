@@ -244,6 +244,7 @@ export type TContact = {
     };
     wall?: TWallData[];
     deals?: TDeal[];
+    deal?: TDeal;
 };
 
 export type TFilterCondition = {
