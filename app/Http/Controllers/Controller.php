@@ -122,7 +122,15 @@ class Controller extends BaseController
        $users = User::where('id', $this->getMainUserId())->orWhere('mainUserId', $this->getMainUserId())->get();
         // dd($users->pluck('numbers')->flatten()->pluck('mobileNumber'));
     
-       return  $isRawNumbers ? $users->pluck('numbers')->flatten() : $users->pluck('numbers')->flatten()->pluck('mobileNumber');
+        if($isRawNumbers){
+            $numbers = $users->pluck('numbers')->flatten()->unique(function ($user) {
+                return $user['mobileNumber'];
+            });
+        }
+        else{
+            $numbers = $users->pluck('numbers')->flatten()->pluck('mobileNumber');
+        }
+       return  $numbers;
     }
     
     public function spinContent($content) {
