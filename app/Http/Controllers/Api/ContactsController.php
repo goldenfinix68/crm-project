@@ -266,6 +266,61 @@ class ContactsController extends Controller
             'data' => $data
         ]);
     }
+    public function cloneContact(Request $request)
+    {
+        // Find the original contact
+        $contact = Contact::where('id', $request->contactId)->first();
+        // Check if the contact exists
+        if (empty($contact)) {
+            abort(404);
+        }
+
+        // Start a database transaction
+        DB::beginTransaction();
+
+        try {
+            // Clone the contact
+            $clonedContact = $contact->replicate();
+            $clonedContact->clonedFrom = $contact->id;
+            $clonedContact->save();
+            
+            // Clone the fields related to the original contact
+            foreach ($contact->customFieldValues as $field) {
+                $clonedField = $field->replicate();
+                $customField = $clonedField->customField;
+                
+                if($customField->fieldName == 'lastName'){
+                    $cloneCount = Contact::where('clonedFrom', $contact->id)->count();
+                    $clonedField->value = $clonedField->value . "(clone ".$cloneCount.")";
+                }
+                if($customField->fieldName == 'mobile'){
+                    $clonedField->value = "*" . $clonedField->value . "*";
+                }
+                $clonedField->customableId = $clonedContact->id;
+                $clonedField->save();
+            }
+
+            // Commit the transaction
+            DB::commit();
+
+            // Return success response
+            return response()->json([
+                'success' => true,
+                'data' => $clonedContact,
+            ]);
+
+        } catch (\Exception $e) {
+            // Rollback the transaction in case of an error
+            DB::rollBack();
+            dd($e);
+            // Return error response
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to clone contact.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 
     public function merge_contacts(Request $request)
     {

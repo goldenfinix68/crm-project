@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Avatar, Button, Space, Table } from "antd";
+import { Avatar, Button, Space, Table, Tooltip } from "antd";
 
 import { useAppContextProvider } from "../../../context/AppContext";
 import { ColumnsType } from "antd/es/table";
@@ -120,15 +120,18 @@ const ContactsTable = ({
                                                     className="m-r-sm"
                                                 />
                                             )}
-
-                                            <Link
-                                                to={
-                                                    "/contacts/" +
-                                                    record["contactId"]
-                                                }
+                                            <Tooltip
+                                                title={`${record["firstName"]} ${record["lastName"]}`}
                                             >
-                                                {`${record["firstName"]} ${record["lastName"]}`}
-                                            </Link>
+                                                <Link
+                                                    to={
+                                                        "/contacts/" +
+                                                        record["contactId"]
+                                                    }
+                                                >
+                                                    {`${record["firstName"]} ${record["lastName"]}`}
+                                                </Link>
+                                            </Tooltip>
                                         </div>
                                     </TextEllipsis>
                                 );

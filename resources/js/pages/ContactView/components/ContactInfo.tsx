@@ -49,6 +49,7 @@ import ActionMenu from "./ActionMenu";
 import { useMutation } from "react-query";
 import {
     addTypeMutation,
+    cloneContactMutation,
     deleteContactMutation,
     updateContactMutation,
 } from "../../../api/mutation/useContactMutation";
@@ -102,6 +103,13 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
         },
     });
 
+    const cloneContact = useMutation(cloneContactMutation, {
+        onSuccess: (res) => {
+            message.success("Cloned successfully");
+            window.location.replace("/contacts/" + res.data.id);
+        },
+    });
+
     const actionMenuList = [
         {
             label: (
@@ -116,7 +124,17 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
             key: "0",
         },
         {
-            label: "Clone",
+            label: (
+                <Popconfirm
+                    title="Clone Contact"
+                    description="Are you sure to clone this contact?"
+                    onConfirm={() => {
+                        cloneContact.mutate({ contactId: contact.id });
+                    }}
+                >
+                    <div>Clone</div>
+                </Popconfirm>
+            ),
             key: "1",
         },
         {

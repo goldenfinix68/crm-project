@@ -1,6 +1,15 @@
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Avatar, Button, Form, Input, Popconfirm, Space, message } from "antd";
+import {
+    Avatar,
+    Button,
+    Form,
+    Input,
+    Popconfirm,
+    Space,
+    message,
+    Tooltip,
+} from "antd";
 
 import React from "react";
 import CustomFieldInput from "../../../components/CustomFieldInput";
@@ -68,10 +77,9 @@ const ContactsEditableTableCell = ({
                 paddingBottom: "0px",
                 width: "100%", // Set the width to 100%
                 overflow: "hidden",
-                height: "27px",
             }}
         >
-            {getLabel()}
+            <Tooltip title={getLabel()}>{getLabel()}</Tooltip>
 
             <Popconfirm
                 title={null}

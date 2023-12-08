@@ -77,6 +77,22 @@ export const deleteContactMutation = async (contactId: any) => {
     });
     return data;
 };
+export const cloneContactMutation = async (contactId: any) => {
+    const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+    const response = await fetch("/api/contacts/clone", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(contactId),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to delete");
+    }
+    return data;
+};
 
 export const mergeContactMutation = async (postData: any) => {
     const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
