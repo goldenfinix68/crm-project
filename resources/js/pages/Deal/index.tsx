@@ -30,6 +30,7 @@ import {
     FunnelPlotOutlined,
     EditOutlined,
     SettingOutlined,
+    UpOutlined,
 } from "@ant-design/icons";
 import ModalAddDeal from "./components/ModalAddDeal";
 import Filter from "./components/Filter";
@@ -81,6 +82,8 @@ interface TDeals {
     owner: any;
 }
 const Deal = () => {
+    const { loggedInUser, contactFields } = useAppContextProvider();
+    const settings = loggedInUser?.settings;
     const navigate = useNavigate();
     const { isRoleStats, pipelines } = useAppContextProvider();
     const queryClient = useQueryClient();
@@ -94,14 +97,53 @@ const Deal = () => {
         sort_field: "id",
         sort_order: "asc",
     });
+    const [sortBy, setSortBy] = useState("firstName");
+    const [sortByAsc, setSortByAsc] = useState(true);
+
+    const getFieldLabelByFieldName = (value = "") => {
+        return contactFields?.find((field) => field.fieldName == value)?.label;
+    };
+
+    const sortableItems: MenuProps["items"] = [
+        { key: 5, label: "Name", onClick: () => handleChangeSort("firstName") },
+        { key: 1, label: "Aging", onClick: () => handleChangeSort("aging") },
+        {
+            key: settings?.dealCardpos2FieldId ? 2 : "",
+            label: settings?.dealCardpos2FieldId
+                ? getFieldLabelByFieldName(settings?.dealCardpos2FieldId)
+                : "",
+            onClick: () => handleChangeSort(settings?.dealCardpos2FieldId),
+        },
+        {
+            key: settings?.dealCardpos3FieldId ? 3 : "",
+            label: settings?.dealCardpos3FieldId
+                ? getFieldLabelByFieldName(settings?.dealCardpos3FieldId)
+                : "",
+            onClick: () => handleChangeSort(settings?.dealCardpos3FieldId),
+        },
+        {
+            key: settings?.dealCardpos4FieldId ? 4 : "",
+            label: settings?.dealCardpos4FieldId
+                ? getFieldLabelByFieldName(settings?.dealCardpos4FieldId)
+                : "",
+            onClick: () => handleChangeSort(settings?.dealCardpos4FieldId),
+        },
+    ];
+
+    const handleChangeSort = (val) => {
+        if (val == sortBy) {
+            setSortByAsc(!sortByAsc);
+        } else {
+            setSortByAsc(true);
+        }
+        setSortBy(val);
+    };
+
     const [isConfigureModalOpen, setIsConfigureModalOpen] = useState(false);
     const { deals, isLoading, refetch } = useDealsAll(filterPage);
     const selectedpipeline = pipelines?.find(
         (pipeline) => pipeline.id === filterPage.pipelineId
     );
-
-    const { setIsModalOpen, setCallerNumber, setDestinationNumber } =
-        useCallContext();
 
     const [selectedDeal, setSelectedDeal] = useState<TDeal | undefined>(
         undefined
@@ -171,21 +213,50 @@ const Deal = () => {
                                 },
                                 label: "",
                                 cards:
-                                    stage.deals?.map((deal) => {
-                                        return {
-                                            id: parseInt(deal.id ?? ""),
-                                            title: (
-                                                <DealCard
-                                                    deal={deal}
-                                                    handleEditClick={() => {
-                                                        setSelectedDeal(deal);
-                                                        setIsModalOpenAdd(true);
-                                                    }}
-                                                />
-                                            ),
-                                            laneId: stage.id,
-                                        };
-                                    }) ?? [],
+                                    stage.deals
+                                        ?.slice() // Create a shallow copy of the array to avoid mutating the original array
+                                        .sort((a, b) => {
+                                            const compareValueA =
+                                                sortBy === "aging"
+                                                    ? a.aging ?? ""
+                                                    : a.contact?.fields[
+                                                          sortBy
+                                                      ] ?? "";
+                                            const compareValueB =
+                                                sortBy === "aging"
+                                                    ? b.aging ?? ""
+                                                    : b.contact?.fields[
+                                                          sortBy
+                                                      ] ?? "";
+
+                                            return sortByAsc
+                                                ? compareValueA.localeCompare(
+                                                      compareValueB
+                                                  )
+                                                : compareValueB.localeCompare(
+                                                      compareValueA
+                                                  );
+                                        })
+                                        .map((deal) => {
+                                            return {
+                                                id: parseInt(deal.id ?? ""),
+                                                title: (
+                                                    <DealCard
+                                                        deal={deal}
+                                                        handleEditClick={() => {
+                                                            setSelectedDeal(
+                                                                deal
+                                                            );
+                                                            setIsModalOpenAdd(
+                                                                true
+                                                            );
+                                                        }}
+                                                        sortBy={sortBy}
+                                                    />
+                                                ),
+                                                laneId: stage.id,
+                                            };
+                                        }) ?? [],
                             };
                         }) ?? [],
                 };
@@ -193,7 +264,7 @@ const Deal = () => {
                 setBoardData(initialBoardData);
             }
         }
-    }, [deals, listBoard]);
+    }, [deals, listBoard, sortBy, sortByAsc]);
 
     const mutation = useMutation(useDealUpdateBoardMutation, {
         onSuccess: (res) => {
@@ -357,6 +428,39 @@ const Deal = () => {
                                     >
                                         Configure Card
                                     </Button>
+
+                                    {listBoard != "List" && (
+                                        <Dropdown
+                                            menu={{
+                                                items: sortableItems.filter(
+                                                    (item) => item?.key
+                                                ),
+                                            }}
+                                            placement="bottomLeft"
+                                        >
+                                            <Button
+                                                icon={<FunnelPlotOutlined />}
+                                                style={{
+                                                    marginRight: "10px",
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                }}
+                                            >
+                                                {sortBy == "aging"
+                                                    ? "Aging"
+                                                    : sortBy != "firstName"
+                                                    ? getFieldLabelByFieldName(
+                                                          sortBy
+                                                      )
+                                                    : "Name"}
+                                                {sortByAsc ? (
+                                                    <DownOutlined />
+                                                ) : (
+                                                    <UpOutlined />
+                                                )}
+                                            </Button>
+                                        </Dropdown>
+                                    )}
                                 </Space>
 
                                 <Space className="w-100">

@@ -68,6 +68,9 @@ class CustomFieldValuesController extends Controller
                     ->first();
                     if(!empty($verify) && $verify->customableId != $record->id){
                         $existingContact = Contact::find($verify->customableId);
+                        if(){
+                            
+                        }
                         abort(400, "Mobile number is already associated with " . $existingContact->fields['firstName'] . ' ' . $existingContact->fields['lastName']);
                     }
                 }

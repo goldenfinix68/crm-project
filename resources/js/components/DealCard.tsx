@@ -41,8 +41,9 @@ import TextEllipsis from "./TextEllipsis";
 interface Props {
     deal: TDeal;
     handleEditClick: () => void;
+    sortBy: string;
 }
-const DealCard = ({ deal, handleEditClick }: Props) => {
+const DealCard = ({ deal, handleEditClick, sortBy }: Props) => {
     const { setIsModalOpen, setCallerNumber, setDestinationNumber } =
         useCallContext();
 
@@ -62,7 +63,11 @@ const DealCard = ({ deal, handleEditClick }: Props) => {
                     }}
                 >
                     <Typography.Text
-                        style={{ color: "gray", fontSize: "12px" }}
+                        style={{
+                            color: "gray",
+                            fontSize: "12px",
+                            fontWeight: sortBy == "aging" ? "bold" : "normal",
+                        }}
                     >
                         Aging: {deal.aging}
                     </Typography.Text>
@@ -70,16 +75,26 @@ const DealCard = ({ deal, handleEditClick }: Props) => {
 
                 <Row gutter={12}>
                     <Col span={12}>
-                        {deal.contact?.fields.firstName +
-                            " " +
-                            deal.contact?.fields.lastName}
+                        <TextEllipsis
+                            style={{
+                                fontWeight:
+                                    sortBy == "firstName" ? "bold" : "normal",
+                            }}
+                        >
+                            {deal.contact?.fields.firstName +
+                                " " +
+                                deal.contact?.fields.lastName}
+                        </TextEllipsis>
                     </Col>
 
                     <Col span={12} className="w-100">
                         {settings?.dealCardpos2FieldId ? (
                             <TextEllipsis
                                 style={{
-                                    fontWeight: "normal",
+                                    fontWeight:
+                                        sortBy == settings?.dealCardpos2FieldId
+                                            ? "bold"
+                                            : "normal",
                                     float: "right",
                                 }}
                             >
@@ -98,7 +113,14 @@ const DealCard = ({ deal, handleEditClick }: Props) => {
                 <Row gutter={12}>
                     <Col span={12}>
                         {settings?.dealCardpos3FieldId ? (
-                            <TextEllipsis style={{ fontWeight: "normal" }}>
+                            <TextEllipsis
+                                style={{
+                                    fontWeight:
+                                        sortBy == settings?.dealCardpos3FieldId
+                                            ? "bold"
+                                            : "normal",
+                                }}
+                            >
                                 {
                                     deal.contact?.fields[
                                         settings?.dealCardpos3FieldId
@@ -106,14 +128,20 @@ const DealCard = ({ deal, handleEditClick }: Props) => {
                                 }
                             </TextEllipsis>
                         ) : (
-                            <div></div>
+                            <></>
                         )}
                     </Col>
 
                     <Col span={12} className="w-100">
                         {settings?.dealCardpos4FieldId ? (
                             <TextEllipsis
-                                style={{ fontWeight: "normal", float: "right" }}
+                                style={{
+                                    fontWeight:
+                                        sortBy == settings?.dealCardpos4FieldId
+                                            ? "bold"
+                                            : "normal",
+                                    float: "right",
+                                }}
                             >
                                 {
                                     deal.contact?.fields[
