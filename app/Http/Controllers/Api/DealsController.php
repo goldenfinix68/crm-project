@@ -217,6 +217,22 @@ class DealsController extends Controller
         return response()->json(['success' => false, 'data' => $datas], 200);
     }
 
+    public function moveCardAcrossLanes(Request $request)
+    {
+
+        $deal = Deal::find($request->dealId);
+       
+        if(empty($deal) || empty($request->stageId)){
+            abort(404);
+        }
+
+        $deal->stageId = $request->stageId;
+        $deal->agingStartDate =  $deal->stageId != $request->stageId ? Carbon::now() : $deal->agingStartDate;
+        $deal->save();
+
+        return response()->json(['success' => false, 'data' => $deal], 200);
+    }
+
     public function won(Request $request)
     {
         $find = Deal::find($request->dealId);

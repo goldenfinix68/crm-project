@@ -378,3 +378,20 @@ export const sortDealPipelineStageMutation = async (
     }
     return data;
 };
+
+export const moveCardAcrossLanesMutation = async (values: any) => {
+    const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+    const response = await fetch("/api/deals/move-data-across-lane", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(values),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to add");
+    }
+    return data;
+};

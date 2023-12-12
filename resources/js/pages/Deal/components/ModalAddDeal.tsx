@@ -59,6 +59,7 @@ const ModalAddDeal = ({
                     description: "Successfully Added",
                 });
                 queryClient.invalidateQueries("deals");
+                queryClient.invalidateQueries("dealPipelines");
                 handleSubmit();
                 resetFields();
             } else {

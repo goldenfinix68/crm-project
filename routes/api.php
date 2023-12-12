@@ -57,6 +57,7 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('/contact-types', 'App\Http\Controllers\Api\ContactTypesController');
     Route::resource('/deals', 'App\Http\Controllers\Api\DealsController');
     Route::post('/deals/add_notes', 'App\Http\Controllers\Api\DealsController@add_notes');
+    Route::post('/deals/move-data-across-lane', 'App\Http\Controllers\Api\DealsController@moveCardAcrossLanes');
     Route::post('/deals/add_files', 'App\Http\Controllers\Api\DealsController@add_files');
     Route::post('/deals/won', 'App\Http\Controllers\Api\DealsController@won');
     Route::post('/deals/delete_notes', 'App\Http\Controllers\Api\DealsController@delete_notes');

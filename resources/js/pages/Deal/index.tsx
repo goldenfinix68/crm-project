@@ -39,6 +39,7 @@ import Board from "react-trello";
 import { dealPipelines, useDealsAll } from "../../api/query/dealQuery";
 import { useMutation, useQueryClient } from "react-query";
 import {
+    moveCardAcrossLanesMutation,
     useDealMutationDeleteDeal,
     useDealUpdateBoardMutation,
 } from "../../api/mutation/useDealMutation";
@@ -84,7 +85,6 @@ interface TDeals {
 const Deal = () => {
     const { loggedInUser, contactFields } = useAppContextProvider();
     const settings = loggedInUser?.settings;
-    const navigate = useNavigate();
     const { isRoleStats, pipelines } = useAppContextProvider();
     const queryClient = useQueryClient();
     const [filterPage, setFilterPage] = useState({
@@ -264,11 +264,18 @@ const Deal = () => {
                 setBoardData(initialBoardData);
             }
         }
-    }, [deals, listBoard, sortBy, sortByAsc]);
+    }, [deals, listBoard, sortBy, sortByAsc, selectedpipeline?.stages]);
 
     const mutation = useMutation(useDealUpdateBoardMutation, {
         onSuccess: (res) => {
             queryClient.invalidateQueries("pipelines");
+        },
+    });
+
+    const moveCardAcrossLanes = useMutation(moveCardAcrossLanesMutation, {
+        onSuccess: (res) => {
+            queryClient.invalidateQueries("dealPipelines");
+            queryClient.invalidateQueries("deals");
         },
     });
 
@@ -530,7 +537,22 @@ const Deal = () => {
                                                         "none!important",
                                                 }}
                                                 customCardLayout={true}
-                                                onDataChange={onDataChangeBoard}
+                                                // onDataChange={onDataChangeBoard}
+                                                onCardMoveAcrossLanes={(
+                                                    fromLaneId,
+                                                    toLaneId,
+                                                    cardId,
+                                                    index
+                                                ) => {
+                                                    console.log(
+                                                        cardId,
+                                                        toLaneId
+                                                    );
+                                                    moveCardAcrossLanes.mutate({
+                                                        dealId: cardId,
+                                                        stageId: toLaneId,
+                                                    });
+                                                }}
                                             />
                                         </div>
                                     </div>
