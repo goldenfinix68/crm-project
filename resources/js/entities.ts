@@ -7,6 +7,7 @@ export type TUser = {
     sortCallForwarding: number;
     forwardingType?: string;
     main_user?: TUser;
+    settings?: TUserSettings;
 } & TSipTrunkingConnection;
 
 export type TMobileNumber = {
@@ -106,6 +107,7 @@ export type TDeal = {
     contactId?: string;
     pipelineId?: string;
     stageId?: string;
+    aging: string;
     created_at?: string;
     creator?: TUser;
 };
@@ -283,4 +285,10 @@ export type TGSheetCrawl = {
 export type TGSheetCrawlResult = {
     isSuccess: boolean;
     errors?: string[];
+};
+
+export type TUserSettings = {
+    dealCardpos2FieldId?: string;
+    dealCardpos3FieldId?: string;
+    dealCardpos4FieldId?: string;
 };

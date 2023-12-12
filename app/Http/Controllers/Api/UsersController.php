@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\User;
 use App\Models\MobileNumber;
 use App\Models\CustomFieldValue;
+use App\Models\UserSetting;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Api\TelnyxController;
 use Illuminate\Http\Request;
@@ -123,7 +124,7 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        $user = User::find($id);
+        $user = User::with(['settings'])->where('id', $id)->first();
         $user->numbers = $this->getMainUserNumbers(true);
 
         return $user;
@@ -219,6 +220,26 @@ class UsersController extends Controller
             $result = $telnyxController->updateCallForwardingType($numberId, $request->forwardingType, $savedUser->number->mobileNumber);
             $numberId = $savedUser->number->telnyxMobileId;
         }
+        return response()->json("Success", 200);
+    }
+    
+    public function saveSettings(Request $request)
+    {
+        $mainUserId = $this->getMainUserId();
+
+        $setting = UserSetting::where('mainUserId', $mainUserId)->first();
+
+        if (empty($setting)) {
+            $setting = new UserSetting;
+            $setting->mainUserId = $mainUserId; 
+        }
+
+        $setting->dealCardpos2FieldId = $request->dealCardpos2FieldId;
+        $setting->dealCardpos3FieldId = $request->dealCardpos3FieldId;
+        $setting->dealCardpos4FieldId = $request->dealCardpos4FieldId;
+
+        $setting->save();
+
         return response()->json("Success", 200);
     }
 }

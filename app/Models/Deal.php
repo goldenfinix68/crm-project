@@ -4,12 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Deal extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
+
+    protected $appends = [
+        'aging',
+    ];
 
     public function contact()
     {
@@ -31,5 +36,16 @@ class Deal extends Model
     public function creator()
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'createdByUserId');
+    }
+    
+    public function getAgingAttribute()
+    {
+        if(empty($this->agingStartDate)){
+            return "0d";
+        }
+
+
+        return Carbon::now()->diffInDays($this->agingStartDate) . "d";
+
     }
 }

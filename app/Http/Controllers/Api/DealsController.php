@@ -49,6 +49,7 @@ class DealsController extends Controller
             foreach($request->dealIds as $id){
                 $data = Deal::find($id);
                 $data->pipelineId = $request->pipelineId;
+                $data->agingStartDate = $data->stageId != $request->stageId ? Carbon::now() : $data->agingStartDate;
                 $data->stageId = $request->stageId;
                 $data->save();
             }
@@ -62,9 +63,12 @@ class DealsController extends Controller
                 }
 
                 $data = new Deal;
+                $data->agingStartDate = Carbon::now();
             }
             else{
                 $data = Deal::find($request->id);
+                $data->agingStartDate = $data->stageId != $request->stageId ? Carbon::now() : $data->agingStartDate;
+
             }
             $user = Auth::user();
             
@@ -204,11 +208,13 @@ class DealsController extends Controller
 
         foreach ($datas as $data) {
             $find = Deal::find($data['id']);
+            // dd($find->stageId, $data['laneId']);
+            $find->agingStartDate =  $find->stageId != $data['laneId'] ? Carbon::now() : $find->agingStartDate;
             $find->stageId = $data['laneId'];
             $find->save();
         }
 
-        return response()->json(['success' => true, 'data' => $datas], 200);
+        return response()->json(['success' => false, 'data' => $datas], 200);
     }
 
     public function won(Request $request)

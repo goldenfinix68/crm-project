@@ -1,6 +1,11 @@
 import { useQuery } from "react-query";
 import axios from "axios";
-import { TMobileNumber, TSipTrunkingConnection, TUser } from "../../entities";
+import {
+    TMobileNumber,
+    TSipTrunkingConnection,
+    TUser,
+    TUserSettings,
+} from "../../entities";
 
 export const useLoggedInUser = () => {
     const { data, isLoading, isError } = useQuery<TUser>("user", async () => {
@@ -121,6 +126,27 @@ export const useUsedTags = () => {
         async () => {
             const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
             const response = await axios.get("/api/users/tags", {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            return response.data;
+        }
+    );
+
+    return {
+        data,
+        isLoading,
+        isError,
+    };
+};
+
+export const userSettings = () => {
+    const { data, isLoading, isError } = useQuery<TUserSettings>(
+        "user-settings",
+        async () => {
+            const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+            const response = await axios.get("/api/users-settings", {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },

@@ -29,6 +29,7 @@ import {
     CheckCircleOutlined,
     FunnelPlotOutlined,
     EditOutlined,
+    SettingOutlined,
 } from "@ant-design/icons";
 import ModalAddDeal from "./components/ModalAddDeal";
 import Filter from "./components/Filter";
@@ -52,6 +53,8 @@ import TextEllipsis from "../../components/TextEllipsis";
 import CustomButtonIcon from "../../components/CustomButtonIcon";
 import { Link } from "react-router-dom";
 import CustomLink from "../../components/CustomLink";
+import DealCardConfigureModal from "../../components/DealCardConfigureModal";
+import DealCard from "../../components/DealCard";
 
 interface Card {
     id: number;
@@ -91,6 +94,7 @@ const Deal = () => {
         sort_field: "id",
         sort_order: "asc",
     });
+    const [isConfigureModalOpen, setIsConfigureModalOpen] = useState(false);
     const { deals, isLoading, refetch } = useDealsAll(filterPage);
     const selectedpipeline = pipelines?.find(
         (pipeline) => pipeline.id === filterPage.pipelineId
@@ -170,7 +174,15 @@ const Deal = () => {
                                     stage.deals?.map((deal) => {
                                         return {
                                             id: parseInt(deal.id ?? ""),
-                                            title: cardDiv(deal),
+                                            title: (
+                                                <DealCard
+                                                    deal={deal}
+                                                    handleEditClick={() => {
+                                                        setSelectedDeal(deal);
+                                                        setIsModalOpenAdd(true);
+                                                    }}
+                                                />
+                                            ),
                                             laneId: stage.id,
                                         };
                                     }) ?? [],
@@ -182,68 +194,6 @@ const Deal = () => {
             }
         }
     }, [deals, listBoard]);
-
-    const cardDiv = (deal: TDeal) => {
-        return (
-            <Card style={{ width: "100%", cursor: "pointer" }}>
-                <div>
-                    {deal.contact?.fields.firstName +
-                        " " +
-                        deal.contact?.fields.lastName}
-                </div>
-
-                <div
-                    style={{
-                        fontSize: 10,
-                        color: "#9b9999",
-                    }}
-                >
-                    {moment(deal?.created_at).format("LL")}
-                </div>
-
-                <div
-                    style={{
-                        marginTop: 10,
-                        float: "right",
-                        cursor: "pointer",
-                    }}
-                >
-                    <Space>
-                        <Tooltip title="Call contact">
-                            <PhoneOutlined
-                                onClick={() => {
-                                    setCallerNumber(
-                                        deal.contact?.fields
-                                            ?.defaultMobileNumber ?? ""
-                                    );
-                                    setDestinationNumber(
-                                        deal.contact?.fields.mobile ?? ""
-                                    );
-                                    setIsModalOpen(true);
-                                }}
-                            />
-                        </Tooltip>
-                        <CustomLink
-                            to={"/contacts/" + deal.contact?.id}
-                            style={{ color: "black" }}
-                        >
-                            <Tooltip title="Contact profile">
-                                <UserOutlined />
-                            </Tooltip>
-                        </CustomLink>
-                        <Tooltip title="Edit deal">
-                            <EditOutlined
-                                onClick={() => {
-                                    setSelectedDeal(deal);
-                                    setIsModalOpenAdd(true);
-                                }}
-                            />
-                        </Tooltip>
-                    </Space>
-                </div>
-            </Card>
-        );
-    };
 
     const mutation = useMutation(useDealUpdateBoardMutation, {
         onSuccess: (res) => {
@@ -374,59 +324,64 @@ const Deal = () => {
                         </Row>
                     ) : (
                         <>
-                            <div
+                            <Space
+                                className="w-100"
                                 style={{
                                     display: "flex",
                                     justifyContent: "space-between",
                                     marginBottom: 15,
                                 }}
                             >
-                                <div>
-                                    <span style={{ marginRight: 10 }}>
-                                        <Dropdown
-                                            menu={{
-                                                items: pipelineDropdownItem,
-                                            }}
-                                            placement="bottomLeft"
-                                        >
-                                            <Button>
-                                                <Space>
-                                                    {selectedpipeline?.name ??
-                                                        "Select pipeline"}
+                                <Space className="w-100">
+                                    <Dropdown
+                                        menu={{
+                                            items: pipelineDropdownItem,
+                                        }}
+                                        placement="bottomLeft"
+                                    >
+                                        <Button>
+                                            <Space>
+                                                {selectedpipeline?.name ??
+                                                    "Select pipeline"}
 
-                                                    <DownOutlined />
-                                                </Space>
-                                            </Button>
-                                        </Dropdown>
-                                    </span>
-                                </div>
-
-                                <div>
-                                    <span style={{ marginRight: 10 }}>
-                                        <Radio.Group
-                                            value={listBoard}
-                                            buttonStyle="solid"
-                                            onChange={onChangeListBoard}
-                                        >
-                                            <Radio.Button value="List">
-                                                List
-                                            </Radio.Button>
-                                            <Radio.Button value="Board">
-                                                Board
-                                            </Radio.Button>
-                                        </Radio.Group>
-                                    </span>
-                                    <span style={{ marginRight: 10 }}>
-                                        <Button
-                                            type="primary"
-                                            onClick={showModalAdd}
-                                            disabled={isRoleStats}
-                                        >
-                                            <PlusCircleOutlined /> &nbsp;Deal
+                                                <DownOutlined />
+                                            </Space>
                                         </Button>
-                                    </span>
-                                </div>
-                            </div>
+                                    </Dropdown>
+
+                                    <Button
+                                        icon={<SettingOutlined />}
+                                        onClick={() =>
+                                            setIsConfigureModalOpen(true)
+                                        }
+                                    >
+                                        Configure Card
+                                    </Button>
+                                </Space>
+
+                                <Space className="w-100">
+                                    <Radio.Group
+                                        value={listBoard}
+                                        buttonStyle="solid"
+                                        onChange={onChangeListBoard}
+                                    >
+                                        <Radio.Button value="List">
+                                            List
+                                        </Radio.Button>
+                                        <Radio.Button value="Board">
+                                            Board
+                                        </Radio.Button>
+                                    </Radio.Group>
+                                    <Button
+                                        type="primary"
+                                        onClick={showModalAdd}
+                                        disabled={isRoleStats}
+                                        icon={<PlusCircleOutlined />}
+                                    >
+                                        Deal
+                                    </Button>
+                                </Space>
+                            </Space>
                             <div
                                 style={{
                                     display: "flex",
@@ -523,6 +478,15 @@ const Deal = () => {
                         }}
                         deal={selectedDeal}
                         selectedRows={!selectedDeal ? selectedRowsData : []}
+                    />
+                    <DealCardConfigureModal
+                        isModalOpen={isConfigureModalOpen}
+                        handleSubmit={() => {
+                            console.log("qwe");
+                        }}
+                        closeModal={() => {
+                            setIsConfigureModalOpen(false);
+                        }}
                     />
                 </Card>
             </Col>

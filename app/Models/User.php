@@ -68,6 +68,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(\App\Models\MobileNumber::class, 'userId', 'id');
         
     }
+    public function settings()
+    {
+        return $this->hasOne(\App\Models\UserSetting::class, 'mainUserId', 'mainUserId');
+        
+    }
 
     public function mainUser()
     {
