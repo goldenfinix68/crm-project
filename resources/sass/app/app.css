@@ -12545,3 +12545,9 @@ fieldset:disabled .btn {
 .ant-popconfirm-message-text {
     width: 100%;
 }
+
+.noteDiv img {
+    width: 100%; /* make the image take 100% of the container width */
+    height: auto; /* maintain the aspect ratio */
+    display: block; /* remove extra space beneath the image */
+}

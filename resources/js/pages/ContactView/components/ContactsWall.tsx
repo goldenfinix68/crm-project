@@ -249,7 +249,7 @@ const NoteBox = ({ data, user }: { data: TWallData; user: TUser }) => {
     const getCardContent = () => {
         const originalDivHeight = divHeight;
         return (
-            <Space direction="vertical" size="middle">
+            <Space direction="vertical" size="middle" className="w-100">
                 <Typography.Text>
                     <div
                         ref={contentRef}
@@ -261,7 +261,9 @@ const NoteBox = ({ data, user }: { data: TWallData; user: TUser }) => {
                             height: expanded || divHeight < 300 ? "auto" : 300,
                             // Add vertical scrollbar when content overflows
                             overflowY: expanded ? "auto" : "hidden",
+                            width: "100%",
                         }}
+                        className="noteDiv"
                     />
                 </Typography.Text>
                 {actualContentHeight > 300 && (
