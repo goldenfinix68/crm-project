@@ -38,6 +38,7 @@ class TextThread extends Model
                     ->whereHas('customField', function ($query) {
                         $query->whereIn('type', ['mobile', 'phone']);
                     })
+                    ->orderBy('updated_at', 'desc')
                     ->first();
 
         if(!empty($fieldValue)){
@@ -47,7 +48,7 @@ class TextThread extends Model
                 return $contact;
             }
         }
-        
+
         return false;
     }
 

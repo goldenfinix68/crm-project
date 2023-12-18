@@ -132,12 +132,24 @@ class Contact extends Model
         }
 
         $duplicates = [];
-        foreach($user->contacts as $contact){
-            $commonValues = array_intersect($this->phoneNumbers, $contact->phoneNumbers);
+        foreach ($user->contacts as $contact) {
+            // Filter out null values from phoneNumbers arrays
+            $thisPhoneNumbers = array_filter($this->phoneNumbers, function ($value) {
+                return $value !== null;
+            });
+
+            $contactPhoneNumbers = array_filter($contact->phoneNumbers, function ($value) {
+                return $value !== null;
+            });
+
+            // Perform intersection on non-null values
+            $commonValues = array_intersect($thisPhoneNumbers, $contactPhoneNumbers);
+
             if (!empty($commonValues) && $this->id != $contact->id) {
                 $duplicates[] = $contact->fields['firstName'] . ' ' . $contact->fields['lastName'];
             }
         }
+
 
 
         return $duplicates;

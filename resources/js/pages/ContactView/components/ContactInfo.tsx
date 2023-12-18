@@ -306,7 +306,6 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                             </>
                         }
                         type="warning"
-                        showIcon
                     />
                 ) : null}
                 {/* <DropdownComponent
