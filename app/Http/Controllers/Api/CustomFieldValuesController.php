@@ -58,21 +58,21 @@ class CustomFieldValuesController extends Controller
                     $record->userId = $this->getMainUserId();
                     $record->save();
                 }
-                if(!empty($fields['mobile'])){
-                    $verify = CustomFieldValue::with(['customField'])
-                    ->where('value', $fields['mobile'])
-                    ->where('customableType', 'contact')
-                    ->whereHas('customField', function ($query) {
-                        $query->where('type', 'mobile');
-                    })
-                    ->first();
-                    if(!empty($verify) && $verify->customableId != $record->id){
-                        $existingContact = Contact::find($verify->customableId);
-                        if(!empty($existingContact)){
-                            abort(400, "Mobile number is already associated with " . $existingContact->fields['firstName'] . ' ' . $existingContact->fields['lastName']);
-                        }
-                    }
-                }
+                // if(!empty($fields['mobile'])){
+                //     $verify = CustomFieldValue::with(['customField'])
+                //     ->where('value', $fields['mobile'])
+                //     ->where('customableType', 'contact')
+                //     ->whereHas('customField', function ($query) {
+                //         $query->where('type', 'mobile');
+                //     })
+                //     ->first();
+                //     if(!empty($verify) && $verify->customableId != $record->id){
+                //         $existingContact = Contact::find($verify->customableId);
+                //         if(!empty($existingContact)){
+                //             abort(400, "Mobile number is already associated with " . $existingContact->fields['firstName'] . ' ' . $existingContact->fields['lastName']);
+                //         }
+                //     }
+                // }
             }
             $user = Auth::user();
             foreach($fields as $key => $value){

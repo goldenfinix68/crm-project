@@ -507,14 +507,14 @@ class ContactsController extends Controller
                         try {
                             $customField = CustomField::find($targetColumn);
 
-                            if($customField->fieldName == 'mobile'){
-                                $verify = $this->getContactByMobile($record[$sourceColumn]);
-                                if(!empty($verify) && $verify->customableId != $contact->id){
-                                    $continue = false;
-                                    DB::rollBack();
-                                    break;
-                                }
-                            }
+                            // if($customField->fieldName == 'mobile'){
+                            //     $verify = $this->getContactByMobile($record[$sourceColumn]);
+                            //     if(!empty($verify) && $verify->customableId != $contact->id){
+                            //         $continue = false;
+                            //         DB::rollBack();
+                            //         break;
+                            //     }
+                            // }
                             if($customField->type == 'tag'){
                                 $record[$sourceColumn] = [$record[$sourceColumn]];
                             }
