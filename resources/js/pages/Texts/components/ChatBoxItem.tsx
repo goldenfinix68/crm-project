@@ -13,17 +13,6 @@ const ChatBoxItem = ({ name, text }: { name: string; text: TText }) => {
                 alignItems: "center",
             }}
         >
-            <Avatar
-                className="avatarText m-r-sm"
-                size={32}
-                style={{
-                    backgroundColor: "#1677FF",
-                    verticalAlign: "middle",
-                    flexShrink: 0, // Prevent the Avatar from being shrunk
-                }}
-            >
-                {name.charAt(0)}
-            </Avatar>
             <div style={{ display: "flex", flexDirection: "column" }}>
                 <div
                     style={{
@@ -56,18 +45,6 @@ const ChatBoxItem = ({ name, text }: { name: string; text: TText }) => {
                 flexDirection: "row-reverse", // Reverse the order of flex items (avatar on the right)
             }}
         >
-            <Avatar
-                className="avatarText m-r-sm"
-                size={32}
-                style={{
-                    backgroundColor: "#1677FF",
-                    verticalAlign: "middle",
-                    marginLeft: "10px",
-                    flexShrink: 0, // Prevent the Avatar from being shrunk
-                }}
-            >
-                {name.charAt(0)}
-            </Avatar>
             <div
                 style={{
                     display: "flex",

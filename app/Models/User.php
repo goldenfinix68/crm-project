@@ -57,6 +57,13 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(\App\Models\MobileNumber::class, 'userId', 'id');
         
     }
+
+    public function contacts()
+    {
+        return $this->hasMany(\App\Models\Contact::class, 'userId', 'id');
+        
+    }
+
     public function customFields()
     {
         return $this->hasMany(\App\Models\CustomField::class, 'userId', 'id');

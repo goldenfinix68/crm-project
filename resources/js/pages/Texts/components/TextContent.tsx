@@ -76,18 +76,14 @@ const TextContent = ({
                         zIndex: 1,
                     }}
                 >
-                    {/* Your content */}
-                    <Avatar
-                        className="avatarText m-r-sm"
-                        size={32}
-                        style={{
-                            backgroundColor: "#1677FF",
-                            verticalAlign: "middle",
-                        }}
-                    >
-                        {thread.contactName.charAt(0)}
-                    </Avatar>{" "}
-                    {`${thread.contactName}`}
+                    <Space direction="vertical" size={0}>
+                        <Typography.Text strong>
+                            {thread.contactName}
+                        </Typography.Text>
+                        <Typography.Text>
+                            {thread.contactNumber}
+                        </Typography.Text>
+                    </Space>
                 </div>
 
                 <div style={{ paddingTop: "50px", height: "85%" }}>
@@ -141,10 +137,16 @@ const TextContent = ({
                             padding: "15px",
                             display: "flex",
                             fontWeight: "bold",
+                            height: "74px",
+                            alignItems: "center", // Vertical alignment: center
+                            justifyContent: "center", // Horizontal alignment: center
+                            textAlign: "center",
+                            fontSize: "16px",
                         }}
                     >
                         Related Information
                     </div>
+
                     {thread.contact ? (
                         <ContactInfo contact={thread.contact} />
                     ) : (

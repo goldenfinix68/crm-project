@@ -248,6 +248,7 @@ export type TContact = {
     deals?: TDeal[];
     deal?: TDeal;
     phoneNumbers?: string[];
+    duplicatePhoneNumbers?: string[];
 };
 
 export type TFilterCondition = {

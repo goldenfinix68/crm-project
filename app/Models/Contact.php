@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Text;
 use App\Models\Call;
+use Auth;
 
 class Contact extends Model
 {
@@ -83,7 +84,8 @@ class Contact extends Model
         'wall',
         'texts',
         'fields',
-        'phoneNumbers'
+        'phoneNumbers',
+        'duplicatePhoneNumbers'
     ];
 
 
@@ -113,12 +115,32 @@ class Contact extends Model
     {
         $phoneNumbers = [];
         foreach($this->customFieldValues as $customField){
-            if(in_array($customField->customField->fieldName, ['phone', 'mobile'])){
+            if(in_array($customField->customField->type, ['phone', 'mobile'])){
                 $phoneNumbers[] = $customField->value;
             }
         }
 
         return $phoneNumbers;
+    }
+
+    public function getDuplicatePhoneNumbersAttribute()
+    {
+        $user = Auth::user();
+
+        if(empty($user) || empty($user->contacts)){
+            return [];
+        }
+
+        $duplicates = [];
+        foreach($user->contacts as $contact){
+            $commonValues = array_intersect($this->phoneNumbers, $contact->phoneNumbers);
+            if (!empty($commonValues) && $this->id != $contact->id) {
+                $duplicates[] = $contact->fields['firstName'] . ' ' . $contact->fields['lastName'];
+            }
+        }
+
+
+        return $duplicates;
     }
 
     public function owner()

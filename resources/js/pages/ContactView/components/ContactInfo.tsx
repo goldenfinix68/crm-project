@@ -39,6 +39,7 @@ import {
     Table,
     Popconfirm,
     message,
+    Alert,
 } from "antd";
 import React, { useContext } from "react";
 import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
@@ -287,6 +288,27 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                     </Typography.Title>
                 </Space>
 
+                {contact.duplicatePhoneNumbers?.length ? (
+                    <Alert
+                        message={
+                            <>
+                                <Typography.Text>
+                                    Duplicate phone number/s with the following
+                                    contact:
+                                </Typography.Text>
+                                <ul>
+                                    {contact.duplicatePhoneNumbers.map(
+                                        (val) => (
+                                            <li>{val}</li>
+                                        )
+                                    )}
+                                </ul>
+                            </>
+                        }
+                        type="warning"
+                        showIcon
+                    />
+                ) : null}
                 {/* <DropdownComponent
                     menuList={actionMenuList}
                     label={
