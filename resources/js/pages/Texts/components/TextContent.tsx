@@ -25,6 +25,8 @@ import { sendTextMutation } from "../../../api/mutation/useTextMutation";
 import TextForm from "./TextForm";
 import CustomFieldFormModal from "../../../components/CustomFieldFormModal";
 import { ENDPOINTS } from "../../../endpoints";
+import CustomFieldAddUpdateModal from "../../../components/CustomFieldAddUpdateModal";
+import ModalAddExistingNumberContact from "../../../components/ModalAddExistingNumberContact";
 // import AssignLabelDropdown from "./AssignLabelDropdown";
 
 const TextContent = ({
@@ -39,6 +41,10 @@ const TextContent = ({
     const chatBoxRef = React.useRef<HTMLDivElement>(null);
     const [isCreateNewContactModalOpen, setIsCreateNewContactModalOpen] =
         useState(false);
+    const [
+        isAddToExistingContactModalOpen,
+        setIsAddToExistingContactModalOpen,
+    ] = useState(false);
 
     const scrollToBottom = () => {
         if (chatBoxRef.current) {
@@ -156,7 +162,13 @@ const TextContent = ({
                             >
                                 Create Contact
                             </Button>
-                            <Button>Add to existing Contact</Button>
+                            <Button
+                                onClick={() =>
+                                    setIsAddToExistingContactModalOpen(true)
+                                }
+                            >
+                                Add to existing Contact
+                            </Button>
                         </Space>
                     )}
                 </Space>
@@ -173,6 +185,16 @@ const TextContent = ({
                 }}
                 type="contact"
                 record={{ mobile: thread.contactNumber }}
+            />
+
+            <ModalAddExistingNumberContact
+                isModalOpen={isAddToExistingContactModalOpen}
+                closeModal={() => setIsAddToExistingContactModalOpen(false)}
+                handleSubmit={() => {
+                    queryClient.invalidateQueries("textThreads");
+                    queryClient.invalidateQueries("thread");
+                }}
+                contactNumber={thread.contactNumber}
             />
         </Row>
     ) : null;
