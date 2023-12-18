@@ -68,10 +68,9 @@ class CustomFieldValuesController extends Controller
                     ->first();
                     if(!empty($verify) && $verify->customableId != $record->id){
                         $existingContact = Contact::find($verify->customableId);
-                        if(){
-                            
+                        if(!empty($existingContact)){
+                            abort(400, "Mobile number is already associated with " . $existingContact->fields['firstName'] . ' ' . $existingContact->fields['lastName']);
                         }
-                        abort(400, "Mobile number is already associated with " . $existingContact->fields['firstName'] . ' ' . $existingContact->fields['lastName']);
                     }
                 }
             }
@@ -86,9 +85,9 @@ class CustomFieldValuesController extends Controller
             DB::commit();
             return response()->json(['message' => "Success"], 200);
         } catch (\Exception $e) {
+            DB::rollBack();
             dd($e);
             // Something went wrong, so we'll roll back the transaction
-            DB::rollBack();
             
             $statusCode = $e->getCode();
             if (!is_numeric($statusCode) || $statusCode < 100 || $statusCode >= 600) {

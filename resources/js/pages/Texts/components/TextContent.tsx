@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     Avatar,
     Button,
@@ -23,6 +23,8 @@ import queryClient from "../../../queryClient";
 import { useMutation } from "react-query";
 import { sendTextMutation } from "../../../api/mutation/useTextMutation";
 import TextForm from "./TextForm";
+import CustomFieldFormModal from "../../../components/CustomFieldFormModal";
+import { ENDPOINTS } from "../../../endpoints";
 // import AssignLabelDropdown from "./AssignLabelDropdown";
 
 const TextContent = ({
@@ -35,6 +37,8 @@ const TextContent = ({
     const [isFocused, setIsFocused] = React.useState(false);
     const [divKey, setDivKey] = React.useState(0);
     const chatBoxRef = React.useRef<HTMLDivElement>(null);
+    const [isCreateNewContactModalOpen, setIsCreateNewContactModalOpen] =
+        useState(false);
 
     const scrollToBottom = () => {
         if (chatBoxRef.current) {
@@ -138,12 +142,38 @@ const TextContent = ({
                     {thread.contact ? (
                         <ContactInfo contact={thread.contact} />
                     ) : (
-                        <p style={{ textAlign: "center" }}>
+                        <Space
+                            style={{ textAlign: "center" }}
+                            className="w-100"
+                            size="large"
+                            direction="vertical"
+                        >
                             Number not saved in contacts
-                        </p>
+                            <Button
+                                onClick={() =>
+                                    setIsCreateNewContactModalOpen(true)
+                                }
+                            >
+                                Create Contact
+                            </Button>
+                            <Button>Add to existing Contact</Button>
+                        </Space>
                     )}
                 </Space>
             </Col>
+
+            <CustomFieldFormModal
+                isModalOpen={isCreateNewContactModalOpen}
+                closeModal={() => {
+                    setIsCreateNewContactModalOpen(false);
+                }}
+                handleSubmit={() => {
+                    queryClient.invalidateQueries("textThreads");
+                    queryClient.invalidateQueries("thread");
+                }}
+                type="contact"
+                record={{ mobile: thread.contactNumber }}
+            />
         </Row>
     ) : null;
 };

@@ -1,4 +1,13 @@
-import { Button, Col, Modal, Row, Typography, Form, message } from "antd";
+import {
+    Button,
+    Col,
+    Modal,
+    Row,
+    Typography,
+    Form,
+    message,
+    Space,
+} from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import React, { useEffect } from "react";
 import { useCustomFieldSections } from "../api/query/customFieldQuery";
@@ -8,6 +17,7 @@ import { Link } from "react-router-dom";
 import { useMutation } from "react-query";
 import { saveCustomFieldValuesMutation } from "../api/mutation/useCustomFieldMutation";
 import CustomFieldInputWrapper from "./CustomFieldInput";
+import LoadingComponent from "./LoadingComponent";
 interface CustomFieldFormModalProps {
     isModalOpen: boolean;
     closeModal: () => void;
@@ -91,7 +101,7 @@ const CustomFieldFormModal = ({
                 style={{ maxHeight: "700px" }}
                 footer={null}
             >
-                <div className="modal-header">
+                <div className="modal-header m-b-md">
                     <Typography.Title level={5} style={{ color: "white" }}>
                         {preview
                             ? "Form Preview"
@@ -124,6 +134,7 @@ const CustomFieldFormModal = ({
                             const columnSpan =
                                 section.columnLayout == "two" ? 12 : 24;
                             return (
+                                // <Space direction="vertical" className="w-100">
                                 <>
                                     {!section.isDefault ? (
                                         <Row gutter={24} className="m-b-sm">
@@ -134,7 +145,7 @@ const CustomFieldFormModal = ({
                                             </Col>
                                         </Row>
                                     ) : null}
-                                    <Row gutter={24} className="m-t-md">
+                                    <Row gutter={24} className="m-b-lg">
                                         {section.fields?.map((field) => {
                                             return (
                                                 <Col
@@ -149,6 +160,7 @@ const CustomFieldFormModal = ({
                                         })}
                                     </Row>
                                 </>
+                                // </Space>
                             );
                             <></>;
                         })}
