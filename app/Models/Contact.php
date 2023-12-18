@@ -83,6 +83,7 @@ class Contact extends Model
         'wall',
         'texts',
         'fields',
+        'phoneNumbers'
     ];
 
 
@@ -106,6 +107,18 @@ class Contact extends Model
 
         return $customFields;
 
+    }
+
+    public function getPhoneNumbersAttribute()
+    {
+        $phoneNumbers = [];
+        foreach($this->customFieldValues as $customField){
+            if(in_array($customField->customField->fieldName, ['phone', 'mobile'])){
+                $phoneNumbers[] = $customField->value;
+            }
+        }
+
+        return $phoneNumbers;
     }
 
     public function owner()

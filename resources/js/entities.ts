@@ -247,6 +247,7 @@ export type TContact = {
     wall?: TWallData[];
     deals?: TDeal[];
     deal?: TDeal;
+    phoneNumbers?: string[];
 };
 
 export type TFilterCondition = {

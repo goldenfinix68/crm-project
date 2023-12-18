@@ -83,8 +83,8 @@ const IncomingCallListener = () => {
     };
 
     const getCallerNameByMobile = () => {
-        const contact = contacts.find(
-            (data) => data.fields?.mobile == callerNameNumber
+        const contact = contacts.find((data) =>
+            data.phoneNumbers?.includes(callerNameNumber)
         );
         if (contact) {
             return `${contact.fields?.firstName} ${contact.fields?.lastName}`;

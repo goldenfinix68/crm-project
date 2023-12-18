@@ -36,7 +36,7 @@ class TextThread extends Model
                     ->where('value', $this->contactNumber)
                     ->where('customableType', 'contact')
                     ->whereHas('customField', function ($query) {
-                        $query->where('type', 'mobile');
+                        $query->whereIn('type', ['mobile', 'phone']);
                     })
                     ->first();
 
@@ -47,6 +47,7 @@ class TextThread extends Model
                 return $contact;
             }
         }
+        
         return false;
     }
 
