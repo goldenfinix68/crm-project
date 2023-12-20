@@ -41,7 +41,7 @@ class Deal extends Model
     public function getAgingAttribute()
     {
         if (empty($this->agingStartDate)) {
-            return "0d";
+            return "0h";
         }
 
         $diffInMinutes = Carbon::now()->diffInMinutes($this->agingStartDate);

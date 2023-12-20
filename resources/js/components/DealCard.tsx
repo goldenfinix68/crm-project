@@ -53,8 +53,8 @@ const DealCard = ({ deal, handleEditClick, sortBy }: Props) => {
 
     const settings = loggedInUser?.settings;
     return (
-        <Card className="w-100">
-            <Space className="w-100" direction="vertical">
+        <Card className="w-100 p-0" bodyStyle={{ padding: "12px" }}>
+            <Space className="w-100" direction="vertical" size={0}>
                 <Space
                     className="w-100"
                     style={{
