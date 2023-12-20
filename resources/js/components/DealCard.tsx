@@ -20,6 +20,7 @@ import {
 import {
     CloseOutlined,
     EditOutlined,
+    EllipsisOutlined,
     PhoneOutlined,
     UserOutlined,
 } from "@ant-design/icons";
@@ -38,6 +39,7 @@ import { useAppContextProvider } from "../context/AppContext";
 import { useCallContext } from "../context/CallContext";
 import CustomLink from "./CustomLink";
 import TextEllipsis from "./TextEllipsis";
+import DropdownComponent from "./DropdownComponent";
 interface Props {
     deal: TDeal;
     handleEditClick: () => void;
@@ -55,10 +57,9 @@ const DealCard = ({ deal, handleEditClick, sortBy }: Props) => {
             <Space className="w-100" direction="vertical">
                 <Space
                     className="w-100"
-                    size={"large"}
                     style={{
-                        justifyContent: "end",
-                        alignItems: "center",
+                        display: "flex",
+                        justifyContent: "space-between",
                         marginTop: "auto",
                     }}
                 >
@@ -69,8 +70,59 @@ const DealCard = ({ deal, handleEditClick, sortBy }: Props) => {
                             fontWeight: sortBy == "aging" ? "bold" : "normal",
                         }}
                     >
-                        Aging: {deal.aging}
+                        {deal.aging}
                     </Typography.Text>
+
+                    <DropdownComponent
+                        menuList={[
+                            {
+                                label: (
+                                    <div onClick={handleEditClick}>
+                                        Edit Deal
+                                    </div>
+                                ),
+                                key: 0,
+                            },
+                            {
+                                label: (
+                                    <CustomLink
+                                        to={"/contacts/" + deal.contact?.id}
+                                        style={{ color: "black" }}
+                                    >
+                                        View Contact
+                                    </CustomLink>
+                                ),
+                                key: 1,
+                            },
+                            {
+                                label: (
+                                    <div
+                                        onClick={() => {
+                                            setCallerNumber(
+                                                deal.contact?.fields
+                                                    ?.defaultMobileNumber ?? ""
+                                            );
+                                            setDestinationNumber(
+                                                deal.contact?.fields.mobile ??
+                                                    ""
+                                            );
+                                            setIsModalOpen(true);
+                                        }}
+                                    >
+                                        Call Contact
+                                    </div>
+                                ),
+                                key: 3,
+                            },
+                        ]}
+                        label={
+                            <EllipsisOutlined
+                                style={{ transform: "rotate(90deg)" }}
+                            />
+                        }
+                        floatRight
+                        showCarret={false}
+                    />
                 </Space>
 
                 <Row gutter={12}>
@@ -154,7 +206,7 @@ const DealCard = ({ deal, handleEditClick, sortBy }: Props) => {
                         )}
                     </Col>
                 </Row>
-                <Space
+                {/* <Space
                     className="w-100"
                     size={"large"}
                     style={{
@@ -194,7 +246,7 @@ const DealCard = ({ deal, handleEditClick, sortBy }: Props) => {
                             onClick={handleEditClick}
                         />
                     </Tooltip>
-                </Space>
+                </Space> */}
             </Space>
         </Card>
     );

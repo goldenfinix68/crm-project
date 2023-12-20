@@ -226,8 +226,8 @@ class DealsController extends Controller
             abort(404);
         }
 
+        $deal->agingStartDate = $deal->stageId != $request->stageId ? Carbon::now() : $deal->agingStartDate;
         $deal->stageId = $request->stageId;
-        $deal->agingStartDate =  $deal->stageId != $request->stageId ? Carbon::now() : $deal->agingStartDate;
         $deal->save();
 
         return response()->json(['success' => false, 'data' => $deal], 200);
