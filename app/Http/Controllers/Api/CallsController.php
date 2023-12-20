@@ -57,11 +57,17 @@ class CallsController extends Controller
 
         if(!empty($isFromApp)){
             $user = $isFromApp->user;
+            $userName = $user->firstName . ' ' . $user->lastName;
         }
         else{
-            $user = MobileNumber::where('mobileNumber', $call->to)->first()->user;
+            $mobileNumnber = MobileNumber::where('mobileNumber', $call->to)->orderBy('id', 'desc')->first();
+            if(!empty($mobileNumnber)){
+                $userName = $user->firstName . ' ' . $user->lastName;
+            }
+            else{
+                $userName = $call->to;
+            }
         }
-        $userName = $user->firstName . ' ' . $user->lastName;
 
         $answeredData = $callData->where('type', 'call.answered')->first();
         $hangupData = $callData->where('type', 'call.hangup')->first();
