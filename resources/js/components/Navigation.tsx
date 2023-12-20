@@ -145,12 +145,61 @@ const Navigation: React.FC<NavigationProps> = ({ title }) => {
                     overlayClassName="header-search-bar"
                     trigger={["click"]}
                     overlay={
-                        <Menu
-                            onClick={(e) => {
-                                navigate("/contacts/" + e.key);
-                            }}
-                        >
-                            {/* ... (your existing search menu items) ... */}
+                        <Menu>
+                            {contacts
+                                ?.filter(
+                                    (contact) =>
+                                        contact.fields?.firstName
+                                            ?.toLowerCase()
+                                            .includes(
+                                                searchKeyword.toLowerCase()
+                                            ) ||
+                                        contact.fields?.lastName
+                                            ?.toLowerCase()
+                                            .includes(
+                                                searchKeyword.toLowerCase()
+                                            ) ||
+                                        contact.phoneNumbers?.includes(
+                                            searchKeyword.toLowerCase()
+                                        )
+                                )
+                                ?.map((contact) => (
+                                    <Menu.Item key={contact.id}>
+                                        <CustomLink
+                                            to={`/contacts/${contact.id}`}
+                                        >
+                                            <div className="list-data">
+                                                <Space
+                                                    direction="vertical"
+                                                    size={0}
+                                                    className="m-l-xs"
+                                                >
+                                                    <Typography.Text>
+                                                        {`${contact.fields?.firstName} ${contact.fields?.lastName}`}
+                                                    </Typography.Text>
+                                                    <Typography.Text className="list-data-info">
+                                                        <Typography.Text
+                                                            className="list-data-info"
+                                                            style={{
+                                                                fontWeight: 300,
+                                                            }}
+                                                        >
+                                                            {`Phone numbers: ${
+                                                                contact
+                                                                    .phoneNumbers
+                                                                    ?.length
+                                                                    ? contact.phoneNumbers?.join(
+                                                                          ", "
+                                                                      )
+                                                                    : "Not set"
+                                                            }`}
+                                                        </Typography.Text>
+                                                    </Typography.Text>
+                                                </Space>
+                                            </div>
+                                        </CustomLink>
+                                    </Menu.Item>
+                                ))}
                         </Menu>
                     }
                 >
