@@ -4,8 +4,8 @@ export type TUser = {
     lastName: string;
     email: string;
     role: string;
-    sortCallForwarding: number;
     forwardingType?: string;
+    forwardTo?: string;
     main_user?: TUser;
     settings?: TUserSettings;
 } & TSipTrunkingConnection;

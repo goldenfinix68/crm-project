@@ -71,6 +71,7 @@ interface ArrayActions<T> {
     add: (item: T) => void;
     removeByKey: (key: string) => void;
     updateByKey: (key: string, newValue: T) => void;
+    updateById: (id: string, newValue: T) => void;
     removeByIndex: (key: number) => void;
     updateByIndex: (key: number, newValue: T) => void;
     clear: () => void;
@@ -100,6 +101,16 @@ export function useArray<T>(initialArray: T[] = []): ArrayActions<T> {
     // Update an item in the array by key or add it if it doesn't exist
     const updateByKey = (key: string, newValue: T) => {
         const index = array.findIndex((item) => (item as any).key === key);
+        if (index !== -1) {
+            // Update the object if it exists
+            const newArray = [...array];
+            newArray[index] = newValue;
+            setArray(newArray);
+        }
+    };
+
+    const updateById = (id: string, newValue: T) => {
+        const index = array.findIndex((item) => (item as any).id === id);
         if (index !== -1) {
             // Update the object if it exists
             const newArray = [...array];
@@ -143,6 +154,7 @@ export function useArray<T>(initialArray: T[] = []): ArrayActions<T> {
         clear,
         removeByIndex,
         updateByIndex,
+        updateById,
         setInitialArray,
     };
 }

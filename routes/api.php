@@ -34,7 +34,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::post('/user-settings', 'App\Http\Controllers\Api\UsersController@saveSettings');
     Route::get('/users/tags', 'App\Http\Controllers\Api\UsersController@usedTags');
-    Route::post('/users/sort-call-forwarding', 'App\Http\Controllers\Api\UsersController@sortCallForwarding');
+    Route::post('/users/call-forwarding', 'App\Http\Controllers\Api\UsersController@callForwarding');
     Route::resource('/users', 'App\Http\Controllers\Api\UsersController');
 
     Route::post('/contacts/delete', 'App\Http\Controllers\Api\ContactsController@delete_contacts');

@@ -192,35 +192,27 @@ class UsersController extends Controller
         return response()->json($uniqueResultArray, 200);
     }
 
-    public function sortCallForwarding(Request $request)
+    public function callForwarding(Request $request)
     {
         $telnyxController = new TelnyxController();
 
-        $mainUserId = $this->getMainUserId();
-        $users = User::where('id', $mainUserId)->orWhere('mainUserId', $mainUserId)->update(['forwardingType' => $request->forwardingType]);
 
-        $mainUser = User::find($mainUserId);
-
-        $numberId = $mainUser->number->telnyxMobileId;
-        
-        if($request->forwardingType != 'off' && empty($request->users)){
-            return response()->json([
-                'success' => false,
-                'message' => 'Enabling call forwarding need requires another user phone number to forward call',
-            ], 400);
-        }
-
-        $result = $telnyxController->updateCallForwardingType($numberId, $request->forwardingType, $request->users[0]['numbers'][0]['mobileNumber']);
-        dd($result);
         foreach($request->users as $user){
             $savedUser = User::find($user['id']);
-            $savedUser->sortCallForwarding = $user['sortCallForwarding'];
-            $savedUser->save();
+            $forwardTo = User::find($user['forwardTo']);
+            $errors = [];
+            if(!empty($savedUser->number) && !empty($forwardTo->number)){
+                $numberId = $savedUser->number->telnyxMobileId;
 
-            $result = $telnyxController->updateCallForwardingType($numberId, $request->forwardingType, $savedUser->number->mobileNumber);
-            $numberId = $savedUser->number->telnyxMobileId;
+                $result = $telnyxController->updateCallForwardingType($numberId, $user['forwardingType'], $forwardTo->number->mobileNumber);
+                $errors[] = $result;
+                $savedUser->forwardingType = $user['forwardingType'];
+                $savedUser->forwardTo = $user['forwardTo'];
+                $savedUser->save();
+            }
+           
         }
-        return response()->json("Success", 200);
+        return response()->json($errors, 200);
     }
     
     public function saveSettings(Request $request)

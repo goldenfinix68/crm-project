@@ -83,14 +83,15 @@ const IncomingCallListener = () => {
     };
 
     const getCallerNameByMobile = () => {
-        const contact = contacts.find((data) =>
-            data.phoneNumbers?.includes(callerNameNumber)
-        );
-        if (contact) {
-            return `${contact.fields?.firstName} ${contact.fields?.lastName}`;
-        } else {
-            return callerNameNumber;
-        }
+        // const contact = contacts.find((data) =>
+        //     data.phoneNumbers?.includes(callerNameNumber)
+        // );
+        // if (contact) {
+        //     return `${contact.fields?.firstName} ${contact.fields?.lastName}`;
+        // } else {
+        //     return callerNameNumber;
+        // }
+        return callerNameNumber;
     };
     const clearFields = () => {
         setCurrentCall(null);

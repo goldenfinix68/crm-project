@@ -78,21 +78,11 @@ const columns: ColumnsType<TUser> = [
     },
 ];
 
-const onChange: TableProps<TUser>["onChange"] = (
-    pagination,
-    filters,
-    sorter,
-    extra
-) => {
-    console.log("params", pagination, filters, sorter, extra);
-};
-
 const UsersTable = ({ users }: { users: Array<TUser> }) => {
     return (
         <Table
             columns={columns}
             dataSource={users}
-            onChange={onChange}
             pagination={{
                 defaultPageSize: 100,
                 pageSizeOptions: ["100", "250"],

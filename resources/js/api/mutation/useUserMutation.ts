@@ -18,9 +18,9 @@ export const addUserMutation = async (user) => {
     return data;
 };
 
-export const sortUserCallForwardingMutation = async (users: TUser[]) => {
+export const userCallForwardingMutation = async (users: TUser[]) => {
     const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
-    const response = await fetch("/api/users/sort-call-forwarding", {
+    const response = await fetch("/api/users/call-forwarding", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
