@@ -206,47 +206,6 @@ const DealCard = ({ deal, handleEditClick, sortBy }: Props) => {
                         )}
                     </Col>
                 </Row>
-                {/* <Space
-                    className="w-100"
-                    size={"large"}
-                    style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                        marginTop: "auto",
-                    }}
-                >
-                    <Tooltip title="Call contact">
-                        <Button
-                            type="text"
-                            icon={<PhoneOutlined />}
-                            onClick={() => {
-                                setCallerNumber(
-                                    deal.contact?.fields?.defaultMobileNumber ??
-                                        ""
-                                );
-                                setDestinationNumber(
-                                    deal.contact?.fields.mobile ?? ""
-                                );
-                                setIsModalOpen(true);
-                            }}
-                        />
-                    </Tooltip>
-                    <Tooltip title="Contact profile">
-                        <CustomLink
-                            to={"/contacts/" + deal.contact?.id}
-                            style={{ color: "black" }}
-                        >
-                            <Button type="text" icon={<UserOutlined />} />
-                        </CustomLink>
-                    </Tooltip>
-                    <Tooltip title="Edit deal">
-                        <Button
-                            type="text"
-                            icon={<EditOutlined />}
-                            onClick={handleEditClick}
-                        />
-                    </Tooltip>
-                </Space> */}
             </Space>
         </Card>
     );

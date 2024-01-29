@@ -266,32 +266,12 @@ const Deal = () => {
         }
     }, [deals, listBoard, sortBy, sortByAsc, selectedpipeline?.stages]);
 
-    const mutation = useMutation(useDealUpdateBoardMutation, {
-        onSuccess: (res) => {
-            queryClient.invalidateQueries("pipelines");
-        },
-    });
-
     const moveCardAcrossLanes = useMutation(moveCardAcrossLanesMutation, {
         onSuccess: (res) => {
             queryClient.invalidateQueries("dealPipelines");
             queryClient.invalidateQueries("deals");
         },
     });
-
-    const onDataChangeBoard = (newData: any) => {
-        const new_data: { id: number; laneId: string }[] = [];
-        newData.lanes.forEach((element: any) => {
-            element.cards.forEach((cards: any) => {
-                new_data.push({
-                    id: cards.id,
-                    laneId: cards.laneId,
-                });
-            });
-        });
-
-        mutation.mutate({ lanes: new_data });
-    };
 
     const onChangeListBoard = (e: any) => {
         setListBoard(e.target.value);

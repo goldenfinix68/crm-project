@@ -40,11 +40,12 @@ class Deal extends Model
     
     public function getAgingAttribute()
     {
-        if (empty($this->agingStartDate)) {
-            return "0h";
+        $date = $this->agingStartDate;
+        if (empty($date)) {
+            $date = $this->created_at;
         }
 
-        $diffInMinutes = Carbon::now()->diffInMinutes($this->agingStartDate);
+        $diffInMinutes = Carbon::now()->diffInMinutes($date);
 
         if ($diffInMinutes <= 72 * 60) {
             // If the difference is less than or equal to 72 hours (72 * 60 minutes), return in hours
@@ -52,7 +53,7 @@ class Deal extends Model
             return $hours . "h";
         } else {
             // If the difference is more than 72 hours, return in days
-            return Carbon::now()->diffInDays($this->agingStartDate) . "d";
+            return Carbon::now()->diffInDays($date) . "d";
         }
     }
 
