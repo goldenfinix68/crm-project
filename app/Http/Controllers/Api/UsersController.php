@@ -124,7 +124,7 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        $user = User::with(['settings'])->where('id', $id)->first();
+        $user = User::where('id', $id)->first();
         $user->numbers = $this->getMainUserNumbers(true);
 
         return $user;

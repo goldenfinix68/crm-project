@@ -49,6 +49,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $appends = [
         'mainId', 
         'fullName',
+        'settings',
     ];
 
     //depreciated, 1 user 1 number
@@ -75,9 +76,14 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(\App\Models\MobileNumber::class, 'userId', 'id');
         
     }
-    public function settings()
+
+    public function getSettingsAttribute()
     {
-        return $this->hasOne(\App\Models\UserSetting::class, 'mainUserId', 'mainUserId');
+        $id = $this->mainUserId;
+        if($this->role == 'mainUser'){
+            $id = $this->id;
+        }
+        return \App\Models\UserSetting::where('mainUserId', $id)->first();
         
     }
 
