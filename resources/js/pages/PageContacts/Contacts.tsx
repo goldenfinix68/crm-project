@@ -10,6 +10,7 @@ import { TContact, TFilter, TFilters } from "../../entities";
 import { filterData } from "../../helpers";
 import FilterAddUpdateModal from "../../components/FilterAddUpdateModal";
 import { defaultFilter } from "../../constants";
+import { useAppContextProvider } from "../../context/AppContext";
 
 interface DataType {
     key: React.Key;
@@ -47,6 +48,8 @@ const Contacts = () => {
     const [selectedRowKeys, setSelectedRowKeys] = useState<any>([]);
     const [contacts, setContacts] = useState<TContact[] | undefined>();
 
+    const { isContactFieldsLoading } = useAppContextProvider();
+
     const [filter, setFilter] = useState<TFilter>(defaultFilter);
     const {
         data: filteredContacts,
@@ -81,7 +84,7 @@ const Contacts = () => {
     return (
         <Space direction="vertical" className="w-100">
             <HeaderMenu />
-            <Card loading={isFilteredContactsLoading}>
+            <Card loading={isFilteredContactsLoading || isContactFieldsLoading}>
                 <ContactTableHeader
                     setSelectedRows={setSelectedRows}
                     setSelectedRowKeys={setSelectedRowKeys}

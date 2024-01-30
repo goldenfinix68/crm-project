@@ -23,6 +23,7 @@ interface IAppContext {
     loggedInUser: TUser | null;
     contactFields: TCustomField[];
     isRoleStats: boolean;
+    isContactFieldsLoading: boolean;
     isSUperAdmin: boolean;
     pipelines?: TDealPipeline[];
 }
@@ -60,6 +61,7 @@ export function AppContextProvider({ children }: AppContextProviderProps) {
                 refetchContacts,
                 loggedInUser: user ?? null,
                 contactFields: contactFields ?? [],
+                isContactFieldsLoading,
                 isRoleStats: user?.role == "stats",
                 isSUperAdmin: user?.role == "superAdmin",
                 pipelines,

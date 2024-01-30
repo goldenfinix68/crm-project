@@ -13,6 +13,7 @@ import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { ENDPOINTS } from "../../../endpoints";
 import TextEllipsis from "../../../components/TextEllipsis";
 import { EditOutlined } from "@ant-design/icons";
+import CustomResizeableTable from "../../../components/CustomResizeableTable";
 interface Props {
     setSelectedRows: any;
     setSelectedRowKeys: any;
@@ -48,104 +49,111 @@ const ContactsTable = ({
         },
     };
 
-    const columns = contactFields
-        ?.filter(
-            (field) =>
-                !["firstName", "lastName"].includes(field.fieldName) &&
-                field.isDisplayTable
-        )
-        .sort((a, b) => a?.tableSort! - b?.tableSort!)
-        .map((field, index) => {
-            return {
-                title: field.label,
-                dataIndex: field.fieldName,
-                key: field.id,
-                render: (text, record) => {
-                    return (
-                        <TextEllipsis>
-                            <ContactsEditableTableCell
-                                record={record}
-                                field={field}
-                                handleSubmit={() => {
-                                    queryClient.invalidateQueries(
-                                        ENDPOINTS.filteredContacts.cache
-                                    );
-                                }}
-                            />
-                        </TextEllipsis>
-                    );
-                },
-            };
-        });
+    const columns = [
+        {
+            title: "Full Name",
+            dataIndex: "fullName",
+            key: "fullName",
+            render: (
+                text,
+                record: {
+                    [key: string]: any;
+                }[]
+            ) => {
+                return (
+                    <TextEllipsis>
+                        <div
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                            }}
+                        >
+                            {!isRoleStats && (
+                                <EditOutlined
+                                    onClick={() => {
+                                        setisModalOpen(true);
+                                        setSelectedContactFields(record);
+                                    }}
+                                    className="m-r-sm"
+                                />
+                            )}
+                            <Tooltip
+                                title={`${record["firstName"]} ${record["lastName"]}`}
+                            >
+                                <Link to={"/contacts/" + record["contactId"]}>
+                                    {`${record["firstName"]} ${record["lastName"]}`}
+                                </Link>
+                            </Tooltip>
+                        </div>
+                    </TextEllipsis>
+                );
+            },
+            sorter: (a, b) =>
+                a[firstNameField?.fieldName]?.length -
+                b[firstNameField?.fieldName]?.length,
+            defaultSortOrder: "descend",
+            fixed: "left",
+        },
+        ...contactFields
+            ?.filter(
+                (field) =>
+                    !["firstName", "lastName"].includes(field.fieldName) &&
+                    field.isDisplayTable
+            )
+            .sort((a, b) => a?.tableSort! - b?.tableSort!)
+            .map((field, index) => {
+                return {
+                    title: field.label,
+                    dataIndex: field.fieldName,
+                    key: field.id,
+                    render: (text, record) => {
+                        return (
+                            <TextEllipsis>
+                                <ContactsEditableTableCell
+                                    record={record}
+                                    field={field}
+                                    handleSubmit={() => {
+                                        queryClient.invalidateQueries(
+                                            ENDPOINTS.filteredContacts.cache
+                                        );
+                                    }}
+                                />
+                            </TextEllipsis>
+                        );
+                    },
+                };
+            }),
+    ];
 
     return (
         <>
-            <Table
+            {/* <Table
                 className="tableCell"
                 rowSelection={{
                     type: "checkbox",
                     ...rowSelection,
                 }}
-                // size="small"
                 rowKey={(record) => (record as any)?.contactId}
-                // columns={orderedColumns ? orderedColumns : columns}
-                columns={
-                    [
-                        {
-                            title: "Full Name",
-                            dataIndex: "fullName",
-                            key: "fullName",
-                            render: (
-                                text,
-                                record: {
-                                    [key: string]: any;
-                                }[]
-                            ) => {
-                                return (
-                                    <TextEllipsis>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                            }}
-                                        >
-                                            {!isRoleStats && (
-                                                <EditOutlined
-                                                    onClick={() => {
-                                                        setisModalOpen(true);
-                                                        setSelectedContactFields(
-                                                            record
-                                                        );
-                                                    }}
-                                                    className="m-r-sm"
-                                                />
-                                            )}
-                                            <Tooltip
-                                                title={`${record["firstName"]} ${record["lastName"]}`}
-                                            >
-                                                <Link
-                                                    to={
-                                                        "/contacts/" +
-                                                        record["contactId"]
-                                                    }
-                                                >
-                                                    {`${record["firstName"]} ${record["lastName"]}`}
-                                                </Link>
-                                            </Tooltip>
-                                        </div>
-                                    </TextEllipsis>
-                                );
-                            },
-                            sorter: (a, b) =>
-                                a[firstNameField?.fieldName]?.length -
-                                b[firstNameField?.fieldName]?.length,
-                            defaultSortOrder: "descend",
-                            fixed: "left",
-                        },
-                        ...columns,
-                    ] as ColumnsType<{ [key: string]: any }>
-                }
+                columns={columns as ColumnsType<{ [key: string]: any }>}
                 dataSource={contacts?.map((contact) => contact.fields)}
+                scroll={{ x: 1300 }}
+                pagination={{
+                    defaultPageSize: 100,
+                    pageSizeOptions: ["100", "250"],
+                    showSizeChanger: true,
+                }}
+            /> */}
+
+            <CustomResizeableTable
+                columns={columns as ColumnsType<{ [key: string]: any }>}
+                dataSource={contacts?.map((contact) => contact.fields)}
+                localStorageKey="contactsTableColumnsWidth"
+                className="tableCell"
+                rowSelection={{
+                    type: "checkbox",
+                    ...rowSelection,
+                }}
+                rowKey={(record) => (record as any)?.contactId}
                 scroll={{ x: 1300 }}
                 pagination={{
                     defaultPageSize: 100,

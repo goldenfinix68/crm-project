@@ -12,6 +12,7 @@ import ContactsComponentsUpdate from "./ContactsComponentsUpdate";
 import { TDeal } from "../../../entities";
 import { useAppContextProvider } from "../../../context/AppContext";
 import TextEllipsis from "../../../components/TextEllipsis";
+import CustomResizeableTable from "../../../components/CustomResizeableTable";
 
 const DealsTable = ({
     deals,
@@ -94,9 +95,55 @@ const DealsTable = ({
     const [selectedDeal, setSelectedDeal] = useState<TDeal | undefined>(
         undefined
     );
+
+    const columns = [
+        {
+            title: "Contact",
+            className: "col-status",
+            sorter: true,
+            render: (text, record) => (
+                <>
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                        }}
+                    >
+                        {!isRoleStats && (
+                            <EditOutlined
+                                onClick={() => {
+                                    setIsModalOpenAdd(true);
+                                    setSelectedDeal(record);
+                                }}
+                                className="m-r-sm"
+                            />
+                        )}
+
+                        <span>
+                            {record.contact?.fields.firstName +
+                                " " +
+                                record.contact?.fields.lastName}
+                        </span>
+                    </div>
+                </>
+            ),
+        },
+        {
+            title: "Pipeline",
+            render: (text, record) => (
+                <TextEllipsis>{record.pipeline?.name}</TextEllipsis>
+            ),
+        },
+        {
+            title: "Stage",
+            render: (text, record) => (
+                <TextEllipsis>{record.stage?.name}</TextEllipsis>
+            ),
+        },
+    ];
     return (
         <>
-            <Table
+            {/* <Table
                 dataSource={deals}
                 onChange={onChange}
                 rowKey={(record) => record?.id ?? ""}
@@ -107,59 +154,23 @@ const DealsTable = ({
                     pageSizeOptions: ["100", "250"],
                     showSizeChanger: true,
                 }}
-            >
-                <Table.Column
-                    title="Contact"
-                    className="col-status"
-                    sorter
-                    render={(text: string, record: TDeal) => {
-                        return (
-                            <>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    {!isRoleStats && (
-                                        <EditOutlined
-                                            onClick={() => {
-                                                setIsModalOpenAdd(true);
-                                                setSelectedDeal(record);
-                                            }}
-                                            className="m-r-sm"
-                                        />
-                                    )}
+                columns={columns}
+            /> */}
 
-                                    <span>
-                                        {record.contact?.fields.firstName +
-                                            " " +
-                                            record.contact?.fields.lastName}
-                                    </span>
-                                </div>
-                            </>
-                        );
-                    }}
-                    fixed={"left"}
-                />
-
-                <Table.Column
-                    title="Pipeline"
-                    render={(text: string, record: TDeal) => {
-                        return (
-                            <TextEllipsis>{record.pipeline?.name}</TextEllipsis>
-                        );
-                    }}
-                />
-                <Table.Column
-                    title="Stage"
-                    render={(text: string, record: TDeal) => {
-                        return (
-                            <TextEllipsis>{record.stage?.name}</TextEllipsis>
-                        );
-                    }}
-                />
-            </Table>
+            <CustomResizeableTable
+                dataSource={deals}
+                onChange={onChange}
+                rowKey={(record) => record?.id ?? ""}
+                rowSelection={{ ...rowSelection }}
+                scroll={{ x: 800 }}
+                pagination={{
+                    defaultPageSize: 100,
+                    pageSizeOptions: ["100", "250"],
+                    showSizeChanger: true,
+                }}
+                columns={columns}
+                localStorageKey="dealsTableColumnsWidth"
+            />
 
             <ModalAddDeal
                 isModalOpen={isModalOpenAdd}

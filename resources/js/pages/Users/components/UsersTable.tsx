@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { EditOutlined } from "@ant-design/icons";
 import { userRoleOption } from "../../../constants";
 import TextEllipsis from "../../../components/TextEllipsis";
+import CustomResizeableTable from "../../../components/CustomResizeableTable";
 
 const columns: ColumnsType<TUser> = [
     {
@@ -80,7 +81,17 @@ const columns: ColumnsType<TUser> = [
 
 const UsersTable = ({ users }: { users: Array<TUser> }) => {
     return (
-        <Table
+        // <Table
+        //     columns={columns}
+        //     dataSource={users}
+        //     pagination={{
+        //         defaultPageSize: 100,
+        //         pageSizeOptions: ["100", "250"],
+        //         showSizeChanger: true,
+        //     }}
+        // />
+
+        <CustomResizeableTable
             columns={columns}
             dataSource={users}
             pagination={{
@@ -88,6 +99,7 @@ const UsersTable = ({ users }: { users: Array<TUser> }) => {
                 pageSizeOptions: ["100", "250"],
                 showSizeChanger: true,
             }}
+            localStorageKey="usersTableColumnsWidth"
         />
     );
 };

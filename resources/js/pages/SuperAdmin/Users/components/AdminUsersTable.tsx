@@ -13,6 +13,7 @@ import AdminUsersAddUpdateModal from "./AdminUsersAddUpdateModal";
 import { useUsersAll } from "../../../../api/query/userQuery";
 import { useMutation } from "react-query";
 import { userImpersonate } from "../../../../api/mutation/useUserMutation";
+import CustomResizeableTable from "../../../../components/CustomResizeableTable";
 
 const AdminUsersTable = () => {
     const [isCreateUserModalOpen, setIsCreateUserModalOpen] =
@@ -142,7 +143,7 @@ const AdminUsersTable = () => {
                     Add User
                 </Button>
             </Space>
-            <Table
+            {/* <Table
                 columns={columns}
                 dataSource={users.data}
                 pagination={{
@@ -156,6 +157,23 @@ const AdminUsersTable = () => {
                         refetch();
                     },
                 }}
+            /> */}
+
+            <CustomResizeableTable
+                columns={columns}
+                dataSource={users.data}
+                pagination={{
+                    current: page,
+                    defaultPageSize: 100,
+                    pageSizeOptions: ["100", "250"],
+                    showSizeChanger: true,
+                    total: users?.total || 0,
+                    onChange: (newPage) => {
+                        setPage(newPage);
+                        refetch();
+                    },
+                }}
+                localStorageKey="adminUsersTableColumnsWidth"
             />
             <AdminUsersAddUpdateModal
                 isModalOpen={isCreateUserModalOpen}

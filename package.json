@@ -69,6 +69,7 @@
         "react-phone-input-2": "^2.15.1",
         "react-query": "^3.39.3",
         "react-quill": "^2.0.0",
+        "react-resizable": "^3.0.5",
         "react-router-dom": "^6.15.0",
         "react-trello": "^2.2.11",
         "socket.io-client": "^4.7.1"

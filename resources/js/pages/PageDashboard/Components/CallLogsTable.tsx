@@ -15,6 +15,7 @@ import { useCallHistory } from "../../../api/query/callQuery";
 import { TimeRangePickerProps } from "antd/lib";
 import dayjs, { Dayjs } from "dayjs";
 import { EventValue } from "rc-picker/lib/interface";
+import CustomResizeableTable from "../../../components/CustomResizeableTable";
 
 const onChange: TableProps<TCallHistory>["onChange"] = (
     pagination,
@@ -90,41 +91,6 @@ const CallLogsTable = () => {
             dataIndex: "userName",
             key: "user",
         },
-        // {
-        //     title: "Recording",
-        //     dataIndex: "recording",
-        //     key: "recording",
-        //     render: (text, record) => {
-        //         return (
-        //             <Space wrap>
-        //                 <Button
-        //                 // style={{
-        //                 //     width: 40,
-        //                 //     height: 40,
-        //                 // }}
-        //                 >
-        //                     <FontAwesomeIcon icon={faPlay} />
-        //                 </Button>
-        //                 <Button
-        //                 // style={{
-        //                 //     width: 40,
-        //                 //     height: 40,
-        //                 // }}
-        //                 >
-        //                     <FontAwesomeIcon icon={faTrashAlt} />
-        //                 </Button>
-        //                 <Button
-        //                 // style={{
-        //                 //     width: 40,
-        //                 //     height: 40,
-        //                 // }}
-        //                 >
-        //                     <FontAwesomeIcon icon={faDownload} />
-        //                 </Button>
-        //             </Space>
-        //         );
-        //     },
-        // },
     ];
     const rangePresets: TimeRangePickerProps["presets"] = [
         { label: "Last 7 Days", value: [dayjs().add(-7, "d"), dayjs()] },
@@ -168,6 +134,12 @@ const CallLogsTable = () => {
                     value={dateFilter}
                 />
             </Space>
+            <CustomResizeableTable
+                columns={columns}
+                dataSource={dataSource ?? []}
+                localStorageKey="callsTableColumnsWidth"
+            />
+            {/*             
             <Table
                 columns={columns}
                 dataSource={dataSource}
@@ -177,7 +149,7 @@ const CallLogsTable = () => {
                     pageSizeOptions: ["100", "250"],
                     showSizeChanger: true,
                 }}
-            />
+            /> */}
         </Space>
     );
 };

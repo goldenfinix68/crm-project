@@ -11,6 +11,7 @@ import DroppableList from "../../components/DroppableList";
 import TextEllipsis from "../../components/TextEllipsis";
 import { ColumnsType } from "antd/es/table";
 import { useArray } from "../../helpers";
+import CustomResizeableTable from "../../components/CustomResizeableTable";
 
 interface DragEndResult {
     source: DraggableLocation;
@@ -167,7 +168,14 @@ const CallForwarding: React.FC = ({}) => {
             loading={isLoading}
         >
             <Space direction="vertical" className="w-100" size={"large"}>
-                <Table columns={columns} dataSource={data} pagination={false} />
+                {/* <Table columns={columns} dataSource={data} pagination={false} /> */}
+
+                <CustomResizeableTable
+                    columns={columns}
+                    dataSource={data}
+                    pagination={false}
+                    localStorageKey="callForwardingTableColumnsWidth"
+                />
                 <Button
                     type="primary"
                     onClick={() => {
