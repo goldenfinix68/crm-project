@@ -144,6 +144,9 @@ Route::get('/telnyx/call/webhook/fail', 'App\Http\Controllers\Api\CallsControlle
 Route::post('/telnyx/call/webhook', 'App\Http\Controllers\Api\CallsController@webhook');
 Route::post('/telnyx/call/webhook/fail', 'App\Http\Controllers\Api\CallsController@webhook');
 
+
+Route::post('/googlesheet/change-bg-color', 'App\Http\Controllers\Api\GoogleSheetsController@updateRowBackgroundColor');
+
 Route::get('/telnyx/sms/webhook/fail', function (Request $request) {
     \Log::error('INCOMING SMS FAIL');
     $json = json_decode(file_get_contents("php://input"), true);
