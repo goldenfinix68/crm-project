@@ -24,6 +24,7 @@ class Workflow extends Model
         'contactIds',
         'timezone',
         'userId',
+        'phoneTypeCustomFieldId',
     ];
     protected $appends = [
         'total',

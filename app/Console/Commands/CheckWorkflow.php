@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use App\Models\Workflow;
 use App\Models\WorkflowItem;
 use App\Models\Contact;
+use App\Models\CustomField;
 use App\Models\User;
 use App\Models\Text;
 use Carbon\Carbon;
@@ -47,7 +48,7 @@ class CheckWorkflow extends Command
     {
 		$now = Carbon::now();
 		$workflowItems = WorkflowItem::where('queue_lock', false)
-            ->where(DB::raw('trigger_at - INTERVAL 5 MINUTE'), '<=', $now)
+            // ->where(DB::raw('trigger_at - INTERVAL 5 MINUTE'), '<=', $now)
 			->get();
 		if ($workflowItems) {
 			foreach ($workflowItems as $workflowItem) {
@@ -57,20 +58,27 @@ class CheckWorkflow extends Command
                     $contact = Contact::find($id);
                     $user = User::find($workflow->userId);
                     if(!empty($contact)){
-                        $message = $this->replacePlaceholders($workflow->message, $contact->fields);
-                        $spunContents = $this->spinContent($message);
-                        $message = $spunContents[array_rand($spunContents)];
-                        $text = new Text();
-                        $text->from = $user->number->mobileNumber;
-                        $text->to = $contact->fields['mobile'];
-                        $text->message = $message;
-                        $text->type = 'SMS';
-                        $text->status = 'queued';
-                        $text->isFromApp = true;
-                        $text->workflowItemId = $workflowItem->id;
-                        $text->save();
 
-                        SendText::dispatch($text)->delay(now()->addSeconds($timeStartSeconds + 1));
+                        $customField = CustomField::find($workflow->phoneTypeCustomFieldId);
+                        $number = isset($contact->fields[$customField->fieldName]) ? $contact->fields[$customField->fieldName] : false;
+                        
+                        if(!empty($number)){
+                            $message = $this->replacePlaceholders($workflow->message, $contact->fields);
+                            $spunContents = $this->spinContent($message);
+                            $message = $spunContents[array_rand($spunContents)];
+                            $text = new Text();
+                            $text->from = $user->number->mobileNumber;
+                            $text->to = $number;
+                            $text->message = $message;
+                            $text->type = 'SMS';
+                            $text->status = 'queued';
+                            $text->isFromApp = true;
+                            $text->workflowItemId = $workflowItem->id;
+                            $text->save();
+
+                            SendText::dispatch($text)->delay(now()->addSeconds($timeStartSeconds + 1));
+                        }
+
                     }
                 }
                 $workflowItem->queue_lock = true;

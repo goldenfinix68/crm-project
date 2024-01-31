@@ -36,6 +36,7 @@ import { useMutation } from "react-query";
 import { createWorkflowMutation } from "../../api/mutation/useWorkflowMutation";
 import queryClient from "../../queryClient";
 import AddAttributePopoverContent from "../../pages/TextTemplates/components/AddAttributePopoverContent";
+import { useAppContextProvider } from "../../context/AppContext";
 
 interface Props {
     isModalOpen: boolean;
@@ -75,11 +76,17 @@ const SendToManyModal = ({ isModalOpen, closeModal, contacts }: Props) => {
                 style={{ padding: "20px", width: "100%", paddingTop: "50px" }}
                 size={"large"}
             >
-                <Space direction="vertical">
+                <Space direction="vertical" style={{ width: "100%" }}>
                     <Typography.Title level={4}>
                         Add the following contacts
                     </Typography.Title>
-                    <Space>
+                    <Space
+                        style={{
+                            width: "100%",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                        }}
+                    >
                         {contacts.map((contact, index) => (
                             <Avatar
                                 key={index}
@@ -111,6 +118,8 @@ const ModalForm = ({
     const [form] = Form.useForm();
     const message = Form.useWatch("message", form);
     const allSpunVariations = spinContent(message);
+
+    const { contactFields } = useAppContextProvider();
     // const timezoneOptions = moment.tz.names().map((tz) => (
     //     <Select.Option key={tz} value={tz}>
     //         {tz}
@@ -191,6 +200,31 @@ const ModalForm = ({
                     <Radio value="drip">Add in drip mode</Radio>
                 </Radio.Group>
             </Form.Item>
+
+            <Form.Item
+                name="phoneTypeCustomFieldId"
+                label="Destination Phone Number"
+                rules={[
+                    {
+                        required: true,
+                        message: DEFAULT_REQUIRED_MESSAGE,
+                    },
+                ]}
+            >
+                <Select className="w-100">
+                    {contactFields
+                        .filter(
+                            (field) =>
+                                field.type == "phone" || field.type == "mobile"
+                        )
+                        .map((field) => (
+                            <Select.Option value={field.id}>
+                                {field.label}
+                            </Select.Option>
+                        ))}
+                </Select>
+            </Form.Item>
+
             <Form.Item
                 name="action"
                 label="Action"
@@ -465,6 +499,22 @@ const ModalForm = ({
                     Tools
                 </Dropdown.Button>
             </Space>
+
+            <Form.Item
+                name="phoneFieldStatus"
+                label="Phone Field Status"
+                rules={[
+                    {
+                        required: true,
+                        message: DEFAULT_REQUIRED_MESSAGE,
+                    },
+                ]}
+            >
+                <Select className="w-100">
+                    <Select.Option value="badNumber">Bad Number</Select.Option>
+                    <Select.Option value="smsSent">SMS Sent</Select.Option>
+                </Select>
+            </Form.Item>
 
             <Space style={{ paddingTop: "5px" }}>
                 <Button onClick={closeModal}>Cancel</Button>
