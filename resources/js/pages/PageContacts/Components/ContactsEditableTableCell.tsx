@@ -60,7 +60,7 @@ const ContactsEditableTableCell = ({
         if (field.type == "contactTypeLookup") {
             return <ContactTypeTag fields={record} />;
         }
-        return record[field.fieldName] ?? "_";
+        return Boolean(record[field.fieldName]) ? record[field.fieldName] : "_";
     };
 
     return (

@@ -1,47 +1,11 @@
-import { CaretDownFilled } from "@ant-design/icons";
-import type { MenuProps } from "antd";
-import {
-    Button,
-    Col,
-    Dropdown,
-    Modal,
-    Row,
-    Space,
-    Input,
-    Select,
-    Typography,
-    Checkbox,
-    Divider,
-    Form,
-} from "antd";
-import {
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
-    UserOutlined,
-    VideoCameraOutlined,
-    CheckCircleOutlined,
-    FunnelPlotOutlined,
-    PhoneOutlined,
-    FileDoneOutlined,
-    TeamOutlined,
-    PlaySquareOutlined,
-    TableOutlined,
-    PlusCircleOutlined,
-    DownOutlined,
-    LockOutlined,
-    CloseOutlined,
-} from "@ant-design/icons";
-import React, { useEffect, useState } from "react";
-import type { CheckboxChangeEvent } from "antd/es/checkbox";
+import { Radio } from "antd";
+import { Button, Modal, Select, Typography, Form } from "antd";
+import { CloseOutlined } from "@ant-design/icons";
+import React from "react";
 import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
 import { useMutation, useQueryClient } from "react-query";
-import {
-    addContactMutation,
-    bulkUpdateField,
-} from "../../../api/mutation/useContactMutation";
-import queryClient from "../../../queryClient";
-import { TContact, TCustomField } from "../../../entities";
-import ContactsComponentsUpdateFields from "./ContactsComponentsUpdateFields";
+import { bulkUpdateField } from "../../../api/mutation/useContactMutation";
+import { TContact } from "../../../entities";
 import { useAppContextProvider } from "../../../context/AppContext";
 import CustomFieldInput from "../../../components/CustomFieldInput";
 
@@ -61,12 +25,16 @@ const ContactBulkUpdate = ({
     const [form] = Form.useForm<TContact>();
     const { contacts, contactFields } = useAppContextProvider();
 
+    const customFieldId = Form.useWatch("customFieldId", form);
+
+    const customField = contactFields.find(
+        (customField) => customField.id == customFieldId
+    );
+
     const resetFields = () => {
         closeModal();
         form.resetFields();
-        setSelectedCustomField(undefined);
     };
-    // const [saveAndAdd, setSaveAndAdd] = useState(false);
 
     const bulkUpdate = useMutation(bulkUpdateField, {
         onSuccess: () => {
@@ -76,32 +44,15 @@ const ContactBulkUpdate = ({
         },
     });
 
-    // useEffect(() => {
-    //     if (record) {
-    //         console.log("record", record);
-    //         //
-    //         form.setFieldsValue(record);
-    //     }
-    // }, [record]);
-
-    // useEffect(() => {
-    //     console.log("title", title);
-    // }, [title]);
-
     const handleFinish = (values: any) => {
         bulkUpdate.mutate({
             contactIds: selectedRowKeys,
-            fieldValue: values[selectedCustomField?.fieldName!],
-            customField: selectedCustomField,
+            fieldValue: values[customField?.fieldName!],
+            customField,
+            action: values?.action ?? "",
         });
-        // selectedData.forEach((item) => {
-        //     addContact.mutate({ ...item, ...values });
-        // });
     };
 
-    const [selectedCustomField, setSelectedCustomField] = useState<
-        TCustomField | undefined
-    >();
     return (
         <>
             <Modal
@@ -110,22 +61,8 @@ const ContactBulkUpdate = ({
                 width={500}
                 title={null}
                 open={isModalOpen}
-                // onCancel={() => {
-                //     console.log("asdasd");
-
-                //     setTContact(null);
-                //     form.resetFields();
-                //     setIsModalOpen(false);
-                // }}
                 style={{ maxHeight: "700px" }}
                 footer={null}
-                // footer={[
-                //     <Button type="primary">Save</Button>,
-                //     <Button type="primary">Save and add other</Button>,
-                //     <Button onClick={() => setIsModalOpen(false)}>
-                //         Cancel
-                //     </Button>,
-                // ]}
             >
                 <div className="modal-header">
                     <Typography.Title level={5} style={{ color: "white" }}>
@@ -144,19 +81,25 @@ const ContactBulkUpdate = ({
                     />
                 </div>
                 <div className="modal-content">
-                    <Row gutter={24} className="m-t-md">
-                        <Col md={24} xs={24}>
+                    <Form
+                        form={form}
+                        onFinish={handleFinish}
+                        layout="vertical"
+                        initialValues={{ ownerId: 1 }}
+                        className="p-t-xl"
+                    >
+                        <Form.Item
+                            name="customFieldId"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: DEFAULT_REQUIRED_MESSAGE,
+                                },
+                            ]}
+                        >
                             <Select
                                 defaultValue="Select"
                                 style={{ width: "100%" }}
-                                onChange={(id) => {
-                                    setSelectedCustomField(
-                                        contactFields.find(
-                                            (customField) =>
-                                                customField.id == id
-                                        )
-                                    );
-                                }}
                             >
                                 {contactFields
                                     .filter(
@@ -168,27 +111,45 @@ const ContactBulkUpdate = ({
                                         </Select.Option>
                                     ))}
                             </Select>
-                        </Col>
-                    </Row>
+                        </Form.Item>
 
-                    <Form
-                        form={form}
-                        onFinish={handleFinish}
-                        layout="vertical"
-                        initialValues={{ ownerId: 1 }}
-                        className="p-t-xl"
-                    >
-                        {selectedCustomField ? (
-                            <Space direction="vertical" className="w-100">
+                        {customField ? (
+                            <>
                                 <Typography className="m-b-md">
                                     Enter a new value for the field{" "}
-                                    {selectedCustomField?.label}
+                                    {customField?.label}
                                 </Typography>
+
+                                {customField?.type == "tag" && (
+                                    <center>
+                                        <Form.Item
+                                            name="action"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message:
+                                                        DEFAULT_REQUIRED_MESSAGE,
+                                                },
+                                            ]}
+                                            initialValue="add"
+                                        >
+                                            <Radio.Group>
+                                                <Radio.Button value="add">
+                                                    Add
+                                                </Radio.Button>
+                                                <Radio.Button value="remove">
+                                                    Remove
+                                                </Radio.Button>
+                                            </Radio.Group>
+                                        </Form.Item>
+                                    </center>
+                                )}
+
                                 <CustomFieldInput
-                                    customField={selectedCustomField}
+                                    customField={customField}
                                     showLabel={false}
                                 />
-                            </Space>
+                            </>
                         ) : null}
                     </Form>
                 </div>
@@ -201,6 +162,7 @@ const ContactBulkUpdate = ({
                                 form.submit();
                             });
                         }}
+                        loading={bulkUpdate.isLoading}
                     >
                         Save
                     </Button>

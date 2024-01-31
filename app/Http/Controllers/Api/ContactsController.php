@@ -549,9 +549,25 @@ class ContactsController extends Controller
             abort(404);
         }
         $customField = CustomField::find($request->customField['id']);
-        $value = $request->fieldValue;
+
         foreach($request->contactIds as $id){
-            
+            $value = $request->fieldValue;
+            if($customField->type == "tag" && !empty($request->action)){
+                $contact = Contact::find($id);
+                $curValue = json_decode($contact->fields[$customField->fieldName."lookupIds"]);
+                if(!empty($curValue)){
+                    $curValue = (array) $curValue;
+                    if($request->action == "add"){
+                        $value = array_merge($curValue, $value);
+                        $value = array_unique($value);
+                    }
+                    elseif ($request->action == "remove"){
+                        $value = array_diff($curValue, $value);
+                    }
+                }
+
+            }
+
             $this->createOrUpdateCustomFieldValue($id, $customField, 'contact', $value);
         }
         
