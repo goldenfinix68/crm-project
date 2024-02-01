@@ -80,7 +80,13 @@ class CustomFieldValuesController extends Controller
                     ->where('customFieldSectionType', $request->customableType)
                     ->where('userId', $user->id)
                     ->first();
-                $this->createOrUpdateCustomFieldValue($record->id, $customField, $request->customableType, $value);
+
+                $fieldValue = $this->createOrUpdateCustomFieldValue($record->id, $customField, $request->customableType, $value);
+                if($customField->type == "phone" || $customField->type == "mobile"){
+                    $fieldValue->status = $request->phoneFieldStatus ?? null;
+                    $fieldValue->save();
+                }
+
             }
             DB::commit();
             return response()->json(['message' => "Success"], 200);
@@ -143,6 +149,11 @@ class CustomFieldValuesController extends Controller
     public function destroy($id)
     {
         //
+    }
+    
+    public function updateStatus(CustomFieldValue $fieldValue, $status)
+    {
+        dd($fieldValue);
     }
 
 }

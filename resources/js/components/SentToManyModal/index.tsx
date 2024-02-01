@@ -500,7 +500,7 @@ const ModalForm = ({
                 </Dropdown.Button>
             </Space>
 
-            <Form.Item
+            {/* <Form.Item
                 name="phoneFieldStatus"
                 label="Phone Field Status"
                 rules={[
@@ -514,7 +514,7 @@ const ModalForm = ({
                     <Select.Option value="badNumber">Bad Number</Select.Option>
                     <Select.Option value="smsSent">SMS Sent</Select.Option>
                 </Select>
-            </Form.Item>
+            </Form.Item> */}
 
             <Space style={{ paddingTop: "5px" }}>
                 <Button onClick={closeModal}>Cancel</Button>

@@ -103,6 +103,7 @@ class Contact extends Model
                 $customFields[$value->customField->fieldName.'lookupIds'] = $value->lookupIds;
             }
             $customFields[$value->customField->fieldName.'Id'] = $value->id;
+            $customFields[$value->customField->fieldName.'Status'] = $value->status;
         }
         $customFields['contactId'] = $this->id;
         $customFields['defaultMobileNumber'] = $this->defaultMobileNumber;

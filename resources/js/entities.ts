@@ -194,6 +194,7 @@ export type TCustomField = {
     fieldType?: string;
     isDisplayTable?: boolean;
     tableSort?: number;
+    phoneFieldStatus?: string;
 };
 
 export type TCustomFieldValue = {

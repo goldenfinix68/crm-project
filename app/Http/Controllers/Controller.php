@@ -102,6 +102,8 @@ class Controller extends BaseController
             $fieldValue->lookupIds = null;
         }
         $fieldValue->save();
+        
+        return $fieldValue;
     }
     
     public function getMainUserId() {

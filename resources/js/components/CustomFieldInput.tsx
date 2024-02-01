@@ -264,7 +264,7 @@ const CustomFieldInput = ({
 
     return (
         <Form.Item
-            className="w-100 p-0 m-0"
+            className="w-100"
             name={customField.fieldName}
             label={showLabel ? customField.label : null}
             rules={[

@@ -9,9 +9,10 @@ import {
     Space,
     message,
     Tooltip,
+    Select,
 } from "antd";
 
-import React from "react";
+import React, { useState } from "react";
 import CustomFieldInput from "../../../components/CustomFieldInput";
 import { saveCustomFieldValuesMutation } from "../../../api/mutation/useCustomFieldMutation";
 import { useMutation } from "react-query";
@@ -21,6 +22,7 @@ import { Link } from "react-router-dom";
 import ContactTypeTag from "../../../components/ContactTypeTag";
 import { useAppContextProvider } from "../../../context/AppContext";
 import { EditOutlined } from "@ant-design/icons";
+import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
 
 interface ContactsEditableTableCellProps {
     record: any;
@@ -34,7 +36,10 @@ const ContactsEditableTableCell = ({
     handleSubmit,
 }: ContactsEditableTableCellProps) => {
     const [form] = Form.useForm();
-    const { isRoleStats } = useAppContextProvider();
+
+    const [phoneFieldStatus, setPhoneFieldStatus] = useState(
+        record[field.fieldName + "Status"] ?? ""
+    );
 
     const save = useMutation(saveCustomFieldValuesMutation, {
         onSuccess: () => {
@@ -53,6 +58,7 @@ const ContactsEditableTableCell = ({
             customableId: record.contactId,
             customableType: "contact",
             fields: values,
+            phoneFieldStatus,
         });
     };
 
@@ -101,6 +107,25 @@ const ContactsEditableTableCell = ({
                             layout="vertical"
                         >
                             <CustomFieldInput customField={field} />
+
+                            {(field?.type == "phone" ||
+                                field?.type == "mobile") && (
+                                <Space direction="vertical" className="w-100">
+                                    <label>Phone Field Status</label>
+                                    <Select
+                                        className="w-100"
+                                        onChange={(e) => setPhoneFieldStatus(e)}
+                                        value={phoneFieldStatus}
+                                    >
+                                        <Select.Option value="badNumber">
+                                            Bad Number
+                                        </Select.Option>
+                                        <Select.Option value="smsSent">
+                                            SMS Sent
+                                        </Select.Option>
+                                    </Select>
+                                </Space>
+                            )}
                         </Form>
                     </div>
                 }

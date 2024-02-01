@@ -566,6 +566,11 @@ class ContactsController extends Controller
                     }
                 }
 
+                // if(!empty($request->phoneFieldStatus)){
+                //     $fieldValue = CustomFieldValue::find($contact->fields[$customField->fieldName."Id"]);
+                //     $customFieldValuesController = new CustomFieldValue();
+                //     $customFieldValuesController->updateStatus($fieldValue, $request->phoneFieldStatus);
+                // }
             }
 
             $this->createOrUpdateCustomFieldValue($id, $customField, 'contact', $value);
