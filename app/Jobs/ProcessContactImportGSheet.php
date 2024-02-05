@@ -111,6 +111,7 @@ class ProcessContactImportGSheet implements ShouldQueue
                             $contact = new Contact();
                         }
                         $contact->userId = $this->mainUser->id;
+                        $contact->googlesheetId = $this->spreadsheetId;
                         $contact->save();
 
                         $continue = true;
