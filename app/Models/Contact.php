@@ -149,9 +149,9 @@ class Contact extends Model
         return $duplicates;
     }
 
-    public function owner()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'ownerId');
+        return $this->belongsTo(User::class, 'userId');
     }
 
     public function type()

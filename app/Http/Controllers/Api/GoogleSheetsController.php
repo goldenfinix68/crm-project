@@ -22,12 +22,11 @@ class GoogleSheetsController extends Controller
         return new Google_Service_Sheets($client);
     }
     
-    public function updateRowBackgroundColor(Request $request)
+    public function updateCellBackgroundColor($spreadsheetId, $SL_ID, $cellHeader, $backgroundColor)
     {
         $service = $this->setupGoogleSheetsClient();
 
         // Replace 'YOUR_SPREADSHEET_ID' and 'Sheet1' with your actual spreadsheet ID and sheet name.
-        $spreadsheetId = '1OOt8l719ev8VilpodHSaEvrKdXjt-edU0uDWT_hUFYw';
         $range = 'Sheet1'; // Update with your sheet name and range
 
         // Retrieve values from the specified range
@@ -36,49 +35,44 @@ class GoogleSheetsController extends Controller
 
         // Find column index for "wireless 1" header
         $headerRow = $values[0];
-        $wireless1ColumnIndex = array_search('Wireless1', $headerRow);
-        
-        $backgroundColor = '#FFFF00'; // Change this to the desired color.
+        $contact1ColumnIndex = array_search('SL_ID', $headerRow);
+        $mobileNumberColumnIndex = array_search($cellHeader, $headerRow);
 
-        // Iterate through rows to find matching cells
-        $rowsToUpdate = [];
+        // Iterate through rows to find matching cell and apply style changes
         foreach ($values as $rowIndex => $row) {
-            if (isset($row[$wireless1ColumnIndex]) && $row[$wireless1ColumnIndex] == '12345') {
-                $rowsToUpdate[] = $rowIndex + 1; // Adjust to 1-based index
+            if (isset($row[$contact1ColumnIndex]) && $row[$contact1ColumnIndex] == $SL_ID && $mobileNumberColumnIndex) {
+                $requests[] = [
+                    'repeatCell' => [
+                        'range' => [
+                            'sheetId' => $this->getSheetId($spreadsheetId, $range),
+                            'startRowIndex' => $rowIndex,
+                            'endRowIndex' => $rowIndex + 1,
+                            'startColumnIndex' => $mobileNumberColumnIndex,
+                            'endColumnIndex' => $mobileNumberColumnIndex + 1,
+                        ],
+                        'cell' => [
+                            'userEnteredFormat' => [
+                                'backgroundColor' => [
+                                    'red' => hexdec(substr($backgroundColor, 1, 2)) / 255.0,
+                                    'green' => hexdec(substr($backgroundColor, 3, 2)) / 255.0,
+                                    'blue' => hexdec(substr($backgroundColor, 5, 2)) / 255.0,
+                                ],
+                            ],
+                        ],
+                        'fields' => 'userEnteredFormat.backgroundColor',
+                    ],
+                ];
+                break; // Break after updating the first matching row
             }
         }
 
-        // Apply style changes to the matched rows
-        $requests = [];
-        foreach ($rowsToUpdate as $rowIndex) {
-            $requests[] = [
-                'repeatCell' => [
-                    'range' => [
-                        'sheetId' => $this->getSheetId($spreadsheetId, $range),
-                        'startRowIndex' => $rowIndex - 1,
-                        'endRowIndex' => $rowIndex,
-                    ],
-                    'cell' => [
-                        'userEnteredFormat' => [
-                            'backgroundColor' => [
-                                'red' => hexdec(substr($backgroundColor, 1, 2)) / 255.0,
-                                'green' => hexdec(substr($backgroundColor, 3, 2)) / 255.0,
-                                'blue' => hexdec(substr($backgroundColor, 5, 2)) / 255.0,
-                            ],
-                        ],
-                    ],
-                    'fields' => 'userEnteredFormat.backgroundColor',
-                ],
-            ];
-
-
+        // Send batch update request
+        if(isset($requests)){
+            $batchUpdateRequest = new Google_Service_Sheets_BatchUpdateSpreadsheetRequest(['requests' => $requests]);
+            $service->spreadsheets->batchUpdate($spreadsheetId, $batchUpdateRequest);
         }
 
-        // Send batch update request
-        $batchUpdateRequest = new Google_Service_Sheets_BatchUpdateSpreadsheetRequest(['requests' => $requests]);
-        $service->spreadsheets->batchUpdate($spreadsheetId, $batchUpdateRequest);
-
-        return response()->json(['message' => 'Row background color updated successfully']);
+        return response()->json(['message' => 'Cell background color updated successfully']);
     }
 
     private function getSheetId($spreadsheetId, $sheetName)
