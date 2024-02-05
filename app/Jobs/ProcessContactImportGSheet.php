@@ -14,6 +14,7 @@ use App\Services\CustomFieldService;
 
 use Google_Client;
 use Google_Service_Sheets;
+use Google_Service_Sheets_ValueRange;
 use DB;
 
 class ProcessContactImportGSheet implements ShouldQueue
@@ -77,8 +78,24 @@ class ProcessContactImportGSheet implements ShouldQueue
 
             $importResult = [];
             if(!empty($results) && isset($mainUser->customFields)){
-                $customFields = $mainUser->customFields;
-                foreach($results as $result){
+                $customFields = $mainUser->customFields->where('isActive', 1);
+                
+                foreach($results as $key => $result){
+
+                    $contact = false;
+
+                    if(isset($result['SL_ID']) && !empty($result['SL_ID'])){
+                        $contact = Contact::find($result['SL_ID']);
+                        if(empty($contact)){
+                            $importResult[] = [
+                                "isSuccess" => false,
+                                "errors" => ["Invalid SL_ID, existing contact not found."],
+                                // "customFields" => $customFields,
+                                "data" => $result,
+                            ];
+                            continue;
+                        }
+                    }
 
                     $errors = $this->validateData($customFields, $result);
                     $importResult[] = [
@@ -90,7 +107,9 @@ class ProcessContactImportGSheet implements ShouldQueue
 
                     if(empty($errors)){
                         DB::beginTransaction();
-                        $contact = new Contact();
+                        if(!$contact){
+                            $contact = new Contact();
+                        }
                         $contact->userId = $this->mainUser->id;
                         $contact->save();
 
@@ -115,12 +134,13 @@ class ProcessContactImportGSheet implements ShouldQueue
                             }
                         }
                         if($continue){
+                            $results[$key]['SL_ID'] = $contact->id;
                             DB::commit();
                         }
                     }
                 }
-                \Log::info($importResult);
             }
+
             
             $crawlResult = new GSheetCrawlResult();
             $crawlResult->gSheetData = $results;
@@ -130,11 +150,38 @@ class ProcessContactImportGSheet implements ShouldQueue
             $crawlResult->initiatedBy = !empty($initiatedBy) ? $initiatedBy->id : null;
             $crawlResult->save();
 
-            // Process the result as needed
-            // You can store it in the database or perform other actions
+
+            //update GSheet Data
+            $valuesToUpdate = [$keys];  // Include the array keys as the first row/header
+            foreach ($results as $row) {
+                $rowData = [];
+                foreach ($keys as $key) {
+                    $rowData[] = isset($row[$key]) ? $row[$key] : null;
+                }
+                $valuesToUpdate[] = $rowData;
+            }
+            
+            $updateRange = 'Sheet1';  // Update this with the appropriate sheet name or range
+            $updateBody = new Google_Service_Sheets_ValueRange([
+                'values' => $valuesToUpdate,
+            ]);
+            
+            $updateParams = [
+                'valueInputOption' => 'RAW',
+            ];
+            
+            // Update the Google Sheet with the new values
+            $service->spreadsheets_values->update($this->spreadsheetId, $updateRange, $updateBody, $updateParams);
+            
+            
+            \Log::info($valuesToUpdate);
+
+            // Update the Google Sheet with the new values
+            
+            $service = $this->setupGoogleSheetsClient();
+            $updateResponse = $service->spreadsheets_values->update($this->spreadsheetId, $updateRange, $updateBody, $updateParams);
 
         } catch (\Exception $e) {
-             
             $crawlResult = new GSheetCrawlResult();
             $crawlResult->gSheetData = [];
             $crawlResult->mainUserId = $this->mainUser->id;
@@ -151,6 +198,7 @@ class ProcessContactImportGSheet implements ShouldQueue
             // retry(3)->delay(now()->addMinutes(5));
         }
     }
+
     
     private function validateData($customFields, $data) {
         $errors = [];
@@ -160,12 +208,12 @@ class ProcessContactImportGSheet implements ShouldQueue
                 $errors[] = "{$field['label']} is required.";
             }
 
-            if($field->fieldName == 'mobile' && isset($data[$field['label']])){
-                $verify = CustomFieldService::getContactByMobile($data[$field['label']], $this->mainUser);
-                if(!empty($verify)){
-                    $errors[] = "Mobile number is already taken.";
-                }
-            }
+            // if($field->fieldName == 'mobile' && isset($data[$field['label']])){
+            //     $verify = CustomFieldService::getContactByMobile($data[$field['label']], $this->mainUser);
+            //     if(!empty($verify)){
+            //         $errors[] = "Mobile number is already taken.";
+            //     }
+            // }
         }
 
         return $errors;
@@ -175,7 +223,7 @@ class ProcessContactImportGSheet implements ShouldQueue
     {
         $client = new Google_Client();
         $client->setAuthConfig(storage_path('gSheetCredentials.json'));
-        $client->addScope(Google_Service_Sheets::SPREADSHEETS_READONLY);
+        $client->addScope(Google_Service_Sheets::SPREADSHEETS);
 
         return new Google_Service_Sheets($client);
     }
