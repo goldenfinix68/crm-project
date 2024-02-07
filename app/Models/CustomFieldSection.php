@@ -20,11 +20,11 @@ class CustomFieldSection extends Model
     
     public function fields()
     {
-        return $this->hasMany('\App\Models\CustomField', 'customFieldSectionId', 'id')->where('isActive', true)->orderBy('sort');
+        return $this->hasMany('\App\Models\CustomField', 'customFieldSectionId', 'id')->where('isActive', true)->orderByRaw('CAST(`sort` AS UNSIGNED)');
     }
     
     public function inactivefields()
     {
-        return $this->hasMany('\App\Models\CustomField', 'customFieldSectionId', 'id')->where('isActive', false)->orderBy('sort');
+        return $this->hasMany('\App\Models\CustomField', 'customFieldSectionId', 'id')->where('isActive', false)->orderByRaw('CAST(`sort` AS UNSIGNED)');
     }
 }

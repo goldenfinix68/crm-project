@@ -156,7 +156,7 @@ const ContactsComponentsManageColumn: React.FC<
                     (field) =>
                         !["firstName", "lastName"].includes(field.fieldName)
                 )
-                .sort((a, b) => a?.tableSort - b?.tableSort)
+                .sort((a, b) => (a.label || "").localeCompare(b.label || ""))
                 .map((field) => {
                     return {
                         id: field.id!,
@@ -165,6 +165,8 @@ const ContactsComponentsManageColumn: React.FC<
                         isSelected: field.isDisplayTable ?? false,
                     };
                 });
+
+            console.log(fields);
             setListData(fields);
 
             setInitialArray(fields?.filter((data) => data.isSelected));
@@ -305,28 +307,86 @@ const ContactsComponentsManageColumn: React.FC<
                                             (
                                                 value: ListItem,
                                                 index: number
-                                            ) => (
-                                                <Checkbox
-                                                    key={index} // Make sure to add a unique key when rendering a list of components.
-                                                    checked={selectedFields.some(
+                                            ) => {
+                                                if (
+                                                    selectedFields.some(
                                                         (field) =>
                                                             field.id == value.id
-                                                    )}
-                                                    onChange={(e) => {
-                                                        if (e.target.checked) {
-                                                            add(value);
-                                                        } else {
-                                                            removeById(
-                                                                value.id
-                                                            );
-                                                        }
-                                                    }}
-                                                    className="m-t-sm"
-                                                >
-                                                    {value.title}
-                                                    {/* Display the value as the label for the Checkbox */}
-                                                </Checkbox>
-                                            )
+                                                    )
+                                                ) {
+                                                    return (
+                                                        <Checkbox
+                                                            key={index} // Make sure to add a unique key when rendering a list of components.
+                                                            checked={selectedFields.some(
+                                                                (field) =>
+                                                                    field.id ==
+                                                                    value.id
+                                                            )}
+                                                            onChange={(e) => {
+                                                                if (
+                                                                    e.target
+                                                                        .checked
+                                                                ) {
+                                                                    add(value);
+                                                                } else {
+                                                                    removeById(
+                                                                        value.id
+                                                                    );
+                                                                }
+                                                            }}
+                                                            className="m-t-sm"
+                                                        >
+                                                            {value.title}
+                                                            {/* Display the value as the label for the Checkbox */}
+                                                        </Checkbox>
+                                                    );
+                                                } else {
+                                                    return null;
+                                                }
+                                            }
+                                        )}
+
+                                        {listData?.map(
+                                            (
+                                                value: ListItem,
+                                                index: number
+                                            ) => {
+                                                if (
+                                                    !selectedFields.some(
+                                                        (field) =>
+                                                            field.id == value.id
+                                                    )
+                                                ) {
+                                                    return (
+                                                        <Checkbox
+                                                            key={index} // Make sure to add a unique key when rendering a list of components.
+                                                            checked={selectedFields.some(
+                                                                (field) =>
+                                                                    field.id ==
+                                                                    value.id
+                                                            )}
+                                                            onChange={(e) => {
+                                                                if (
+                                                                    e.target
+                                                                        .checked
+                                                                ) {
+                                                                    add(value);
+                                                                } else {
+                                                                    removeById(
+                                                                        value.id
+                                                                    );
+                                                                }
+                                                            }}
+                                                            className="m-t-sm"
+                                                        >
+                                                            {value.title}
+                                                            {/* Display the value as the label for the Checkbox */}
+                                                        </Checkbox>
+                                                    );
+                                                } else {
+                                                    return null;
+                                                }
+                                            }
                                         )}
                                     </Space>
                                 </Col>
