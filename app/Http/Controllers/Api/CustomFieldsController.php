@@ -20,7 +20,7 @@ class CustomFieldsController extends Controller
     {
         $fields = CustomField::where('userId', $this->getMainUserId())
             ->where('isActive', true)
-            ->orderByRaw('CAST(`tableSort` AS UNSIGNED)');
+            ->orderByRaw('CAST(`sort` AS UNSIGNED)');
 
 
         if(!empty($request->type)){
