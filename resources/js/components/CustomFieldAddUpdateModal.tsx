@@ -91,6 +91,7 @@ const CustomFieldAddUpdateModal = ({
             ...values,
             id: customField?.id ? customField.id : "",
             type: selectedFieldType?.type,
+            tableSort: customField?.tableSort,
         });
     };
     const resetFields = () => {

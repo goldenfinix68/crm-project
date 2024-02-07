@@ -69,14 +69,24 @@ class CustomFieldsController extends Controller
 
         $data = $request->all();
         //check highest sort
-        $highestSort = CustomField::where('customFieldSectionId', $data['customFieldSectionId'])->orderBy('sort', 'desc')->first();
-
+        $highestSort = CustomField::where('customFieldSectionId', $data['customFieldSectionId'])->orderByRaw('CAST(`sort` AS UNSIGNED) DESC')->first();
+        
+        $highestTableSort = CustomField::where('customFieldSectionId', $data['customFieldSectionId'])->orderByRaw('CAST(`tableSort` AS UNSIGNED) DESC')->first();
+        
         $sort = 1;
         if(!empty($data['sort'])){
             $sort = $data['sort'];
         }
         else if(!empty($highestSort)){
             $sort = $highestSort->sort + 1;
+        }
+
+        $tableSort = 1;
+        if(!empty($data['tableSort'])){
+            $tableSort = $data['tableSort'];
+        }
+        else if(!empty($highestSort)){
+            $tableSort = $highestTableSort->tableSort + 1;
         }
         
         $section = CustomFieldSection::find($data['customFieldSectionId']);
@@ -86,6 +96,7 @@ class CustomFieldsController extends Controller
             array_merge($data, [
                 'userId' => $this->getMainUserId(), 
                 'sort' => $sort,
+                'tableSort' => $tableSort,
                 'customFieldSectionType' => $section->type,
 
             ])

@@ -20,6 +20,7 @@ class CustomField extends Model
         'isRequired',
         'options',
         'associationType',
+        'tableSort',
     ];
     
     public function section()

@@ -66,6 +66,7 @@ interface ListItem {
     title: string;
     key: string;
     isSelected: boolean;
+    tableSort: string;
 }
 
 interface ListProps {
@@ -163,13 +164,18 @@ const ContactsComponentsManageColumn: React.FC<
                         key: field.id!,
                         title: field.label,
                         isSelected: field.isDisplayTable ?? false,
+                        tableSort: field.tableSort,
                     };
                 });
 
             console.log(fields);
             setListData(fields);
 
-            setInitialArray(fields?.filter((data) => data.isSelected));
+            setInitialArray(
+                fields
+                    ?.filter((data) => data.isSelected)
+                    .sort((a, b) => a?.tableSort - b?.tableSort)
+            );
         }
     }, [contactFields]);
 
