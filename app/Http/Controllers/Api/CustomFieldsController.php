@@ -18,8 +18,10 @@ class CustomFieldsController extends Controller
      */
     public function index(Request $request)
     {
+        $fields = CustomField::where('userId', $this->getMainUserId())
+            ->where('isActive', true)
+            ->orderByRaw('CAST(`tableSort` AS UNSIGNED)');
 
-        $fields =  CustomField::where('userId', $this->getMainUserId())->where('isActive', true)->orderBy('sort');
 
         if(!empty($request->type)){
             $fields = $fields->where('customFieldSectionType', $request->type);
@@ -167,11 +169,14 @@ class CustomFieldsController extends Controller
     
     public function tableFieldsSort(Request $request)
     {
-        foreach($request->fields as $index => $data){
+        
+        CustomField::where('userId', $this->getMainUserId())->update(['tableSort' => 0, 'isDisplayTable' => false]);
+
+        foreach($request->selected as $index => $data){
             $customField = CustomField::find($data['id']);
             if(!empty($customField) && $customField->section->userId == $this->getMainUserId()){
                 $customField->tableSort = $index+1;
-                $customField->isDisplayTable = $data['isSelected'];
+                $customField->isDisplayTable = true;
                 $customField->save();
             }
         }

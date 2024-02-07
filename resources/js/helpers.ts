@@ -70,6 +70,7 @@ interface ArrayActions<T> {
     array: T[];
     add: (item: T) => void;
     removeByKey: (key: string) => void;
+    removeById: (id: string) => void;
     updateByKey: (key: string, newValue: T) => void;
     updateById: (id: string, newValue: T) => void;
     removeByIndex: (key: number) => void;
@@ -95,6 +96,11 @@ export function useArray<T>(initialArray: T[] = []): ArrayActions<T> {
     // Remove an item from the array by key
     const removeByKey = (key: string) => {
         const newArray = array.filter((item) => (item as any).key !== key);
+        setArray(newArray);
+    };
+
+    const removeById = (id: string) => {
+        const newArray = array.filter((item) => (item as any).id !== id);
         setArray(newArray);
     };
 
@@ -153,6 +159,7 @@ export function useArray<T>(initialArray: T[] = []): ArrayActions<T> {
         updateByKey,
         clear,
         removeByIndex,
+        removeById,
         updateByIndex,
         updateById,
         setInitialArray,

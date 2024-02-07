@@ -53,6 +53,7 @@ import { json } from "react-router-dom";
 import { useCustomFields } from "../../../api/query/customFieldQuery";
 import { sortTableCustomFieldsMutation } from "../../../api/mutation/useCustomFieldMutation";
 import CustomFieldAddUpdateModal from "../../../components/CustomFieldAddUpdateModal";
+import { useArray } from "../../../helpers";
 
 interface ContactsComponentsManageColumnProps {
     isModalManageColumnOpen: boolean;
@@ -98,6 +99,15 @@ const ContactsComponentsManageColumn: React.FC<
     ContactsComponentsManageColumnProps
 > = ({ isModalManageColumnOpen, closeModal, handleSubmit }) => {
     const [listData, setListData] = useState<ListItem[] | undefined>();
+
+    const {
+        array: selectedFields,
+        add,
+        removeById,
+        updateByKey,
+        setInitialArray,
+    } = useArray<ListItem>();
+
     const [isModalAddCustomField, setModalAddCustomField] = useState(false);
     const {
         data: contactFields,
@@ -112,46 +122,27 @@ const ContactsComponentsManageColumn: React.FC<
         },
     });
 
-    const onChange = (value: ListItem, e) => {
-        setListData((listData) => {
-            return listData?.map((item) => {
-                if (item.key === value.key) {
-                    return { ...item, isSelected: e.target.checked };
-                }
-                return item;
-            });
-        });
-    };
-
-    const removeField = (value: ListItem) => {
-        setListData((listData) => {
-            return listData?.map((item) => {
-                if (item.key === value.key) {
-                    return { ...item, isSelected: false };
-                }
-                return item;
-            });
-        });
-    };
-
     const handleDragEnd = (result: DragEndResult) => {
+        console.log(result);
         if (!result.destination) {
             return;
         }
 
-        const items = Array.from(listData ?? []);
+        const items = Array.from(selectedFields ?? []);
         const [reorderedItem] = items.splice(result.source.index, 1);
 
         if (result.destination.index !== undefined) {
             items.splice(result.destination.index, 0, reorderedItem);
         }
 
-        setListData(items);
+        setInitialArray(items);
     };
 
     const handleFinish = () => {
         // if (record) {
-        saveColumnSetting.mutate({ fields: listData });
+        saveColumnSetting.mutate({
+            selected: selectedFields,
+        });
 
         // } else {
         //     saveColumnSetting.mutate(values);
@@ -165,7 +156,7 @@ const ContactsComponentsManageColumn: React.FC<
                     (field) =>
                         !["firstName", "lastName"].includes(field.fieldName)
                 )
-                .sort((a, b) => a.tableSort - b.tableSort)
+                .sort((a, b) => a?.tableSort - b?.tableSort)
                 .map((field) => {
                     return {
                         id: field.id!,
@@ -175,6 +166,8 @@ const ContactsComponentsManageColumn: React.FC<
                     };
                 });
             setListData(fields);
+
+            setInitialArray(fields?.filter((data) => data.isSelected));
         }
     }, [contactFields]);
 
@@ -214,7 +207,7 @@ const ContactsComponentsManageColumn: React.FC<
                                     <Button
                                         type="text"
                                         onClick={() => {
-                                            removeField(item);
+                                            removeById(item.id);
                                         }}
                                     >
                                         <CloseOutlined />
@@ -315,10 +308,18 @@ const ContactsComponentsManageColumn: React.FC<
                                             ) => (
                                                 <Checkbox
                                                     key={index} // Make sure to add a unique key when rendering a list of components.
-                                                    checked={value.isSelected}
+                                                    checked={selectedFields.some(
+                                                        (field) =>
+                                                            field.id == value.id
+                                                    )}
                                                     onChange={(e) => {
-                                                        console.log(e);
-                                                        onChange(value, e);
+                                                        if (e.target.checked) {
+                                                            add(value);
+                                                        } else {
+                                                            removeById(
+                                                                value.id
+                                                            );
+                                                        }
                                                     }}
                                                     className="m-t-sm"
                                                 >
@@ -344,34 +345,19 @@ const ContactsComponentsManageColumn: React.FC<
                                 </Typography.Title>
                                 <Button
                                     type="link"
-                                    onClick={() =>
-                                        setListData((listData) => {
-                                            return listData?.map((item) => {
-                                                return {
-                                                    ...item,
-                                                    isSelected: false,
-                                                };
-                                            });
-                                        })
-                                    }
+                                    onClick={() => setInitialArray([])}
                                 >
                                     Clear all
                                 </Button>
                             </Row>
                             <Row>
                                 <Col md={24}>
-                                    {listData?.filter((data) => data.isSelected)
-                                        .length ? (
+                                    {selectedFields.length ? (
                                         <DragDropContext
                                             onDragEnd={handleDragEnd}
                                         >
                                             <DroppableList
-                                                items={
-                                                    listData?.filter(
-                                                        (data) =>
-                                                            data.isSelected
-                                                    ) ?? []
-                                                }
+                                                items={selectedFields}
                                             />
                                         </DragDropContext>
                                     ) : (
@@ -385,37 +371,27 @@ const ContactsComponentsManageColumn: React.FC<
                     </Row>
                 </div>
                 <div className="modal-footer">
-                    <Col
-                        md={12}
-                        style={{
-                            display: "flex",
-                            justifyContent: "flex-start",
+                    <Button
+                        type="link"
+                        onClick={() => {
+                            handleReset();
                         }}
                     >
-                        <Button
-                            type="link"
-                            onClick={() => {
-                                handleReset();
-                            }}
-                        >
-                            {" "}
-                            <u>Reset to default columns</u>
-                        </Button>
-                    </Col>
-                    <Col md={12}>
-                        <Button
-                            className="m-r-xs"
-                            type="primary"
-                            loading={saveColumnSetting.isLoading}
-                            onClick={() => {
-                                handleFinish();
-                            }}
-                        >
-                            Save
-                        </Button>
+                        {" "}
+                        <u>Reset to default columns</u>
+                    </Button>
+                    <Button
+                        className="m-r-xs"
+                        type="primary"
+                        loading={saveColumnSetting.isLoading}
+                        onClick={() => {
+                            handleFinish();
+                        }}
+                    >
+                        Save
+                    </Button>
 
-                        <Button onClick={closeModal}>Cancel</Button>
-                    </Col>
+                    <Button onClick={closeModal}>Cancel</Button>
                 </div>
 
                 <CustomFieldAddUpdateModal
