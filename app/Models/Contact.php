@@ -97,7 +97,9 @@ class Contact extends Model
     public function getFieldsAttribute()
     {
         $customFields = [];
+        $existingCustomFieldIds = [];
         foreach($this->customFieldValues as $key => $value){
+            $existingCustomFieldIds[] = $value->customField->id;
             $customFields[$value->customField->fieldName] = $value->value;
             if(!empty($value->lookupIds)){
                 $customFields[$value->customField->fieldName.'lookupIds'] = $value->lookupIds;
@@ -107,6 +109,17 @@ class Contact extends Model
         }
         $customFields['contactId'] = $this->id;
         $customFields['defaultMobileNumber'] = $this->defaultMobileNumber;
+
+
+        $userContactFields = \App\Models\CustomField::where('userId', $this->user->id)
+            ->whereNotIn('id', $existingCustomFieldIds)
+            ->get();
+        foreach($userContactFields as $customField){
+            $customFields[$customField->fieldName] = null;
+            $customFields[$customField->fieldName.'lookupIds'] = null;
+            $customFields[$customField->fieldName.'Id'] = null;
+            $customFields[$customField->fieldName.'Status'] = null;
+        }
 
         return $customFields;
 

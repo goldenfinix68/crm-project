@@ -100,9 +100,11 @@ const ContactsEditableTableCell = ({
                                     field.fieldName + "lookupIds"
                                 ]
                                     ? JSON.parse(
-                                          record[field.fieldName + "lookupIds"]
+                                          record[
+                                              field.fieldName + "lookupIds"
+                                          ] ?? undefined
                                       )
-                                    : record[field.fieldName],
+                                    : record[field.fieldName] ?? undefined,
                             }}
                             layout="vertical"
                         >
