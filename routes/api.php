@@ -22,6 +22,21 @@ Route::post('/login', 'App\Http\Controllers\Api\AuthController@login');
 Route::post('/logout', 'App\Http\Controllers\Api\AuthController@logout')->middleware('auth:api');
 Route::post('/forgotpassword', 'App\Http\Controllers\Api\AuthController@forgotpassword');
 
+Route::get('/user', function (Request $request) {
+
+    $user = Auth::user();
+
+    if(!empty($user)){
+        $user = App\Models\User::find($request->user()->id);
+        if(!empty($user)){
+            $userController = new UsersController();
+            return $userController->show($user->id);
+        }
+    }
+
+    return [];
+});
+
 
 Route::middleware('auth:api')->group(function () {
     Route::post('/user-impersonate', 'App\Http\Controllers\Api\AuthController@impersonate');
@@ -80,14 +95,6 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/activities_users', 'App\Http\Controllers\Api\ActivityController@get_user');
     Route::get('/activities_contacts', 'App\Http\Controllers\Api\ActivityController@get_contact');
     Route::get('/activities_deals', 'App\Http\Controllers\Api\ActivityController@get_deal');
-    Route::get('/user', function (Request $request) {
-        $user = App\Models\User::find($request->user()->id);
-        if(!empty($user)){
-            $userController = new UsersController();
-            return $userController->show($user->id);
-        }
-        return [];
-    });
 
     Route::resource('/activity_custome_fields', 'App\Http\Controllers\Api\ActivityCustomFieldController');
     Route::get('/calls/history', 'App\Http\Controllers\Api\CallsController@call_history');
