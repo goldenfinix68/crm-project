@@ -22,23 +22,26 @@ Route::post('/login', 'App\Http\Controllers\Api\AuthController@login');
 Route::post('/logout', 'App\Http\Controllers\Api\AuthController@logout')->middleware('auth:api');
 Route::post('/forgotpassword', 'App\Http\Controllers\Api\AuthController@forgotpassword');
 
-Route::get('/user', function (Request $request) {
-
-    $user = Auth::user();
-
-    if(!empty($user)){
-        $user = App\Models\User::find($request->user()->id);
-        if(!empty($user)){
-            $userController = new UsersController();
-            return $userController->show($user->id);
-        }
-    }
-
-    return [];
-});
-
 
 Route::middleware('auth:api')->group(function () {
+    
+    Route::get('/user', function (Request $request) {
+
+        $user = Auth::user();
+
+        if(!empty($user)){
+            $user = App\Models\User::find($request->user()->id);
+            if(!empty($user)){
+                $userController = new UsersController();
+                return $userController->show($user->id);
+            }
+        }
+
+        return [];
+    });
+
+
+
     Route::post('/user-impersonate', 'App\Http\Controllers\Api\AuthController@impersonate');
 
     Route::post('/forgotpassword_verify', 'App\Http\Controllers\Api\AuthController@forgotpassword_verify');
