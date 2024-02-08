@@ -28,7 +28,6 @@ const ContactsTable = ({
 }: Props) => {
     const { contactFields, isRoleStats } = useAppContextProvider();
     const [isModalOpen, setisModalOpen] = useState(false);
-    const [tableRerender, setTableRerender] = useState(0);
     const [selectedContactFields, setSelectedContactFields] = useState<
         | {
               [key: string]: any;
@@ -126,10 +125,6 @@ const ContactsTable = ({
             }),
     ];
 
-    useEffect(() => {
-        setTableRerender(tableRerender + 1);
-    }, [contactFields]);
-
     return (
         <>
             {/* <Table
@@ -148,25 +143,23 @@ const ContactsTable = ({
                     showSizeChanger: true,
                 }}
             /> */}
-            <div key={tableRerender}>
-                <CustomResizeableTable
-                    columns={columns as ColumnsType<{ [key: string]: any }>}
-                    dataSource={contacts?.map((contact) => contact.fields)}
-                    localStorageKey="contactsTableColumnsWidth"
-                    className="tableCell"
-                    rowSelection={{
-                        type: "checkbox",
-                        ...rowSelection,
-                    }}
-                    rowKey={(record) => (record as any)?.contactId}
-                    scroll={{ x: 1300 }}
-                    pagination={{
-                        defaultPageSize: 100,
-                        pageSizeOptions: ["100", "250"],
-                        showSizeChanger: true,
-                    }}
-                />
-            </div>
+            <CustomResizeableTable
+                columns={columns as ColumnsType<{ [key: string]: any }>}
+                dataSource={contacts?.map((contact) => contact.fields)}
+                localStorageKey="contactsTableColumnsWidth"
+                className="tableCell"
+                rowSelection={{
+                    type: "checkbox",
+                    ...rowSelection,
+                }}
+                rowKey={(record) => (record as any)?.contactId}
+                scroll={{ x: 1300 }}
+                pagination={{
+                    defaultPageSize: 100,
+                    pageSizeOptions: ["100", "250"],
+                    showSizeChanger: true,
+                }}
+            />
             <CustomFieldFormModal
                 isModalOpen={isModalOpen}
                 closeModal={() => {
