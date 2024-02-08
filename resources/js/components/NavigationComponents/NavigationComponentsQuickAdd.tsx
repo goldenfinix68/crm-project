@@ -20,6 +20,7 @@ import ModalAddActivity from "../../pages/Activity/components/ModalAddActivity";
 import ModalAddDeal from "../../pages/Deal/components/ModalAddDeal";
 import queryClient from "../../queryClient";
 import TextModal from "../../pages/ContactView/components/TextModal";
+import CustomFieldFormModal from "../CustomFieldFormModal";
 
 const NavigationComponentsQuickAdd: React.FC = () => {
     const [isAddModalContactOpen, setIsAddModalContactOpen] = useState(false);
@@ -147,11 +148,23 @@ const NavigationComponentsQuickAdd: React.FC = () => {
                 />
             </Dropdown>
 
-            <ContactsComponentsAddContacts
+            <CustomFieldFormModal
+                isModalOpen={isAddModalContactOpen}
+                closeModal={() => {
+                    setIsAddModalContactOpen(false);
+                }}
+                handleSubmit={() => {
+                    queryClient.invalidateQueries("contacts");
+                    queryClient.invalidateQueries("filteredContacts");
+                }}
+                type="contact"
+            />
+
+            {/* <ContactsComponentsAddContacts
                 isModalOpen={isAddModalContactOpen}
                 setIsModalOpen={setIsAddModalContactOpen}
                 title="Add Contact"
-            />
+            /> */}
             {/* 
             <ModalAddActivity
                 isModalOpenAdd={isModalOpenAdd}
