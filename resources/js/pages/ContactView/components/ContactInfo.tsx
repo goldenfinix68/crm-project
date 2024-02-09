@@ -335,7 +335,12 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                 </Space>
 
                 <Table
-                    dataSource={contactFields}
+                    dataSource={contactFields.filter(
+                        (field) =>
+                            field.fieldName != "firstName" &&
+                            field.fieldName != "lastName" &&
+                            field.isDisplayTable
+                    )}
                     pagination={false}
                     showHeader={false}
                     className="tableCell"
