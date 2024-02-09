@@ -202,7 +202,9 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
                         marginBottom: "20px",
                     }}
                 >
-                    <Typography.Text>Count: {message?.length}</Typography.Text>
+                    <Typography.Text>
+                        Count: {message?.length ?? 0}
+                    </Typography.Text>
                     {contact && (
                         <div>
                             <Popover

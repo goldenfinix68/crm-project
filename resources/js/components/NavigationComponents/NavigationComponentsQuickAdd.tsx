@@ -56,22 +56,22 @@ const NavigationComponentsQuickAdd: React.FC = () => {
                 </div>
             ),
         },
-        {
-            key: "2",
-            label: (
-                <div
-                    className="list-data"
-                    onClick={() => setIsModalOpenAdd(true)}
-                >
-                    <Space>
-                        <FontAwesomeIcon icon={faCircleCheck} />
-                        <Typography.Text>Add Activity</Typography.Text>
-                    </Space>
+        // {
+        //     key: "2",
+        //     label: (
+        //         <div
+        //             className="list-data"
+        //             onClick={() => setIsModalOpenAdd(true)}
+        //         >
+        //             <Space>
+        //                 <FontAwesomeIcon icon={faCircleCheck} />
+        //                 <Typography.Text>Add Activity</Typography.Text>
+        //             </Space>
 
-                    <Typography.Text>ca</Typography.Text>
-                </div>
-            ),
-        },
+        //             <Typography.Text>ca</Typography.Text>
+        //         </div>
+        //     ),
+        // },
         {
             key: "3",
             label: (
@@ -158,6 +158,16 @@ const NavigationComponentsQuickAdd: React.FC = () => {
                     queryClient.invalidateQueries("filteredContacts");
                 }}
                 type="contact"
+            />
+
+            <ModalAddDeal
+                isModalOpen={isAddDealModalOpen}
+                handleSubmit={() => {
+                    console.log("qwe");
+                }}
+                closeModal={() => {
+                    setIsAddDealModalOpen(false);
+                }}
             />
 
             {/* <ContactsComponentsAddContacts
