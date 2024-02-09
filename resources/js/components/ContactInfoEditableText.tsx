@@ -114,6 +114,7 @@ const ContactInfoEditableText = ({
                         <CustomFieldInput
                             showLabel={false}
                             customField={field}
+                            isSelectOptionsOpen={true}
                         />
                     </Form>
                 </div>

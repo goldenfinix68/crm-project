@@ -23,9 +23,11 @@ import { useContactTypesAll } from "../api/query/contactsQuery";
 const CustomFieldInput = ({
     customField,
     showLabel = true,
+    isSelectOptionsOpen = false,
 }: {
     customField: TCustomField;
     showLabel?: boolean;
+    isSelectOptionsOpen?: boolean;
 }) => {
     const { contacts } = useAppContextProvider();
     const { users, isLoading } = useUsersAll();
@@ -101,6 +103,7 @@ const CustomFieldInput = ({
                     dropdownStyle={{ zIndex: 999999 }}
                     className="w-100"
                     ref={inputRef}
+                    defaultOpen={isSelectOptionsOpen}
                 >
                     {stringArray?.map((option, index) => (
                         <Select.Option value={option} key={index}>
@@ -153,6 +156,7 @@ const CustomFieldInput = ({
                     dropdownStyle={{ zIndex: 99999999 }}
                     className="w-100"
                     ref={inputRef}
+                    defaultOpen={isSelectOptionsOpen}
                 >
                     {contacts?.map((contact, index) => (
                         <Select.Option value={contact.id} key={index}>
@@ -176,6 +180,7 @@ const CustomFieldInput = ({
                     dropdownStyle={{ zIndex: 999999 }}
                     className="w-100"
                     ref={inputRef}
+                    defaultOpen={isSelectOptionsOpen}
                 >
                     {users?.map((user, index) => (
                         <Select.Option value={user.id} key={index}>
@@ -197,6 +202,7 @@ const CustomFieldInput = ({
                     }
                     dropdownStyle={{ zIndex: 999999 }}
                     ref={inputRef}
+                    defaultOpen={isSelectOptionsOpen}
                 >
                     {contactTypes?.map((contactType, index) => (
                         <Select.Option value={contactType.id} key={index}>
@@ -214,6 +220,7 @@ const CustomFieldInput = ({
                     mode="tags"
                     dropdownStyle={{ zIndex: 999999 }}
                     ref={inputRef}
+                    defaultOpen={isSelectOptionsOpen}
                 >
                     {usedTags?.map((tag, index) => (
                         <Select.Option value={tag} key={index}>

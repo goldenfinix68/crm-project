@@ -108,7 +108,10 @@ const ContactsEditableTableCell = ({
                             }}
                             layout="vertical"
                         >
-                            <CustomFieldInput customField={field} />
+                            <CustomFieldInput
+                                customField={field}
+                                isSelectOptionsOpen={true}
+                            />
 
                             {(field?.type == "phone" ||
                                 field?.type == "mobile") && (
