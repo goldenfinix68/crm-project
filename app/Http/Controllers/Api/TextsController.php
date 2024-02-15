@@ -156,39 +156,16 @@ class TextsController extends Controller
         $json = json_decode(file_get_contents("php://input"), true);
         \Log::info($json);
 
-
-        $payload = $json['data']['payload'];
-        if($json['data']['event_type'] == "message.finalized" || $json['data']['event_type'] == "message.sent"){
-            $text = Text::where('telnyxId', $payload['id'])->first();
-            if(!empty($text)){
-                $text->status = $json['data']['event_type'] == "message.finalized" ? "finalized" : "sent";
-                $text->save();
-            }
-        }
-        else if($json['data']['event_type'] == "message.received"){
-            $recepients = array();
-            if(!empty($payload['to'])){
-                foreach($payload['to'] as $to){
-                    $recepients[] = '"' . $to['phone_number'] . '"';
-                }
-            }
-
-            foreach($recepients as $recepient){
-                $text = new Text();
-                $text->telnyxId = $json['data']['id'];
-                $text->from = $payload['from']['phone_number'];
-                $text->to = str_replace('"', '', $recepient);
-                $text->message = $payload['text'];
-                $text->telnyxResponse = json_encode($json);
-                $text->type = $payload['type'];
-                $text->status = 'received';
-                $text->save();
-            }
-            
-            
-            event(new TextReceived($text));
-        }
-
+        
+        $text = new Text();
+        $text->from = $json['from'];
+        $text->to = $json['to'];
+        $text->message = $json['body'];
+        $text->type = "SMS";
+        $text->status = 'received';
+        $text->save();
+        
+        event(new TextReceived($text));
         
     }
 }

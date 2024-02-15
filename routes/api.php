@@ -149,8 +149,8 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('/mobile-numbers', 'App\Http\Controllers\Api\MobileNumbersController');
 });
 
-Route::post('/telnyx/sms/webhook', 'App\Http\Controllers\Api\TextsController@textReceived');
-Route::get('/telnyx/sms/webhook', 'App\Http\Controllers\Api\TextsController@textReceived');
+Route::post('/sms/webhook', 'App\Http\Controllers\Api\TextsController@textReceived');
+Route::get('/sms/webhook', 'App\Http\Controllers\Api\TextsController@textReceived');
 Route::get('/telnyx/call/webhook', 'App\Http\Controllers\Api\CallsController@webhook');
 Route::get('/telnyx/call/webhook/fail', 'App\Http\Controllers\Api\CallsController@webhook');
 Route::post('/telnyx/call/webhook', 'App\Http\Controllers\Api\CallsController@webhook');
