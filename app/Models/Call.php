@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Call extends Model
 {
     use HasFactory;
+
+    
+    public function recording()
+    {
+        return $this->hasOne(\App\Models\CallRecording::class, 'call_session_id', 'telnyxCallSessionId');
+    }
 }

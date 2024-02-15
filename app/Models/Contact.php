@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
+use App\Http\Controllers\Api\CallsController;
 
 use App\Models\User;
 use App\Models\Text;
 use App\Models\Call;
 use Auth;
+use DB;
 
 class Contact extends Model
 {
@@ -179,12 +181,12 @@ class Contact extends Model
 
     public function texts()
     {
-        if (empty($this->mobile)) {
+        if (empty($this->phoneNumbers)) {
             return [];
         }
         $texts = Text::where(function ($query) {
-            $query->orWhere('to', $this->mobile)
-                ->orWhere('from', $this->mobile);
+            $query->orWhere('to', $this->phoneNumbers)
+                ->orWhere('from', $this->phoneNumbers);
         })
             ->orderBy('id', 'desc')
             ->get();
@@ -193,16 +195,27 @@ class Contact extends Model
 
     public function call()
     {
-        if (empty($this->mobile)) {
+        if (empty($this->phoneNumbers)) {
             return [];
         }
-        $call = Call::where(function ($query) {
-            $query->where('to', $this->mobile)
-                ->orWhere('from', $this->mobile);
+        $data = [];
+        $calls = Call::select('*')
+        ->whereIn('id', function($query) {
+            $query->select(DB::raw('MAX(id)'))
+                ->from('calls')
+                ->whereIn('to', $this->phoneNumbers)
+                ->orWhereIn('from', $this->phoneNumbers)
+                ->groupBy('telnyxCallSessionId');
         })
-            ->orderBy('id', 'desc')
-            ->get();
-        return $call;
+        ->orderBy('id', 'desc')
+        ->get();
+        $callsController = new CallsController();
+
+        foreach($calls as $call){
+            $data[] = $callsController->prepareCall($call);
+        }
+
+        return collect($data);
     }
 
     public function deals()
@@ -256,10 +269,10 @@ class Contact extends Model
         });
 
         $call = $this->call() ? $this->call()->map(function ($data) {
-            $createdAt = Carbon::parse($data->created_at);
+            $createdAt = Carbon::parse($data['dateTime']);
             return [
                 'type' => 'call',
-                'date' => $data->created_at,
+                'date' => $data['dateTime'],
                 'day' => $createdAt->format('j'),
                 'month' => $createdAt->format('F'),
                 'year' => $createdAt->format('Y'),

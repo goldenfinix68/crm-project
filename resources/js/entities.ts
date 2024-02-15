@@ -57,6 +57,7 @@ export type TTextTemplate = {
 
 export type TCallHistory = {
     telnyxCallSessionId: string;
+    recording_url?: string;
     isAnswered: boolean;
     dateTime: string;
     isFromApp: string;
@@ -237,6 +238,7 @@ export type TWallData = {
     deal?: TDeal;
     update?: TUpdate;
     activity?: TUpdate;
+    call?: TCallHistory;
 };
 
 export type TContact = {

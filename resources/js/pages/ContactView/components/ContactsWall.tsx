@@ -9,6 +9,7 @@ import {
     DownloadOutlined,
     InfoCircleOutlined,
     PaperClipOutlined,
+    PauseOutlined,
     PhoneOutlined,
     PlayCircleOutlined,
     PlaySquareFilled,
@@ -30,12 +31,13 @@ import {
     Typography,
 } from "antd";
 import SubMenu from "antd/es/menu/SubMenu";
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Notestab from "./NotesTab";
 import ContactContext from "../context";
 import { TNote, TUser, TWallData } from "../../../entities";
 import { useLoggedInUser } from "../../../api/query/userQuery";
 import moment from "moment";
+import CustomLink from "../../../components/CustomLink";
 
 const ContactsWall = () => {
     const { contact } = useContext(ContactContext);
@@ -150,6 +152,8 @@ const ContactsWall = () => {
             return <File data={data} user={user!} />;
         } else if (data.type === "activities") {
             return <Activities data={data} user={user!} />;
+        } else if (data.type === "call") {
+            return <CallBox data={data} user={user!} />;
         } else {
             return <></>;
         }
@@ -286,20 +290,7 @@ const NoteBox = ({ data, user }: { data: TWallData; user: TUser }) => {
     };
     return (
         <Card
-            title={
-                <Typography.Text>
-                    <Avatar
-                        style={{
-                            backgroundColor: "#C0CA33",
-                            verticalAlign: "middle",
-                        }}
-                        size={20}
-                    >
-                        J
-                    </Avatar>{" "}
-                    Note Added - by Jesse
-                </Typography.Text>
-            }
+            title={<Typography.Text>Note Added - by Jesse</Typography.Text>}
             bordered={false}
             extra={data.month.substring(0, 3) + " " + data.day}
             // Set the height to 300px when not expanded
@@ -323,15 +314,6 @@ const TextBox = ({ data, user }: { data: TWallData; user: TUser }) => {
         <Card
             title={
                 <Typography.Text>
-                    <Avatar
-                        style={{
-                            backgroundColor: "#C0CA33",
-                            verticalAlign: "middle",
-                        }}
-                        size={20}
-                    >
-                        {data?.text?.sender.charAt(0)}
-                    </Avatar>{" "}
                     {data.text?.isFromApp
                         ? "Text Sent by " + data.text.sender
                         : "Text Received from " + data.text?.sender}
@@ -356,15 +338,6 @@ const DealBox = ({ data, user }: { data: TWallData; user: TUser }) => {
         <Card
             title={
                 <Typography.Text>
-                    <Avatar
-                        style={{
-                            backgroundColor: "#C0CA33",
-                            verticalAlign: "middle",
-                        }}
-                        size={20}
-                    >
-                        {data.deal?.creator?.firstName.charAt(0)}
-                    </Avatar>{" "}
                     {user.id == data.deal?.creator?.id
                         ? "Deal created - by You"
                         : "Deal created - by " + data.deal?.creator?.firstName}
@@ -381,15 +354,6 @@ const UpdateBox = ({ data, user }: { data: TWallData; user: TUser }) => {
         <Card
             title={
                 <Typography.Text>
-                    <Avatar
-                        style={{
-                            backgroundColor: "#C0CA33",
-                            verticalAlign: "middle",
-                        }}
-                        size={20}
-                    >
-                        {data.update?.by.charAt(0)}
-                    </Avatar>{" "}
                     {`${data.update?.title} - by ${
                         user.id == data.update?.userId ? "You" : data.update?.by
                     }`}
@@ -410,15 +374,6 @@ const Log = ({ data, user }: { data: TWallData; user: TUser }) => {
         <Card
             title={
                 <Typography.Text>
-                    <Avatar
-                        style={{
-                            backgroundColor: "#C0CA33",
-                            verticalAlign: "middle",
-                        }}
-                        size={20}
-                    >
-                        {data.update?.owner?.firstName.charAt(0)}
-                    </Avatar>{" "}
                     {user.id == data.update?.owner?.id
                         ? data.update?.type + "  - by You"
                         : data.update?.type +
@@ -490,15 +445,6 @@ const Activities = ({ data, user }: { data: TWallData; user: TUser }) => {
         <Card
             title={
                 <Typography.Text>
-                    <Avatar
-                        style={{
-                            backgroundColor: "#C0CA33",
-                            verticalAlign: "middle",
-                        }}
-                        size={20}
-                    >
-                        {data.activity?.owner?.firstName.charAt(0)}
-                    </Avatar>{" "}
                     {user.id == data.activity?.owner?.id
                         ? data.activity?.type + "  - by You"
                         : data.activity?.type +
@@ -570,15 +516,6 @@ const File = ({ data, user }: { data: TWallData; user: TUser }) => {
         <Card
             title={
                 <Typography.Text>
-                    <Avatar
-                        style={{
-                            backgroundColor: "#C0CA33",
-                            verticalAlign: "middle",
-                        }}
-                        size={20}
-                    >
-                        {data.update?.uploaded_by?.firstName.charAt(0)}
-                    </Avatar>{" "}
                     {user.id == data.update?.uploaded_by?.id
                         ? "File Added - by You"
                         : "File Added - by " +
@@ -623,26 +560,64 @@ const File = ({ data, user }: { data: TWallData; user: TUser }) => {
         </Card>
     );
 };
+const CallBox = ({ data, user }: { data: TWallData; user: TUser }) => {
+    const [isPlaying, setIsPlaying] = useState(false);
+    const audioRef = useRef<HTMLAudioElement>(null);
+    const [currentTime, setCurrentTime] = useState(0);
 
-const CallBox = () => {
+    const handleTogglePlay = () => {
+        if (audioRef.current) {
+            if (isPlaying) {
+                audioRef.current.pause();
+            } else {
+                audioRef.current.play();
+            }
+            setIsPlaying(!isPlaying);
+        }
+    };
+
+    const handleAudioEnded = () => {
+        setIsPlaying(false);
+    };
+
+    const handleTimeUpdate = () => {
+        if (audioRef.current) {
+            setCurrentTime(audioRef.current.currentTime);
+        }
+    };
+
+    const handleSliderChange = (e) => {
+        if (audioRef.current) {
+            const newValue = parseFloat(e.target.value);
+            audioRef.current.currentTime = newValue;
+            setCurrentTime(newValue);
+        }
+    };
+
+    useEffect(() => {
+        if (audioRef.current) {
+            audioRef.current.addEventListener("timeupdate", handleTimeUpdate);
+            return () => {
+                audioRef.current?.removeEventListener(
+                    "timeupdate",
+                    handleTimeUpdate
+                );
+            };
+        }
+    }, []);
+
     return (
         <Card
             title={
                 <Typography.Text>
-                    <Avatar
-                        style={{
-                            backgroundColor: "blue",
-                            verticalAlign: "middle",
-                        }}
-                        size={20}
-                    >
-                        J
-                    </Avatar>{" "}
-                    Call for Jesse Ashley
+                    Call{" "}
+                    {data.call?.isFromApp
+                        ? `by ${data.call?.userName}`
+                        : `for ${data.call?.userName}`}
                 </Typography.Text>
             }
             bordered={false}
-            extra="Jul 2"
+            extra={data.month.substring(0, 3) + " " + data.day}
         >
             <Space
                 direction="vertical"
@@ -650,31 +625,68 @@ const CallBox = () => {
                 style={{ width: "100%" }}
             >
                 <Space size={"large"}>
-                    <InfoCircleOutlined />
-                    <Typography.Text>From: Outreach</Typography.Text>
-                    <Typography.Text>To: +1 303-952-1461</Typography.Text>
+                    <Typography.Text>From: {data.call?.from}</Typography.Text>
+                    <Typography.Text>To: {data.call?.to}</Typography.Text>
                     <Button type="link" style={{ padding: 0 }}>
                         <PhoneOutlined /> Call back
                     </Button>
                 </Space>
                 <Space size={"large"}>
-                    <Typography.Text>
-                        <CalendarOutlined /> Jun 30, 2023 10:03 AM
+                    <Typography.Text style={{ alignItems: "center" }}>
+                        <CalendarOutlined /> {data.call?.dateTime}
                     </Typography.Text>
                     <Typography.Text>
-                        <ClockCircleOutlined /> 2 mins
+                        <ClockCircleOutlined /> {data.call?.duration}
                     </Typography.Text>
-                    <Typography.Text>Outcome: Connected</Typography.Text>
+                    <Typography.Text>
+                        Outcome:{" "}
+                        {data.call?.isAnswered ? "Connected" : "No Answer"}
+                    </Typography.Text>
                 </Space>
+                {data.call?.recording_url ? (
+                    <Space>
+                        <Button
+                            type="text"
+                            icon={
+                                isPlaying ? (
+                                    <PauseOutlined style={{ color: "red" }} />
+                                ) : (
+                                    <PlaySquareFilled
+                                        style={{ color: "green" }}
+                                    />
+                                )
+                            }
+                            onClick={handleTogglePlay}
+                        />
 
-                <Space size={"large"}>
-                    <PlayCircleOutlined />
-                    <PlaySquareFilled style={{ color: "green" }} />
-                    <DeleteOutlined />
-                    <DownloadOutlined />
-                </Space>
-                <Notestab />
+                        <div className="p-t-xs">
+                            <input
+                                type="range"
+                                min={0}
+                                max={
+                                    audioRef.current
+                                        ? audioRef.current.duration
+                                        : 0
+                                }
+                                value={currentTime}
+                                onChange={handleSliderChange}
+                            />
+                        </div>
+                        {/* <Button type="text" icon={<DeleteOutlined />} /> */}
+
+                        <CustomLink to={data.call?.recording_url}>
+                            <Button type="text" icon={<DownloadOutlined />} />
+                        </CustomLink>
+                    </Space>
+                ) : null}
             </Space>
+
+            {/* Audio Element */}
+            <audio
+                ref={audioRef}
+                src={data.call?.recording_url}
+                onEnded={handleAudioEnded}
+            />
         </Card>
     );
 };

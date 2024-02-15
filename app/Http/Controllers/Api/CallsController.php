@@ -43,7 +43,7 @@ class CallsController extends Controller
         return response()->json($data, 200);
     }
 
-    private function prepareCall ($call) {
+    public function prepareCall ($call) {
         $callData = Call::where('telnyxCallSessionId', $call->telnyxCallSessionId)->get();
         $isFromApp = MobileNumber::where('mobileNumber', $call->from)->first();
         
@@ -82,6 +82,7 @@ class CallsController extends Controller
             'from' => $call->from,
             'duration' => $isAnswered ? $hangupData->created_at->diffInSeconds($answeredData->created_at) : "0",
             'userName' => $userName,
+            'recording_url' => $call->recording->recording_url,
         ];
     }
 
