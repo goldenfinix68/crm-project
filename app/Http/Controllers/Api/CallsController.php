@@ -61,7 +61,7 @@ class CallsController extends Controller
         }
         else{
             $mobileNumnber = MobileNumber::where('mobileNumber', $call->to)->orderBy('id', 'desc')->first();
-            if(!empty($mobileNumnber)){
+            if(!empty($mobileNumnber) && !empty($mobileNumnber->user)){
                 $userName = $mobileNumnber->user->firstName . ' ' . $mobileNumnber->user->lastName;
             }
             else{

@@ -51,24 +51,16 @@ class TextsController extends Controller
 
         try {
             if(empty($request->schedule)){
-                \Telnyx\Telnyx::setApiKey(env('TELNYX_API_KEY'));
 
-                $response = \Telnyx\Message::Create([
-                    "from" => $request->from, // Your Telnyx number
-                    "to" => $request->to,
-                    "text" => $request->message,
-                    "messaging_profile_id" => env('TELNYX_PROFILE_ID'),
-                ]);
-                
                 $text = Text::create(array_merge($request->all(), [
                     'userId' => $userId, 
                     'type'=> 'SMS', 
-                    'telnyxId' => $response->id,
                     'status' => 'queued',
                     'isFromApp' => true,
-                    'telnyxResponse' => json_encode($response),
                     "to" => $request->to,
                 ]));
+
+                SendText::dispatch($text);
             }
             else{
                 $givenTime = strtotime($request->schedule);
