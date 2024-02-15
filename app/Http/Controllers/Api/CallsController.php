@@ -82,7 +82,7 @@ class CallsController extends Controller
             'from' => $call->from,
             'duration' => $isAnswered ? $hangupData->created_at->diffInSeconds($answeredData->created_at) : "0",
             'userName' => $userName,
-            'recording_url' => $call->recording->recording_url,
+            'recording_url' => $call->recording->recording_url ?? "",
         ];
     }
 
