@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use App\Services\RoorService;
+
 class MobileNumbersController extends Controller
 {
     /**
@@ -14,7 +16,20 @@ class MobileNumbersController extends Controller
      */
     public function index()
     {
-        //
+        $result = RoorService::getAvailableNumbers();
+
+        $data = [];
+
+        if(isset($result['phones'])){
+            foreach($result['phones'] as $number){
+                $data[] =[
+                    'mobileNumber' => $number
+                ];
+            }
+        }
+            
+        return response()->json($data, 200);
+        
     }
 
     /**

@@ -8,7 +8,8 @@ export type TUser = {
     forwardTo?: string;
     main_user?: TUser;
     settings?: TUserSettings;
-} & TSipTrunkingConnection;
+    mobileNumbers?: TMobileNumber[];
+};
 
 export type TMobileNumber = {
     id: string;

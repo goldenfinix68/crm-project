@@ -69,17 +69,13 @@ const AdminUsersTable = () => {
             },
         },
         {
-            key: "telnyxConnectionName",
-            title: "SIP Trunking / Mobile Numbers",
+            key: "mobileNumbers",
+            title: "Mobile Numbers",
             render: (key: any, record: TUser) => {
-                return record.telnyxConnectionName
-                    ? `${record.telnyxConnectionName} (${
-                          record.numbers?.length
-                              ? record.numbers
-                                    .map((number) => number.mobileNumber)
-                                    .join(", ")
-                              : ""
-                      })`
+                return record.mobileNumbers?.length
+                    ? `${record.mobileNumbers
+                          .map((number) => number.mobileNumber)
+                          .join(", ")}`
                     : "Not Set";
             },
         },

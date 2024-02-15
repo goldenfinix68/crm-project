@@ -52,7 +52,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'settings',
     ];
 
-    //depreciated, 1 user 1 number
     public function numbers()
     {
         return $this->hasMany(\App\Models\MobileNumber::class, 'userId', 'id');
@@ -112,6 +111,12 @@ class User extends Authenticatable implements MustVerifyEmail
         static::created(function ($user) {
             event(new UserCreated($user));
         });
+    }
+    public function toArray()
+    {
+        $array = parent::toArray();
+        $array['mobileNumbers'] = $this->numbers;
+        return $array;
     }
     
 

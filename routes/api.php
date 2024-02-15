@@ -145,6 +145,8 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('/filters', 'App\Http\Controllers\Api\FiltersController');
     Route::resource('/gSheet-crawl-results', 'App\Http\Controllers\Api\GSheetCrawlResultsController');
     Route::resource('/gSheet-crawl', 'App\Http\Controllers\Api\GSheetCrawlsController');
+
+    Route::resource('/mobile-numbers', 'App\Http\Controllers\Api\MobileNumbersController');
 });
 
 Route::post('/telnyx/sms/webhook', 'App\Http\Controllers\Api\TextsController@textReceived');

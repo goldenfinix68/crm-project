@@ -30,6 +30,7 @@ import {
     DEFAULT_REQUIRED_MESSAGE,
     userRoleOption,
 } from "../../../../constants";
+import { useMobileNumbersQuery } from "../../../../api/query/mobileNumberQuery";
 interface Props {
     isModalOpen: boolean;
     closeModal: () => void;
@@ -45,10 +46,9 @@ const AdminUsersAddUpdateModal = ({
     const [form] = Form.useForm();
     const { users, isLoading } = useUsersAll();
     const role = Form.useWatch("role", form);
-    const {
-        data: sipTrunkingConnections,
-        isLoading: isSipTrunkingConnectionsLoading,
-    } = useGetAvailableSipTrunkingConnectionTelnyx();
+
+    const { data: mobileNumbers, isLoading: isMobileNumbersLoading } =
+        useMobileNumbersQuery();
 
     const save = useMutation(addUserMutation, {
         onSuccess: () => {
@@ -64,14 +64,11 @@ const AdminUsersAddUpdateModal = ({
         },
     });
 
-    const onFinish = (values: TUser) => {
+    const onFinish = (values) => {
+        console.log(values);
         save.mutate({
             ...values,
             id: user?.id ? user.id : "",
-            sipTrunkingConnection: sipTrunkingConnections?.find(
-                (connection) =>
-                    connection.telnyxConnectionId == values.telnyxConnectionId
-            ),
         });
     };
     const resetFields = () => {
@@ -81,7 +78,12 @@ const AdminUsersAddUpdateModal = ({
     };
     useEffect(() => {
         if (user) {
+            console.log(user);
             form.setFieldsValue(user);
+            form.setFieldValue(
+                "mobileNumbers",
+                user.mobileNumbers?.map((data) => data.mobileNumber)
+            );
         } else {
             form.resetFields();
         }
@@ -158,38 +160,17 @@ const AdminUsersAddUpdateModal = ({
                     >
                         <Input type="email" />
                     </Form.Item>
-                    <Form.Item
-                        label="SIP Trunking Connection"
-                        name="telnyxConnectionId"
-                        rules={[
-                            {
-                                required: true,
-                                message: DEFAULT_REQUIRED_MESSAGE,
-                            },
-                        ]}
-                    >
+                    <Form.Item label="Mobile Number" name="mobileNumbers">
                         <Select
-                            placeholder="Select SIP Trunking Connection"
+                            mode="multiple"
+                            placeholder="Mobile Number"
                             defaultValue={[]}
                             style={{ width: "100%" }}
                             showSearch
-                            options={sipTrunkingConnections?.map(
-                                (connection) => ({
-                                    label: `${
-                                        connection.telnyxConnectionName
-                                    } (${
-                                        connection.numbers?.length
-                                            ? connection.numbers
-                                                  ?.map(
-                                                      (number) =>
-                                                          number.mobileNumber
-                                                  )
-                                                  .join(", ")
-                                            : "No number associated with this connection"
-                                    })`,
-                                    value: connection.telnyxConnectionId,
-                                })
-                            )}
+                            options={mobileNumbers?.map((data) => ({
+                                label: data.mobileNumber,
+                                value: data.mobileNumber,
+                            }))}
                         />
                     </Form.Item>
                     <Form.Item
