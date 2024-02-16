@@ -9,6 +9,7 @@ use App\Models\Text;
 use App\Models\CustomFieldValue;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
+use DB;
 
 class TextThread extends Model
 {
@@ -33,7 +34,7 @@ class TextThread extends Model
     public function getContactAttribute()
     {
         $fieldValue = CustomFieldValue::with(['customField'])
-                    ->where('value', $this->contactNumber)
+                    ->where(DB::raw("REPLACE(`value`, '+', '')"), $this->contactNumber)
                     ->where('customableType', 'contact')
                     ->whereHas('customField', function ($query) {
                         $query->whereIn('type', ['mobile', 'phone']);
