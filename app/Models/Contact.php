@@ -130,7 +130,7 @@ class Contact extends Model
         $phoneNumbers = [];
         foreach($this->customFieldValues as $customField){
             if(in_array($customField->customField->type, ['phone', 'mobile'])){
-                $phoneNumbers[] = $customField->value;
+                $phoneNumbers[] = str_replace('+', '', $customField->value);
             }
         }
 
@@ -183,8 +183,8 @@ class Contact extends Model
             return [];
         }
         $texts = Text::where(function ($query) {
-            $query->orWhere('to', $this->phoneNumbers)
-                ->orWhere('from', $this->phoneNumbers);
+            $query->orWhereIn('to', $this->phoneNumbers)
+                ->orWhereIn('from', $this->phoneNumbers);
         })
             ->orderBy('id', 'desc')
             ->get();
