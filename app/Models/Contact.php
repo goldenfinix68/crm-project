@@ -83,8 +83,6 @@ class Contact extends Model
     ];
 
     protected $appends = [
-        'wall',
-        'texts',
         'fields',
         'phoneNumbers',
         'duplicatePhoneNumbers'
@@ -247,12 +245,7 @@ class Contact extends Model
         return $this->hasMany(\App\Models\ContactFile::class, 'contact_id', 'id')->with('uploaded_by');
     }
 
-
-    public function getTextsAttribute()
-    {
-        return $this->texts();
-    }
-    public function getWallAttribute()
+    public function wall()
     {
         $data = new Collection();
 
