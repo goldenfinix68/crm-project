@@ -146,10 +146,14 @@ class Text extends Model
 
         static::created(function ($text) {
             $thread = TextThread::where(function ($query) use ($text) {
+                $from = str_replace('+', '', $text->from);
+                $to = str_replace('+', '', $text->to);
                 if ($text->isFromApp) {
-                    $query->where('userNumber', $text->from)->where('contactNumber', $text->to);
+                    $query->where(DB::raw("REPLACE(userNumber, '+', '')"), $from)
+                          ->where(DB::raw("REPLACE(userNumber, '+', '')"), $to);
                 } else {
-                    $query->where('userNumber', $text->to)->where('contactNumber', $text->from);
+                    $query->where(DB::raw("REPLACE(userNumber, '+', '')"), $to)
+                          ->where(DB::raw("REPLACE(userNumber, '+', '')"), $from);
                 }
             })->first();
 
