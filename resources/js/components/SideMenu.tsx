@@ -70,8 +70,8 @@ const SideMenu = ({ children, title }: { children: any; title?: string }) => {
 
         // Clean up the subscription when the component unmounts
         return () => {
-            channel.unbind("text-received");
-            pusher.unsubscribe("text-channel");
+            channel.unbind(`notif-received-${mainUserId}`);
+            pusher.unsubscribe(`notif-channel-${mainUserId}`);
         };
     }, []);
 
