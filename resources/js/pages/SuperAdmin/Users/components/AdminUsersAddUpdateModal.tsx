@@ -14,12 +14,14 @@ import {
     Form,
     Select,
     DatePicker,
+    Popconfirm,
+    message,
 } from "antd";
 
 import { CloseOutlined } from "@ant-design/icons";
 
 import { useMutation } from "react-query";
-import { TUser } from "../../../../entities";
+import { TMobileNumber, TUser } from "../../../../entities";
 import { addUserMutation } from "../../../../api/mutation/useUserMutation";
 import queryClient from "../../../../queryClient";
 import {
@@ -31,6 +33,7 @@ import {
     userRoleOption,
 } from "../../../../constants";
 import { useMobileNumbersQuery } from "../../../../api/query/mobileNumberQuery";
+import { useArray } from "../../../../helpers";
 interface Props {
     isModalOpen: boolean;
     closeModal: () => void;
@@ -46,6 +49,10 @@ const AdminUsersAddUpdateModal = ({
     const [form] = Form.useForm();
     const { users, isLoading } = useUsersAll();
     const role = Form.useWatch("role", form);
+    const selectedMobileNumbers = Form.useWatch("mobileNumbers", form);
+
+    const [addMobileInput, setAddMobileInput] = useState("");
+    const [addMobileSelect, setAddMobileSelect] = useState("");
 
     const { data: mobileNumbers, isLoading: isMobileNumbersLoading } =
         useMobileNumbersQuery();
@@ -82,7 +89,12 @@ const AdminUsersAddUpdateModal = ({
             form.setFieldsValue(user);
             form.setFieldValue(
                 "mobileNumbers",
-                user.mobileNumbers?.map((data) => data.mobileNumber)
+                user.mobileNumbers?.map(
+                    (number) =>
+                        `${number.mobileNumber} ${
+                            number.nickname ? `(${number.nickname})` : ""
+                        }`
+                )
             );
         } else {
             form.resetFields();
@@ -160,19 +172,105 @@ const AdminUsersAddUpdateModal = ({
                     >
                         <Input type="email" />
                     </Form.Item>
-                    <Form.Item label="Mobile Number" name="mobileNumbers">
-                        <Select
-                            mode="multiple"
-                            placeholder="Mobile Number"
-                            defaultValue={[]}
-                            style={{ width: "100%" }}
-                            showSearch
-                            options={mobileNumbers?.map((data) => ({
-                                label: data.mobileNumber,
-                                value: data.mobileNumber,
-                            }))}
-                        />
+
+                    <Form.Item label="Mobile Number">
+                        <Space.Compact className="w-100">
+                            <Form.Item noStyle name="mobileNumbers">
+                                <Select
+                                    mode="multiple"
+                                    placeholder="Mobile Number"
+                                    defaultValue={[]}
+                                    style={{ width: "100%" }}
+                                    showSearch
+                                    dropdownStyle={{ display: "none" }}
+                                />
+                            </Form.Item>
+
+                            <Form.Item noStyle>
+                                <Popconfirm
+                                    title={null}
+                                    icon={null}
+                                    overlayStyle={{ zIndex: 1000 }}
+                                    description={
+                                        <Space
+                                            direction="vertical"
+                                            className="w-100"
+                                        >
+                                            <label>Mobile Number</label>
+                                            <Select
+                                                placeholder="Mobile Number"
+                                                style={{ width: "100%" }}
+                                                showSearch
+                                                options={mobileNumbers?.map(
+                                                    (data) => ({
+                                                        label: data.mobileNumber,
+                                                        value: data.mobileNumber,
+                                                    })
+                                                )}
+                                                dropdownStyle={{ zIndex: 1001 }}
+                                                value={addMobileSelect}
+                                                onChange={(e) =>
+                                                    setAddMobileSelect(e)
+                                                }
+                                            />
+                                            <label>Nickname</label>
+                                            <Input
+                                                value={addMobileInput}
+                                                onChange={(e) =>
+                                                    setAddMobileInput(
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                        </Space>
+                                    }
+                                    onCancel={() => {
+                                        setAddMobileInput("");
+                                        setAddMobileSelect("");
+                                    }}
+                                    onConfirm={(e) => {
+                                        if (!addMobileSelect) {
+                                            message.error(
+                                                "Mobile Number is required."
+                                            );
+                                            return false;
+                                        }
+
+                                        const combined = `${addMobileSelect} (${addMobileInput})`;
+                                        const isPresent =
+                                            selectedMobileNumbers?.some(
+                                                (item) =>
+                                                    item.includes(
+                                                        addMobileSelect
+                                                    )
+                                            );
+
+                                        setAddMobileInput("");
+                                        setAddMobileSelect("");
+
+                                        if (isPresent) {
+                                            message.error(
+                                                "Number already assigned to user"
+                                            );
+                                            return false;
+                                        }
+
+                                        form.setFieldValue("mobileNumbers", [
+                                            ...selectedMobileNumbers,
+                                            combined,
+                                        ]);
+
+                                        return true;
+                                    }}
+                                    okText="Add"
+                                    cancelText="Cancel"
+                                >
+                                    <Button>Add number</Button>
+                                </Popconfirm>
+                            </Form.Item>
+                        </Space.Compact>
                     </Form.Item>
+
                     <Form.Item
                         label="Role"
                         name="role"

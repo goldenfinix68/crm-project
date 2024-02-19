@@ -14,6 +14,7 @@ export type TUser = {
 export type TMobileNumber = {
     id: string;
     mobileNumber: string;
+    nickname?: string;
 };
 
 export type TSipTrunkingConnection = {

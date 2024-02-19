@@ -74,7 +74,14 @@ const AdminUsersTable = () => {
             render: (key: any, record: TUser) => {
                 return record.mobileNumbers?.length
                     ? `${record.mobileNumbers
-                          .map((number) => number.mobileNumber)
+                          .map(
+                              (number) =>
+                                  `${number.mobileNumber} ${
+                                      number.nickname
+                                          ? `(${number.nickname})`
+                                          : ""
+                                  }`
+                          )
                           .join(", ")}`
                     : "Not Set";
             },

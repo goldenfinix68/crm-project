@@ -90,11 +90,20 @@ class UsersController extends Controller
         if($authUser->role == "superAdmin"){
             if(!empty($request->mobileNumbers)){
                 foreach ($request->mobileNumbers as $number) {
-                    $isExisting = MobileNumber::where('mobileNumber', $number)->where('userId', $user->id)->first();
+                    
+                    preg_match('/(\d+) \(/', $number, $matches);
+                    $phoneNumber = $matches[1];
+
+                    // Extract test string
+                    preg_match('/\((.*?)\)/', $number, $matches);
+                    $nickname = $matches[1];
+
+                    $isExisting = MobileNumber::where('mobileNumber', $phoneNumber)->where('userId', $user->id)->first();
                     if(empty($isExisting)){
                         $newMobile = new MobileNumber();
                         $newMobile->userId = $user->id;
-                        $newMobile->mobileNumber = $number;
+                        $newMobile->mobileNumber = $phoneNumber;
+                        $newMobile->nickname = $nickname;
                         $newMobile->save();
                     }
                 }
