@@ -45,7 +45,6 @@ class RoorPushContactsAutoresponder extends Command
             if(isset($contact->fields['mobile'])){
                 $processed++;
                 $result = RoorService::sendAutoCampaign($contact->fields['mobile'], $contact->fields['firstName'], $contact->fields['lastName']);
-                dd($result);
             }
         }
         
