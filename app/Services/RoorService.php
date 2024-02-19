@@ -68,4 +68,20 @@ class RoorService
         
         return self::makeRequest($endpoint, 'POST', $data, $headers);
     }
+
+    public function sendAutoCampaign($phone, $firstName, $lastName)
+    {
+        $endpoint = '/post/autoCampaignSend/key/' . env('ROOR_API_KEY') . '/response/json/campaign/' . env('ROOR_AUTOCAMPAIGN_ID');
+
+        $data = [
+            'phone' => $phone,
+            'first_name' => $firstName,
+            'last_name' => $lastName
+        ];
+        $headers = [
+            "Content-Type: application/x-www-form-urlencoded",
+        ];
+
+        return self::makeRequest($endpoint, 'POST', $data, $headers);
+    }
 }
