@@ -83,9 +83,11 @@ interface TDeals {
     owner: any;
 }
 const Deal = () => {
-    const { loggedInUser, contactFields } = useAppContextProvider();
+    const { loggedInUser, contactFields, isRoleStats } =
+        useAppContextProvider();
     const settings = loggedInUser?.settings;
-    const { isRoleStats, pipelines } = useAppContextProvider();
+
+    const { data: pipelines, isLoading: isPipelinesLoading } = dealPipelines();
     const queryClient = useQueryClient();
     const [filterPage, setFilterPage] = useState({
         pipelineId: pipelines?.length ? pipelines[0].id : "",
@@ -312,7 +314,7 @@ const Deal = () => {
     return (
         <Row className="deal-group-row">
             <Col md={24}>
-                <Card loading={isLoading}>
+                <Card loading={isLoading || isPipelinesLoading}>
                     {showDeleteButton ? (
                         <Row
                             style={{

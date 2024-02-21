@@ -40,7 +40,10 @@ class Controller extends BaseController
 
         if(!empty($fieldValue)){
             $contact = Contact::find($fieldValue->customableId);
-            return $contact;
+            $user = Auth::user();
+            if(!empty($contact) && $contact->userId == $user->mainId){
+                return $contact;
+            }
         }
 
         return false;
@@ -127,7 +130,7 @@ class Controller extends BaseController
     
         if($isRawNumbers){
             $numbers = $users->pluck('numbers')->flatten()->unique(function ($user) {
-                return $user['mobileNumber'];
+                return str_replace('+', '', $user['mobileNumber']);
             });
         }
         else{

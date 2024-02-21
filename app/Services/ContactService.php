@@ -21,7 +21,10 @@ class ContactService
                 ->first();
         if(!empty($fieldValue)){
             $contact = Contact::find($fieldValue->customableId);
-            return $contact;
+            $user = Auth::user();
+            if(!empty($contact) && $contact->userId == $user->mainId){
+                return $contact;
+            }
         }
 
         return false;
