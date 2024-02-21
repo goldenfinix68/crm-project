@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\Models\Contact;
 use App\Models\User;
 use App\Models\TextThread;
+use App\Services\ContactService;
 
 class Text extends Model
 {
@@ -41,6 +42,11 @@ class Text extends Model
     public function user()
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'userId');
+    }
+
+    public function customField()
+    {
+        return $this->hasOne(\App\Models\CustomField::class, 'id', 'customFieldId');
     }
 
     public function getSenderAttribute()
@@ -149,6 +155,16 @@ class Text extends Model
             $text->from = str_replace('+', '', $text->from);
             $text->to = str_replace('+', '', $text->to);
             $text->save();
+
+            //save default mobile number to use contacting contact
+            $number =  $text->isFromApp ? $text->to : $text->from;
+            $fieldName = $text->customField ? $text->customField->fieldName : "mobile";
+            $contact = ContactService::getContactByMobile($number, $fieldName);
+            
+            if(!empty($contact) && empty($contact->defaultMobileNumber)){
+                $contact->defaultMobileNumber = $text->isFromApp ? $text->from : $text->to;
+                $contact->save();
+            }
 
             $thread = TextThread::where(function ($query) use ($text) {
                 if ($text->isFromApp) {
