@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
     Button,
     Col,
@@ -31,7 +31,7 @@ import Search from "antd/es/input/Search";
 import { useTextTemplates } from "../../../api/query/textTemplateQuery";
 import { replacePlaceholders } from "../../../helpers";
 import UseTemplatePopover from "../../../components/UseTemplatePopover";
-import { TContact } from "../../../entities";
+import { TContact, TCustomFieldValue } from "../../../entities";
 import { useAppContextProvider } from "../../../context/AppContext";
 import AddAttributePopoverContent from "../../TextTemplates/components/AddAttributePopoverContent";
 interface Props {
@@ -91,11 +91,41 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
         ? moment(schedule.$d).format("MMM D, YYYY h:mm a")
         : "";
 
-    const filteredOptions = contacts?.filter((contact) =>
-        contact?.fields?.mobile?.includes(
-            toFormValue ? toFormValue.replace(/[-\s+_]/g, "") : ""
-        )
-    );
+    const [filteredOptions, setFilteredOptions] = useState<TContact[]>([]);
+    const getFilteredOptions = () => {
+        let _contacts;
+        _contacts = contacts?.filter((contact) => {
+            return contact?.phoneNumbers?.some((number: String) => {
+                return number;
+            });
+        });
+        setFilteredOptions(_contacts);
+    };
+
+    useEffect(() => {
+        // console.log("contacts", contacts);
+        if (contacts) {
+            getFilteredOptions();
+        }
+        return () => {};
+    }, [contacts]);
+
+    // const filteredOptions = () => {
+    //     //  get contacts that custom_field_values custom_field.type is mobile
+    //     let _contacts: TContact[] = [];
+
+    //     contacts.forEach((contact) => {
+    //         if (contact?.fields?.mobile) {
+    //             _contacts.push(
+    //                 contact?.fields?.mobile?.includes(
+    //                     toFormValue ? toFormValue.replace(/[-\s+_]/g, "") : ""
+    //                 )
+    //             );
+    //         }
+
+    //         // contact?.custom_field_values.forEach((element) => {});
+    //     });
+    // };
     return (
         <>
             <Form
