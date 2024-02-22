@@ -91,24 +91,11 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
         ? moment(schedule.$d).format("MMM D, YYYY h:mm a")
         : "";
 
-    const [filteredOptions, setFilteredOptions] = useState<TContact[]>([]);
-    const getFilteredOptions = () => {
-        let _contacts;
-        _contacts = contacts?.filter((contact) => {
-            return contact?.phoneNumbers?.some((number: String) => {
-                return number;
-            });
-        });
-        setFilteredOptions(_contacts);
-    };
-
-    useEffect(() => {
-        // console.log("contacts", contacts);
-        if (contacts) {
-            getFilteredOptions();
-        }
-        return () => {};
-    }, [contacts]);
+    const filteredOptions = contacts?.filter((contact) =>
+        contact?.fields?.mobile?.includes(
+            toFormValue ? toFormValue.replace(/[-\s+_]/g, "") : ""
+        )
+    );
 
     // const filteredOptions = () => {
     //     //  get contacts that custom_field_values custom_field.type is mobile
@@ -126,6 +113,20 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
     //         // contact?.custom_field_values.forEach((element) => {});
     //     });
     // };
+
+    const [toNumbers, setToNumbers] = useState([]);
+    useEffect(() => {
+        // console.log("to", to);
+        // console.log("to", JSON.parse(to ?? ""));
+        let _toNumbers = [];
+        if (to) {
+            _toNumbers = JSON.parse(to);
+            setToNumbers(Object.values(_toNumbers));
+            form.setFieldValue("to", Object.values(_toNumbers)[0]);
+        }
+        return () => {};
+    }, [to]);
+
     return (
         <>
             <Form
@@ -133,7 +134,7 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
                 layout="vertical"
                 labelWrap
                 initialValues={{
-                    to: to,
+                    to: "",
                     from: contact?.defaultMobileNumber ?? "",
                 }}
                 onFinish={onFinish}
@@ -154,7 +155,14 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
                             ]}
                         >
                             {to ? (
-                                <Input disabled />
+                                // <Input disabled />
+                                <Select style={{ width: "100%" }}>
+                                    {toNumbers?.map((number) => (
+                                        <Select.Option value={number}>
+                                            {number}
+                                        </Select.Option>
+                                    ))}
+                                </Select>
                             ) : (
                                 <AutoComplete
                                     options={filteredOptions?.map((option) => ({
