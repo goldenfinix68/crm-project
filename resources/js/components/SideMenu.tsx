@@ -37,20 +37,23 @@ const SideMenu = ({ children, title }: { children: any; title?: string }) => {
         cluster: (window as any).PUSHER_APP_CLUSTER,
     });
 
-    useEffect(() => {
-        // Subscribe to the Pusher channel and bind to the event
-        const channel = pusher.subscribe("text-channel");
-        channel.bind("text-received", (data) => {
-            console.log("Received a text:", data);
-            queryClient.invalidateQueries("callHistory");
-        });
+    // useEffect(() => {
+    //     // Subscribe to the Pusher channel and bind to the event
+    //     const channel = pusher.subscribe("text-channel");
+    //     channel.bind("text-received", (data) => {
+    //         console.log("Received a text:", data);
+    //         queryClient.invalidateQueries("callHistory");
 
-        // Clean up the subscription when the component unmounts
-        return () => {
-            channel.unbind("text-received");
-            pusher.unsubscribe("text-channel");
-        };
-    }, []);
+    //         const audio = new Audio("/path/to/sound.mp3"); // Provide the path to your sound file
+    //         audio.play();
+    //     });
+
+    //     // Clean up the subscription when the component unmounts
+    //     return () => {
+    //         channel.unbind("text-received");
+    //         pusher.unsubscribe("text-channel");
+    //     };
+    // }, []);
 
     useEffect(() => {
         const mainUserId =
@@ -58,11 +61,22 @@ const SideMenu = ({ children, title }: { children: any; title?: string }) => {
                 ? loggedInUser.id
                 : loggedInUser?.main_user?.id;
         // Subscribe to the Pusher channel and bind to the event
+
+        console.log(
+            `notif-channel-${mainUserId}`,
+            `notif-received-${mainUserId}`
+        );
+
         const channel = pusher.subscribe(`notif-channel-${mainUserId}`);
         channel.bind(`notif-received-${mainUserId}`, (data) => {
-            console.log("Call webhook receive:", data);
+            console.log("notif received", data);
+            if (data?.type == "text") {
+                const audio = new Audio("/sounds/text_sound.mp3");
+                audio.play();
+            }
+
             api.open({
-                message: data?.message ?? "Default",
+                message: <b>data?.message</b> ?? "Default",
                 description: data?.description ?? "Default",
                 duration: 0,
             });

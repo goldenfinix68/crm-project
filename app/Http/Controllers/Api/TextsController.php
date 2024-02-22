@@ -10,6 +10,9 @@ use Auth;
 use Carbon\Carbon;
 use App\Jobs\SendText;
 use App\Events\TextReceived;
+use App\Business\Pusher;
+
+use App\Services\UserService;
 
 class TextsController extends Controller
 {
@@ -165,7 +168,15 @@ class TextsController extends Controller
         $text->status = 'received';
         $text->save();
         
-        event(new TextReceived($text));
+        $mainUserIds = UserService::getMainUsersByMobile($text->to);
         
+        $pusher = new Pusher();
+        foreach($mainUserIds as $id){
+            $pusher->trigger('notif-channel-'.$id, 'notif-received-'.$id, [
+                'type' => 'text',
+                'message' => "Text Received",
+                'description' => $text->message,
+            ]);
+        }
     }
 }
