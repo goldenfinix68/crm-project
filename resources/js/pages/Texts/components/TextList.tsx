@@ -185,7 +185,10 @@ const TextList = ({ label }) => {
             ) : (
                 <div style={{ height: "32px" }}></div>
             )}
-            <List itemLayout="horizontal" style={{ marginTop: 0 }}>
+            <List
+                itemLayout="horizontal"
+                style={{ marginTop: 0, height: 400, overflowY: "scroll" }}
+            >
                 {threadList?.map((thread, index) => (
                     <>
                         {index === 0 && <Divider style={{ margin: "5px" }} />}
