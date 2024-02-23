@@ -12,6 +12,7 @@ import {
     ZoomInOutlined,
     DatabaseOutlined,
     UsergroupAddOutlined,
+    PicCenterOutlined,
 } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppContextProvider } from "../../context/AppContext";
@@ -102,6 +103,11 @@ const Setup: React.FC = (props) => {
             icon: <DatabaseOutlined />,
             title: "Import Data from Google Sheet",
             link: "/setup/data-administration/import-file-gsheet",
+        },
+        {
+            icon: <PicCenterOutlined />,
+            title: "Roor Data Mapping",
+            link: "/setup/data-administration/roor-data-mapping",
         },
     ];
 
