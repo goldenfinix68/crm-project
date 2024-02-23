@@ -187,7 +187,7 @@ const TextList = ({ label }) => {
             )}
             <List
                 itemLayout="horizontal"
-                style={{ marginTop: 0, height: 400, overflowY: "scroll" }}
+                style={{ marginTop: 0, height: "100vh", overflowY: "scroll" }}
             >
                 {threadList?.map((thread, index) => (
                     <>
