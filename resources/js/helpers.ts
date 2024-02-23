@@ -332,3 +332,16 @@ export async function updateAppVersion() {
         console.error("Error updating app version:", error);
     }
 }
+
+export function timeToLocalMachineTZ(date) {
+    // Create a Date object using the UTC string
+    const utcDate = new Date(date);
+
+    // Get the timezone offset in minutes
+    const timezoneOffset = new Date().getTimezoneOffset();
+
+    // Convert UTC time to local time
+    const localDate = new Date(utcDate.getTime() + timezoneOffset * 60 * 1000);
+
+    return "asdasd";
+}

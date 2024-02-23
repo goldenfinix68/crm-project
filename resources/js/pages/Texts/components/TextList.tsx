@@ -33,6 +33,7 @@ import AssignLabelModal from "./AssignLabelModal";
 import { useAppContextProvider } from "../../../context/AppContext";
 import AddTagModal from "./AddTagModal";
 import CustomLink from "../../../components/CustomLink";
+import moment from "moment";
 
 const TextList = ({ label }) => {
     const [searchKey, setSearchKey] = useState("");
@@ -347,9 +348,13 @@ const TextList = ({ label }) => {
                                                     </Dropdown>
                                                 </Space>
                                             ) : (
-                                                getTimeAgo(
-                                                    thread?.texts![0].created_at
-                                                )
+                                                moment
+                                                    .utc(
+                                                        thread?.texts![0]
+                                                            .created_at
+                                                    )
+                                                    .local()
+                                                    .format("MMM DD")
                                             )}
                                         </TextEllipsis>
                                     </Col>
