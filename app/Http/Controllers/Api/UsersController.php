@@ -230,9 +230,10 @@ class UsersController extends Controller
             $setting->mainUserId = $mainUserId; 
         }
 
-        $setting->dealCardpos2FieldId = $request->dealCardpos2FieldId;
-        $setting->dealCardpos3FieldId = $request->dealCardpos3FieldId;
-        $setting->dealCardpos4FieldId = $request->dealCardpos4FieldId;
+        $setting->dealCardpos2FieldId = $request->dealCardpos2FieldId ?? "";
+        $setting->dealCardpos3FieldId = $request->dealCardpos3FieldId ?? "";
+        $setting->dealCardpos4FieldId = $request->dealCardpos4FieldId ?? "";
+        $setting->roorMapping = $request->roorMapping ?? "";
 
         $setting->save();
 

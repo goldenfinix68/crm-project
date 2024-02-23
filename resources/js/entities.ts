@@ -298,4 +298,19 @@ export type TUserSettings = {
     dealCardpos2FieldId?: string;
     dealCardpos3FieldId?: string;
     dealCardpos4FieldId?: string;
+    roorMapping?: {
+        first_name?: string;
+        last_name?: string;
+        phone: string;
+        phone2?: string;
+        phone3?: string;
+        phone4?: string;
+        address1?: string;
+        address2?: string;
+        city?: string;
+        state?: string;
+        zip?: string;
+        email?: string;
+        notes?: string;
+    };
 };

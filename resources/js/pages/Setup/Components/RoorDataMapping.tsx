@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
     Button,
     Typography,
@@ -7,29 +7,26 @@ import {
     Row,
     message,
     Space,
-    Input,
-    Modal,
     Select,
     Form,
-    Checkbox,
     Col,
 } from "antd";
-import { CloseOutlined } from "@ant-design/icons";
 import { useMutation } from "react-query";
-import { bulkImportGSheet } from "../../../api/mutation/useContactMutation";
-import { useNavigate } from "react-router-dom";
 import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
 import queryClient from "../../../queryClient";
-import validateRules from "../../../providers/validateRules";
-import { gSheetCrawl } from "../../../api/query/importDataQuery";
 import { useAppContextProvider } from "../../../context/AppContext";
+import { userSettings } from "../../../api/mutation/useUserMutation";
 
 const RoorDataMapping: React.FC = () => {
     const [form] = Form.useForm();
-    const { data: crawl, isLoading } = gSheetCrawl();
-    const { contactFields } = useAppContextProvider();
+    const { contactFields, loggedInUser } = useAppContextProvider();
 
-    const save = useMutation(bulkImportGSheet, {
+    const settings =
+        loggedInUser?.role == "mainUser"
+            ? loggedInUser.settings
+            : loggedInUser?.main_user?.settings;
+
+    const save = useMutation(userSettings, {
         onSuccess: () => {
             queryClient.invalidateQueries("contacts");
             queryClient.invalidateQueries("filteredContacts");
@@ -41,37 +38,45 @@ const RoorDataMapping: React.FC = () => {
     });
     const onFinish = async (values: any) => {
         await save.mutate({
-            ...values,
+            ...settings,
+            roorMapping: values,
         });
     };
 
     useEffect(() => {
-        if (crawl?.id) {
-            form.setFieldValue("gSheedId", crawl.gSheetId);
-            form.setFieldValue("interval", crawl.interval);
-            form.setFieldValue("isAddToQueue", true);
+        if (settings?.roorMapping) {
+            form.setFieldsValue(settings.roorMapping);
         }
-    }, [crawl]);
+    }, [settings]);
 
-    const ContactFieldSelect = () => (
-        <Select showSearch className="w-100" allowClear>
-            {contactFields?.map((field, index) => (
-                <Select.Option value={field.id} key={index}>
-                    {field.label}
-                </Select.Option>
-            ))}
-        </Select>
+    const ContactFieldSelect = ({
+        label,
+        name,
+        rules,
+    }: {
+        label: string;
+        name: string;
+        rules?: any[];
+    }) => (
+        <Col span={12}>
+            <Form.Item label={label} name={name} rules={rules ?? undefined}>
+                <Select showSearch className="w-100" allowClear>
+                    {contactFields?.map((field, index) => (
+                        <Select.Option value={field.fieldName} key={index}>
+                            {field.label}
+                        </Select.Option>
+                    ))}
+                </Select>
+            </Form.Item>
+        </Col>
     );
     return (
         <Space direction="vertical">
             <Card>
                 <Typography.Title level={3}>Roor data mapping</Typography.Title>
                 <Typography className="m-b-sm">
-                    Now, you have the capability to effortlessly import contacts
-                    directly from a Google Sheet. Additionally, you have the
-                    flexibility to set the frequency at which our system crawls
-                    the spreadsheet, ensuring seamless updates to your account
-                    by identifying and adding any new contacts as needed.
+                    Now, you can sync contacts to your Roor's autoresponder
+                    list. Please map the data from Speelead to Roor's fields.
                 </Typography>
                 <Button
                     type="link"
@@ -90,185 +95,44 @@ const RoorDataMapping: React.FC = () => {
                     form={form}
                 >
                     <Row gutter={24}>
-                        <Col span={12}>
-                            <Form.Item
-                                label="First Name"
-                                name="firstName"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: DEFAULT_REQUIRED_MESSAGE,
-                                    },
-                                ]}
-                            >
-                                <ContactFieldSelect />
-                            </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                            <Form.Item
-                                label="Last Name"
-                                name="lastName"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: DEFAULT_REQUIRED_MESSAGE,
-                                    },
-                                ]}
-                            >
-                                <ContactFieldSelect />
-                            </Form.Item>
-                        </Col>
+                        <ContactFieldSelect
+                            label="First Name"
+                            name="first_name"
+                        />
+                        <ContactFieldSelect
+                            label="Last Name"
+                            name="last_name"
+                        />
+                        <ContactFieldSelect
+                            label="Phone"
+                            name="phone"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: DEFAULT_REQUIRED_MESSAGE,
+                                },
+                            ]}
+                        />
+                        <ContactFieldSelect label="Phone2" name="phone2" />
+                        <ContactFieldSelect label="Phone3" name="phone3" />
+                        <ContactFieldSelect label="Phone4" name="phone4" />
+                        <ContactFieldSelect label="Address" name="address" />
+                        <ContactFieldSelect label="Address2" name="address2" />
+                        <ContactFieldSelect label="City" name="city" />
+                        <ContactFieldSelect label="State" name="state" />
+                        <ContactFieldSelect label="Notes" name="notes" />
+                        <ContactFieldSelect label="Email" name="email" />
                     </Row>
-                    <Row gutter={24}>
-                        <Col span={12}>
-                            <Form.Item
-                                label="Email"
-                                name="email"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: DEFAULT_REQUIRED_MESSAGE,
-                                    },
-                                ]}
-                            >
-                                <ContactFieldSelect />
-                            </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                            <Form.Item
-                                label="Phone"
-                                name="phone"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: DEFAULT_REQUIRED_MESSAGE,
-                                    },
-                                ]}
-                            >
-                                <ContactFieldSelect />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row gutter={24}>
-                        <Col span={12}>
-                            <Form.Item
-                                label="Phone1"
-                                name="phone1"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: DEFAULT_REQUIRED_MESSAGE,
-                                    },
-                                ]}
-                            >
-                                <ContactFieldSelect />
-                            </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                            <Form.Item
-                                label="Phone2"
-                                name="phone2"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: DEFAULT_REQUIRED_MESSAGE,
-                                    },
-                                ]}
-                            >
-                                <ContactFieldSelect />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row gutter={24}>
-                        <Col span={12}>
-                            <Form.Item
-                                label="Phone3"
-                                name="phone3"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: DEFAULT_REQUIRED_MESSAGE,
-                                    },
-                                ]}
-                            >
-                                <ContactFieldSelect />
-                            </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                            <Form.Item
-                                label="Phone4"
-                                name="phone4"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: DEFAULT_REQUIRED_MESSAGE,
-                                    },
-                                ]}
-                            >
-                                <ContactFieldSelect />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row gutter={24}>
-                        <Col span={12}>
-                            <Form.Item
-                                label="City"
-                                name="city"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: DEFAULT_REQUIRED_MESSAGE,
-                                    },
-                                ]}
-                            >
-                                <ContactFieldSelect />
-                            </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                            <Form.Item
-                                label="State"
-                                name="state"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: DEFAULT_REQUIRED_MESSAGE,
-                                    },
-                                ]}
-                            >
-                                <ContactFieldSelect />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row gutter={24}>
-                        <Col span={12}>
-                            <Form.Item
-                                label="Zip"
-                                name="zip"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: DEFAULT_REQUIRED_MESSAGE,
-                                    },
-                                ]}
-                            >
-                                <ContactFieldSelect />
-                            </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                            <Form.Item
-                                label="Notes"
-                                name="notes"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: DEFAULT_REQUIRED_MESSAGE,
-                                    },
-                                ]}
-                            >
-                                <ContactFieldSelect />
-                            </Form.Item>
-                        </Col>
-                    </Row>
+
+                    <Space style={{ paddingTop: "5px" }}>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            loading={save.isLoading}
+                        >
+                            Save
+                        </Button>
+                    </Space>
                 </Form>
             </Card>
         </Space>
