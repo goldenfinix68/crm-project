@@ -100,7 +100,7 @@ const ActionMenu = ({ contact }: { contact: TContact }) => {
             <TextModal
                 closeModal={() => setTextModalOpen(false)}
                 isModalOpen={textModalOpen}
-                to={contact.fields.mobile ?? ""}
+                to={JSON.stringify(contact.phoneNumbers) ?? ""}
                 contact={contact}
             />
 

@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
     Button,
     Col,
@@ -31,7 +31,7 @@ import Search from "antd/es/input/Search";
 import { useTextTemplates } from "../../../api/query/textTemplateQuery";
 import { replacePlaceholders } from "../../../helpers";
 import UseTemplatePopover from "../../../components/UseTemplatePopover";
-import { TContact } from "../../../entities";
+import { TContact, TCustomFieldValue } from "../../../entities";
 import { useAppContextProvider } from "../../../context/AppContext";
 import AddAttributePopoverContent from "../../TextTemplates/components/AddAttributePopoverContent";
 interface Props {
@@ -96,6 +96,37 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
             toFormValue ? toFormValue.replace(/[-\s+_]/g, "") : ""
         )
     );
+
+    // const filteredOptions = () => {
+    //     //  get contacts that custom_field_values custom_field.type is mobile
+    //     let _contacts: TContact[] = [];
+
+    //     contacts.forEach((contact) => {
+    //         if (contact?.fields?.mobile) {
+    //             _contacts.push(
+    //                 contact?.fields?.mobile?.includes(
+    //                     toFormValue ? toFormValue.replace(/[-\s+_]/g, "") : ""
+    //                 )
+    //             );
+    //         }
+
+    //         // contact?.custom_field_values.forEach((element) => {});
+    //     });
+    // };
+
+    const [toNumbers, setToNumbers] = useState([]);
+    useEffect(() => {
+        // console.log("to", to);
+        // console.log("to", JSON.parse(to ?? ""));
+        let _toNumbers = [];
+        if (to) {
+            _toNumbers = JSON.parse(to);
+            setToNumbers(Object.values(_toNumbers));
+            form.setFieldValue("to", Object.values(_toNumbers)[0]);
+        }
+        return () => {};
+    }, [to]);
+
     return (
         <>
             <Form
@@ -103,7 +134,7 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
                 layout="vertical"
                 labelWrap
                 initialValues={{
-                    to: to,
+                    to: "",
                     from: contact?.defaultMobileNumber ?? "",
                 }}
                 onFinish={onFinish}
@@ -124,7 +155,14 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
                             ]}
                         >
                             {to ? (
-                                <Input disabled />
+                                // <Input disabled />
+                                <Select style={{ width: "100%" }}>
+                                    {toNumbers?.map((number) => (
+                                        <Select.Option value={number}>
+                                            {number}
+                                        </Select.Option>
+                                    ))}
+                                </Select>
                             ) : (
                                 <AutoComplete
                                     options={filteredOptions?.map((option) => ({
