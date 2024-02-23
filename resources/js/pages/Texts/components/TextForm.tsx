@@ -225,7 +225,7 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
                 >
                     <Input.TextArea
                         ref={messageTextAreaRef}
-                        autoSize={{ minRows: 1, maxRows: 6 }}
+                        autoSize={{ minRows: 2, maxRows: 6 }}
                         placeholder="Type here ..."
                     ></Input.TextArea>
                 </Form.Item>
