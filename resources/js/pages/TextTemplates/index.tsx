@@ -40,7 +40,7 @@ const TextTemplates = () => {
     return (
         <>
             <Card bodyStyle={{ padding: 0 }}>
-                <Row gutter={0} style={{ height: "85vh" }}>
+                <Row gutter={0}>
                     <Col span={4} style={{ padding: "24px" }}>
                         <Row>
                             <Col span={24}>
