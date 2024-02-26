@@ -11,6 +11,7 @@ use App\Models\CustomFieldValue;
 use App\Models\ContactType;
 use App\Models\User;
 use Auth;
+use DB;
 
 class Controller extends BaseController
 {
@@ -28,9 +29,9 @@ class Controller extends BaseController
     }
 
     public function getContactByMobile($mobile) {
-
+        $mobile = str_replace('+', '', $mobile);
         $fieldValue = CustomFieldValue::with(['customField'])
-                ->where('value', $mobile)
+                ->where(DB::raw("REPLACE(`value`, '+', '')"), $mobile)
                 ->where('customableType', 'contact')
                 ->whereHas('customField', function ($query) {
                     $query->where('type', 'mobile');
@@ -39,7 +40,10 @@ class Controller extends BaseController
 
         if(!empty($fieldValue)){
             $contact = Contact::find($fieldValue->customableId);
-            return $contact;
+            $user = Auth::user();
+            if(!empty($contact) && $contact->userId == $user->mainId){
+                return $contact;
+            }
         }
 
         return false;
@@ -126,7 +130,7 @@ class Controller extends BaseController
     
         if($isRawNumbers){
             $numbers = $users->pluck('numbers')->flatten()->unique(function ($user) {
-                return $user['mobileNumber'];
+                return str_replace('+', '', $user['mobileNumber']);
             });
         }
         else{

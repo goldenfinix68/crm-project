@@ -40,6 +40,7 @@ import TextBoxView from "./pages/Texts/components/TextBoxView";
 import TextTemplates from "./pages/TextTemplates";
 import Users from "./pages/Users";
 import AddEditUser from "./pages/Users/AddEditUser";
+import RoorDataMapping from "./pages/Setup/Components/RoorDataMapping";
 
 const AppRoutes = () => {
     const { user, isLoading, isError } = useLoggedInUser();
@@ -362,6 +363,18 @@ const AppRoutes = () => {
                                         <SetupLayout
                                             content={<ComponentImportData />}
                                             title="Import Data"
+                                        />
+                                    </PrivateRoute>
+                                }
+                            />
+
+                            <Route
+                                path="/setup/data-administration/roor-data-mapping"
+                                element={
+                                    <PrivateRoute>
+                                        <SetupLayout
+                                            content={<RoorDataMapping />}
+                                            title="Roor Data Mapping"
                                         />
                                     </PrivateRoute>
                                 }

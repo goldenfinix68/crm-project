@@ -139,6 +139,11 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                     path: "/setup/data-administration/import-file-gsheet",
                     label: "Import Data from google sheet",
                 },
+                {
+                    key: "/setup/data-administration/roor-data-mapping",
+                    path: "/setup/data-administration/roor-data-mapping",
+                    label: "Roor Data Mapping",
+                },
             ],
         },
     ];

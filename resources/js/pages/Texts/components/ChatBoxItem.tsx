@@ -3,6 +3,7 @@ import { Avatar, Space, Tooltip } from "antd";
 import { TText } from "../../../entities";
 import { CalendarOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import moment from "moment";
+import { timeToLocalMachineTZ } from "../../../helpers";
 
 const ChatBoxItem = ({ name, text }: { name: string; text: TText }) => {
     return !text.isFromApp ? (
@@ -24,15 +25,10 @@ const ChatBoxItem = ({ name, text }: { name: string; text: TText }) => {
                     {text.message}
                 </div>
                 <div style={{ marginTop: "8px", fontSize: "10px" }}>
-                    {`${text.to} ${
-                        text.month.substring(0, 3) +
-                        " " +
-                        text.day +
-                        ", " +
-                        text.year +
-                        " " +
-                        text.time
-                    }`}
+                    {`${text.to} ${moment
+                        .utc(text.created_at)
+                        .local()
+                        .format("MMM DD, YYYY hh:mm A")}`}
                 </div>
             </div>
         </div>
@@ -68,9 +64,10 @@ const ChatBoxItem = ({ name, text }: { name: string; text: TText }) => {
                     ) : null}
                     {text.status == "scheduled" && text.schedule ? (
                         <Tooltip
-                            title={`Will be sent on ${moment(
-                                text.schedule
-                            ).format("MMMM D, YYYY h:mm A")}`}
+                            title={`Will be sent on ${moment
+                                .utc(text.schedule)
+                                .local()
+                                .format("MMM DD, YYYY hh:mm A")}`}
                         >
                             <CalendarOutlined />
                         </Tooltip>
@@ -78,15 +75,10 @@ const ChatBoxItem = ({ name, text }: { name: string; text: TText }) => {
                     {text.message}
                 </div>
                 <div style={{ marginTop: "8px", fontSize: "10px" }}>
-                    {`${
-                        text.month.substring(0, 3) +
-                        " " +
-                        text.day +
-                        ", " +
-                        text.year +
-                        " " +
-                        text.time
-                    } ${text.from}`}
+                    {`${moment
+                        .utc(text.created_at)
+                        .local()
+                        .format("MMM DD, YYYY hh:mm A")} ${text.from}`}
                 </div>
             </div>
         </div>

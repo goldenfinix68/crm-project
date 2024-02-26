@@ -23,7 +23,7 @@ class UsersController extends Controller
     {
         $user = Auth::user();
         if($user->role == "superAdmin"){
-            $query = User::with(['numbers', 'mainUser']);
+            $query = User::with(['mainUser']);
 
             // Apply search filter
             if ($request->has('search')) {
@@ -76,7 +76,7 @@ class UsersController extends Controller
         else{
             $user = User::find($request->id);
         }
-        $lastUser = User::orderBy('id', 'desc')->first();
+        // $lastUser = User::orderBy('id', 'desc')->first();
 
 
         $user->firstName = $request->firstName;
@@ -85,27 +85,31 @@ class UsersController extends Controller
         $user->role = $request->role;
         $user->mainUserId = $authUser->role == "superAdmin" ? $request->mainUserId : $authUser->id;
         $user->password = bcrypt($request->password);
-        $user->sortCallForwarding = $lastUser ? $lastUser->id + 1 : 1;
-        
+        $user->sortCallForwarding = 0;
+
         if($authUser->role == "superAdmin"){
-            $user->telnyxConnectionId = $request->sipTrunkingConnection['telnyxConnectionId'];
-            $user->telnyxConnectionName = $request->sipTrunkingConnection['telnyxConnectionName'];
-            $user->telnyxConnectionUserName = $request->sipTrunkingConnection['telnyxConnectionUserName'];
-            $user->telnyxConnectionPassword = $request->sipTrunkingConnection['telnyxConnectionPassword'];
-            $user->save();
-    
-            foreach($request->sipTrunkingConnection['numbers'] as $number){
-                $isExisting = MobileNumber::where('mobileNumber', $number['mobileNumber'])->where('userId', $user->id)->first();
-                if(empty($isExisting)){
-                    $newMobile = new MobileNumber();
-                    $newMobile->userId = $user->id;
-                    $newMobile->mobileNumber = $number['mobileNumber'];
-                    $newMobile->telnyxMobileId = $number['id'];
-                    $newMobile->save();
+            if(!empty($request->mobileNumbers)){
+                foreach ($request->mobileNumbers as $number) {
+                    
+                    preg_match('/(\d+) \(/', $number, $matches);
+                    $phoneNumber = $matches[1];
+
+                    // Extract test string
+                    preg_match('/\((.*?)\)/', $number, $matches);
+                    $nickname = $matches[1];
+
+                    $isExisting = MobileNumber::where('mobileNumber', $phoneNumber)->where('userId', $user->id)->first();
+                    if(empty($isExisting)){
+                        $newMobile = new MobileNumber();
+                        $newMobile->userId = $user->id;
+                        $newMobile->mobileNumber = $phoneNumber;
+                        $newMobile->nickname = $nickname;
+                        $newMobile->save();
+                    }
                 }
             }
-            $mobileNumbers = collect($request->sipTrunkingConnection['numbers'])->pluck('mobileNumber')->toArray();
-            $user->numbers()->whereNotIn('mobileNumber', $mobileNumbers)->delete();
+
+            $user->numbers()->whereNotIn('mobileNumber', $request->mobileNumbers)->delete();
     
         }
         if(empty($request->id)){
@@ -226,9 +230,10 @@ class UsersController extends Controller
             $setting->mainUserId = $mainUserId; 
         }
 
-        $setting->dealCardpos2FieldId = $request->dealCardpos2FieldId;
-        $setting->dealCardpos3FieldId = $request->dealCardpos3FieldId;
-        $setting->dealCardpos4FieldId = $request->dealCardpos4FieldId;
+        $setting->dealCardpos2FieldId = $request->dealCardpos2FieldId ?? "";
+        $setting->dealCardpos3FieldId = $request->dealCardpos3FieldId ?? "";
+        $setting->dealCardpos4FieldId = $request->dealCardpos4FieldId ?? "";
+        $setting->roorMapping = $request->roorMapping ?? "";
 
         $setting->save();
 

@@ -201,7 +201,7 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
                             ]}
                         >
                             <Select style={{ width: "100%" }}>
-                                {user?.numbers?.map((number) => (
+                                {user?.mobileNumbers?.map((number) => (
                                     <Select.Option
                                         value={number.mobileNumber}
                                         key={number.id}

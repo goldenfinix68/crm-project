@@ -61,7 +61,7 @@ class CallsController extends Controller
         }
         else{
             $mobileNumnber = MobileNumber::where('mobileNumber', $call->to)->orderBy('id', 'desc')->first();
-            if(!empty($mobileNumnber)){
+            if(!empty($mobileNumnber) && !empty($mobileNumnber->user)){
                 $userName = $mobileNumnber->user->firstName . ' ' . $mobileNumnber->user->lastName;
             }
             else{
@@ -82,7 +82,7 @@ class CallsController extends Controller
             'from' => $call->from,
             'duration' => $isAnswered ? $hangupData->created_at->diffInSeconds($answeredData->created_at) : "0",
             'userName' => $userName,
-            'recording_url' => $call->recording->recording_url,
+            'recording_url' => $call->recording->recording_url ?? "",
         ];
     }
 
@@ -181,6 +181,7 @@ class CallsController extends Controller
         if(in_array($call->type, ['call.initiated', 'call.answered', 'call.hangup'])){
             $pusher = new Pusher();
             $pusher->trigger('notif-channel-'.$mainUser->id, 'notif-received-'.$mainUser->id, [
+                'type' => 'call',
                 'message' => "Call Information",
                 'description' => 'Call '.str_replace('call.', "", $call->type).' from contact ' . $callDetails['contactName'] . ' to user ' . $callDetails['userName'],
             ]);

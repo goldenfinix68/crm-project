@@ -74,6 +74,7 @@ class CheckWorkflow extends Command
                             $text->status = 'queued';
                             $text->isFromApp = true;
                             $text->workflowItemId = $workflowItem->id;
+                            $text->customFieldId = $customField->id;
                             $text->save();
 
                             SendText::dispatch($text)->delay(now()->addSeconds($timeStartSeconds + 1));

@@ -83,8 +83,6 @@ class Contact extends Model
     ];
 
     protected $appends = [
-        'wall',
-        'texts',
         'fields',
         'phoneNumbers',
         'duplicatePhoneNumbers'
@@ -132,7 +130,7 @@ class Contact extends Model
         $phoneNumbers = [];
         foreach($this->customFieldValues as $customField){
             if(in_array($customField->customField->type, ['phone', 'mobile'])){
-                $phoneNumbers[] = $customField->value;
+                $phoneNumbers[] = str_replace('+', '', $customField->value);
             }
         }
 
@@ -185,8 +183,8 @@ class Contact extends Model
             return [];
         }
         $texts = Text::where(function ($query) {
-            $query->orWhere('to', $this->phoneNumbers)
-                ->orWhere('from', $this->phoneNumbers);
+            $query->orWhereIn('to', $this->phoneNumbers)
+                ->orWhereIn('from', $this->phoneNumbers);
         })
             ->orderBy('id', 'desc')
             ->get();
@@ -247,12 +245,7 @@ class Contact extends Model
         return $this->hasMany(\App\Models\ContactFile::class, 'contact_id', 'id')->with('uploaded_by');
     }
 
-
-    public function getTextsAttribute()
-    {
-        return $this->texts();
-    }
-    public function getWallAttribute()
+    public function wall()
     {
         $data = new Collection();
 

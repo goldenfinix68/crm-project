@@ -28,11 +28,6 @@ const AddEditUser = () => {
     const { user, isLoading } = usefindUser(userId ?? "");
     const { loggedInUser, isSUperAdmin } = useAppContextProvider();
 
-    const {
-        data: sipTrunkingConnections,
-        isLoading: isSipTrunkingConnectionsLoading,
-    } = useGetAvailableSipTrunkingConnectionTelnyx();
-
     const mutation = useMutation(addUserMutation, {
         onSuccess: () => {
             navigate("/setup/customizations/users"); // Redirect to the users list page after successful submission
@@ -43,10 +38,6 @@ const AddEditUser = () => {
         mutation.mutate({
             ...values,
             mainUserId: loggedInUser?.id,
-            sipTrunkingConnection: sipTrunkingConnections?.find(
-                (connection) =>
-                    connection.telnyxConnectionId == values.telnyxConnectionId
-            ),
         });
     };
 
@@ -62,10 +53,6 @@ const AddEditUser = () => {
         }
     }, [user]);
 
-    if (isLoading || isSipTrunkingConnectionsLoading) {
-        return <LoadingComponent />;
-    }
-
     return (
         <Card
             title={`${user ? "Edit" : "Add"} user`}
@@ -76,6 +63,7 @@ const AddEditUser = () => {
                     </Button>
                 </Link>
             }
+            loading={isLoading}
         >
             <Form
                 name="basic"

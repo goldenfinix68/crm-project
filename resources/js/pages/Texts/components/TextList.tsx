@@ -33,6 +33,7 @@ import AssignLabelModal from "./AssignLabelModal";
 import { useAppContextProvider } from "../../../context/AppContext";
 import AddTagModal from "./AddTagModal";
 import CustomLink from "../../../components/CustomLink";
+import moment from "moment";
 
 const TextList = ({ label }) => {
     const [searchKey, setSearchKey] = useState("");
@@ -185,7 +186,10 @@ const TextList = ({ label }) => {
             ) : (
                 <div style={{ height: "32px" }}></div>
             )}
-            <List itemLayout="horizontal" style={{ marginTop: 0 }}>
+            <List
+                itemLayout="horizontal"
+                style={{ marginTop: 0, height: "100vh", overflowY: "scroll" }}
+            >
                 {threadList?.map((thread, index) => (
                     <>
                         {index === 0 && <Divider style={{ margin: "5px" }} />}
@@ -344,9 +348,13 @@ const TextList = ({ label }) => {
                                                     </Dropdown>
                                                 </Space>
                                             ) : (
-                                                getTimeAgo(
-                                                    thread?.texts![0].created_at
-                                                )
+                                                moment
+                                                    .utc(
+                                                        thread?.texts![0]
+                                                            .created_at
+                                                    )
+                                                    .local()
+                                                    .format("MMM DD")
                                             )}
                                         </TextEllipsis>
                                     </Col>

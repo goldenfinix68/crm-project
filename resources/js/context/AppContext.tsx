@@ -6,14 +6,13 @@ import React, {
     Dispatch,
     SetStateAction,
 } from "react";
-import { TContact, TCustomField, TDealPipeline, TUser } from "../entities";
+import { TContact, TCustomField, TUser } from "../entities";
 import { useContactsAll } from "../api/query/contactsQuery";
 import { useLoggedInUser } from "../api/query/userQuery";
 import {
     useCustomFieldSections,
     useCustomFields,
 } from "../api/query/customFieldQuery";
-import { dealPipelines } from "../api/query/dealQuery";
 
 // Define the context type
 interface IAppContext {
@@ -25,7 +24,6 @@ interface IAppContext {
     isRoleStats: boolean;
     isContactFieldsLoading: boolean;
     isSUperAdmin: boolean;
-    pipelines?: TDealPipeline[];
 }
 
 // Create the context
@@ -51,8 +49,6 @@ export function AppContextProvider({ children }: AppContextProviderProps) {
         refetch: refetchContactFields,
     } = useCustomFields("contact");
 
-    const { data: pipelines, isLoading: isPipelinesLoading } = dealPipelines();
-
     return (
         <AppContext.Provider
             value={{
@@ -64,7 +60,6 @@ export function AppContextProvider({ children }: AppContextProviderProps) {
                 isContactFieldsLoading,
                 isRoleStats: user?.role == "stats",
                 isSUperAdmin: user?.role == "superAdmin",
-                pipelines,
             }}
         >
             {children}

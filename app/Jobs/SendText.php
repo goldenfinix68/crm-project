@@ -9,6 +9,9 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Text;
+use Illuminate\Support\Facades\Validator;
+
+use App\Services\RoorService;
 
 class SendText implements ShouldQueue
 {
@@ -33,24 +36,32 @@ class SendText implements ShouldQueue
     public function handle()
     {
         $text = Text::find($this->text->id);
-        $to = json_decode($text->to);
         try {
-            \Telnyx\Telnyx::setApiKey(env('TELNYX_API_KEY'));
 
-            $response = \Telnyx\Message::Create([
-                "from" => $text->from, // Your Telnyx number
-                "to" => $to[0], //temp sent to many not enabled yet
-                "text" => $text->message,
-                "messaging_profile_id" => env('TELNYX_PROFILE_ID'),
+            $validator = Validator::make($text->toArray(), [
+                'to' => ['required', 'regex:/^\+?1?[2-9]\d{2}[2-9](?!11)\d{6}$/'],
+                'from' => ['required', 'regex:/^\+?1?[2-9]\d{2}[2-9](?!11)\d{6}$/'],
+            ], [
+                'to.regex' => 'Please enter a valid US phone number.',
+                'from.regex' => 'Please enter a valid US phone number.',
             ]);
-            
-            $text->telnyxId = $response->id;
-            $text->status = 'queued';
-            $text->telnyxResponse = json_encode($response);
-            $text->save();
+
+            if ($validator->fails()) {
+                $text->status ='failed';
+                $text->errorMessage = $validator->errors()->first();
+                $text->save();
+            }
+            else{
+                $result = RoorService::sendText($text);
+                $text->status = $result['status'] == 'success' ? 'sent' : 'failed';
+                $text->errorMessage = $result['message'] ?? "";
+                $text->save();
+            }
+        
+
         } catch (\Exception $e) {
             $text->status = 'failed';
-            $text->telnyxResponse = $e->getMessage();
+            $text->errorMessage = $e->getMessage() ?? "Something went wrong.";
             $text->save();            
         }
     }
