@@ -114,15 +114,21 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
     //     });
     // };
 
-    const [toNumbers, setToNumbers] = useState([]);
+    const [toNumbers, setToNumbers]: any = useState([]);
     useEffect(() => {
-        // console.log("to", to);
-        // console.log("to", JSON.parse(to ?? ""));
-        let _toNumbers = [];
+        console.log("to", to);
+        console.log("to", JSON.parse(to ?? ""));
+        let _toNumbers: any = [];
         if (to) {
             _toNumbers = JSON.parse(to);
-            setToNumbers(Object.values(_toNumbers));
-            form.setFieldValue("to", Object.values(_toNumbers)[0]);
+            if (typeof _toNumbers === "object") {
+                setToNumbers(Object.values(_toNumbers));
+                console.log("toNumbers", toNumbers);
+                form.setFieldValue("to", Object.values(_toNumbers)[0]);
+            } else {
+                setToNumbers([_toNumbers]);
+                form.setFieldValue("to", _toNumbers.toString());
+            }
         }
         return () => {};
     }, [to]);
