@@ -467,7 +467,8 @@ class ContactsController extends Controller
         }
         // Dispatch the job to process the data asynchronously
         $mainUser = $user->mainUser;
-        dispatch(new \App\Jobs\ProcessContactImportGSheet($spreadsheetId, $mainUser, $user));
+
+        dispatch(new \App\Jobs\ProcessContactImportGSheet($spreadsheetId, $mainUser, $user, $request->roorAutoresponderId));
 
         if($request->isAddToQueue){
             $crawl = GSheetCrawl::where('mainUserId', $mainUser->id)->first();

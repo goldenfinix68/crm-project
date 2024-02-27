@@ -291,6 +291,7 @@ export type TGSheetCrawl = {
 
 export type TGSheetCrawlResult = {
     isSuccess: boolean;
+    isImportedToRoor: boolean;
     errors?: string[];
 };
 

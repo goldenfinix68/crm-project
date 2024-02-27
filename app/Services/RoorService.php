@@ -69,19 +69,34 @@ class RoorService
         return self::makeRequest($endpoint, 'POST', $data, $headers);
     }
 
-    public function sendAutoCampaign($phone, $firstName, $lastName)
+    public function sendAutoCampaign($contact, $roorMapping)
     {
-        $endpoint = '/post/autoCampaignSend/key/' . env('ROOR_API_KEY') . '/response/json/campaign/' . env('ROOR_AUTOCAMPAIGN_ID');
+
+        $endpoint = '/post/autoCampaignSend/key/' . env('ROOR_API_KEY') . '/response/json/campaign/' . $roorMapping;
 
         $data = [
-            'phone' => $phone,
-            'first_name' => $firstName,
-            'last_name' => $lastName
+            'phone' => $contact->fields[$roorMapping->phone ?? ""] ?? "",
+            'first_name' => $contact->fields[$roorMapping->first_name ?? ""] ?? "",
+            'last_name' => $contact->fields[$roorMapping->last_name ?? ""] ?? "",
+            'phone2' => $contact->fields[$roorMapping->phone2 ?? ""] ?? "",
+            'phone3' => $contact->fields[$roorMapping->phone3 ?? ""] ?? "",
+            'phone4' => $contact->fields[$roorMapping->phone4 ?? ""] ?? "",
+            'address' => $contact->fields[$roorMapping->address ?? ""] ?? "",
+            'address2' => $contact->fields[$roorMapping->address2 ?? ""] ?? "",
+            'city' => $contact->fields[$roorMapping->city ?? ""] ?? "",
+            'state' => $contact->fields[$roorMapping->state ?? ""] ?? "",
+            'notes' => $contact->fields[$roorMapping->notes ?? ""] ?? "",
+            'email' => $contact->fields[$roorMapping->email ?? ""] ?? ""
         ];
+
         $headers = [
             "Content-Type: application/x-www-form-urlencoded",
         ];
 
-        return self::makeRequest($endpoint, 'POST', $data, $headers);
+        $result =self::makeRequest($endpoint, 'POST', $data, $headers);
+
+        \Log::info('sendAutoCampaign');
+        \Log::info($result);
+        return $result;
     }
 }

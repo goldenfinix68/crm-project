@@ -11,6 +11,7 @@ use App\Models\GSheetCrawlResult;
 use App\Models\Contact;
 
 use App\Services\CustomFieldService;
+use App\Services\RoorService;
 
 use Google_Client;
 use Google_Service_Sheets;
@@ -24,12 +25,14 @@ class ProcessContactImportGSheet implements ShouldQueue
     protected $spreadsheetId;
     protected $mainUser;
     protected $initiatedBy;
+    protected $roorAutoresponderId;
 
-    public function __construct($spreadsheetId, $mainUser, $initiatedBy = null)
+    public function __construct($spreadsheetId, $mainUser, $initiatedBy = null, $roorAutoresponderId = null)
     {
         $this->spreadsheetId = $spreadsheetId;
         $this->mainUser = $mainUser;
         $this->initiatedBy = $initiatedBy;
+        $this->roorAutoresponderId = $roorAutoresponderId;
     }
 
     public function handle()
@@ -39,6 +42,8 @@ class ProcessContactImportGSheet implements ShouldQueue
             $service = $this->setupGoogleSheetsClient();
             $mainUser = $this->mainUser;
             $initiatedBy = $this->initiatedBy;
+
+            $roorMapping = $mainUser->settings->roorMapping;
 
             // Fetch data from the Google Sheet
             $range = 'Sheet1';
@@ -98,7 +103,7 @@ class ProcessContactImportGSheet implements ShouldQueue
                     }
 
                     $errors = $this->validateData($customFields, $result);
-                    $importResult[] = [
+                    $tempImportResult = [
                         "isSuccess" => empty($errors),
                         "errors" => $errors,
                         // "customFields" => $customFields,
@@ -137,20 +142,31 @@ class ProcessContactImportGSheet implements ShouldQueue
                         if($continue){
                             $results[$key]['SL_ID'] = $contact->id;
                             DB::commit();
+                            if(!empty($this->roorAutoresponderId) && !empty($roorMapping)){
+                                $roorResult = RoorService::sendAutoCampaign($contact, $roorMapping, $this->roorAutoresponderId);
+                                $tempImportResult['isImportedToRoor'] = $roorResult['status'] == "success";
+                            }
                         }
                     }
+                    $importResult[] = $tempImportResult;
                 }
             }
 
+            // if(!empty($this->roorAutoresponderId) && !empty($roorMapping)){
+            //     $contacts = Contact::where('googlesheetId', $this->spreadsheetId)->get();
+            //     foreach($contacts as $contact){
+            //         $roorResult = RoorService::sendAutoCampaign($contact, $roorMapping);
+            //     }
+            // }
             
             $crawlResult = new GSheetCrawlResult();
             $crawlResult->gSheetData = $results;
             $crawlResult->mainUserId = $this->mainUser->id;
             $crawlResult->gSheetId = $this->spreadsheetId;
+            $crawlResult->roorAutoresponderId = $this->roorAutoresponderId;
             $crawlResult->result = $importResult;
             $crawlResult->initiatedBy = !empty($initiatedBy) ? $initiatedBy->id : null;
             $crawlResult->save();
-
 
             //update GSheet Data
             $valuesToUpdate = [$keys];  // Include the array keys as the first row/header
@@ -174,9 +190,6 @@ class ProcessContactImportGSheet implements ShouldQueue
             // Update the Google Sheet with the new values
             $service->spreadsheets_values->update($this->spreadsheetId, $updateRange, $updateBody, $updateParams);
             
-            
-            \Log::info($valuesToUpdate);
-
             // Update the Google Sheet with the new values
             
             $service = $this->setupGoogleSheetsClient();

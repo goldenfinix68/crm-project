@@ -113,7 +113,7 @@ const ImportDataGSheet: React.FC = () => {
 
                     <Tooltip title="Get this in Roor Campaign -> Autoresponder -> Get posting Instruction.">
                         <Form.Item
-                            name="autoResponderId"
+                            name="roorAutoresponderId"
                             label="Roor Autoresponder ID"
                         >
                             <Input />

@@ -34,6 +34,17 @@ const ImportDataGSheetHistory = () => {
                 },
             },
             {
+                title: "Is Imported to Roor",
+                key: "isImportedToRoor",
+                render: (_, record) => {
+                    return (
+                        <TextEllipsis>
+                            {record.isImportedToRoor ? "Yes" : "No"}
+                        </TextEllipsis>
+                    );
+                },
+            },
+            {
                 title: "Errors",
                 key: "errors",
                 render: (_, record) => {
