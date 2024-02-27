@@ -185,6 +185,7 @@ const ComponentImportData: React.FC = () => {
                                                 );
                                             }}
                                             allowClear
+                                            optionFilterProp="children"
                                         >
                                             {contactFields
                                                 ?.filter(
