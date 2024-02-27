@@ -57,7 +57,7 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
 
     const sideMenuItems: any = [
         {
-            key: "/setup/customizations",
+            key: "customizations",
             icon: <SlidersOutlined />,
             label: "Customizations",
             children: [
@@ -125,7 +125,7 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
         },
 
         {
-            key: "/setup/data-administration",
+            key: "data-administration",
             icon: <DatabaseOutlined />,
             label: "Data Administration",
             children: [
@@ -156,7 +156,7 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
 
     if (loggedInUser && allowedroleToAccess.includes(loggedInUser.role)) {
         sideMenuItems.push({
-            key: "/setup/users-security",
+            key: "users-security",
             icon: <SettingOutlined />,
             label: "Users & Security",
             children: [
@@ -183,7 +183,11 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                     theme="dark"
                     mode="inline"
                     defaultSelectedKeys={[window.location.pathname]}
-                    defaultOpenKeys={["/setup/customizations"]} // Set the default open keys here
+                    defaultOpenKeys={[
+                        "customizations",
+                        "users-security",
+                        "data-administration",
+                    ]} // Set the default open keys here
                     // onSelect={(info) => {
                     //     navigate(info.key);
                     // }}

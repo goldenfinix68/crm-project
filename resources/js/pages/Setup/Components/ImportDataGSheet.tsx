@@ -12,6 +12,7 @@ import {
     Select,
     Form,
     Checkbox,
+    Tooltip,
 } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { useMutation } from "react-query";
@@ -109,6 +110,15 @@ const ImportDataGSheet: React.FC = () => {
                     >
                         <Input />
                     </Form.Item>
+
+                    <Tooltip title="Get this in Roor Campaign -> Autoresponder -> Get posting Instruction.">
+                        <Form.Item
+                            name="autoResponderId"
+                            label="Roor Autoresponder ID"
+                        >
+                            <Input />
+                        </Form.Item>
+                    </Tooltip>
                     {isAddToQueue && (
                         <Form.Item
                             name={"interval"}
