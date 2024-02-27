@@ -23,7 +23,8 @@ class ContactService
         if(!empty($fieldValue)){
             $contact = Contact::find($fieldValue->customableId);
             $user = Auth::user();
-            if(!empty($contact) && $contact->userId == $user->mainId){
+            $mainUserId = $user->role == 'mainUser' ? $user->id : $user->mainUserId; 
+            if(!empty($contact) && $contact->userId == $mainUserId){
                 return $contact;
             }
         }
