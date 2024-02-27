@@ -55,6 +55,8 @@ const TextContent = ({
     React.useEffect(() => {
         scrollToBottom();
         setDivKey(divKey + 1);
+        console.log("thread", thread);
+        return () => {};
     }, [thread]);
 
     return ["all", "inbox", "scheduled"].includes(menu) ? (
@@ -118,7 +120,13 @@ const TextContent = ({
                                 queryClient.invalidateQueries("getContact");
                                 queryClient.invalidateQueries("thread");
                             }}
-                            to={thread.contactNumber}
+                            to={
+                                thread.contact
+                                    ? JSON.stringify(
+                                          thread.contact?.phoneNumbers
+                                      )
+                                    : thread.contactNumber
+                            }
                             contact={thread.contact ?? undefined}
                         />
                     </div>
