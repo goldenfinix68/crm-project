@@ -5,6 +5,7 @@ use App\Models\Contact;
 use App\Models\CustomFieldValue;
 
 use DB;
+use Auth;
 
 class ContactService
 {
