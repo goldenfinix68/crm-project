@@ -4,8 +4,9 @@ namespace App\Services;
 use App\Models\Contact;
 use App\Models\CustomFieldValue;
 
+use App\Services\MobileNumberService;
+
 use DB;
-use Auth;
 
 class ContactService
 {
@@ -19,16 +20,32 @@ class ContactService
                 ->whereHas('customField', function ($query) use ($fieldName) {
                     $query->where('fieldName', $fieldName);
                 })
+                ->whereHas('contact', function ($query) use ($mainUserId) {
+                    $query->where('userId', $mainUserId);
+                })
                 ->first();
-        if(!empty($fieldValue)){
-            $contact = Contact::find($fieldValue->customableId);
-            $user = Auth::user();
-            $mainUserId = $user->role == 'mainUser' ? $user->id : $user->mainUserId; 
-            if(!empty($contact) && $contact->userId == $mainUserId){
-                return $contact;
-            }
+                
+        if(!empty($fieldValue) && !empty($fieldValue->contact)){
+            return $fieldValue->contact;
         }
 
         return false;
+    }
+    
+    public function getContactsByMobile($mobile, $fieldName = "mobile", $mainUserIds){
+
+        $mobile = MobileNumberService::formatPhoneNumber($mobile);
+
+        $contacts = Contact::whereIn('userId', $mainUserIds)
+            ->whereHas('customFieldValues', function ($query) use ($mobile) {
+                $query->where(DB::raw("REPLACE(`value`, '+', '')"), $mobile);
+                $query->whereHas('customField', function ($query2) {
+                    $query2->where('type', 'mobile');
+                    $query2->orWhere('type', 'phone');
+                });
+            })
+            ->get();
+
+        return $contacts;
     }
 }

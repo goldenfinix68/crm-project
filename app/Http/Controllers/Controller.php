@@ -12,6 +12,7 @@ use App\Models\ContactType;
 use App\Models\User;
 use Auth;
 use DB;
+use App\Services\MobileNumberService;
 
 class Controller extends BaseController
 {
@@ -102,6 +103,9 @@ class Controller extends BaseController
             $fieldValue->value =  $data;
         }
         else{
+            if($customField->type == "mobile" || $customField->type == "phone"){
+                $value = MobileNumberService::formatPhoneNumber($value);
+            }
             $fieldValue->value =  $value;
             $fieldValue->lookupIds = null;
         }

@@ -10,6 +10,8 @@ use App\Models\Contact;
 use App\Models\User;
 use App\Models\TextThread;
 use App\Services\ContactService;
+use App\Services\UserService;
+use App\Services\MobileNumberService;
 
 class Text extends Model
 {
@@ -152,18 +154,23 @@ class Text extends Model
 
         static::created(function ($text) {
             
-            $text->from = str_replace('+', '', $text->from);
-            $text->to = str_replace('+', '', $text->to);
+            $text->from = MobileNumberService::formatPhoneNumber($text->from);
+            $text->to = MobileNumberService::formatPhoneNumber($text->to);
             $text->save();
 
             //save default mobile number to use contacting contact
             $number =  $text->isFromApp ? $text->to : $text->from;
             $fieldName = $text->customField ? $text->customField->fieldName : "mobile";
-            $contact = ContactService::getContactByMobile($number, $fieldName);
-            
-            if(!empty($contact) && empty($contact->defaultMobileNumber)){
-                $contact->defaultMobileNumber = $text->isFromApp ? $text->from : $text->to;
-                $contact->save();
+
+            $mainUserIds = UserService::getMainUsersByMobile($text->isFromApp ? $text->from : $text->to);
+            if(!empty($mainUserIds)){
+                $contacts = ContactService::getContactsByMobile($number, $fieldName, $mainUserIds);
+                foreach($contacts as $contact){
+                    if(empty($contact->defaultMobileNumber)){
+                        $contact->defaultMobileNumber = $text->isFromApp ? $text->from : $text->to;
+                        $contact->save();
+                    }
+                }
             }
 
             $thread = TextThread::where(function ($query) use ($text) {

@@ -13,4 +13,9 @@ class CustomFieldValue extends Model
     {
         return $this->hasOne(\App\Models\CustomField::class, 'id', 'customFieldId');
     }
+
+    public function contact()
+    {
+        return $this->hasOne(\App\Models\Contact::class, 'id', 'customableId');
+    }
 }

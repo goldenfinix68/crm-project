@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\TelnyxController;
 use Illuminate\Http\Request;
 use Telnyx\Telnyx;
 use Auth;
+use App\Services\MobileNumberService;
 
 class UsersController extends Controller
 {
@@ -88,12 +89,12 @@ class UsersController extends Controller
         $user->sortCallForwarding = 0;
 
         if($authUser->role == "superAdmin"){
+            $numbers = [];
             if(!empty($request->mobileNumbers)){
                 foreach ($request->mobileNumbers as $number) {
-                    
                     preg_match('/(\d+) \(/', $number, $matches);
-                    $phoneNumber = $matches[1];
-
+                    $phoneNumber = MobileNumberService::formatPhoneNumber($matches[1]);
+                    $numbers[] = $phoneNumber;
                     // Extract test string
                     preg_match('/\((.*?)\)/', $number, $matches);
                     $nickname = $matches[1];
@@ -109,7 +110,7 @@ class UsersController extends Controller
                 }
             }
 
-            $user->numbers()->whereNotIn('mobileNumber', $request->mobileNumbers)->delete();
+            $user->numbers()->whereNotIn('mobileNumber', $numbers)->delete();
     
         }
         if(empty($request->id)){

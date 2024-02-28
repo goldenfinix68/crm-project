@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 use App\Http\Controllers\Api\CallsController;
+use App\Services\MobileNumberService;
 
 use App\Models\User;
 use App\Models\Text;
@@ -130,7 +131,7 @@ class Contact extends Model
         $phoneNumbers = [];
         foreach($this->customFieldValues as $customField){
             if(in_array($customField->customField->type, ['phone', 'mobile'])){
-                $phoneNumbers[] = str_replace('+', '', $customField->value);
+                $phoneNumbers[] = MobileNumberService::formatPhoneNumber($customField->value);
             }
         }
 
