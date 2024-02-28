@@ -37,10 +37,19 @@ import AddAttributePopoverContent from "../../TextTemplates/components/AddAttrib
 interface Props {
     handleSubmit: () => void;
     handleCancel?: () => void;
-    to?: string;
+    phoneNumbers?: string[];
+    defaultTo?: string;
+    defaultFrom?: string;
     contact?: TContact;
 }
-const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
+const TextForm = ({
+    handleSubmit,
+    handleCancel,
+    phoneNumbers,
+    contact,
+    defaultTo,
+    defaultFrom,
+}: Props) => {
     const [form] = Form.useForm();
     const [error, setError] = useState("");
     const [isScheduledMessage, setIsScheduledMessage] = useState(false);
@@ -92,46 +101,10 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
         : "";
 
     const filteredOptions = contacts?.filter((contact) =>
-        contact?.fields?.mobile?.includes(
+        contact?.phoneNumbers?.includes(
             toFormValue ? toFormValue.replace(/[-\s+_]/g, "") : ""
         )
     );
-
-    // const filteredOptions = () => {
-    //     //  get contacts that custom_field_values custom_field.type is mobile
-    //     let _contacts: TContact[] = [];
-
-    //     contacts.forEach((contact) => {
-    //         if (contact?.fields?.mobile) {
-    //             _contacts.push(
-    //                 contact?.fields?.mobile?.includes(
-    //                     toFormValue ? toFormValue.replace(/[-\s+_]/g, "") : ""
-    //                 )
-    //             );
-    //         }
-
-    //         // contact?.custom_field_values.forEach((element) => {});
-    //     });
-    // };
-
-    const [toNumbers, setToNumbers]: any = useState([]);
-    useEffect(() => {
-        console.log("to", to);
-        console.log("to", JSON.parse(to ?? ""));
-        let _toNumbers: any = [];
-        if (to) {
-            _toNumbers = JSON.parse(to);
-            if (typeof _toNumbers === "object") {
-                setToNumbers(Object.values(_toNumbers));
-                console.log("toNumbers", toNumbers);
-                form.setFieldValue("to", Object.values(_toNumbers)[0]);
-            } else {
-                setToNumbers([_toNumbers]);
-                form.setFieldValue("to", _toNumbers.toString());
-            }
-        }
-        return () => {};
-    }, [to]);
 
     return (
         <>
@@ -140,8 +113,16 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
                 layout="vertical"
                 labelWrap
                 initialValues={{
-                    to: "",
-                    from: contact?.defaultMobileNumber ?? "",
+                    to: defaultTo
+                        ? defaultTo
+                        : phoneNumbers
+                        ? phoneNumbers[0]
+                        : "",
+                    from:
+                        defaultFrom ??
+                        (user?.mobileNumbers
+                            ? user?.mobileNumbers[0].mobileNumber
+                            : ""),
                 }}
                 onFinish={onFinish}
                 autoComplete="off"
@@ -160,10 +141,10 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
                                 },
                             ]}
                         >
-                            {to ? (
+                            {phoneNumbers ? (
                                 // <Input disabled />
                                 <Select style={{ width: "100%" }}>
-                                    {toNumbers?.map((number) => (
+                                    {phoneNumbers?.map((number) => (
                                         <Select.Option value={number}>
                                             {number}
                                         </Select.Option>
@@ -171,7 +152,7 @@ const TextForm = ({ handleSubmit, handleCancel, to, contact }: Props) => {
                                 </Select>
                             ) : (
                                 <AutoComplete
-                                    options={filteredOptions?.map((option) => ({
+                                    options={contacts?.map((option) => ({
                                         value: option.fields?.mobile,
                                         label: (
                                             <Space>

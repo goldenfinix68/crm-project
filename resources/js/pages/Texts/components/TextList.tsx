@@ -23,7 +23,7 @@ import {
 } from "@ant-design/icons"; // Step 1
 import { useNavigate } from "react-router-dom";
 import { getTimeAgo } from "../../../helpers";
-import { TTextThread } from "../../../entities";
+import { TTextThread, TTextThreadList } from "../../../entities";
 import ConfirmModal from "../../../components/ConfirmModal";
 import { useMutation } from "react-query";
 import queryClient from "../../../queryClient";
@@ -43,7 +43,7 @@ const TextList = ({ label }) => {
     const [isAddTagModalOpen, setIsAddTagModalOpen] = useState(false);
     const [isDeleteBtnLoading, setIsDeleteBtnLoading] = useState(false);
     const [selectedThread, setSelectedThread] = useState<
-        TTextThread | undefined
+        TTextThreadList | undefined
     >(undefined);
     const [selectedThreadIds, setSelectedThreadIds] = useState<string[]>([]);
     const [isAssignLabelModalOpen, setIsAssignLabelModalOpen] = useState(false);
@@ -67,42 +67,42 @@ const TextList = ({ label }) => {
         null
     );
 
-    const filteredContacts = (): TTextThread[] | undefined => {
+    const filteredContacts = (): TTextThreadList[] | undefined => {
         let data = textThreads;
 
-        data = data?.filter((contact) => contact.texts?.length);
+        // data = data?.filter((contact) => contact.texts?.length);
 
-        if (searchKey) {
-            let searchWord = searchKey;
-            let labelKey = "";
-            const match = searchKey.match(/\{\{label:(.*?)\}\}/);
+        // if (searchKey) {
+        //     let searchWord = searchKey;
+        //     let labelKey = "";
+        //     const match = searchKey.match(/\{\{label:(.*?)\}\}/);
 
-            if (match) {
-                labelKey = match[1];
-                searchWord = searchWord.replace(/\{\{.*?\}\}\s*/g, "");
-            }
+        //     if (match) {
+        //         labelKey = match[1];
+        //         searchWord = searchWord.replace(/\{\{.*?\}\}\s*/g, "");
+        //     }
 
-            if (labelKey) {
-                data = data?.filter((item) =>
-                    item?.labels?.some((label) => label.name === labelKey)
-                );
-            }
-            if (searchWord != "") {
-                data = data?.filter(
-                    (thread) =>
-                        thread.contactName
-                            .toLowerCase()
-                            .includes(searchWord.toLowerCase()) ||
-                        thread?.texts?.some((text) =>
-                            text.message
-                                .toLowerCase()
-                                .includes(searchWord.toLowerCase())
-                        )
-                );
-            }
+        //     if (labelKey) {
+        //         data = data?.filter((item) =>
+        //             item?.labels?.some((label) => label.name === labelKey)
+        //         );
+        //     }
+        //     if (searchWord != "") {
+        //         data = data?.filter(
+        //             (thread) =>
+        //                 thread.contactName
+        //                     .toLowerCase()
+        //                     .includes(searchWord.toLowerCase()) ||
+        //                 thread?.texts?.some((text) =>
+        //                     text.message
+        //                         .toLowerCase()
+        //                         .includes(searchWord.toLowerCase())
+        //                 )
+        //         );
+        //     }
 
-            return data;
-        }
+        //     return data;
+        // }
 
         return data;
     };
@@ -190,7 +190,7 @@ const TextList = ({ label }) => {
                 itemLayout="horizontal"
                 style={{ marginTop: 0, height: "72vh", overflowY: "scroll" }}
             >
-                {threadList?.map((thread, index) => (
+                {textThreads?.map((thread, index) => (
                     <>
                         {index === 0 && <Divider style={{ margin: "5px" }} />}
                         <List.Item
@@ -199,10 +199,10 @@ const TextList = ({ label }) => {
                                 padding: "3px 0",
                                 // Step 3: Conditionally display timestamp or delete icon
                                 position: "relative",
-                                backgroundColor: thread.contact
-                                    ?.duplicatePhoneNumbers?.length
-                                    ? "#ffc166"
-                                    : "",
+                                backgroundColor:
+                                    thread.haveDuplicatePhoneNumbers
+                                        ? "#ffc166"
+                                        : "",
                             }}
                             // onClick={() =>
                             //     navigate()
@@ -211,7 +211,11 @@ const TextList = ({ label }) => {
                             onMouseLeave={() => setHoveredItemIndex(null)} // Step 4: Handle mouse leave
                         >
                             <CustomLink
-                                to={"/text-threads/" + thread.id}
+                                to={`/text-threads/${
+                                    thread.isContactSaved
+                                        ? `contact/${thread.contactId}`
+                                        : thread.id
+                                }`}
                                 style={{
                                     padding: 0,
                                     color: "black",
@@ -276,10 +280,10 @@ const TextList = ({ label }) => {
                                     <Col span={15}>
                                         <TextEllipsis
                                             style={{
-                                                fontWeight: !thread?.texts![0]
-                                                    .seen_at
-                                                    ? "bold"
-                                                    : "",
+                                                fontWeight:
+                                                    !thread?.isLastTextSeen
+                                                        ? "bold"
+                                                        : "",
                                             }}
                                         >
                                             <Space size={0}>
@@ -294,7 +298,7 @@ const TextList = ({ label }) => {
                                                         {label?.name}
                                                     </Tag>
                                                 ))}
-                                                {thread?.texts![0].message}
+                                                {thread?.lastText}
                                             </Space>
                                         </TextEllipsis>
                                     </Col>
@@ -349,10 +353,7 @@ const TextList = ({ label }) => {
                                                 </Space>
                                             ) : (
                                                 moment
-                                                    .utc(
-                                                        thread?.texts![0]
-                                                            .created_at
-                                                    )
+                                                    .utc(thread?.created_at)
                                                     .local()
                                                     .format("MMM DD")
                                             )}

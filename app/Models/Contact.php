@@ -130,7 +130,7 @@ class Contact extends Model
     {
         $phoneNumbers = [];
         foreach($this->customFieldValues as $customField){
-            if(in_array($customField->customField->type, ['phone', 'mobile'])){
+            if(in_array($customField->customField->type, ['phone', 'mobile']) && !empty($customField->value)){
                 $phoneNumbers[] = MobileNumberService::formatPhoneNumber($customField->value);
             }
         }

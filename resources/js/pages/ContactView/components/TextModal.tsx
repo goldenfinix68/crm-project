@@ -27,10 +27,15 @@ import { TContact } from "../../../entities";
 interface Props {
     isModalOpen: boolean;
     closeModal: () => void;
-    to?: string;
+    phoneNumbers?: string[];
     contact?: TContact;
 }
-const TextModal = ({ isModalOpen, closeModal, to, contact }: Props) => {
+const TextModal = ({
+    isModalOpen,
+    closeModal,
+    phoneNumbers,
+    contact,
+}: Props) => {
     const [divKey, setDivKey] = useState(0);
 
     useEffect(() => {
@@ -72,7 +77,7 @@ const TextModal = ({ isModalOpen, closeModal, to, contact }: Props) => {
                         queryClient.invalidateQueries("getContact");
                     }}
                     handleCancel={closeModal}
-                    to={to}
+                    phoneNumbers={phoneNumbers}
                     contact={contact}
                 />
             </Space>

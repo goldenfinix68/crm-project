@@ -53,53 +53,14 @@ import queryClient from "../../../queryClient";
 import { useMarkThreadSeen } from "../../../api/mutation/useTextMutation";
 
 const TextBoxView = () => {
-    const { threadId } = useParams();
-    const navigate = useNavigate();
-
-    const {
-        thread,
-        refetch,
-        isLoading: isThreadLoading,
-    } = useTextThread(threadId ?? "", (data) => {
-        setIsLoading(false);
-    });
-
     const [label, setLabel] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
     const [isCreateLabelModalOpen, setIsCreateLabelModalOpen] = useState(false);
     const [selectedTextLabel, setSelectedTextLabel] = useState<
         TTextLabel | undefined
     >(undefined);
 
-    const markAsSeen = useMutation(useMarkThreadSeen, {
-        onSuccess: () => {
-            queryClient.invalidateQueries("textThreads");
-        },
-    });
-
-    useEffect(() => {
-        // Check if the contact exists and has no value
-        if (!threadId) {
-            navigate("/texts");
-        } else {
-            setIsLoading(true);
-            refetch();
-        }
-    }, [threadId]);
-
-    React.useEffect(() => {
-        if (thread) {
-            markAsSeen.mutate({ threadId: thread.id });
-        }
-    }, [thread]);
-
-    if (isThreadLoading) {
-        return <LoadingComponent />;
-    }
-
     return (
         <Space direction="vertical" style={{ width: "100%" }}>
-            {isLoading && <LoadingComponent />}
             <TextsHeaderMenu
                 handleLabelChange={(e) => setLabel(`{{label:${e.key}}} `)}
             />
@@ -118,7 +79,7 @@ const TextBoxView = () => {
                             overflowY: "auto",
                         }}
                     >
-                        <TextContent thread={thread!} menu={"all"} />
+                        <TextContent menu={"all"} />
                     </Col>
                 </Row>
 

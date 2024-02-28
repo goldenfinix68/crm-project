@@ -92,14 +92,23 @@ export type TText = {
     seen_at?: string;
 };
 
-export type TTextThread = {
+export type TTextThreadList = {
     id: string;
-    contactNumber: string;
-    userNumber?: string;
+    contactId?: string;
     contactName: string;
-    texts: TText[];
+    lastText: string;
+    created_at: string;
+    haveDuplicatePhoneNumbers: boolean;
+    isContactSaved: boolean;
+    isLastTextSeen: boolean;
     labels?: TTextLabel[];
+};
+
+export type TTextThreadContent = {
+    id: string;
+    phoneNumbers: string;
     contact?: TContact;
+    texts: TText[];
 };
 
 export type TDeal = {

@@ -263,6 +263,14 @@ const AppRoutes = () => {
                                 }
                             />
                             <Route
+                                path="/text-threads/contact/:contactId"
+                                element={
+                                    <PrivateRoute title="Texts">
+                                        <TextBoxView />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
                                 path="/texts/:route"
                                 element={
                                     <PrivateRoute>

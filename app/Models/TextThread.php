@@ -10,6 +10,7 @@ use App\Models\CustomFieldValue;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
 use DB;
+use App\Services\ContactService;
 
 class TextThread extends Model
 {
@@ -17,8 +18,8 @@ class TextThread extends Model
     
     protected $appends = [
         'contactName',
-        'contact'
-        // 'lastText'
+        'contact',
+        'lastText'
     ];
     
     public function texts()
@@ -33,21 +34,11 @@ class TextThread extends Model
 
     public function getContactAttribute()
     {
-        $fieldValue = CustomFieldValue::with(['customField'])
-                    ->where(DB::raw("REPLACE(`value`, '+', '')"), $this->contactNumber)
-                    ->where('customableType', 'contact')
-                    ->whereHas('customField', function ($query) {
-                        $query->whereIn('type', ['mobile', 'phone']);
-                    })
-                    ->orderBy('updated_at', 'desc')
-                    ->first();
+        $user = Auth::user();
+        $contacts = ContactService::getContactsByMobile($this->contactNumber, [$user->mainId]);
 
-        if(!empty($fieldValue)){
-            $contact = Contact::find($fieldValue->customableId);
-            $user = Auth::user();
-            if(!empty($contact) && $contact->userId == $user->mainId){
-                return $contact;
-            }
+        if(!empty($contacts)){
+            return $contacts->first();
         }
 
         return false;
@@ -58,8 +49,8 @@ class TextThread extends Model
         return !empty($this->contact) ? $this->contact->fields['firstName'] . ' ' . $this->contact->fields['lastName'] : $this->contactNumber;
     }
 
-    // public function getLastTextAttribute()
-    // {
-    //     return $this->texts->first();
-    // }
+    public function getLastTextAttribute()
+    {
+        return $this->texts->first();
+    }
 }

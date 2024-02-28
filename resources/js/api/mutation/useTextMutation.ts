@@ -51,7 +51,7 @@ export const assignLabelMutation = async (values: any) => {
     return data;
 };
 
-export const useMarkThreadSeen = async (threadId: any) => {
+export const useMarkThreadSeen = async (values: any) => {
     const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
     const response = await fetch("/api/text-threads/mark-texts-seen", {
         method: "POST",
@@ -59,7 +59,7 @@ export const useMarkThreadSeen = async (threadId: any) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(threadId),
+        body: JSON.stringify(values),
     });
     const data = await response.json();
     if (!response.ok) {

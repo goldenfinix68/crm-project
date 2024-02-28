@@ -164,7 +164,7 @@ class Text extends Model
 
             $mainUserIds = UserService::getMainUsersByMobile($text->isFromApp ? $text->from : $text->to);
             if(!empty($mainUserIds)){
-                $contacts = ContactService::getContactsByMobile($number, $fieldName, $mainUserIds);
+                $contacts = ContactService::getContactsByMobile($number, $mainUserIds);
                 foreach($contacts as $contact){
                     if(empty($contact->defaultMobileNumber)){
                         $contact->defaultMobileNumber = $text->isFromApp ? $text->from : $text->to;

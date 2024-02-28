@@ -1,42 +1,21 @@
-import React, { useState } from "react";
-import {
-    Avatar,
-    Button,
-    Col,
-    Empty,
-    Form,
-    Input,
-    Row,
-    Select,
-    Space,
-    Typography,
-} from "antd";
-import { TContact, TText, TTextThread } from "../../../entities";
-import { EllipsisOutlined } from "@ant-design/icons";
-import DropdownComponent from "../../../components/DropdownComponent";
+import React, { useEffect, useState } from "react";
+import { Button, Col, Row, Space, Typography } from "antd";
 import ContactInfo from "../../ContactView/components/ContactInfo";
-import ContactContext from "../../ContactView/context";
 import ChatBoxItem from "./ChatBoxItem";
-import { useGetContact } from "../../../api/query/contactsQuery";
 import LoadingComponent from "../../../components/LoadingComponent";
 import queryClient from "../../../queryClient";
 import { useMutation } from "react-query";
-import { sendTextMutation } from "../../../api/mutation/useTextMutation";
+import { useMarkThreadSeen } from "../../../api/mutation/useTextMutation";
 import TextForm from "./TextForm";
 import CustomFieldFormModal from "../../../components/CustomFieldFormModal";
-import { ENDPOINTS } from "../../../endpoints";
-import CustomFieldAddUpdateModal from "../../../components/CustomFieldAddUpdateModal";
 import ModalAddExistingNumberContact from "../../../components/ModalAddExistingNumberContact";
+import { useNavigate, useParams } from "react-router-dom";
+import { useTextThread } from "../../../api/query/textQuery";
 // import AssignLabelDropdown from "./AssignLabelDropdown";
 
-const TextContent = ({
-    menu,
-    thread,
-}: {
-    menu: string;
-    thread: TTextThread;
-}) => {
-    const [isFocused, setIsFocused] = React.useState(false);
+const TextContent = ({ menu }: { menu: string }) => {
+    const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
     const [divKey, setDivKey] = React.useState(0);
     const chatBoxRef = React.useRef<HTMLDivElement>(null);
     const [isCreateNewContactModalOpen, setIsCreateNewContactModalOpen] =
@@ -46,11 +25,52 @@ const TextContent = ({
         setIsAddToExistingContactModalOpen,
     ] = useState(false);
 
+    const { threadId } = useParams();
+    const { contactId } = useParams();
+
+    const {
+        thread,
+        refetch,
+        isLoading: isThreadLoading,
+    } = useTextThread(
+        contactId ?? threadId ?? "",
+        contactId ? "contact" : "thread",
+        (data) => {
+            setIsLoading(false);
+        }
+    );
+
+    const markAsSeen = useMutation(useMarkThreadSeen, {
+        onSuccess: () => {
+            queryClient.invalidateQueries("textThreads");
+        },
+    });
+
+    useEffect(() => {
+        // Check if the contact exists and has no value
+        if (!threadId && !contactId) {
+            navigate("/text-threads");
+        } else {
+            setIsLoading(true);
+            refetch();
+        }
+    }, [threadId]);
+
+    React.useEffect(() => {
+        if (thread) {
+            markAsSeen.mutate({
+                id: contactId ?? threadId,
+                type: contactId ? "contact" : "thread",
+            });
+        }
+    }, [thread]);
+
     const scrollToBottom = () => {
         if (chatBoxRef.current) {
             chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
         }
     };
+    const lastText = thread?.texts[thread?.texts.length - 1];
 
     React.useEffect(() => {
         scrollToBottom();
@@ -60,7 +80,8 @@ const TextContent = ({
     }, [thread]);
 
     return ["all", "inbox", "scheduled"].includes(menu) ? (
-        <Row key={thread.id}>
+        <Row key={thread?.id}>
+            {isLoading && <LoadingComponent />}
             <Col
                 span={13}
                 style={{ height: "85vh", overflowY: "auto" }}
@@ -80,17 +101,17 @@ const TextContent = ({
                 >
                     <Space direction="vertical" size={0}>
                         <Typography.Text strong>
-                            {thread.contactName}
+                            {thread?.contactName}
                         </Typography.Text>
                         <Typography.Text>
-                            {thread.contactNumber}
+                            {thread?.phoneNumbers}
                         </Typography.Text>
                     </Space>
                 </div>
 
                 <div style={{ paddingTop: "50px", height: "85%" }}>
                     <div style={{ minHeight: "80%" }}>
-                        {thread.texts
+                        {thread?.texts
                             ?.sort(
                                 (a, b) =>
                                     parseInt(a.id ?? "0") -
@@ -98,7 +119,7 @@ const TextContent = ({
                             )
                             .map((text) => (
                                 <ChatBoxItem
-                                    name={thread.contactName}
+                                    name={thread?.contactName}
                                     text={text}
                                     key={text.id}
                                 />
@@ -120,14 +141,23 @@ const TextContent = ({
                                 queryClient.invalidateQueries("getContact");
                                 queryClient.invalidateQueries("thread");
                             }}
-                            to={
-                                thread.contact
-                                    ? JSON.stringify(
-                                          thread.contact?.phoneNumbers
-                                      )
-                                    : thread.contactNumber
+                            phoneNumbers={
+                                thread?.contact
+                                    ? thread?.contact?.phoneNumbers
+                                    : [thread?.phoneNumbers!]
                             }
-                            contact={thread.contact ?? undefined}
+                            defaultTo={
+                                lastText?.isFromApp
+                                    ? lastText?.to
+                                    : lastText?.from
+                            }
+                            defaultFrom={
+                                thread?.contact?.defaultMobileNumber ??
+                                (lastText?.isFromApp
+                                    ? lastText?.from
+                                    : lastText?.to)
+                            }
+                            contact={thread?.contact ?? undefined}
                         />
                     </div>
                 </div>
@@ -155,8 +185,8 @@ const TextContent = ({
                         Related Information
                     </div>
 
-                    {thread.contact ? (
-                        <ContactInfo contact={thread.contact} />
+                    {thread?.contact ? (
+                        <ContactInfo contact={thread?.contact} />
                     ) : (
                         <Space
                             style={{ textAlign: "center" }}
@@ -194,7 +224,7 @@ const TextContent = ({
                     queryClient.invalidateQueries("thread");
                 }}
                 type="contact"
-                record={{ mobile: thread.contactNumber }}
+                record={{ mobile: thread?.phoneNumbers }}
             />
 
             <ModalAddExistingNumberContact
@@ -204,7 +234,7 @@ const TextContent = ({
                     queryClient.invalidateQueries("textThreads");
                     queryClient.invalidateQueries("thread");
                 }}
-                contactNumber={thread.contactNumber}
+                contactNumber={thread?.phoneNumbers!}
             />
         </Row>
     ) : null;

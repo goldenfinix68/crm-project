@@ -32,7 +32,7 @@ class ContactService
         return false;
     }
     
-    public function getContactsByMobile($mobile, $fieldName = "mobile", $mainUserIds){
+    public function getContactsByMobile($mobile, $mainUserIds){
 
         $mobile = MobileNumberService::formatPhoneNumber($mobile);
 

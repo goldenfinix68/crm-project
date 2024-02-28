@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\TextThread;
 use App\Models\Text;
 use App\Models\CustomField;
+use App\Models\Contact;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -26,12 +27,50 @@ class TextThreadsController extends Controller
             abort(401, 'Unauthorized');
         }
 
-        $threads =  TextThread::with('labels')->whereIn('userNumber', $this->getMainUserNumbers())->get()->unique('contactNumber');
+        $pagination = 20;
 
+        $threads =  TextThread::with('labels')->whereIn('userNumber', $this->getMainUserNumbers())->limit(100)->get();
+        $data = [];
         foreach($threads as $thread){
-            $thread = $this->prepareThreadTexts($thread);
+            $index = array_search($thread->contactName, array_column($data, 'contactName'));
+            if ($index !== false) {
+                $threadCreatedAt = Carbon::parse($thread->lastText->created_at);
+                $existingCreatedAt = Carbon::parse($data[$index]['created_at']);
+
+                if($threadCreatedAt->greaterThan($existingCreatedAt)){
+                    $data[$index]['lastText'] = $thread->lastText->message;
+                    $data[$index]['created_at'] = $thread->lastText->created_at;
+                    $data[$index]['isLastTextSeen'] = !empty($thread->lastText->seen_at);
+
+                    // Merge the labels without duplicates
+                    $existingLabels = $data[$index]['labels']->pluck('id');
+                    $newLabels = $thread->labels->pluck('id');
+                    $mergedLabels = $existingLabels->merge($newLabels)->unique();
+                    $data[$index]['labels'] = \App\Models\TextLabel::whereIn('id', $mergedLabels)->orderBy('name')->get();
+                }
+            }
+            else{
+                $data[] = [
+                    'id' => $thread->id,
+                    'contactId' => $thread->contact->id ?? "",
+                    'contactName' => $thread->contactName,
+                    'isContactSaved' => !empty($thread->contact),
+                    'lastText' => $thread->lastText->message,
+                    'isLastTextSeen' => !empty($thread->lastText->seen_at),
+                    'created_at' => $thread->lastText->created_at,
+                    'labels' => $thread->labels,
+                    'haveDuplicatePhoneNumbers' => !empty($thread->contact) && !empty($thread->contact->duplicatePhoneNumbers),
+                ];
+            }
+            
+            if(count($data) >= $pagination){
+                break;
+            }
         }
-        return $threads->sortByDesc('lastTextId')->values();
+        usort($data, function($a, $b) {
+            return strtotime($b['created_at']) - strtotime($a['created_at']);
+        });
+        return $data;
     }
 
     /**
@@ -61,16 +100,42 @@ class TextThreadsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
-        $thread = TextThread::with('labels')->where('id', $id)->first();
-        
-        if(empty($thread)){
-            abort(404, 'Thread not found');
+        if($request->type == 'contact'){
+            $contact = Contact::find($id);
+            $threads = TextThread::with('labels')->whereIn('contactNumber', $contact->phoneNumbers)->get();
+
+            $texts = [];
+
+            foreach ($threads as $thread) {
+                foreach ($thread->texts as $text) {
+                    $texts[] = $text;
+                }
+            }
+
+            usort($texts, function($a, $b) {
+                return strtotime($b['created_at']) - strtotime($a['created_at']);
+            });
+
+            return [
+                'texts' => $texts,
+                'contact' => $contact,
+                'contactName' => $contact->fields['firstName'] . ' ' . $contact->fields['lastName'],
+                'phoneNumbers' => implode(", ", $contact->phoneNumbers),
+            ];
+        }
+        else{
+            $thread = TextThread::with(['labels', 'texts'])->where('id', $id)->first();
+            
+            return [
+                'texts' => $thread->texts,
+                'contact' => null,
+                'contactName' => $thread->contactName,
+                'phoneNumbers' => $thread->contactNumber,
+            ];
         }
 
-        $thread = $this->prepareThreadTexts($thread);
-        return $thread;
     }
 
     /**
@@ -135,14 +200,15 @@ class TextThreadsController extends Controller
     
     public function mark_texts_seen(Request $request)
     {
-        $thread = TextThread::find($request->threadId);
-
-        if (!$thread) {
-            return response()->json(['error' => 'Thread not found'], 404);
-        }
 
         // Update all texts for the contact where seen_at is null
-        $threads = TextThread::where('contactNumber', $thread->contactNumber)->get();
+        if($request->type == "contact"){
+            $contact = Contact::find($request->id);
+            $threads = TextThread::whereIn('contactNumber', $contact->phoneNumbers)->get();
+        }
+        else{
+            $threads = TextThread::where('id', $request->id)->get();
+        }
         foreach($threads as $threa){
             Text::where('threadId', $threa->id)
             ->where(function($query) {
