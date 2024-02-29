@@ -37,6 +37,7 @@ import { createWorkflowMutation } from "../../api/mutation/useWorkflowMutation";
 import queryClient from "../../queryClient";
 import AddAttributePopoverContent from "../../pages/TextTemplates/components/AddAttributePopoverContent";
 import { useAppContextProvider } from "../../context/AppContext";
+import { useCustomFields } from "../../api/query/customFieldQuery";
 
 interface Props {
     isModalOpen: boolean;
@@ -119,7 +120,11 @@ const ModalForm = ({
     const message = Form.useWatch("message", form);
     const allSpunVariations = spinContent(message);
 
-    const { contactFields } = useAppContextProvider();
+    const {
+        data: contactFields,
+        isLoading: isContactFieldsLoading,
+        refetch: refetchContactFields,
+    } = useCustomFields("contact");
     // const timezoneOptions = moment.tz.names().map((tz) => (
     //     <Select.Option key={tz} value={tz}>
     //         {tz}
@@ -213,7 +218,7 @@ const ModalForm = ({
             >
                 <Select className="w-100">
                     {contactFields
-                        .filter(
+                        ?.filter(
                             (field) =>
                                 field.type == "phone" || field.type == "mobile"
                         )

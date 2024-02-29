@@ -76,7 +76,7 @@ const SideMenu = ({ children, title }: { children: any; title?: string }) => {
             }
 
             api.open({
-                message: <b>data?.message</b> ?? "Default",
+                message: <b>{data?.message}</b> ?? "Default",
                 description: data?.description ?? "Default",
                 duration: 0,
             });

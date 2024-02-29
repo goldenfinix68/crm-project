@@ -26,6 +26,10 @@ import NavigationComponentsQuickAdd from "./NavigationComponents/NavigationCompo
 import NavigationComponentsCall from "./NavigationComponents/NavigationComponentsCall";
 import { useAppContextProvider } from "../context/AppContext";
 import CustomLink from "./CustomLink";
+import { defaultFilter } from "../constants";
+import { ENDPOINTS } from "../endpoints";
+import { mutateGet } from "../api/mutation/useSetupMutation";
+import _ from "lodash";
 
 type NavigationProps = {
     title?: string; // Add this line to include the 'title' prop
@@ -35,7 +39,50 @@ const Navigation: React.FC<NavigationProps> = ({ title }) => {
     const [searchKeyword, setSearchKey] = useState("");
     const { loggedInUser } = useAppContextProvider();
 
-    const { contacts, isRoleStats } = useAppContextProvider();
+    const { isRoleStats } = useAppContextProvider();
+
+    const [pagination, setPagination] = useState({
+        page_size: 10,
+        page: 1,
+        total: 0,
+    });
+    const [contacts, setContacts] = useState<any>();
+
+    const [filter, setFilter] = useState<any>(defaultFilter);
+
+    const { data: filteredContacts, refetch: refetchFilteredContacts } =
+        mutateGet(
+            { ...filter, ...pagination },
+            ENDPOINTS.contacts.url,
+            "globalSearch"
+        );
+
+    const debouncedSearch = _.debounce((value) => {
+        handleSearch(value);
+    }, 300);
+
+    const handleSearch = (value) => {
+        setFilter({
+            ...filter,
+            filters: {
+                conditions: [
+                    { key: "firstName", condition: "contains", value: value },
+                    { key: "lastName", condition: "contains", value: value },
+                ],
+                conditionalOperator: "or",
+            },
+        });
+    };
+
+    useEffect(() => {
+        refetchFilteredContacts();
+    }, [filter]);
+
+    useEffect(() => {
+        if (filteredContacts && filteredContacts.data) {
+            setContacts(filteredContacts.data.data);
+        }
+    }, [filteredContacts]);
 
     const [isDropdownVisible, setDropdownVisible] = useState(false);
     const handleSignOut = () => {
@@ -146,67 +193,47 @@ const Navigation: React.FC<NavigationProps> = ({ title }) => {
                     trigger={["click"]}
                     overlay={
                         <Menu>
-                            {contacts
-                                ?.filter(
-                                    (contact) =>
-                                        contact.fields?.firstName
-                                            ?.toLowerCase()
-                                            .includes(
-                                                searchKeyword.toLowerCase()
-                                            ) ||
-                                        contact.fields?.lastName
-                                            ?.toLowerCase()
-                                            .includes(
-                                                searchKeyword.toLowerCase()
-                                            ) ||
-                                        contact.phoneNumbers?.includes(
-                                            searchKeyword.toLowerCase()
-                                        )
-                                )
-                                ?.map((contact) => (
-                                    <Menu.Item key={contact.id}>
-                                        <CustomLink
-                                            to={`/contacts/${contact.id}`}
-                                        >
-                                            <div className="list-data">
-                                                <Space
-                                                    direction="vertical"
-                                                    size={0}
-                                                    className="m-l-xs"
-                                                >
-                                                    <Typography.Text>
-                                                        {`${contact.fields?.firstName} ${contact.fields?.lastName}`}
+                            {contacts?.map((contact) => (
+                                <Menu.Item key={contact.id}>
+                                    <CustomLink to={`/contacts/${contact.id}`}>
+                                        <div className="list-data">
+                                            <Space
+                                                direction="vertical"
+                                                size={0}
+                                                className="m-l-xs"
+                                            >
+                                                <Typography.Text>
+                                                    {`${contact.fields?.firstName} ${contact.fields?.lastName}`}
+                                                </Typography.Text>
+                                                <Typography.Text className="list-data-info">
+                                                    <Typography.Text
+                                                        className="list-data-info"
+                                                        style={{
+                                                            fontWeight: 300,
+                                                        }}
+                                                    >
+                                                        {`Phone numbers: ${
+                                                            contact.phoneNumbers
+                                                                ?.length
+                                                                ? contact.phoneNumbers?.join(
+                                                                      ", "
+                                                                  )
+                                                                : "Not set"
+                                                        }`}
                                                     </Typography.Text>
-                                                    <Typography.Text className="list-data-info">
-                                                        <Typography.Text
-                                                            className="list-data-info"
-                                                            style={{
-                                                                fontWeight: 300,
-                                                            }}
-                                                        >
-                                                            {`Phone numbers: ${
-                                                                contact
-                                                                    .phoneNumbers
-                                                                    ?.length
-                                                                    ? contact.phoneNumbers?.join(
-                                                                          ", "
-                                                                      )
-                                                                    : "Not set"
-                                                            }`}
-                                                        </Typography.Text>
-                                                    </Typography.Text>
-                                                </Space>
-                                            </div>
-                                        </CustomLink>
-                                    </Menu.Item>
-                                ))}
+                                                </Typography.Text>
+                                            </Space>
+                                        </div>
+                                    </CustomLink>
+                                </Menu.Item>
+                            ))}
                         </Menu>
                     }
                 >
                     <Input
                         placeholder="Search"
                         prefix={<FontAwesomeIcon icon={faSearch} />}
-                        onChange={(e) => setSearchKey(e.target.value)}
+                        onChange={(e) => debouncedSearch(e.target.value)}
                         size="large"
                         style={{ width: "400px" }}
                     />

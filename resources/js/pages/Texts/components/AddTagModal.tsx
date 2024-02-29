@@ -8,6 +8,7 @@ import { addTagMutation } from "../../../api/mutation/useTextMutation";
 import queryClient from "../../../queryClient";
 import { useAppContextProvider } from "../../../context/AppContext";
 import CustomFieldInput from "../../../components/CustomFieldInput";
+import { useCustomFields } from "../../../api/query/customFieldQuery";
 interface Props {
     isModalOpen: boolean;
     closeModal: () => void;
@@ -15,8 +16,14 @@ interface Props {
 }
 const AddTagModal = ({ isModalOpen, closeModal, threadIds }: Props) => {
     const [form] = Form.useForm();
-    const { contactFields } = useAppContextProvider();
-    const tagField = contactFields.find((field) => field.type == "tag");
+
+    const {
+        data: contactFields,
+        isLoading: isContactFieldsLoading,
+        refetch: refetchContactFields,
+    } = useCustomFields("contact");
+
+    const tagField = contactFields?.find((field) => field.type == "tag");
 
     const save = useMutation(addTagMutation, {
         onSuccess: () => {

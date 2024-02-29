@@ -8,27 +8,19 @@ import {
     Space,
     Typography,
     Form,
-    Select,
     List,
-    Checkbox,
-    Radio,
-    Tooltip,
     Popconfirm,
     message,
 } from "antd";
 
 import { useMutation } from "react-query";
-import {
-    createCustomFieldMutation,
-    saveCustomFieldValuesMutation,
-} from "../api/mutation/useCustomFieldMutation";
-import queryClient from "../queryClient";
-import { FIELD_TYPE_LIST } from "../constants";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import validateRules from "../providers/validateRules";
-import { useCustomFieldSections } from "../api/query/customFieldQuery";
-import { TContact, TCustomField, TCustomFieldSection } from "../entities";
-import { useAppContextProvider } from "../context/AppContext";
+import { saveCustomFieldValuesMutation } from "../api/mutation/useCustomFieldMutation";
+import { defaultFilter } from "../constants";
+import { useCustomFields } from "../api/query/customFieldQuery";
+import { TContact, TCustomField } from "../entities";
+import { mutateGet } from "../api/mutation/useSetupMutation";
+import { ENDPOINTS } from "../endpoints";
+import _ from "lodash";
 interface Props {
     isModalOpen: boolean;
     closeModal: () => void;
@@ -47,8 +39,54 @@ const ModalAddExistingNumberContact = ({
         TContact | undefined
     >(undefined);
 
-    const { contacts, contactFields } = useAppContextProvider();
-    const [searchKey, setSearchKey] = useState("");
+    const [pagination, setPagination] = useState({
+        page_size: 10,
+        page: 1,
+        total: 0,
+    });
+    const [contacts, setContacts] = useState<any>();
+
+    const [filter, setFilter] = useState<any>(defaultFilter);
+
+    const { data: filteredContacts, refetch: refetchFilteredContacts } =
+        mutateGet(
+            { ...filter, ...pagination },
+            ENDPOINTS.contacts.url,
+            "addToExistingContactFilter"
+        );
+
+    const debouncedSearch = _.debounce((value) => {
+        handleSearch(value);
+    }, 300);
+
+    const handleSearch = (value) => {
+        setFilter({
+            ...filter,
+            filters: {
+                conditions: [
+                    { key: "firstName", condition: "contains", value: value },
+                    { key: "lastName", condition: "contains", value: value },
+                ],
+                conditionalOperator: "or",
+            },
+        });
+    };
+
+    useEffect(() => {
+        refetchFilteredContacts();
+    }, [filter]);
+
+    useEffect(() => {
+        if (filteredContacts && filteredContacts.data) {
+            setContacts(filteredContacts.data.data);
+        }
+    }, [filteredContacts]);
+
+    const {
+        data: contactFields,
+        isLoading: isContactFieldsLoading,
+        refetch: refetchContactFields,
+    } = useCustomFields("contact");
 
     const save = useMutation(saveCustomFieldValuesMutation, {
         onSuccess: () => {
@@ -85,7 +123,7 @@ const ModalAddExistingNumberContact = ({
                                 placeholder="Search Contact"
                                 className="w-100"
                                 onChange={(event: any) => {
-                                    setSearchKey(event.target.value);
+                                    debouncedSearch(event.target.value);
                                 }}
                             />
                         </Col>
@@ -97,17 +135,7 @@ const ModalAddExistingNumberContact = ({
                                 header={false}
                                 footer={false}
                                 bordered
-                                dataSource={contacts.filter(
-                                    (str: TContact) =>
-                                        str.fields.firstName
-                                            .toLowerCase()
-                                            .includes(
-                                                searchKey.toLowerCase()
-                                            ) ||
-                                        str.fields.lastName
-                                            .toLowerCase()
-                                            .includes(searchKey.toLowerCase())
-                                )}
+                                dataSource={contacts}
                                 renderItem={(contact: TContact) => {
                                     return (
                                         <div
@@ -148,7 +176,7 @@ const ModalAddExistingNumberContact = ({
                         header={false}
                         footer={false}
                         bordered
-                        dataSource={contactFields.filter(
+                        dataSource={contactFields?.filter(
                             (customField: TCustomField) =>
                                 ["phone", "mobile"].includes(customField.type)
                         )}

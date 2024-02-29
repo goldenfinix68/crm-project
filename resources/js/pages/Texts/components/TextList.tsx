@@ -23,7 +23,7 @@ import {
 } from "@ant-design/icons"; // Step 1
 import { useNavigate } from "react-router-dom";
 import { getTimeAgo } from "../../../helpers";
-import { TTextThread, TTextThreadList } from "../../../entities";
+import { TTextThreadList } from "../../../entities";
 import ConfirmModal from "../../../components/ConfirmModal";
 import { useMutation } from "react-query";
 import queryClient from "../../../queryClient";
@@ -34,6 +34,7 @@ import { useAppContextProvider } from "../../../context/AppContext";
 import AddTagModal from "./AddTagModal";
 import CustomLink from "../../../components/CustomLink";
 import moment from "moment";
+import { useCustomFields } from "../../../api/query/customFieldQuery";
 
 const TextList = ({ label }) => {
     const [searchKey, setSearchKey] = useState("");
@@ -48,7 +49,12 @@ const TextList = ({ label }) => {
     const [selectedThreadIds, setSelectedThreadIds] = useState<string[]>([]);
     const [isAssignLabelModalOpen, setIsAssignLabelModalOpen] = useState(false);
     const [isViaMultiple, setIsViaMultiple] = useState(false);
-    const { contactFields } = useAppContextProvider();
+
+    const {
+        data: contactFields,
+        isLoading: isContactFieldsLoading,
+        refetch: refetchContactFields,
+    } = useCustomFields("contact");
 
     const archiveThread = useMutation(useDeleteThread, {
         onSuccess: () => {
@@ -171,7 +177,7 @@ const TextList = ({ label }) => {
                     >
                         Labels
                     </Button>
-                    {contactFields.find((field) => field.type == "tag") && (
+                    {contactFields?.find((field) => field.type == "tag") && (
                         <Button
                             icon={<PlusCircleOutlined />}
                             type="text"

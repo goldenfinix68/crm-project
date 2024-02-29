@@ -34,6 +34,10 @@ import UseTemplatePopover from "../../../components/UseTemplatePopover";
 import { TContact, TCustomFieldValue } from "../../../entities";
 import { useAppContextProvider } from "../../../context/AppContext";
 import AddAttributePopoverContent from "../../TextTemplates/components/AddAttributePopoverContent";
+import { defaultFilter } from "../../../constants";
+import { mutateGet } from "../../../api/mutation/useSetupMutation";
+import { ENDPOINTS } from "../../../endpoints";
+import _ from "lodash";
 interface Props {
     handleSubmit: () => void;
     handleCancel?: () => void;
@@ -62,7 +66,53 @@ const TextForm = ({
     const messageTextAreaRef = useRef<HTMLInputElement | null>(null);
     const [isAttributePopoverOpen, setIsAttributePopoverOpen] = useState(false);
 
-    const { contacts, isRoleStats } = useAppContextProvider();
+    const { isRoleStats } = useAppContextProvider();
+    const [selectedContact, setSelectedContact] = useState<
+        TContact | undefined
+    >(undefined);
+
+    const [pagination, setPagination] = useState({
+        page_size: 10,
+        page: 1,
+        total: 0,
+    });
+    const [contacts, setContacts] = useState<any>();
+
+    const [filter, setFilter] = useState<any>(defaultFilter);
+
+    const { data: filteredContacts, refetch: refetchFilteredContacts } =
+        mutateGet(
+            { ...filter, ...pagination },
+            ENDPOINTS.contacts.url,
+            "textFormContactFilter"
+        );
+
+    const debouncedSearch = _.debounce((value) => {
+        handleSearch(value);
+    }, 300);
+
+    const handleSearch = (value) => {
+        setFilter({
+            ...filter,
+            filters: {
+                conditions: [
+                    { key: "firstName", condition: "contains", value: value },
+                    { key: "lastName", condition: "contains", value: value },
+                ],
+                conditionalOperator: "or",
+            },
+        });
+    };
+
+    useEffect(() => {
+        refetchFilteredContacts();
+    }, [filter]);
+
+    useEffect(() => {
+        if (filteredContacts && filteredContacts.data) {
+            setContacts(filteredContacts.data.data);
+        }
+    }, [filteredContacts]);
 
     const resetFields = () => {
         setIsFocused(false);
@@ -99,12 +149,6 @@ const TextForm = ({
     const scheduleLabel = schedule
         ? moment(schedule.$d).format("MMM D, YYYY h:mm a")
         : "";
-
-    const filteredOptions = contacts?.filter((contact) =>
-        contact?.phoneNumbers?.includes(
-            toFormValue ? toFormValue.replace(/[-\s+_]/g, "") : ""
-        )
-    );
 
     return (
         <>
@@ -167,6 +211,7 @@ const TextForm = ({
                                     }))}
                                     style={{ width: "100%" }}
                                     value={toFormValue}
+                                    onSearch={(e) => debouncedSearch(e)}
                                 >
                                     <Input
                                         // mask="+1 000-000-0000"

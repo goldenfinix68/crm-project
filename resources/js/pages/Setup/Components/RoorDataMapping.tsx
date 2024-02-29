@@ -16,10 +16,17 @@ import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
 import queryClient from "../../../queryClient";
 import { useAppContextProvider } from "../../../context/AppContext";
 import { userSettings } from "../../../api/mutation/useUserMutation";
+import { useCustomFields } from "../../../api/query/customFieldQuery";
 
 const RoorDataMapping: React.FC = () => {
     const [form] = Form.useForm();
-    const { contactFields, loggedInUser } = useAppContextProvider();
+    const { loggedInUser } = useAppContextProvider();
+
+    const {
+        data: contactFields,
+        isLoading: isContactFieldsLoading,
+        refetch: refetchContactFields,
+    } = useCustomFields("contact");
 
     const settings =
         loggedInUser?.role == "mainUser"

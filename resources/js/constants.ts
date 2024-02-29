@@ -426,13 +426,12 @@ export const FILTER_OPTIONS = [
 ];
 
 export const defaultFilter: TFilter = {
+    id: "",
+    name: "",
     filters: {
         conditions: [],
         conditionalOperator: "and",
     },
-    page: 1,
-    page_size: 50,
-    total: 0,
 };
 
 export const allowedroleToAccess = ["superAdmin", "mainUser", "user"];

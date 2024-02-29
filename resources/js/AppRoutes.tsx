@@ -15,7 +15,6 @@ import ActivitySetup from "./pages/ActivitySetup";
 import ContactSetup from "./pages/ContactSetup";
 import ContactView from "./pages/ContactView";
 import Deal from "./pages/Deal";
-import DealDetail from "./pages/Deal/DealDetail";
 import DealPipelineSetup from "./pages/DealPipelineSetup";
 import DealSetup from "./pages/DealSetup";
 import Dialer from "./pages/Dialer/Dialer";
@@ -214,14 +213,14 @@ const AppRoutes = () => {
                                     </PrivateRoute>
                                 }
                             />
-                            <Route
+                            {/* <Route
                                 path="/deals/:dealId"
                                 element={
                                     <PrivateRoute>
                                         <DealDetail />
                                     </PrivateRoute>
                                 }
-                            />
+                            /> */}
                             <Route
                                 path="/inbox"
                                 element={

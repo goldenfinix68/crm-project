@@ -57,6 +57,7 @@ import { Link } from "react-router-dom";
 import CustomLink from "../../components/CustomLink";
 import DealCardConfigureModal from "../../components/DealCardConfigureModal";
 import DealCard from "../../components/DealCard";
+import { useCustomFields } from "../../api/query/customFieldQuery";
 
 interface Card {
     id: number;
@@ -83,8 +84,13 @@ interface TDeals {
     owner: any;
 }
 const Deal = () => {
-    const { loggedInUser, contactFields, isRoleStats } =
-        useAppContextProvider();
+    const { loggedInUser, isRoleStats } = useAppContextProvider();
+
+    const {
+        data: contactFields,
+        isLoading: isContactFieldsLoading,
+        refetch: refetchContactFields,
+    } = useCustomFields("contact");
     const settings = loggedInUser?.settings;
 
     const { data: pipelines, isLoading: isPipelinesLoading } = dealPipelines();

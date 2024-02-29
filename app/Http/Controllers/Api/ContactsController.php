@@ -51,39 +51,54 @@ class ContactsController extends Controller
                 $condition = $filter->condition;
                 $value = $filter->value;
      
-                // Construct the column name from the filter's key
-                $columnName = $filter->column->value;
-     
                 // Apply the filter based on the condition
                 switch ($condition) {
                     case 'contains':
-                        $query->{$eloquentCondition}('customFieldValues', function ($q) use ($value) {
+                        $query->{$eloquentCondition}('customFieldValues', function ($q) use ($value, $key) {
                             $q->where('value', 'like', "%$value%");
+                            $q->whereHas('customField', function ($q2) use ($key) {
+                                $q2->where('fieldName', $key);
+                            });
                         });
                         break;
                     case 'notContains':
-                        $query->{$eloquentCondition}('customFieldValues', function ($q) use ($value) {
+                        $query->{$eloquentCondition}('customFieldValues', function ($q) use ($value, $key) {
                             $q->where('value', 'not like', "%$value%");
+                            $q->whereHas('customField', function ($q2) use ($key) {
+                                $q2->where('fieldName', $key);
+                            });
                         });
                         break;
                     case 'equals':
-                        $query->{$eloquentCondition}('customFieldValues', function ($q) use ($value) {
+                        $query->{$eloquentCondition}('customFieldValues', function ($q) use ($value, $key) {
                             $q->where('value', '=', $value);
+                            $q->whereHas('customField', function ($q2) use ($key) {
+                                $q2->where('fieldName', $key);
+                            });
                         });
                         break;
                     case 'startsWith':
-                        $query->{$eloquentCondition}('customFieldValues', function ($q) use ($value) {
+                        $query->{$eloquentCondition}('customFieldValues', function ($q) use ($value, $key) {
                             $q->where('value', 'like', "$value%");
+                            $q->whereHas('customField', function ($q2) use ($key) {
+                                $q2->where('fieldName', $key);
+                            });
                         });
                         break;
                     case 'endsWith':
-                        $query->{$eloquentCondition}('customFieldValues', function ($q) use ($value) {
+                        $query->{$eloquentCondition}('customFieldValues', function ($q) use ($value, $key) {
                             $q->where('value', 'like', "%$value");
+                            $q->whereHas('customField', function ($q2) use ($key) {
+                                $q2->where('fieldName', $key);
+                            });
                         });
                         break;
                     case 'empty':
-                        $query->{$eloquentCondition}('customFieldValues', function ($q) use ($value) {
+                        $query->{$eloquentCondition}('customFieldValues', function ($q) use ($value, $key) {
                             $q->where('value', '');
+                            $q->whereHas('customField', function ($q2) use ($key) {
+                                $q2->where('fieldName', $key);
+                            });
                         });
                         break;
                 }

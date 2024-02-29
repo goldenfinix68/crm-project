@@ -19,6 +19,7 @@ import { useAppContextProvider } from "../context/AppContext";
 import { useUsedTags, useUsersAll } from "../api/query/userQuery";
 import { DEFAULT_REQUIRED_MESSAGE } from "../constants";
 import { useContactTypesAll } from "../api/query/contactsQuery";
+import SelectContact from "./SelectContact";
 
 const CustomFieldInput = ({
     customField,
@@ -146,26 +147,34 @@ const CustomFieldInput = ({
         }
         if (customField.type == "contactLookup") {
             return (
-                <Select
-                    showSearch
+                <SelectContact
+                    defaultOpen={isSelectOptionsOpen}
                     mode={
                         customField.associationType == "multiple"
                             ? "multiple"
                             : undefined
                     }
-                    dropdownStyle={{ zIndex: 99999999 }}
-                    className="w-100"
-                    ref={inputRef}
-                    defaultOpen={isSelectOptionsOpen}
-                >
-                    {contacts?.map((contact, index) => (
-                        <Select.Option value={contact.id} key={index}>
-                            {contact.fields?.firstName +
-                                " " +
-                                contact.fields?.lastName}
-                        </Select.Option>
-                    ))}
-                </Select>
+                />
+                // <Select
+                //     showSearch
+                //     mode={
+                //         customField.associationType == "multiple"
+                //             ? "multiple"
+                //             : undefined
+                //     }
+                //     dropdownStyle={{ zIndex: 99999999 }}
+                //     className="w-100"
+                //     ref={inputRef}
+                //     defaultOpen={isSelectOptionsOpen}
+                // >
+                //     {contacts?.map((contact, index) => (
+                //         <Select.Option value={contact.id} key={index}>
+                //             {contact.fields?.firstName +
+                //                 " " +
+                //                 contact.fields?.lastName}
+                //         </Select.Option>
+                //     ))}
+                // </Select>
             );
         }
         if (customField.type == "userLookup") {
