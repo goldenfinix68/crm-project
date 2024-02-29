@@ -371,6 +371,7 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                                 field={record}
                                 handleSubmit={() => {
                                     queryClient.invalidateQueries("getContact");
+                                    queryClient.invalidateQueries("thread");
                                 }}
                             />
                         )}
