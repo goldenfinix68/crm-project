@@ -69,6 +69,7 @@ import ContactTypeTag from "../../../components/ContactTypeTag";
 import TextEllipsis from "../../../components/TextEllipsis";
 import CustomFieldFormModal from "../../../components/CustomFieldFormModal";
 import ContactInfoEditableText from "../../../components/ContactInfoEditableText";
+import { useCustomFields } from "../../../api/query/customFieldQuery";
 
 const ContactInfo = ({ contact }: { contact: TContact }) => {
     const navigate = useNavigate();
@@ -86,7 +87,13 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
     // const { contact } = useContext(ContactContext);
     const [tagSearchKey, setTagSearchKey] = React.useState("");
 
-    const { isRoleStats, contactFields } = useAppContextProvider();
+    const { isRoleStats } = useAppContextProvider();
+
+    const {
+        data: contactFields,
+        isLoading: isContactFieldsLoading,
+        refetch: refetchContactFields,
+    } = useCustomFields("contact");
 
     const save = useMutation(saveCustomFieldValuesMutation, {
         onSuccess: () => {
@@ -336,7 +343,7 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
 
                 <Table
                     dataSource={contactFields
-                        .filter(
+                        ?.filter(
                             (field) =>
                                 field.fieldName != "firstName" &&
                                 field.fieldName != "lastName" &&

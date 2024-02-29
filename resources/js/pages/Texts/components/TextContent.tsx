@@ -54,7 +54,7 @@ const TextContent = ({ menu }: { menu: string }) => {
             setIsLoading(true);
             refetch();
         }
-    }, [threadId]);
+    }, [threadId, contactId]);
 
     React.useEffect(() => {
         if (thread) {
