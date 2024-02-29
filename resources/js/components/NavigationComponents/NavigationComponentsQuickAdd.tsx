@@ -148,27 +148,31 @@ const NavigationComponentsQuickAdd: React.FC = () => {
                 />
             </Dropdown>
 
-            <CustomFieldFormModal
-                isModalOpen={isAddModalContactOpen}
-                closeModal={() => {
-                    setIsAddModalContactOpen(false);
-                }}
-                handleSubmit={() => {
-                    queryClient.invalidateQueries("contacts");
-                    queryClient.invalidateQueries("filteredContacts");
-                }}
-                type="contact"
-            />
+            {isAddModalContactOpen && (
+                <CustomFieldFormModal
+                    isModalOpen={isAddModalContactOpen}
+                    closeModal={() => {
+                        setIsAddModalContactOpen(false);
+                    }}
+                    handleSubmit={() => {
+                        queryClient.invalidateQueries("contacts");
+                        queryClient.invalidateQueries("filteredContacts");
+                    }}
+                    type="contact"
+                />
+            )}
 
-            <ModalAddDeal
-                isModalOpen={isAddDealModalOpen}
-                handleSubmit={() => {
-                    console.log("qwe");
-                }}
-                closeModal={() => {
-                    setIsAddDealModalOpen(false);
-                }}
-            />
+            {isAddDealModalOpen && (
+                <ModalAddDeal
+                    isModalOpen={isAddDealModalOpen}
+                    handleSubmit={() => {
+                        console.log("qwe");
+                    }}
+                    closeModal={() => {
+                        setIsAddDealModalOpen(false);
+                    }}
+                />
+            )}
 
             {/* <ContactsComponentsAddContacts
                 isModalOpen={isAddModalContactOpen}
@@ -190,10 +194,13 @@ const NavigationComponentsQuickAdd: React.FC = () => {
                 handleCancelAdd={() => setIsAddDealModalOpen(false)}
             /> */}
 
-            <TextModal
-                closeModal={() => setIsTextModalOpen(false)}
-                isModalOpen={isTextModalOpen}
-            />
+            {isTextModalOpen && (
+                <TextModal
+                    closeModal={() => setIsTextModalOpen(false)}
+                    isModalOpen={isTextModalOpen}
+                />
+            )}
+
             {/* <ModalAddDeal
                 isModalOpenAdd={isModalDealOpenAdd}
                 handleOkAdd={handleOkAdd}

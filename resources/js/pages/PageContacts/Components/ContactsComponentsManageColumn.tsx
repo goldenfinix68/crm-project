@@ -459,14 +459,16 @@ const ContactsComponentsManageColumn: React.FC<
                     <Button onClick={closeModal}>Cancel</Button>
                 </div>
 
-                <CustomFieldAddUpdateModal
-                    isModalOpen={isModalAddCustomField}
-                    closeModal={() => setModalAddCustomField(false)}
-                    handleSubmit={() => {
-                        refetchContactFields();
-                    }}
-                    type={"contact"}
-                />
+                {isModalAddCustomField && (
+                    <CustomFieldAddUpdateModal
+                        isModalOpen={isModalAddCustomField}
+                        closeModal={() => setModalAddCustomField(false)}
+                        handleSubmit={() => {
+                            refetchContactFields();
+                        }}
+                        type={"contact"}
+                    />
+                )}
             </Modal>
         </>
     );

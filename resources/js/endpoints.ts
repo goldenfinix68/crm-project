@@ -1,6 +1,6 @@
 export const ENDPOINTS = {
-    filteredContacts: {
-        url: "/api/contacts/filtered",
+    contacts: {
+        url: "/api/contacts",
         cache: "filteredContacts",
     },
 };

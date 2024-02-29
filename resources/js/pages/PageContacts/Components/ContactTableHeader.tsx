@@ -96,7 +96,7 @@ const ContactTableHeader = ({
         }) ?? []),
     ];
 
-    const { contactFields, isRoleStats } = useAppContextProvider();
+    const { isRoleStats } = useAppContextProvider();
 
     const deleteContact = useMutation(deleteContactMutation, {
         onSuccess: () => {
@@ -336,43 +336,46 @@ const ContactTableHeader = ({
                     queryClient.invalidateQueries("customFields");
                 }}
             />
+            {isAddModalOpen && (
+                <CustomFieldFormModal
+                    isModalOpen={isAddModalOpen}
+                    closeModal={() => {
+                        setIsAddModalOpen(false);
+                    }}
+                    handleSubmit={() => {
+                        queryClient.invalidateQueries("contacts");
+                        queryClient.invalidateQueries("filteredContacts");
+                    }}
+                    type="contact"
+                />
+            )}
+            {isFilterModalOpen && (
+                <Filter
+                    openFilter={isFilterModalOpen}
+                    setOpenFilter={setIsFilterModalOpen}
+                    filter={filter}
+                    setFilter={setFilter}
+                    type="contact"
+                />
+            )}
+            {isBulkUpdateModalOpen && (
+                <ContactBulkUpdate
+                    isModalOpen={isBulkUpdateModalOpen}
+                    closeModal={() => setIsBulkUpdateModalOpen(false)}
+                    handleSubmit={() => {
+                        console.log("qwe");
+                    }}
+                    selectedRowKeys={selectedRowKeys}
+                />
+            )}
 
-            <CustomFieldFormModal
-                isModalOpen={isAddModalOpen}
-                closeModal={() => {
-                    setIsAddModalOpen(false);
-                }}
-                handleSubmit={() => {
-                    queryClient.invalidateQueries("contacts");
-                    queryClient.invalidateQueries("filteredContacts");
-                }}
-                type="contact"
-            />
-
-            <Filter
-                openFilter={isFilterModalOpen}
-                setOpenFilter={setIsFilterModalOpen}
-                columns={contactFields.map((field) => {
-                    return { label: field.label, value: field.fieldName };
-                })}
-                filter={filter}
-                setFilter={setFilter}
-                type="contact"
-            />
-            <ContactBulkUpdate
-                isModalOpen={isBulkUpdateModalOpen}
-                closeModal={() => setIsBulkUpdateModalOpen(false)}
-                handleSubmit={() => {
-                    console.log("qwe");
-                }}
-                selectedRowKeys={selectedRowKeys}
-            />
-
-            <SendToManyModal
-                isModalOpen={isSendToManyModalOpen}
-                closeModal={() => setIsSendToManyModalOpen(false)}
-                contacts={(selectedRows as any) ?? []}
-            />
+            {isSendToManyModalOpen && (
+                <SendToManyModal
+                    isModalOpen={isSendToManyModalOpen}
+                    closeModal={() => setIsSendToManyModalOpen(false)}
+                    contacts={(selectedRows as any) ?? []}
+                />
+            )}
         </>
     );
 };

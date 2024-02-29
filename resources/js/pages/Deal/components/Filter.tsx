@@ -40,11 +40,11 @@ import { deleteFilterMutation } from "../../../api/mutation/useFilterMutation";
 import queryClient from "../../../queryClient";
 import { Popconfirm } from "antd/lib";
 import { useAppContextProvider } from "../../../context/AppContext";
+import { useCustomFields } from "../../../api/query/customFieldQuery";
 
 interface Props {
     openFilter: boolean;
     setOpenFilter: any;
-    columns?: { label: string; value: string }[];
     setFilter: any;
     filter: TFilter;
     type: string;
@@ -52,7 +52,6 @@ interface Props {
 const Filter: React.FC<Props> = ({
     openFilter,
     setOpenFilter,
-    columns,
     filter,
     setFilter,
     type,
@@ -72,6 +71,16 @@ const Filter: React.FC<Props> = ({
     );
     const [isCreateFilterModalOpen, setIsCreateFilterModalOpen] =
         useState(false);
+
+    const {
+        data: contactFields,
+        isLoading: isContactFieldsLoading,
+        refetch: refetchContactFields,
+    } = useCustomFields("contact");
+
+    const columns = contactFields?.map((field) => {
+        return { label: field.label, value: field.fieldName };
+    });
 
     const deleteFilter = useMutation((id: string) => deleteFilterMutation(id), {
         onSuccess: () => {
@@ -206,9 +215,9 @@ const Filter: React.FC<Props> = ({
                                         val.condition
                                     ) && (
                                         <Input
-                                            value={val.value}
+                                            // value={val.value}
                                             // placeholder={val.value}
-                                            onChange={(e) =>
+                                            onBlur={(e) =>
                                                 updateByKey(val.key, {
                                                     ...val,
                                                     value: e.target.value,

@@ -9,8 +9,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 use App\Http\Controllers\Api\CallsController;
 use App\Services\MobileNumberService;
+use App\Services\getContactsByMobile;
 
 use App\Models\User;
+use App\Models\Contact;
 use App\Models\Text;
 use App\Models\Call;
 use Auth;
@@ -142,26 +144,37 @@ class Contact extends Model
 
     public function getDuplicatePhoneNumbersAttribute()
     {
+
+        return [];
+        
         $user = Auth::user();
 
-        if(empty($user) || empty($user->contacts)){
+        if (!$user) {
             return [];
         }
 
+        $uniquePhoneNumbers = array_unique($this->phoneNumbers);
+
+        $contacts = \App\Models\Contact::where('userId', $user->mainId)
+            ->where('id', "!=", $this->id)
+            ->whereHas('customFieldValues', function ($query) use ($uniquePhoneNumbers) {
+                $query->whereIn(DB::raw("REPLACE(`value`, '+', '')"), $uniquePhoneNumbers);
+                $query->whereHas('customField', function ($query2) {
+                    $query2->where('type', 'mobile');
+                    $query2->orWhere('type', 'phone');
+                });
+            })
+        ->get();
+
         $duplicates = [];
-        foreach ($user->contacts as $contact) {
-            // Perform intersection on non-null values
-            $commonValues = array_intersect($this->phoneNumbers, $contact->phoneNumbers);
-
-            if (!empty($commonValues) && $this->id != $contact->id) {
-                $duplicates[] = $contact->fields['firstName'] . ' ' . $contact->fields['lastName'];
-            }
+        foreach ($contacts as $contact) {
+            $duplicates[] = $contact->fields['firstName'] . ' ' . $contact->fields['lastName'];
         }
-
-
 
         return $duplicates;
     }
+
+
 
     public function user()
     {

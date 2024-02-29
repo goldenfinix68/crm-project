@@ -35,19 +35,22 @@ interface AppContextProviderProps {
 }
 
 export function AppContextProvider({ children }: AppContextProviderProps) {
-    const {
-        contacts,
-        isLoading: isContactsLoading,
-        refetch: refetchContacts,
-    } = useContactsAll("All");
+    // const {
+    //     contacts,
+    //     isLoading: isContactsLoading,
+    //     refetch: refetchContacts,
+    // } = useContactsAll("All");
+    const contacts = [];
+    const isContactsLoading = false;
+    const refetchContacts = () => console.log("refetchContacts");
 
     const { user } = useLoggedInUser();
 
-    const {
-        data: contactFields,
-        isLoading: isContactFieldsLoading,
-        refetch: refetchContactFields,
-    } = useCustomFields("contact");
+    // const {
+    //     data: contactFields,
+    //     isLoading: isContactFieldsLoading,
+    //     refetch: refetchContactFields,
+    // } = useCustomFields("contact");
 
     return (
         <AppContext.Provider
@@ -56,8 +59,8 @@ export function AppContextProvider({ children }: AppContextProviderProps) {
                 isContactsLoading,
                 refetchContacts,
                 loggedInUser: user ?? null,
-                contactFields: contactFields ?? [],
-                isContactFieldsLoading,
+                contactFields: [],
+                isContactFieldsLoading: false,
                 isRoleStats: user?.role == "stats",
                 isSUperAdmin: user?.role == "superAdmin",
             }}

@@ -11,6 +11,7 @@ import { filterData } from "../../helpers";
 import FilterAddUpdateModal from "../../components/FilterAddUpdateModal";
 import { defaultFilter } from "../../constants";
 import { useAppContextProvider } from "../../context/AppContext";
+import { useCustomFields } from "../../api/query/customFieldQuery";
 
 interface DataType {
     key: React.Key;
@@ -30,36 +31,36 @@ interface ListItem {
     key: string;
 }
 
-const { Option } = Select;
-const { TabPane } = Tabs;
-
-const handleTabChange = (key) => {
-    // Handle tab change event
-    console.log("Selected tab:", key);
-};
-const { Search } = Input;
-
-// const menu = (
-
-// );
-
 const Contacts = () => {
     const [selectedRows, setSelectedRows] = useState<any>([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState<any>([]);
-    const [contacts, setContacts] = useState<TContact[] | undefined>();
-
-    const { isContactFieldsLoading } = useAppContextProvider();
 
     const [filter, setFilter] = useState<TFilter>(defaultFilter);
+
+    const [contacts, setContacts] = useState<TContact[] | undefined>();
+
+    const [pagination, setPagination] = useState({
+        page_size: 50,
+        page: 1,
+        total: 0,
+    });
+    const [isContactsLoading, setIsContactsLoading] = useState(true);
+
     const {
-        data: filteredContacts,
-        isLoading: isFilteredContactsLoading,
-        refetch: refetchFilteredContacts,
-    } = mutateGet(
-        JSON.stringify(filter),
-        ENDPOINTS.filteredContacts.url,
-        ENDPOINTS.filteredContacts.cache
-    );
+        data: contactFields,
+        isLoading: isContactFieldsLoading,
+        refetch: refetchContactFields,
+    } = useCustomFields("contact");
+
+    const { data: filteredContacts, refetch: refetchFilteredContacts } =
+        mutateGet(
+            { ...filter, ...pagination },
+            ENDPOINTS.contacts.url,
+            ENDPOINTS.contacts.cache,
+            () => {
+                setIsContactsLoading(false);
+            }
+        );
 
     const handleChangeViewAs = (filter?: TFilter) => {
         if (!filter) {
@@ -70,21 +71,26 @@ const Contacts = () => {
     };
 
     useEffect(() => {
-        if (filter.filters.conditions.length) {
-            const result = filterData(filteredContacts, filter.filters);
-            setContacts(result);
-        } else {
-            setContacts(filteredContacts);
-        }
-    }, [filter]);
+        setIsContactsLoading(true);
+        refetchFilteredContacts();
+    }, [filter, pagination.page, pagination.page_size]);
 
     useEffect(() => {
-        setContacts(filteredContacts);
+        if (filteredContacts) {
+            setContacts(filteredContacts?.data?.data);
+            setPagination({
+                ...pagination,
+                total: filteredContacts?.data?.total,
+            });
+        } else {
+            setContacts([]);
+        }
     }, [filteredContacts]);
+
     return (
         <Space direction="vertical" className="w-100">
             <HeaderMenu />
-            <Card loading={isFilteredContactsLoading || isContactFieldsLoading}>
+            <Card loading={isContactFieldsLoading}>
                 <ContactTableHeader
                     setSelectedRows={setSelectedRows}
                     setSelectedRowKeys={setSelectedRowKeys}
@@ -101,6 +107,11 @@ const Contacts = () => {
                             setSelectedRows={setSelectedRows}
                             setSelectedRowKeys={setSelectedRowKeys}
                             selectedRowKeys={selectedRowKeys}
+                            filter={filter}
+                            setFilter={setFilter}
+                            pagination={pagination}
+                            setPagination={setPagination}
+                            isContactLoading={isContactsLoading}
                         />
                     </Col>
                 </Row>

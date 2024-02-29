@@ -33,104 +33,90 @@ class ContactsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
-
     public function index(Request $request)
     {
-
-        $currentWeekStart = Carbon::now()->startOfWeek();
-        $currentWeekEnd = Carbon::now()->endOfWeek();
-        $lastWeekStart = Carbon::now()->subWeek()->startOfWeek();
-        $lastWeekEnd = Carbon::now()->subWeek()->endOfWeek();
-        $startOfDay = Carbon::now()->startOfDay();
-        $endOfDay = Carbon::now()->endOfDay();
-
-        $data = [];
-        $contacts = Contact::where('userId', $this->getMainUserId())
-            ->with(['customFieldValues', 'customFieldValues.customField'])
-            // ->where('id', 1)
-            // ->whereHas('customFieldValues', function ($query) {
-            //     $query->where('value', 'qweqweqwe');
-            // })
-            ->get();
-        // dd($contacts->customFieldValues);
+        $userId = $this->getMainUserId();
+        $filters = json_decode($request->filters);
+     
+        // Start with a base query
+        $contactsQuery = Contact::where('userId', $userId);
+     
+        // Apply each filter
+        $operator = $filters->conditionalOperator;
+        $eloquentCondition = $filters->conditionalOperator == "or" ? "orWhereHas": "whereHas";
+        
+        $contactsQuery->where(function ($query) use ($filters, $eloquentCondition) {
+            foreach ($filters->conditions as $filter) {
+                $key = $filter->key;
+                $condition = $filter->condition;
+                $value = $filter->value;
+     
+                // Construct the column name from the filter's key
+                $columnName = $filter->column->value;
+     
+                // Apply the filter based on the condition
+                switch ($condition) {
+                    case 'contains':
+                        $query->{$eloquentCondition}('customFieldValues', function ($q) use ($value) {
+                            $q->where('value', 'like', "%$value%");
+                        });
+                        break;
+                    case 'notContains':
+                        $query->{$eloquentCondition}('customFieldValues', function ($q) use ($value) {
+                            $q->where('value', 'not like', "%$value%");
+                        });
+                        break;
+                    case 'equals':
+                        $query->{$eloquentCondition}('customFieldValues', function ($q) use ($value) {
+                            $q->where('value', '=', $value);
+                        });
+                        break;
+                    case 'startsWith':
+                        $query->{$eloquentCondition}('customFieldValues', function ($q) use ($value) {
+                            $q->where('value', 'like', "$value%");
+                        });
+                        break;
+                    case 'endsWith':
+                        $query->{$eloquentCondition}('customFieldValues', function ($q) use ($value) {
+                            $q->where('value', 'like', "%$value");
+                        });
+                        break;
+                    case 'empty':
+                        $query->{$eloquentCondition}('customFieldValues', function ($q) use ($value) {
+                            $q->where('value', '');
+                        });
+                        break;
+                }
+            }
+        });
+        
+        
+        // $contacts = $contactsQuery->orderBy('asdasd')->get();
+        // Apply pagination to contacts query
+        $contacts = $contactsQuery->paginate($request->input('page_size', 10));
+     
         return response()->json([
             'success' => true,
-            'data' => $contacts
+            'data' => $contacts,
         ], 200);
-
-
-        // $data = Contact::select([
-        //     'contacts.*',
-        //     \DB::raw("(SELECT CONCAT(users.firstName, ' ', users.lastName)) as `owner`"),
-        // ])
-        //     ->where('ownerId', Auth::id())
-        //     ->leftJoin('users', 'users.id', '=', 'contacts.ownerId')
-        //     ->leftJoin('contact_types', 'contact_types.id', '=', 'contacts.typeId')
-        //     ->with(['type']);
-
-        // if (isset($request->filter)) {
-        //     if ($request->filter == "new-last-week") {
-        //         $data = $data->whereBetween('contacts.created_at', [$lastWeekStart, $lastWeekEnd]);
-        //     }
-        //     if ($request->filter == "new-this-week") {
-        //         $data = $data->whereBetween('contacts.created_at', [$currentWeekStart, $currentWeekEnd]);
-        //     }
-        //     if ($request->filter == "recent-modified-contact") {
-        //         $data = $data->whereBetween('contacts.updated_at', [$startOfDay, $endOfDay]);
-        //     }
-        // }
-
-        // if (isset($request->search)) {
-        //     $data = $data->where(function ($q) use ($request) {
-        //         $q->orWhere('id', 'LIKE', "%{$request->search}%");
-        //     });
-        // }
-
-        // if ($request->sort_order != '') {
-        //     $data->orderBy($request->sort_field, $request->sort_order == 'ascend' ? 'asc' : 'desc');
-        // } else {
-        //     $data->orderBy('id', 'desc');
-        // }
-
-        // if (isset($request->pageSize)) {
-        //     $data = $data->paginate($request->pageSize);
-        // } else {
-        //     $data = $data->get();
-        // }
-
-        // $data = $data->map(function ($q) {
-        //     if ($q->tags) {
-        //         $q->tags = json_decode($q->tags);
-        //     }
-        //     return $q;
-        // });
-
-        // return response()->json([
-        //     'success' => true,
-        //     'data' => $data
-        // ], 200);
     }
     
+     
 
     public function filteredContacts(Request $request)
     {
-        // $currentWeekStart = Carbon::now()->startOfWeek();
-        // $currentWeekEnd = Carbon::now()->endOfWeek();
-        // $lastWeekStart = Carbon::now()->subWeek()->startOfWeek();
-        // $lastWeekEnd = Carbon::now()->subWeek()->endOfWeek();
-        // $startOfDay = Carbon::now()->startOfDay();
-        // $endOfDay = Carbon::now()->endOfDay();
 
         $data = [];
-        $contacts = Contact::where('userId', $this->getMainUserId())->with(['customFieldValues', 'customFieldValues.customField']);
+        $contacts = Contact::where('userId', $this->getMainUserId());
 
         if(!empty($request->filters)){
 
         }
 
 
-        $contacts = $contacts->get();
+        $contacts = $contacts
+        ->limit(100)
+        ->get();
 
         // dd($contacts->customFieldValues);
         return response()->json($contacts, 200);

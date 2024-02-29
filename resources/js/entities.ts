@@ -108,6 +108,7 @@ export type TTextThreadContent = {
     id: string;
     phoneNumbers: string;
     contact?: TContact;
+    contactName: string;
     texts: TText[];
 };
 

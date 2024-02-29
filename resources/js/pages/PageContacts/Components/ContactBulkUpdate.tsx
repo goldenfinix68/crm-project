@@ -8,6 +8,7 @@ import { bulkUpdateField } from "../../../api/mutation/useContactMutation";
 import { TContact } from "../../../entities";
 import { useAppContextProvider } from "../../../context/AppContext";
 import CustomFieldInput from "../../../components/CustomFieldInput";
+import { useCustomFields } from "../../../api/query/customFieldQuery";
 
 interface ContactsComponentsUpdateProps {
     isModalOpen: boolean;
@@ -23,11 +24,16 @@ const ContactBulkUpdate = ({
 }: ContactsComponentsUpdateProps) => {
     const queryClient = useQueryClient();
     const [form] = Form.useForm<TContact>();
-    const { contacts, contactFields } = useAppContextProvider();
+
+    const {
+        data: contactFields,
+        isLoading: isContactFieldsLoading,
+        refetch: refetchContactFields,
+    } = useCustomFields("contact");
 
     const customFieldId = Form.useWatch("customFieldId", form);
 
-    const customField = contactFields.find(
+    const customField = contactFields?.find(
         (customField) => customField.id == customFieldId
     );
 
@@ -102,7 +108,7 @@ const ContactBulkUpdate = ({
                                 style={{ width: "100%" }}
                             >
                                 {contactFields
-                                    .filter(
+                                    ?.filter(
                                         (field) => field.fieldName != "mobile"
                                     )
                                     ?.map((field) => (

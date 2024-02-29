@@ -312,7 +312,7 @@ const AppRoutes = () => {
                                     </PrivateRoute>
                                 }
                             />
-                            <Route
+                            {/* <Route
                                 path="/setup/customizations/activity"
                                 element={
                                     <PrivateRoute
@@ -324,7 +324,7 @@ const AppRoutes = () => {
                                         />
                                     </PrivateRoute>
                                 }
-                            />
+                            /> */}
                             <Route
                                 path="/setup/customizations/deal"
                                 element={

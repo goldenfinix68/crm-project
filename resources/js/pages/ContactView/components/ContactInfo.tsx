@@ -371,20 +371,21 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                     />
                 </Table>
             </Space>
-
-            <CustomFieldFormModal
-                isModalOpen={isEditContactModalOpen}
-                closeModal={() => {
-                    setIsEditContactModalOpen(false);
-                }}
-                handleSubmit={() => {
-                    queryClient.invalidateQueries("contacts");
-                    queryClient.invalidateQueries("filteredContacts");
-                    queryClient.invalidateQueries("getContact");
-                }}
-                type="contact"
-                record={contact.fields}
-            />
+            {isEditContactModalOpen && (
+                <CustomFieldFormModal
+                    isModalOpen={isEditContactModalOpen}
+                    closeModal={() => {
+                        setIsEditContactModalOpen(false);
+                    }}
+                    handleSubmit={() => {
+                        queryClient.invalidateQueries("contacts");
+                        queryClient.invalidateQueries("filteredContacts");
+                        queryClient.invalidateQueries("getContact");
+                    }}
+                    type="contact"
+                    record={contact.fields}
+                />
+            )}
         </Card>
     );
 };

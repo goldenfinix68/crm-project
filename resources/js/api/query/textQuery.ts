@@ -5,7 +5,6 @@ import {
     TContactType,
     TText,
     TTextLabel,
-    TTextThread,
     TTextThreadContent,
     TTextThreadList,
 } from "../../entities";
