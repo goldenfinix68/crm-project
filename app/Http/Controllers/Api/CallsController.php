@@ -104,7 +104,25 @@ class CallsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'from' => 'required',
+            'to' => 'required',
+            'url_recording' => 'required',
+        ]);
+
+        $call = \App\Call::updateOrCreate([
+            'from' => $request->from,
+            'to' => $request->to,
+            'call_received_date' => $request->call_received_date,
+        ],[
+            'from' => $request->from,
+            'to' => $request->to,
+            'url_recording' => $request->url_recording,
+            'status' => $request->status,
+            'disposition' => $request->disposition,
+            'duration' => $request->duration,
+            'call_received_date' => $request->call_received_date,
+        ]);
     }
 
     /**
@@ -187,4 +205,29 @@ class CallsController extends Controller
             ]);
         }
     }
+
+
+    public function roorCalls(Request $request)
+    {
+        $this->validate($request, [
+            'from' => 'required',
+            'to' => 'required',
+            'url_recording' => 'required',
+        ]);
+
+        $call = \App\Call::updateOrCreate([
+            'from' => $request->from,
+            'to' => $request->to,
+            'call_received_date' => $request->call_received_date,
+        ],[
+            'from' => $request->from,
+            'to' => $request->to,
+            'url_recording' => $request->url_recording,
+            'status' => $request->status,
+            'disposition' => $request->disposition,
+            'duration' => $request->duration,
+            'call_received_date' => $request->call_received_date,
+        ]);
+    }
 }
+
