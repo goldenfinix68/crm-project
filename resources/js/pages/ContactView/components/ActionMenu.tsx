@@ -96,33 +96,37 @@ const ActionMenu = ({ contact }: { contact: TContact }) => {
                 }
                 tooltip="Click to set the default mobile number for contacting this contact. This number will be automatically selected when initiating communication."
             />
-
-            <TextModal
-                closeModal={() => setTextModalOpen(false)}
-                isModalOpen={textModalOpen}
-                phoneNumbers={contact.phoneNumbers}
-                contact={contact}
-            />
-
-            <ModalSetDefaultMobile
-                isModalOpen={defaultMobileNumberModal}
-                closeModal={() => setDefaultMobileNumberModal(false)}
-                contact={contact}
-            />
+            {textModalOpen && (
+                <TextModal
+                    closeModal={() => setTextModalOpen(false)}
+                    isModalOpen={textModalOpen}
+                    phoneNumbers={contact.phoneNumbers}
+                    contact={contact}
+                />
+            )}
+            {defaultMobileNumberModal && (
+                <ModalSetDefaultMobile
+                    isModalOpen={defaultMobileNumberModal}
+                    closeModal={() => setDefaultMobileNumberModal(false)}
+                    contact={contact}
+                />
+            )}
 
             {/* <ModalAddActivity
                 isModalOpenAdd={activityModalOpen}
                 handleOkAdd={() => setActivityModalOpen(false)}
                 handleCancelAdd={() => setActivityModalOpen(false)}
             /> */}
-            <ModalAddDeal
-                isModalOpen={dealModalOpen}
-                handleSubmit={() => {
-                    setDealModalOpen(false);
-                    queryClient.invalidateQueries("getContact");
-                }}
-                closeModal={() => setDealModalOpen(false)}
-            />
+            {dealModalOpen && (
+                <ModalAddDeal
+                    isModalOpen={dealModalOpen}
+                    handleSubmit={() => {
+                        setDealModalOpen(false);
+                        queryClient.invalidateQueries("getContact");
+                    }}
+                    closeModal={() => setDealModalOpen(false)}
+                />
+            )}
         </Space>
     );
 };

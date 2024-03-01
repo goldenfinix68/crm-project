@@ -52,7 +52,7 @@ const ModalAddExistingNumberContact = ({
         mutateGet(
             { ...filter, ...pagination },
             ENDPOINTS.contacts.url,
-            "addToExistingContactFilter"
+            "globalSearch"
         );
 
     const debouncedSearch = _.debounce((value) => {

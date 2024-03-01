@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Row, Space, Typography } from "antd";
+import { Button, Col, Row, Space, Spin, Typography } from "antd";
 import ContactInfo from "../../ContactView/components/ContactInfo";
 import ChatBoxItem from "./ChatBoxItem";
 import LoadingComponent from "../../../components/LoadingComponent";
@@ -80,166 +80,188 @@ const TextContent = ({ menu }: { menu: string }) => {
     }, [thread]);
 
     return ["all", "inbox", "scheduled"].includes(menu) ? (
-        <Row key={thread?.id}>
-            {isLoading && <LoadingComponent />}
-            <Col
-                span={13}
-                style={{ height: "85vh", overflowY: "auto" }}
-                ref={chatBoxRef}
-            >
+        <>
+            {isLoading ? (
                 <div
                     style={{
-                        backgroundColor: "white",
-                        width: "100%",
-                        padding: "15px",
-                        display: "flex",
-                        alignItems: "center",
-                        position: "sticky",
-                        top: 0,
-                        zIndex: 1,
+                        display: "grid",
+                        placeItems: "center",
+                        marginTop: "50%",
                     }}
                 >
-                    <Space direction="vertical" size={0}>
-                        <Typography.Text strong>
-                            {thread?.contactName}
-                        </Typography.Text>
-                        <Typography.Text>
-                            {thread?.phoneNumbers}
-                        </Typography.Text>
-                    </Space>
+                    <Spin />
                 </div>
-
-                <div style={{ paddingTop: "150px", height: "85%" }}>
-                    <div style={{ minHeight: "80%" }}>
-                        {thread?.texts
-                            ?.sort(
-                                (a, b) =>
-                                    parseInt(a.id ?? "0") -
-                                    parseInt(b.id ?? "0")
-                            )
-                            .map((text) => (
-                                <ChatBoxItem
-                                    name={thread?.contactName}
-                                    text={text}
-                                    key={text.id}
-                                />
-                            ))}
-                    </div>
-                    <div
-                        style={{
-                            position: "sticky",
-                            bottom: 0,
-                            left: 0,
-                            width: "100%",
-                            backgroundColor: "white",
-                            padding: "10px",
-                        }}
-                        key={divKey}
+            ) : (
+                <Row key={threadId}>
+                    <Col
+                        span={13}
+                        style={{ height: "85vh", overflowY: "auto" }}
+                        ref={chatBoxRef}
                     >
-                        <TextForm
+                        <div
+                            style={{
+                                backgroundColor: "white",
+                                width: "100%",
+                                padding: "15px",
+                                display: "flex",
+                                alignItems: "center",
+                                position: "sticky",
+                                top: 0,
+                                zIndex: 1,
+                            }}
+                        >
+                            <Space direction="vertical" size={0}>
+                                <Typography.Text strong>
+                                    {thread?.contactName}
+                                </Typography.Text>
+                                <Typography.Text>
+                                    {thread?.phoneNumbers}
+                                </Typography.Text>
+                            </Space>
+                        </div>
+
+                        <div style={{ paddingTop: "150px", height: "85%" }}>
+                            <div style={{ minHeight: "80%" }}>
+                                {thread?.texts
+                                    ?.sort(
+                                        (a, b) =>
+                                            parseInt(a.id ?? "0") -
+                                            parseInt(b.id ?? "0")
+                                    )
+                                    .map((text) => (
+                                        <ChatBoxItem
+                                            name={thread?.contactName}
+                                            text={text}
+                                            key={text.id}
+                                        />
+                                    ))}
+                            </div>
+                            <div
+                                style={{
+                                    position: "sticky",
+                                    bottom: 0,
+                                    left: 0,
+                                    width: "100%",
+                                    backgroundColor: "white",
+                                    padding: "10px",
+                                }}
+                                key={divKey}
+                            >
+                                <TextForm
+                                    handleSubmit={() => {
+                                        queryClient.invalidateQueries(
+                                            "getContact"
+                                        );
+                                        queryClient.invalidateQueries("thread");
+                                    }}
+                                    phoneNumbers={
+                                        thread?.contact
+                                            ? thread?.contact?.phoneNumbers
+                                            : [thread?.phoneNumbers!]
+                                    }
+                                    defaultTo={
+                                        lastText?.isFromApp
+                                            ? lastText?.to
+                                            : lastText?.from
+                                    }
+                                    defaultFrom={
+                                        thread?.contact?.defaultMobileNumber ??
+                                        (lastText?.isFromApp
+                                            ? lastText?.from
+                                            : lastText?.to)
+                                    }
+                                    contact={thread?.contact ?? undefined}
+                                />
+                            </div>
+                        </div>
+                    </Col>
+                    <Col
+                        span={11}
+                        style={{ height: "85vh", overflowY: "auto" }}
+                    >
+                        <Space
+                            direction="vertical"
+                            size={0}
+                            style={{ width: "100%", overflowY: "auto" }}
+                        >
+                            <div
+                                style={{
+                                    backgroundColor: "#F5F5F5",
+                                    width: "100%",
+                                    padding: "15px",
+                                    display: "flex",
+                                    fontWeight: "bold",
+                                    height: "74px",
+                                    alignItems: "center", // Vertical alignment: center
+                                    justifyContent: "center", // Horizontal alignment: center
+                                    textAlign: "center",
+                                    fontSize: "16px",
+                                }}
+                            >
+                                Related Information
+                            </div>
+
+                            {thread?.contact ? (
+                                <ContactInfo contact={thread?.contact} />
+                            ) : (
+                                <Space
+                                    style={{ textAlign: "center" }}
+                                    className="w-100"
+                                    size="large"
+                                    direction="vertical"
+                                >
+                                    Number not saved in contacts
+                                    <Button
+                                        onClick={() =>
+                                            setIsCreateNewContactModalOpen(true)
+                                        }
+                                    >
+                                        Create Contact
+                                    </Button>
+                                    <Button
+                                        onClick={() =>
+                                            setIsAddToExistingContactModalOpen(
+                                                true
+                                            )
+                                        }
+                                    >
+                                        Add to existing Contact
+                                    </Button>
+                                </Space>
+                            )}
+                        </Space>
+                    </Col>
+
+                    {isCreateNewContactModalOpen && (
+                        <CustomFieldFormModal
+                            isModalOpen={isCreateNewContactModalOpen}
+                            closeModal={() => {
+                                setIsCreateNewContactModalOpen(false);
+                            }}
                             handleSubmit={() => {
-                                queryClient.invalidateQueries("getContact");
+                                queryClient.invalidateQueries("textThreads");
                                 queryClient.invalidateQueries("thread");
                             }}
-                            phoneNumbers={
-                                thread?.contact
-                                    ? thread?.contact?.phoneNumbers
-                                    : [thread?.phoneNumbers!]
-                            }
-                            defaultTo={
-                                lastText?.isFromApp
-                                    ? lastText?.to
-                                    : lastText?.from
-                            }
-                            defaultFrom={
-                                thread?.contact?.defaultMobileNumber ??
-                                (lastText?.isFromApp
-                                    ? lastText?.from
-                                    : lastText?.to)
-                            }
-                            contact={thread?.contact ?? undefined}
+                            type="contact"
+                            record={{ mobile: thread?.phoneNumbers }}
                         />
-                    </div>
-                </div>
-            </Col>
-            <Col span={11} style={{ height: "85vh", overflowY: "auto" }}>
-                <Space
-                    direction="vertical"
-                    size={0}
-                    style={{ width: "100%", overflowY: "auto" }}
-                >
-                    <div
-                        style={{
-                            backgroundColor: "#F5F5F5",
-                            width: "100%",
-                            padding: "15px",
-                            display: "flex",
-                            fontWeight: "bold",
-                            height: "74px",
-                            alignItems: "center", // Vertical alignment: center
-                            justifyContent: "center", // Horizontal alignment: center
-                            textAlign: "center",
-                            fontSize: "16px",
-                        }}
-                    >
-                        Related Information
-                    </div>
-
-                    {thread?.contact ? (
-                        <ContactInfo contact={thread?.contact} />
-                    ) : (
-                        <Space
-                            style={{ textAlign: "center" }}
-                            className="w-100"
-                            size="large"
-                            direction="vertical"
-                        >
-                            Number not saved in contacts
-                            <Button
-                                onClick={() =>
-                                    setIsCreateNewContactModalOpen(true)
-                                }
-                            >
-                                Create Contact
-                            </Button>
-                            <Button
-                                onClick={() =>
-                                    setIsAddToExistingContactModalOpen(true)
-                                }
-                            >
-                                Add to existing Contact
-                            </Button>
-                        </Space>
                     )}
-                </Space>
-            </Col>
-
-            {isCreateNewContactModalOpen && (
-                <CustomFieldFormModal
-                    isModalOpen={isCreateNewContactModalOpen}
-                    closeModal={() => {
-                        setIsCreateNewContactModalOpen(false);
-                    }}
-                    handleSubmit={() => {
-                        queryClient.invalidateQueries("textThreads");
-                        queryClient.invalidateQueries("thread");
-                    }}
-                    type="contact"
-                    record={{ mobile: thread?.phoneNumbers }}
-                />
+                    {isAddToExistingContactModalOpen && (
+                        <ModalAddExistingNumberContact
+                            isModalOpen={isAddToExistingContactModalOpen}
+                            closeModal={() =>
+                                setIsAddToExistingContactModalOpen(false)
+                            }
+                            handleSubmit={() => {
+                                queryClient.invalidateQueries("textThreads");
+                                queryClient.invalidateQueries("thread");
+                            }}
+                            contactNumber={thread?.phoneNumbers!}
+                        />
+                    )}
+                </Row>
             )}
-            {isAddToExistingContactModalOpen && (
-                <ModalAddExistingNumberContact
-                    isModalOpen={isAddToExistingContactModalOpen}
-                    closeModal={() => setIsAddToExistingContactModalOpen(false)}
-                    handleSubmit={() => {
-                        queryClient.invalidateQueries("textThreads");
-                        queryClient.invalidateQueries("thread");
-                    }}
-                    contactNumber={thread?.phoneNumbers!}
-                />
-            )}
-        </Row>
+        </>
     ) : null;
 };
 
