@@ -109,7 +109,7 @@ const TextContent = ({ menu }: { menu: string }) => {
                     </Space>
                 </div>
 
-                <div style={{ paddingTop: "50px", height: "85%" }}>
+                <div style={{ paddingTop: "150px", height: "85%" }}>
                     <div style={{ minHeight: "80%" }}>
                         {thread?.texts
                             ?.sort(
@@ -214,28 +214,31 @@ const TextContent = ({ menu }: { menu: string }) => {
                 </Space>
             </Col>
 
-            <CustomFieldFormModal
-                isModalOpen={isCreateNewContactModalOpen}
-                closeModal={() => {
-                    setIsCreateNewContactModalOpen(false);
-                }}
-                handleSubmit={() => {
-                    queryClient.invalidateQueries("textThreads");
-                    queryClient.invalidateQueries("thread");
-                }}
-                type="contact"
-                record={{ mobile: thread?.phoneNumbers }}
-            />
-
-            <ModalAddExistingNumberContact
-                isModalOpen={isAddToExistingContactModalOpen}
-                closeModal={() => setIsAddToExistingContactModalOpen(false)}
-                handleSubmit={() => {
-                    queryClient.invalidateQueries("textThreads");
-                    queryClient.invalidateQueries("thread");
-                }}
-                contactNumber={thread?.phoneNumbers!}
-            />
+            {isCreateNewContactModalOpen && (
+                <CustomFieldFormModal
+                    isModalOpen={isCreateNewContactModalOpen}
+                    closeModal={() => {
+                        setIsCreateNewContactModalOpen(false);
+                    }}
+                    handleSubmit={() => {
+                        queryClient.invalidateQueries("textThreads");
+                        queryClient.invalidateQueries("thread");
+                    }}
+                    type="contact"
+                    record={{ mobile: thread?.phoneNumbers }}
+                />
+            )}
+            {isAddToExistingContactModalOpen && (
+                <ModalAddExistingNumberContact
+                    isModalOpen={isAddToExistingContactModalOpen}
+                    closeModal={() => setIsAddToExistingContactModalOpen(false)}
+                    handleSubmit={() => {
+                        queryClient.invalidateQueries("textThreads");
+                        queryClient.invalidateQueries("thread");
+                    }}
+                    contactNumber={thread?.phoneNumbers!}
+                />
+            )}
         </Row>
     ) : null;
 };
