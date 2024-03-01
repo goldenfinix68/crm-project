@@ -52,8 +52,8 @@ export const useTextLabels = () => {
     };
 };
 
-export const useTextThreads = () => {
-    const { data, isLoading } = useQuery<TTextThreadList[]>(
+export const useTextThreads = (params: any, onSuccess?: () => void) => {
+    const { data, isLoading, refetch } = useQuery<any>(
         "textThreads",
         async () => {
             const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
@@ -61,14 +61,23 @@ export const useTextThreads = () => {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
+                params: params,
             });
             return response.data;
+        },
+        {
+            onSuccess: () => {
+                if (onSuccess) {
+                    onSuccess();
+                }
+            },
         }
     );
 
     return {
-        textThreads: data,
+        data,
         isLoading,
+        refetch,
     };
 };
 

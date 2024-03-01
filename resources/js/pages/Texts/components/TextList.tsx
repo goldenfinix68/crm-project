@@ -5,9 +5,11 @@ import {
     Col,
     Divider,
     Dropdown,
+    Empty,
     Input,
     List,
     Menu,
+    Pagination,
     Row,
     Space,
     Tag,
@@ -35,10 +37,33 @@ import AddTagModal from "./AddTagModal";
 import CustomLink from "../../../components/CustomLink";
 import moment from "moment";
 import { useCustomFields } from "../../../api/query/customFieldQuery";
+import _ from "lodash";
 
 const TextList = ({ label }) => {
+    const [isTextThreadLoading, setIsTextThreadLoading] = useState(true);
     const [searchKey, setSearchKey] = useState("");
-    const { textThreads, isLoading } = useTextThreads();
+    const [pagination, setPagination] = useState({
+        page_size: 20,
+        page: 1,
+        searchKey: "",
+        total: 0,
+    });
+
+    const [textThreads, setTextThreads] = useState<any>();
+
+    const { data: filteredThreads, refetch: refetchTextThreads } =
+        useTextThreads(pagination, () => {
+            setIsTextThreadLoading(false);
+        });
+
+    const handleSearch = (e) => {
+        setPagination({ ...pagination, searchKey: e.target.value, page: 1 });
+    };
+
+    const debouncedSearch = _.debounce((e) => {
+        handleSearch(e);
+    }, 300);
+
     const navigate = useNavigate();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isAddTagModalOpen, setIsAddTagModalOpen] = useState(false);
@@ -73,61 +98,25 @@ const TextList = ({ label }) => {
         null
     );
 
-    const filteredContacts = (): TTextThreadList[] | undefined => {
-        let data = textThreads;
-
-        // data = data?.filter((contact) => contact.texts?.length);
-
-        // if (searchKey) {
-        //     let searchWord = searchKey;
-        //     let labelKey = "";
-        //     const match = searchKey.match(/\{\{label:(.*?)\}\}/);
-
-        //     if (match) {
-        //         labelKey = match[1];
-        //         searchWord = searchWord.replace(/\{\{.*?\}\}\s*/g, "");
-        //     }
-
-        //     if (labelKey) {
-        //         data = data?.filter((item) =>
-        //             item?.labels?.some((label) => label.name === labelKey)
-        //         );
-        //     }
-        //     if (searchWord != "") {
-        //         data = data?.filter(
-        //             (thread) =>
-        //                 thread.contactName
-        //                     .toLowerCase()
-        //                     .includes(searchWord.toLowerCase()) ||
-        //                 thread?.texts?.some((text) =>
-        //                     text.message
-        //                         .toLowerCase()
-        //                         .includes(searchWord.toLowerCase())
-        //                 )
-        //         );
-        //     }
-
-        //     return data;
-        // }
-
-        return data;
+    const handlePaginationChange = (page, pageSize) => {
+        setPagination({ ...pagination, page: page, page_size: pageSize });
     };
 
     useEffect(() => {
         setSearchKey(label);
     }, [label]);
 
-    const threadList = filteredContacts();
+    useEffect(() => {
+        setIsTextThreadLoading(true);
+        refetchTextThreads();
+    }, [pagination.page, pagination.searchKey, pagination.page_size]);
 
-    // const selectedThreads = () => {
-    //     const threads = threadList?.filter((thread) =>
-    //         selectedThreadIds.includes(thread.id)
-    //     );
-    //     const allLabelIds = threads?.flatMap((item) =>
-    //         item.labels?.map((label) => label.id)
-    //     );
-    //     return [...new Set(allLabelIds)]
-    // };
+    useEffect(() => {
+        if (filteredThreads && filteredThreads.data) {
+            setTextThreads(filteredThreads.data);
+            setPagination({ ...pagination, total: filteredThreads.total });
+        }
+    }, [filteredThreads]);
 
     return (
         <>
@@ -135,8 +124,7 @@ const TextList = ({ label }) => {
                 suffix={<SearchOutlined />}
                 placeholder="Search"
                 style={{ marginBottom: "20px" }}
-                onChange={(e: any) => setSearchKey(e.target.value)}
-                value={searchKey}
+                onChange={debouncedSearch}
             />
             {selectedThreadIds.length ? (
                 <Space style={{ width: "100%" }} size={0}>
@@ -193,184 +181,211 @@ const TextList = ({ label }) => {
                 <div style={{ height: "32px" }}></div>
             )}
             <List
+                loading={isTextThreadLoading}
                 itemLayout="horizontal"
-                style={{ marginTop: 0, height: "72vh", overflowY: "scroll" }}
+                style={{
+                    marginTop: 0,
+                    height: "69vh",
+                    overflow: "auto",
+                }}
             >
-                {textThreads?.map((thread, index) => (
-                    <>
-                        {index === 0 && <Divider style={{ margin: "5px" }} />}
-                        <List.Item
-                            style={{
-                                cursor: "pointer",
-                                padding: "3px 0",
-                                // Step 3: Conditionally display timestamp or delete icon
-                                position: "relative",
-                                backgroundColor:
-                                    thread.haveDuplicatePhoneNumbers
-                                        ? "#ffc166"
-                                        : "",
-                            }}
-                            // onClick={() =>
-                            //     navigate()
-                            // }
-                            onMouseEnter={() => setHoveredItemIndex(index)} // Step 4: Handle mouse enter
-                            onMouseLeave={() => setHoveredItemIndex(null)} // Step 4: Handle mouse leave
-                        >
-                            <CustomLink
-                                to={`/text-threads/${
-                                    thread.isContactSaved
-                                        ? `contact/${thread.contactId}`
-                                        : thread.id
-                                }`}
+                {textThreads?.length || isTextThreadLoading ? (
+                    textThreads?.map((thread, index) => (
+                        <>
+                            {index === 0 && (
+                                <Divider style={{ margin: "5px" }} />
+                            )}
+                            <List.Item
                                 style={{
-                                    padding: 0,
-                                    color: "black",
-                                    width: "100%",
+                                    cursor: "pointer",
+                                    padding: "3px 0",
+                                    // position: "relative",
+                                    backgroundColor:
+                                        thread.haveDuplicatePhoneNumbers
+                                            ? "#ffc166"
+                                            : "",
                                 }}
+                                onMouseEnter={() => setHoveredItemIndex(index)} // Step 4: Handle mouse enter
+                                onMouseLeave={() => setHoveredItemIndex(null)} // Step 4: Handle mouse leave
                             >
-                                <Row gutter={12} style={{ width: "100%" }}>
-                                    <Col span={6}>
-                                        <TextEllipsis
-                                            style={{
-                                                fontWeight: "bold",
-                                                fontSize: "16px",
-                                            }}
-                                        >
-                                            <Space
-                                                onClick={(e) =>
-                                                    e.stopPropagation()
-                                                }
+                                <CustomLink
+                                    to={`/text-threads/${
+                                        thread.isContactSaved
+                                            ? `contact/${thread.contactId}`
+                                            : thread.id
+                                    }`}
+                                    style={{
+                                        padding: 0,
+                                        color: "black",
+                                        width: "100%",
+                                    }}
+                                >
+                                    <Row gutter={12} style={{ width: "100%" }}>
+                                        <Col span={6}>
+                                            <TextEllipsis
+                                                style={{
+                                                    fontWeight: "bold",
+                                                    fontSize: "16px",
+                                                }}
                                             >
-                                                <Checkbox
-                                                    checked={selectedThreadIds.includes(
-                                                        thread.id
-                                                    )}
-                                                    onClick={(e) => {
-                                                        const isChecked = (
-                                                            e.target as HTMLInputElement
-                                                        ).checked;
-                                                        if (isChecked) {
-                                                            setSelectedThreadIds(
-                                                                (
-                                                                    prevSelectedThreadIds
-                                                                ) => [
-                                                                    ...prevSelectedThreadIds,
-                                                                    thread.id,
-                                                                ]
-                                                            );
-                                                        } else {
-                                                            setSelectedThreadIds(
-                                                                (
-                                                                    prevSelectedThreadIds
-                                                                ) =>
-                                                                    prevSelectedThreadIds.filter(
-                                                                        (id) =>
-                                                                            id !==
-                                                                            thread.id
-                                                                    )
-                                                            );
-                                                        }
-                                                    }}
-                                                />
-                                                <div
-                                                    style={{
-                                                        cursor: "default",
-                                                    }}
-                                                >
-                                                    &nbsp; &nbsp;
-                                                </div>
-                                            </Space>
-                                            {` ${thread.contactName}`}
-                                        </TextEllipsis>
-                                    </Col>
-                                    <Col span={15}>
-                                        <TextEllipsis
-                                            style={{
-                                                fontWeight:
-                                                    !thread?.isLastTextSeen
-                                                        ? "bold"
-                                                        : "",
-                                            }}
-                                        >
-                                            <Space size={0}>
-                                                {thread.labels?.map((label) => (
-                                                    <Tag
-                                                        style={{
-                                                            float: "right",
-                                                            fontWeight:
-                                                                "normal",
-                                                        }}
-                                                    >
-                                                        {label?.name}
-                                                    </Tag>
-                                                ))}
-                                                {thread?.lastText}
-                                            </Space>
-                                        </TextEllipsis>
-                                    </Col>
-                                    <Col span={3}>
-                                        <TextEllipsis
-                                            style={{
-                                                textAlign: "right",
-                                            }}
-                                        >
-                                            {hoveredItemIndex === index ||
-                                            selectedThread ? ( // Step 3: Conditional rendering
                                                 <Space
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setSelectedThread(
-                                                            thread
-                                                        );
-                                                        setIsViaMultiple(false);
-                                                    }}
+                                                    onClick={(e) =>
+                                                        e.stopPropagation()
+                                                    }
                                                 >
-                                                    <DeleteOutlined
+                                                    <Checkbox
+                                                        checked={selectedThreadIds.includes(
+                                                            thread.id
+                                                        )}
                                                         onClick={(e) => {
-                                                            setIsDeleteModalOpen(
-                                                                true
-                                                            );
+                                                            const isChecked = (
+                                                                e.target as HTMLInputElement
+                                                            ).checked;
+                                                            if (isChecked) {
+                                                                setSelectedThreadIds(
+                                                                    (
+                                                                        prevSelectedThreadIds
+                                                                    ) => [
+                                                                        ...prevSelectedThreadIds,
+                                                                        thread.id,
+                                                                    ]
+                                                                );
+                                                            } else {
+                                                                setSelectedThreadIds(
+                                                                    (
+                                                                        prevSelectedThreadIds
+                                                                    ) =>
+                                                                        prevSelectedThreadIds.filter(
+                                                                            (
+                                                                                id
+                                                                            ) =>
+                                                                                id !==
+                                                                                thread.id
+                                                                        )
+                                                                );
+                                                            }
                                                         }}
                                                     />
-                                                    <Dropdown
-                                                        overlay={
-                                                            <Menu>
-                                                                <Menu.Item
-                                                                    key="assignLabel"
-                                                                    onClick={() =>
-                                                                        setIsAssignLabelModalOpen(
-                                                                            true
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    Assign Label
-                                                                </Menu.Item>
-                                                            </Menu>
-                                                        }
-                                                        trigger={["click"]}
+                                                    <div
+                                                        style={{
+                                                            cursor: "default",
+                                                        }}
                                                     >
-                                                        <EllipsisOutlined
-                                                            style={{
-                                                                transform:
-                                                                    "rotate(90deg)",
+                                                        &nbsp; &nbsp;
+                                                    </div>
+                                                </Space>
+                                                {` ${thread.contactName}`}
+                                            </TextEllipsis>
+                                        </Col>
+                                        <Col span={15}>
+                                            <TextEllipsis
+                                                style={{
+                                                    fontWeight:
+                                                        !thread?.isLastTextSeen
+                                                            ? "bold"
+                                                            : "",
+                                                }}
+                                            >
+                                                <Space size={0}>
+                                                    {thread.labels?.map(
+                                                        (label) => (
+                                                            <Tag
+                                                                style={{
+                                                                    float: "right",
+                                                                    fontWeight:
+                                                                        "normal",
+                                                                }}
+                                                            >
+                                                                {label?.name}
+                                                            </Tag>
+                                                        )
+                                                    )}
+                                                    {thread?.lastText}
+                                                </Space>
+                                            </TextEllipsis>
+                                        </Col>
+                                        <Col span={3}>
+                                            <TextEllipsis
+                                                style={{
+                                                    textAlign: "right",
+                                                }}
+                                            >
+                                                {hoveredItemIndex === index ||
+                                                selectedThread ? ( // Step 3: Conditional rendering
+                                                    <Space
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setSelectedThread(
+                                                                thread
+                                                            );
+                                                            setIsViaMultiple(
+                                                                false
+                                                            );
+                                                        }}
+                                                    >
+                                                        <DeleteOutlined
+                                                            onClick={(e) => {
+                                                                setIsDeleteModalOpen(
+                                                                    true
+                                                                );
                                                             }}
                                                         />
-                                                    </Dropdown>
-                                                </Space>
-                                            ) : (
-                                                moment
-                                                    .utc(thread?.created_at)
-                                                    .local()
-                                                    .format("MMM DD")
-                                            )}
-                                        </TextEllipsis>
-                                    </Col>
-                                </Row>
-                            </CustomLink>
-                        </List.Item>
-                    </>
-                ))}
+                                                        <Dropdown
+                                                            overlay={
+                                                                <Menu>
+                                                                    <Menu.Item
+                                                                        key="assignLabel"
+                                                                        onClick={() =>
+                                                                            setIsAssignLabelModalOpen(
+                                                                                true
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        Assign
+                                                                        Label
+                                                                    </Menu.Item>
+                                                                </Menu>
+                                                            }
+                                                            trigger={["click"]}
+                                                        >
+                                                            <EllipsisOutlined
+                                                                style={{
+                                                                    transform:
+                                                                        "rotate(90deg)",
+                                                                }}
+                                                            />
+                                                        </Dropdown>
+                                                    </Space>
+                                                ) : (
+                                                    moment
+                                                        .utc(thread?.created_at)
+                                                        .local()
+                                                        .format("MMM DD")
+                                                )}
+                                            </TextEllipsis>
+                                        </Col>
+                                    </Row>
+                                </CustomLink>
+                            </List.Item>
+                        </>
+                    ))
+                ) : (
+                    <Empty />
+                )}
             </List>
+
+            <center>
+                <Pagination
+                    className="p-t-sm"
+                    current={pagination.page}
+                    pageSize={pagination.page_size}
+                    total={pagination.total}
+                    onChange={handlePaginationChange}
+                    // pageSizeOptions={["15", "30", "50"]}
+                    showSizeChanger={false}
+                    size="small"
+                />
+            </center>
 
             <ConfirmModal
                 title="Confirm"

@@ -17,9 +17,9 @@ class TextThread extends Model
     use HasFactory, SoftDeletes;
     
     protected $appends = [
-        'contactName',
-        'contact',
-        'lastText'
+        // 'contactName',
+        // 'contact',
+        // 'lastText'
     ];
     
     public function texts()
@@ -49,8 +49,8 @@ class TextThread extends Model
         return !empty($this->contact) ? $this->contact->fields['firstName'] . ' ' . $this->contact->fields['lastName'] : $this->contactNumber;
     }
 
-    public function getLastTextAttribute()
+    public function lastText()
     {
-        return $this->texts->first();
+        return $this->hasOne(\App\Models\Text::class, 'threadId', 'id')->orderBy('created_at', 'desc');
     }
 }

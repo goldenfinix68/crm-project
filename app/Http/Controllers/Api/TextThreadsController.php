@@ -19,7 +19,7 @@ class TextThreadsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
 
@@ -27,50 +27,70 @@ class TextThreadsController extends Controller
             abort(401, 'Unauthorized');
         }
 
-        $pagination = 20;
+        $threads = TextThread::whereIn('userNumber', $this->getMainUserNumbers())
+            ->with(['lastText', 'labels']);
 
-        $threads =  TextThread::with('labels')->whereIn('userNumber', $this->getMainUserNumbers())->limit(100)->get();
+        if (!empty($request->searchKey)) {
+            $threads->where(function($query) use ($request) {
+                $query->whereHas('texts', function($query) use ($request) {
+                    $query->where('message', 'like', '%' . $request->searchKey . '%');
+                })
+                ->orWhere('contactNumber', 'like', '%' . $request->searchKey . '%');
+            });
+        }
+
+        $threads = $threads->paginate($request->input('page_size', 20));
+
+
         $data = [];
-        foreach($threads as $thread){
-            $index = array_search($thread->contactName, array_column($data, 'contactName'));
-            if ($index !== false) {
-                $threadCreatedAt = Carbon::parse($thread->lastText->created_at);
-                $existingCreatedAt = Carbon::parse($data[$index]['created_at']);
+        foreach($threads->items() as $thread){
 
-                if($threadCreatedAt->greaterThan($existingCreatedAt)){
-                    $data[$index]['lastText'] = $thread->lastText->message;
-                    $data[$index]['created_at'] = $thread->lastText->created_at;
-                    $data[$index]['isLastTextSeen'] = !empty($thread->lastText->seen_at);
+            $contactName = $thread->contactName;
+            $lastText = $thread->lastText;
+            $isLastTextSeen = !empty($lastText->seen_at);
+            $createdAt = $lastText->created_at;
 
-                    // Merge the labels without duplicates
-                    $existingLabels = $data[$index]['labels']->pluck('id');
-                    $newLabels = $thread->labels->pluck('id');
-                    $mergedLabels = $existingLabels->merge($newLabels)->unique();
-                    $data[$index]['labels'] = \App\Models\TextLabel::whereIn('id', $mergedLabels)->orderBy('name')->get();
+            // Check if contactName already exists
+            $existingThread = collect($data)->where('contactName', $contactName)->first();
+
+            if ($existingThread) {
+                $existingCreatedAt = $existingThread['created_at'];
+                // Compare created_at timestamps
+                if(strtotime($createdAt) > strtotime($existingCreatedAt)) {
+                    $existingThread['lastText'] = $lastText->message;
+                    $existingThread['isLastTextSeen'] = $isLastTextSeen;
+                    $existingThread['created_at'] = $createdAt;
+                    $existingThread['labels'] = $existingThread['labels']->merge($thread->labels)->unique();
                 }
-            }
-            else{
+            } else {
                 $data[] = [
                     'id' => $thread->id,
-                    'contactId' => $thread->contact->id ?? "",
-                    'contactName' => $thread->contactName,
+                    'contactId' => optional($thread->contact)->id ?? "",
+                    'contactName' => $contactName,
                     'isContactSaved' => !empty($thread->contact),
-                    'lastText' => $thread->lastText->message,
-                    'isLastTextSeen' => !empty($thread->lastText->seen_at),
-                    'created_at' => $thread->lastText->created_at,
+                    'lastText' => $lastText->message,
+                    'isLastTextSeen' => $isLastTextSeen,
+                    'created_at' => $createdAt,
                     'labels' => $thread->labels,
-                    'haveDuplicatePhoneNumbers' => !empty($thread->contact) && !empty($thread->contact->duplicatePhoneNumbers),
+                    // 'haveDuplicatePhoneNumbers' => !empty($thread->contact) && !empty($thread->contact->duplicatePhoneNumbers),
+                    'haveDuplicatePhoneNumbers' => false,
+                
                 ];
             }
-            
-            if(count($data) >= $pagination){
-                break;
-            }
         }
+
+        // Sort the data by created_at timestamp
         usort($data, function($a, $b) {
             return strtotime($b['created_at']) - strtotime($a['created_at']);
         });
-        return $data;
+        
+        $total = $threads->total();
+
+        return response()->json([
+            'success' => true,
+            'data' => $data,
+            'total' => $total,
+        ], 200);
     }
 
     /**

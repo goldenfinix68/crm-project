@@ -84,7 +84,7 @@ const TextForm = ({
         mutateGet(
             { ...filter, ...pagination },
             ENDPOINTS.contacts.url,
-            "textFormContactFilter"
+            "globalSearch"
         );
 
     const debouncedSearch = _.debounce((value) => {

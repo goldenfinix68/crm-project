@@ -1,38 +1,15 @@
+import { CheckOutlined, LeftOutlined } from "@ant-design/icons";
 import {
-    CameraOutlined,
-    CaretDownFilled,
-    CheckCircleOutlined,
-    CheckOutlined,
-    CloseOutlined,
-    DownOutlined,
-    EditOutlined,
-    EllipsisOutlined,
-    LeftOutlined,
-    MailFilled,
-    MessageFilled,
-    PhoneFilled,
-    PhoneOutlined,
-} from "@ant-design/icons";
-import {
-    Avatar,
     Badge,
     Button,
     Card,
     Col,
-    Descriptions,
-    Divider,
     Dropdown,
     Form,
-    FormInstance,
     Input,
-    InputNumber,
-    Mentions,
     Menu,
-    MenuProps,
     Popover,
-    Radio,
     Row,
-    Select,
     Space,
     Tag,
     Typography,
@@ -41,10 +18,9 @@ import {
     message,
     Alert,
 } from "antd";
-import React, { useContext } from "react";
+import React from "react";
 import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
 import DropdownComponent from "../../../components/DropdownComponent";
-import ActionMenuBtn from "./ActionMenuBtn";
 import AvatarWithPopover from "./AvatarWithPopover";
 import ActionMenu from "./ActionMenu";
 import { useMutation } from "react-query";
@@ -57,14 +33,9 @@ import {
 import { TContact, TContactType } from "../../../entities";
 import { useContactTypesAll } from "../../../api/query/contactsQuery";
 import queryClient from "../../../queryClient";
-import { useNavigate, useParams } from "react-router-dom";
-import ContactContext from "../context";
+import { useNavigate } from "react-router-dom";
 import { useAppContextProvider } from "../../../context/AppContext";
-import {
-    createCustomFieldMutation,
-    saveCustomFieldValuesMutation,
-} from "../../../api/mutation/useCustomFieldMutation";
-import ContactsEditableTableCell from "../../PageContacts/Components/ContactsEditableTableCell";
+import { saveCustomFieldValuesMutation } from "../../../api/mutation/useCustomFieldMutation";
 import ContactTypeTag from "../../../components/ContactTypeTag";
 import TextEllipsis from "../../../components/TextEllipsis";
 import CustomFieldFormModal from "../../../components/CustomFieldFormModal";
