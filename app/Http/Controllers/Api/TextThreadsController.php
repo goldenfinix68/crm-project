@@ -30,11 +30,12 @@ class TextThreadsController extends Controller
         $mainUserIds = $this->getMainUserNumbers();
 
         $texts = Text::select('threadId')
+            ->selectSub('MAX(created_at)', 'latest_created_at') // Subquery to get the latest created_at for each threadId
             ->whereHas('thread', function($query) use ($mainUserIds) {
                 $query->whereIn('userNumber', $mainUserIds);
             })
-            ->distinct('threadId')
-            ->orderBy('created_at', 'desc');
+            ->groupBy('threadId') // Group by threadId
+            ->orderByDesc('latest_created_at');
 
             
         if (!empty($request->searchKey)) {
