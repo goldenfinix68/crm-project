@@ -46,6 +46,11 @@ class Text extends Model
         return $this->hasOne(\App\Models\User::class, 'id', 'userId');
     }
 
+    public function thread()
+    {
+        return $this->hasOne(\App\Models\TextThread::class, 'id', 'threadId');
+    }
+
     public function customField()
     {
         return $this->hasOne(\App\Models\CustomField::class, 'id', 'customFieldId');

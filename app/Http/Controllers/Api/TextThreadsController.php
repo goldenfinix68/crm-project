@@ -9,6 +9,7 @@ use App\Models\Text;
 use App\Models\CustomField;
 use App\Models\Contact;
 use Auth;
+use DB;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -26,24 +27,46 @@ class TextThreadsController extends Controller
         if(empty($user)){
             abort(401, 'Unauthorized');
         }
+        $mainUserIds = $this->getMainUserNumbers();
 
-        $threads = TextThread::whereIn('userNumber', $this->getMainUserNumbers())
-            ->with(['lastText', 'labels']);
+        $texts = Text::select('threadId')
+            ->whereHas('thread', function($query) use ($mainUserIds) {
+                $query->whereIn('userNumber', $mainUserIds);
+            })
+            ->distinct('threadId')
+            ->orderBy('created_at', 'desc');
 
+            
         if (!empty($request->searchKey)) {
-            $threads->where(function($query) use ($request) {
-                $query->whereHas('texts', function($query) use ($request) {
-                    $query->where('message', 'like', '%' . $request->searchKey . '%');
-                })
-                ->orWhere('contactNumber', 'like', '%' . $request->searchKey . '%');
+            $texts->where(function($query) use ($request) {
+                $query->where('message', 'like', '%' . $request->searchKey . '%')
+                    ->orWhereHas('thread', function($query) use ($request) {
+                        $query->where('contactNumber', 'like', '%' . $request->searchKey . '%');
+                    });
             });
         }
 
-        $threads = $threads->paginate($request->input('page_size', 20));
+        $texts = $texts->paginate($request->input('page_size', 20));
+
+
+        // $threads = TextThread::whereIn('userNumber', $this->getMainUserNumbers())
+        //     ->with(['lastText', 'labels']);
+
+        // if (!empty($request->searchKey)) {
+        //     $threads->where(function($query) use ($request) {
+        //         $query->whereHas('texts', function($query) use ($request) {
+        //             $query->where('message', 'like', '%' . $request->searchKey . '%');
+        //         })
+        //         ->orWhere('contactNumber', 'like', '%' . $request->searchKey . '%');
+        //     });
+        // }
+
+        // $threads = $threads->paginate($request->input('page_size', 20));
 
 
         $data = [];
-        foreach($threads->items() as $thread){
+        foreach($texts->items() as $text){
+            $thread = $text->thread;
 
             $contactName = $thread->contactName;
             $lastText = $thread->lastText;
@@ -84,7 +107,7 @@ class TextThreadsController extends Controller
             return strtotime($b['created_at']) - strtotime($a['created_at']);
         });
         
-        $total = $threads->total();
+        $total = $texts->total();
 
         return response()->json([
             'success' => true,
