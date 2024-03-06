@@ -149,6 +149,7 @@ class TextThreadsController extends Controller
         if($request->type == 'contact'){
             $contact = Contact::find($id);
             $threads = TextThread::with('labels')->whereIn('contactNumber', $contact->phoneNumbers)->get();
+            $contact->duplicatePhoneNumbers = $contact->getDuplicatePhoneNumbersAttribute();
 
             $texts = [];
 

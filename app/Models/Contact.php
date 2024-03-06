@@ -88,7 +88,7 @@ class Contact extends Model
     protected $appends = [
         'fields',
         'phoneNumbers',
-        'duplicatePhoneNumbers'
+        // 'duplicatePhoneNumbers'
     ];
 
 
@@ -130,35 +130,26 @@ class Contact extends Model
 
     public function getPhoneNumbersAttribute()
     {
-        $phoneNumbers = [];
-        foreach($this->customFieldValues as $customField){
-            if(in_array($customField->customField->type, ['phone', 'mobile']) && !empty($customField->value)){
-                $phoneNumbers[] = MobileNumberService::formatPhoneNumber($customField->value);
-            }
-        }
+        $phoneNumbers = $this->customFieldValues()
+            ->join('custom_fields', 'custom_fields.id', '=', 'custom_field_values.customFieldId')
+            ->whereIn('custom_fields.type', ['mobile', 'phone'])
+            ->whereNotNull('value')
+            ->pluck('value')->toArray();
 
-        return array_filter($phoneNumbers, function ($value) {
-            return $value !== null;
-        });
+        return array_unique($phoneNumbers);
     }
 
     public function getDuplicatePhoneNumbersAttribute()
     {
-
-        return [];
         
         $user = Auth::user();
 
-        if (!$user) {
-            return [];
-        }
-
-        $uniquePhoneNumbers = array_unique($this->phoneNumbers);
+        $uniquePhoneNumbers = $this->phoneNumbers;
 
         $contacts = \App\Models\Contact::where('userId', $user->mainId)
             ->where('id', "!=", $this->id)
             ->whereHas('customFieldValues', function ($query) use ($uniquePhoneNumbers) {
-                $query->whereIn(DB::raw("REPLACE(`value`, '+', '')"), $uniquePhoneNumbers);
+                $query->whereIn('value', $uniquePhoneNumbers);
                 $query->whereHas('customField', function ($query2) {
                     $query2->where('type', 'mobile');
                     $query2->orWhere('type', 'phone');

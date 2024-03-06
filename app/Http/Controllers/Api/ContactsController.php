@@ -191,7 +191,7 @@ class ContactsController extends Controller
     {
         $contact = Contact::with(['type', 'deals', 'deal'])->find($id);
         $contact->wall = $contact->wall();
-
+        $contact->duplicatePhoneNumbers = $contact->getDuplicatePhoneNumbersAttribute();
         // if (empty($contact)) {
         //     abort(404);
         // }
