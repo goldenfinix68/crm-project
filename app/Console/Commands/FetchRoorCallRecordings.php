@@ -11,7 +11,7 @@ class FetchRoorCallRecordings extends Command
      *
      * @var string
      */
-    protected $signature = 'root:callrecordings';
+    protected $signature = 'roor:callrecordings';
 
     /**
      * The console command description.
