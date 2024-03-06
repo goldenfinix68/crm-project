@@ -147,8 +147,11 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('/gSheet-crawl', 'App\Http\Controllers\Api\GSheetCrawlsController');
 
     Route::resource('/mobile-numbers', 'App\Http\Controllers\Api\MobileNumbersController');
+
+
 });
 
+Route::post('/calls/roorCalls', 'App\Http\Controllers\Api\CallsController@roorCalls');
 Route::post('/sms/webhook', 'App\Http\Controllers\Api\TextsController@textReceived');
 Route::get('/sms/webhook', 'App\Http\Controllers\Api\TextsController@textReceived');
 Route::get('/telnyx/call/webhook', 'App\Http\Controllers\Api\CallsController@webhook');
