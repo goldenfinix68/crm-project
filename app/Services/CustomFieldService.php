@@ -6,6 +6,7 @@ use App\Models\Contact;
 use App\Models\CustomFieldValue;
 use App\Models\User;
 use App\Models\ContactType;
+use App\Services\MobileNumberService;
 
 use DB;
 
@@ -83,6 +84,9 @@ class CustomFieldService
             $fieldValue->value =  $data;
         }
         else{
+            if($customField->type == "mobile" || $customField->type == "phone"){
+                $value = MobileNumberService::formatPhoneNumber($value);
+            }
             $fieldValue->value =  $value;
             $fieldValue->lookupIds = null;
         }
