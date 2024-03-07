@@ -83,20 +83,21 @@ class ProcessContactImportGSheet implements ShouldQueue
             $crawlResult->rowCount = count($results);
             $crawlResult->save();
 
-
             if(!empty($results)){
                 foreach($results as $key => $result){
 
                     $contact = false;
 
                     if(isset($result['SL_ID']) && !empty($result['SL_ID'])){
+                        
+                        \Log::info("SLID" . $result['SL_ID']);
                         $contact = Contact::find($result['SL_ID']);
                         if(empty($contact)){
                             continue;
                         }
                     }
 
-                    $errors = $this->validateData($customFields, $result);
+                    $errors = $this->validateData($customFields, $result, $crawlResult->columnMappings);
 
                     if(empty($errors)){
                         DB::beginTransaction();
@@ -120,6 +121,7 @@ class ProcessContactImportGSheet implements ShouldQueue
                                 CustomFieldService::createOrUpdateCustomFieldValue($contact->id, $customField, 'contact', $result[$sourceColumn]);
                             }
                             catch (Exception $e) {
+                                \Log::info($e);
                                 $continue = false;
                                 DB::rollBack();
                                 break;
@@ -162,8 +164,6 @@ class ProcessContactImportGSheet implements ShouldQueue
             
             $service = $this->setupGoogleSheetsClient();
             $updateResponse = $service->spreadsheets_values->update($crawlResult->gSheetId, $crawlResult->gSheetName, $updateBody, $updateParams);
-
-            \Log::info($updateResponse);
             
             $crawlResult->status = "Completed";
             $crawlResult->save();
@@ -188,11 +188,12 @@ class ProcessContactImportGSheet implements ShouldQueue
     }
 
     
-    private function validateData($customFields, $data) {
+    private function validateData($customFields, $data, $columnMappings) {
         $errors = [];
-
+        $columnMappings = (array) $columnMappings;
         foreach ($customFields as $field) {
-            if ($field['isRequired'] && !isset($data[$field['label']])) {
+            $key = array_search($field['id'], $columnMappings);
+            if ($field['isRequired'] && !isset($data[$key])) {
                 $errors[] = "{$field['label']} is required.";
             }
         }
