@@ -1,4 +1,4 @@
-import { TText, TTextLabel, TTextThread } from "../../entities";
+import { TText, TTextLabel } from "../../entities";
 
 export const sendTextMutation = async (text: TText) => {
     const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies

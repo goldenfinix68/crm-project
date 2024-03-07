@@ -10,6 +10,8 @@ use Google_Service_Sheets;
 use Google_Service_Sheets_BatchUpdateSpreadsheetRequest;
 use Google_Service_Sheets_Request;
 
+use App\Services\GoogleSheetService;
+
 class GoogleSheetsController extends Controller
 {
     
@@ -21,6 +23,14 @@ class GoogleSheetsController extends Controller
 
         return new Google_Service_Sheets($client);
     }
+
+    public function getColumnNames(Request $request)
+    {
+       $columns = GoogleSheetService::getColumnNames($request->gSheedId, $request->gSheetName);
+
+       return $columns;
+    }
+
     
     public function updateCellBackgroundColor($spreadsheetId, $SL_ID, $cellHeader, $backgroundColor)
     {

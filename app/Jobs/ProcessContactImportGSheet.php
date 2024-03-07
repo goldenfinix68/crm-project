@@ -9,6 +9,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Models\GSheetCrawlResult;
 use App\Models\Contact;
+use App\Models\User;
+use App\Models\CustomField;
 
 use App\Services\CustomFieldService;
 use App\Services\RoorService;
@@ -22,32 +24,28 @@ class ProcessContactImportGSheet implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $spreadsheetId;
-    protected $mainUser;
-    protected $initiatedBy;
-    protected $roorAutoresponderId;
+    protected $crawlResult;
 
-    public function __construct($spreadsheetId, $mainUser, $initiatedBy = null, $roorAutoresponderId = null)
+    public function __construct($crawlResult)
     {
-        $this->spreadsheetId = $spreadsheetId;
-        $this->mainUser = $mainUser;
-        $this->initiatedBy = $initiatedBy;
-        $this->roorAutoresponderId = $roorAutoresponderId;
+        $this->crawlResult = $crawlResult;
     }
 
     public function handle()
     {
+        $crawlResult = $this->crawlResult;
+        $batchUuid = $crawlResult->batchUuid;
+
         try {
             // Setup Google Sheets API client
             $service = $this->setupGoogleSheetsClient();
-            $mainUser = $this->mainUser;
-            $initiatedBy = $this->initiatedBy;
+            $mainUser = User::find($crawlResult->mainUserId);
+            $customFields = $mainUser->customFields->where('isActive', 1);
 
             $roorMapping = $mainUser->settings->roorMapping;
 
             // Fetch data from the Google Sheet
-            $range = 'Sheet1';
-            $response = $service->spreadsheets_values->get($this->spreadsheetId, $range);
+            $response = $service->spreadsheets_values->get($crawlResult->gSheetId, $crawlResult->gSheetName);
             $values = $response->getValues();
 
             $data = [];
@@ -69,7 +67,7 @@ class ProcessContactImportGSheet implements ShouldQueue
                 $keys = $data[0];
                 foreach ($data as $index => $row) {
                     if ($index === 0) {
-                        continue; // Skip the header row
+                        continue;
                     }
             
                     $rowData = [];
@@ -80,11 +78,13 @@ class ProcessContactImportGSheet implements ShouldQueue
                     $results[] = $rowData;
                 }
             }
+            
+            $crawlResult->status = "Running";
+            $crawlResult->rowCount = count($results);
+            $crawlResult->save();
 
-            $importResult = [];
-            if(!empty($results) && isset($mainUser->customFields)){
-                $customFields = $mainUser->customFields->where('isActive', 1);
-                
+
+            if(!empty($results)){
                 foreach($results as $key => $result){
 
                     $contact = false;
@@ -92,82 +92,51 @@ class ProcessContactImportGSheet implements ShouldQueue
                     if(isset($result['SL_ID']) && !empty($result['SL_ID'])){
                         $contact = Contact::find($result['SL_ID']);
                         if(empty($contact)){
-                            $importResult[] = [
-                                "isSuccess" => false,
-                                "errors" => ["Invalid SL_ID, existing contact not found."],
-                                // "customFields" => $customFields,
-                                "data" => $result,
-                            ];
                             continue;
                         }
                     }
 
                     $errors = $this->validateData($customFields, $result);
-                    $tempImportResult = [
-                        "isSuccess" => empty($errors),
-                        "errors" => $errors,
-                        // "customFields" => $customFields,
-                        "data" => $result,
-                    ];
 
                     if(empty($errors)){
                         DB::beginTransaction();
                         if(!$contact){
                             $contact = new Contact();
                         }
-                        $contact->userId = $this->mainUser->id;
-                        $contact->googlesheetId = $this->spreadsheetId;
+                        $contact->userId = $mainUser->id;
+                        $contact->googlesheetId = $crawlResult->gSheetId;
+                        $contact->batchUuid = $batchUuid;
                         $contact->save();
 
                         $continue = true;
-                        foreach ($customFields as $field) {
-                            if(isset($result[$field['label']])){
-                                $value = $result[$field['label']];
 
-                                if(!empty($value)){
-                                    try {
-                                        if($field->type == 'tag'){
-                                            $value = [$value];
-                                        }
-                                        CustomFieldService::createOrUpdateCustomFieldValue($contact->id, $field, 'contact', $value);
-                                    }
-                                    catch (Exception $e) {
-                                        $continue = false;
-                                        DB::rollBack();
-                                        break;
-                                    } 
+                        foreach ($crawlResult->columnMappings as $sourceColumn => $targetColumn) {
+                            try {
+                                $customField = CustomField::find($targetColumn);
+    
+                                if($customField->type == 'tag'){
+                                    $result[$sourceColumn] = [$result[$sourceColumn]];
                                 }
+                                CustomFieldService::createOrUpdateCustomFieldValue($contact->id, $customField, 'contact', $result[$sourceColumn]);
                             }
+                            catch (Exception $e) {
+                                $continue = false;
+                                DB::rollBack();
+                                break;
+                            } 
                         }
                         if($continue){
                             $results[$key]['SL_ID'] = $contact->id;
                             DB::commit();
                             if(!empty($this->roorAutoresponderId) && !empty($roorMapping)){
                                 $roorResult = RoorService::sendAutoCampaign($contact, $roorMapping, $this->roorAutoresponderId);
-                                $tempImportResult['isImportedToRoor'] = $roorResult['status'] == "success";
                             }
                         }
                     }
-                    $importResult[] = $tempImportResult;
                 }
             }
 
-            // if(!empty($this->roorAutoresponderId) && !empty($roorMapping)){
-            //     $contacts = Contact::where('googlesheetId', $this->spreadsheetId)->get();
-            //     foreach($contacts as $contact){
-            //         $roorResult = RoorService::sendAutoCampaign($contact, $roorMapping);
-            //     }
-            // }
             
-            $crawlResult = new GSheetCrawlResult();
-            $crawlResult->gSheetData = $results;
-            $crawlResult->mainUserId = $this->mainUser->id;
-            $crawlResult->gSheetId = $this->spreadsheetId;
-            $crawlResult->roorAutoresponderId = $this->roorAutoresponderId;
-            $crawlResult->result = $importResult;
-            $crawlResult->initiatedBy = !empty($initiatedBy) ? $initiatedBy->id : null;
-            $crawlResult->save();
-
             //update GSheet Data
             $valuesToUpdate = [$keys];  // Include the array keys as the first row/header
             foreach ($results as $row) {
@@ -178,7 +147,6 @@ class ProcessContactImportGSheet implements ShouldQueue
                 $valuesToUpdate[] = $rowData;
             }
             
-            $updateRange = 'Sheet1';  // Update this with the appropriate sheet name or range
             $updateBody = new Google_Service_Sheets_ValueRange([
                 'values' => $valuesToUpdate,
             ]);
@@ -188,28 +156,34 @@ class ProcessContactImportGSheet implements ShouldQueue
             ];
             
             // Update the Google Sheet with the new values
-            $service->spreadsheets_values->update($this->spreadsheetId, $updateRange, $updateBody, $updateParams);
+            $service->spreadsheets_values->update($crawlResult->gSheetId, $crawlResult->gSheetName, $updateBody, $updateParams);
             
             // Update the Google Sheet with the new values
             
             $service = $this->setupGoogleSheetsClient();
-            $updateResponse = $service->spreadsheets_values->update($this->spreadsheetId, $updateRange, $updateBody, $updateParams);
+            $updateResponse = $service->spreadsheets_values->update($crawlResult->gSheetId, $crawlResult->gSheetName, $updateBody, $updateParams);
+
+            \Log::info($updateResponse);
+            
+            $crawlResult->status = "Completed";
+            $crawlResult->save();
 
         } catch (\Exception $e) {
-            $crawlResult = new GSheetCrawlResult();
-            $crawlResult->gSheetData = [];
-            $crawlResult->mainUserId = $this->mainUser->id;
-            $crawlResult->gSheetId = $this->spreadsheetId;
-            $crawlResult->result =  [[
-                "isSuccess" => false,
-                "errors" => ["Something went wrong upon crawling spreadsheet!"],
-            ]];
-            $crawlResult->initiatedBy = !empty($initiatedBy) ? $initiatedBy->id : null;
+            \Log::info($e);
+            $crawlResult->status = "Failed";
             $crawlResult->save();
-            // Handle exceptions (log or notify)
-            // You might want to retry the job or mark it as failed based on your needs
-            // You can use Laravel's retry() method for automatic retries
-            // retry(3)->delay(now()->addMinutes(5));
+
+            $contacts = Contact::where('batchUuid', $batchUuid)->get();
+
+            // Loop through each contact and delete its related custom field values
+            foreach ($contacts as $contact) {
+                // Use delete() method on the relationship to delete associated custom field values
+                $contact->customFieldValues()->forceDelete();
+            }
+            
+            // Finally, delete the contacts
+            Contact::where('batchUuid', $batchUuid)->forceDelete();
+
         }
     }
 
@@ -221,13 +195,6 @@ class ProcessContactImportGSheet implements ShouldQueue
             if ($field['isRequired'] && !isset($data[$field['label']])) {
                 $errors[] = "{$field['label']} is required.";
             }
-
-            // if($field->fieldName == 'mobile' && isset($data[$field['label']])){
-            //     $verify = CustomFieldService::getContactByMobile($data[$field['label']], $this->mainUser);
-            //     if(!empty($verify)){
-            //         $errors[] = "Mobile number is already taken.";
-            //     }
-            // }
         }
 
         return $errors;

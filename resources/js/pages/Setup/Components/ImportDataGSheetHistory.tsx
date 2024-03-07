@@ -9,60 +9,6 @@ import copy from "copy-to-clipboard";
 
 const ImportDataGSheetHistory = () => {
     const { data: crawlResults, isLoading } = gSheetCrawlResults();
-    const expandedRowRender = (record: TGSheetCrawlHistory) => {
-        const columns: TableColumnsType<TGSheetCrawlResult> = [
-            {
-                title: "Row #",
-                key: "created_at",
-                render: (_, record, index) => {
-                    return (
-                        <div className="p-xs">
-                            <TextEllipsis>{index + 1}</TextEllipsis>
-                        </div>
-                    );
-                },
-            },
-            {
-                title: "Result",
-                key: "result",
-                render: (_, record) => {
-                    return (
-                        <TextEllipsis>
-                            {record.isSuccess ? "Success" : "Failed"}
-                        </TextEllipsis>
-                    );
-                },
-            },
-            {
-                title: "Is Imported to Roor",
-                key: "isImportedToRoor",
-                render: (_, record) => {
-                    return (
-                        <TextEllipsis>
-                            {record.isImportedToRoor ? "Yes" : "No"}
-                        </TextEllipsis>
-                    );
-                },
-            },
-            {
-                title: "Errors",
-                key: "errors",
-                render: (_, record) => {
-                    return (
-                        <TextEllipsis>{record.errors?.join(", ")}</TextEllipsis>
-                    );
-                },
-            },
-        ];
-
-        return (
-            <Table
-                columns={columns}
-                dataSource={record.result}
-                pagination={false}
-            />
-        );
-    };
 
     const columns: TableColumnsType<TGSheetCrawlHistory> = [
         {
@@ -78,10 +24,28 @@ const ImportDataGSheetHistory = () => {
             title: "Initiated By",
             key: "initiated_by",
             render: (_, result) => (
-                <TextEllipsis>{result.triggeredBy}</TextEllipsis>
+                <TextEllipsis>{result.initiatedBy}</TextEllipsis>
             ),
         },
-
+        {
+            title: "Row Count",
+            key: "row_count",
+            render: (_, result) => (
+                <TextEllipsis>{result.rowCount}</TextEllipsis>
+            ),
+        },
+        {
+            title: "Successfully Imported",
+            key: "sucess_imported",
+            render: (_, result) => (
+                <TextEllipsis>{result.importedCount}</TextEllipsis>
+            ),
+        },
+        {
+            title: "Status",
+            key: "status",
+            render: (_, result) => <TextEllipsis>{result.status}</TextEllipsis>,
+        },
         {
             title: "Created",
             key: "created_at",
@@ -99,22 +63,6 @@ const ImportDataGSheetHistory = () => {
                 );
             },
         },
-        {
-            title: "Action",
-            key: "initiated_by",
-            render: (_, result) => (
-                <Button
-                    size="small"
-                    disabled={!result.gSheetData}
-                    onClick={() => {
-                        copy(JSON.stringify(result.gSheetData) || "");
-                        message.success("Text copied to clipboard");
-                    }}
-                >
-                    Copy Google Sheet data as JSON
-                </Button>
-            ),
-        },
     ];
 
     return (
@@ -123,12 +71,7 @@ const ImportDataGSheetHistory = () => {
                 <Table
                     className="default-table-row-height"
                     columns={columns}
-                    expandable={{
-                        expandedRowRender,
-                    }}
-                    dataSource={crawlResults?.map((crawlResult, index) => {
-                        return { ...crawlResult, ...{ key: index } };
-                    })}
+                    dataSource={crawlResults}
                 />
             </div>
         </Space>

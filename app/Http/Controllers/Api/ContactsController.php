@@ -12,8 +12,11 @@ use App\Models\ContactLog;
 use App\Models\Text;
 use App\Models\Deal;
 use App\Models\Activity;
+use App\Models\GSheetCrawlResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+
+use Ramsey\Uuid\Uuid;
 
 use Illuminate\Support\Str;
 use Auth;
@@ -459,17 +462,29 @@ class ContactsController extends Controller
     //     ]);
     // }
     public function bulkContactImportGSheet(Request $request)
-{
-        // Validate the presence of the required 'gSheetId' parameter
+    {
+        
         $spreadsheetId = $request->gSheedId;
+        $spreadsheetName = $request->gSheetName;
         $user = Auth::user();
-        if (empty($spreadsheetId)) {
-            return response()->json(['error' => 'The "gSheetId" parameter is required.'], 400);
+        if (empty($spreadsheetId || empty($spreadsheetName))) {
+            return response()->json(['error' => 'The "Google Sheet ID" and "Spreadsheet name" parameter is required.'], 400);
         }
-        // Dispatch the job to process the data asynchronously
         $mainUser = $user->mainUser;
 
-        dispatch(new \App\Jobs\ProcessContactImportGSheet($spreadsheetId, $mainUser, $user, $request->roorAutoresponderId));
+
+        $crawlResult = new GSheetCrawlResult();
+        $crawlResult->mainUserId = $mainUser->id;
+        $crawlResult->gSheetId = $spreadsheetId;
+        $crawlResult->gSheetName = $spreadsheetName;
+        $crawlResult->roorAutoresponderId = $request->roorAutoresponderId;
+        $crawlResult->initiatedBy = $user->firstName . ' ' . $user->lastName;
+        $crawlResult->columnMappings = $request->columnMappings;
+        $crawlResult->batchUuid = Uuid::uuid4()->toString();
+        $crawlResult->status = "Queued";
+        $crawlResult->save();
+
+        dispatch(new \App\Jobs\ProcessContactImportGSheet($crawlResult));
 
         if($request->isAddToQueue){
             $crawl = GSheetCrawl::where('mainUserId', $mainUser->id)->first();
@@ -478,8 +493,11 @@ class ContactsController extends Controller
             }
             $crawl->mainUserId = $mainUser->id;
             $crawl->gSheetId = $spreadsheetId;
+            $crawl->gSheetName = $spreadsheetName;
             $crawl->interval = $request->interval;
+            $crawl->roorAutoresponderId = $request->roorAutoresponderId;
             $crawl->last_trigger = Carbon::now();
+            $crawl->columnMappings = $request->columnMappings;
             $crawl->save();
         }
         else{

@@ -148,6 +148,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::resource('/mobile-numbers', 'App\Http\Controllers\Api\MobileNumbersController');
 
+    Route::post('/googlesheet/change-bg-color', 'App\Http\Controllers\Api\GoogleSheetsController@updateRowBackgroundColor');
+    Route::post('/googlesheet/get-column-names', 'App\Http\Controllers\Api\GoogleSheetsController@getColumnNames');
 
 });
 
@@ -160,7 +162,6 @@ Route::post('/telnyx/call/webhook', 'App\Http\Controllers\Api\CallsController@we
 Route::post('/telnyx/call/webhook/fail', 'App\Http\Controllers\Api\CallsController@webhook');
 
 
-Route::post('/googlesheet/change-bg-color', 'App\Http\Controllers\Api\GoogleSheetsController@updateRowBackgroundColor');
 
 Route::get('/telnyx/sms/webhook/fail', function (Request $request) {
     \Log::error('INCOMING SMS FAIL');

@@ -22,6 +22,7 @@
         "laravel/ui": "^3.4",
         "league/csv": "^9.8",
         "pusher/pusher-php-server": "^7.2",
+        "ramsey/uuid": "^4.2",
         "spatie/laravel-activitylog": "^3.17",
         "telnyx/telnyx-php": "^2.7"
     },

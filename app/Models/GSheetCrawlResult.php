@@ -13,27 +13,26 @@ class GSheetCrawlResult extends Model
     protected $casts = [
         'gSheetData' => 'object',
         'result' => 'object',
-    ];
-
-    protected $appends = [
-        'triggeredBy',
+        'columnMappings' => 'object',
     ];
     
+    protected $appends = [
+        'importedCount', 
+    ];
+
     public function user()
     {
         return $this->belongsTo('\App\Models\User', 'mainUserId', 'id');
     }
-
     
-    public function getTriggeredByAttribute()
+
+    public function contacts()
     {
-        if(!empty($this->initiatedBy)){
-            $user = User::find($this->initiatedBy);
-            if(!empty($user)){
-                return $user->fullName;
-            }
-        }
-       
-        return "Crawler";
+        return $this->hasMany('\App\Models\Contact', 'batchUuid', 'batchUuid');
+    }
+
+    public function getImportedCountAttribute()
+    {
+        return $this->contacts()->count();
     }
 }

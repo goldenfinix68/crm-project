@@ -4,9 +4,11 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\GSheetCrawl;
+use App\Models\GSheetCrawlResult;
 use App\Jobs\ProcessContactImportGSheet;
 use DB;
 use Carbon\Carbon;
+use Ramsey\Uuid\Uuid;
 
 class GSheetCrawler extends Command
 {
@@ -47,7 +49,20 @@ class GSheetCrawler extends Command
             ->get();
 
         foreach($results as $crawl){
-            dispatch(new \App\Jobs\ProcessContactImportGSheet($crawl->gSheetId, $crawl->mainUserId));
+            
+            $crawlResult = new GSheetCrawlResult();
+            $crawlResult->mainUserId = $crawl->mainUserId;
+            $crawlResult->gSheetId = $crawl->gSheetId;
+            $crawlResult->gSheetName = $crawl->gSheetName;
+            $crawlResult->roorAutoresponderId = $crawl->roorAutoresponderId;
+            $crawlResult->initiatedBy = "Crawler";
+            $crawlResult->columnMappings = $crawl->columnMappings;
+            $crawlResult->batchUuid = Uuid::uuid4()->toString();
+            $crawlResult->status = "Queued";
+            $crawlResult->save();
+
+            
+            dispatch(new \App\Jobs\ProcessContactImportGSheet($crawlResult));
             $crawl->last_trigger = now();
             $crawl->save();
         }

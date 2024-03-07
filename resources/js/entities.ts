@@ -286,12 +286,14 @@ export type TFilter = {
 
 export type TGSheetCrawlHistory = {
     id: string;
-    user: TUser;
     triggeredBy: string;
     gSheetId: string;
     gSheetData?: string;
     created_at: string;
-    result: TGSheetCrawlResult[];
+    initiatedBy: string;
+    status?: string;
+    importedCount?: string;
+    rowCount?: string;
 };
 export type TGSheetCrawl = {
     id: string;
@@ -300,7 +302,7 @@ export type TGSheetCrawl = {
 };
 
 export type TGSheetCrawlResult = {
-    isSuccess: boolean;
+    status: "Success" | "Failed" | "Queued" | "Ongoing";
     isImportedToRoor: boolean;
     errors?: string[];
 };
