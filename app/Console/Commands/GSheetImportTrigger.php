@@ -45,10 +45,7 @@ class GSheetImportTrigger extends Command
             ->get();
         $processed = 0;
         foreach($crawlResults as $result){
-            $res = GoogleSheetService::importFromGoogleSheet($result);
-
-            $this->info('Processed: ' . $res);
-
+            GoogleSheetService::importFromGoogleSheet($result);
             $processed++;
         }
         

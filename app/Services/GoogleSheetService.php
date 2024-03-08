@@ -209,7 +209,7 @@ class GoogleSheetService
 
             try {
                 // Update the Google Sheet with the new values
-                $updateResponse = $service->spreadsheets_values->update($crawlResult->gSheetId, $crawlResult->gSheetName, $updateBody, $updateParams);
+                $service->spreadsheets_values->update($crawlResult->gSheetId, $crawlResult->gSheetName, $updateBody, $updateParams);
             
                 // Update the crawl result status
                 $crawlResult->status = "Completed";
