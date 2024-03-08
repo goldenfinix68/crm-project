@@ -35,17 +35,24 @@ const ImportDataGSheetHistory = () => {
             ),
         },
         {
-            title: "Successfully Imported",
+            title: "Processed",
             key: "sucess_imported",
-            render: (_, result) => (
-                <TextEllipsis>
-                    {result.status == "Queued" || result.status == "Failed"
-                        ? "0"
-                        : result.status == "Completed"
-                        ? result.processed
-                        : result.importedCount}
-                </TextEllipsis>
-            ),
+            render: (_, result) => {
+                const getProcessedCount = () => {
+                    if (
+                        result.status == "Queued" ||
+                        result.status == "Failed"
+                    ) {
+                        return "0";
+                    } else if (result.status == "Completed") {
+                        return result.processed;
+                    } else if (result.status == "Running") {
+                        return result.importedCount;
+                    }
+                };
+
+                return <TextEllipsis>{getProcessedCount()}</TextEllipsis>;
+            },
         },
         {
             title: "Status",
