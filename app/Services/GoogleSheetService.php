@@ -206,20 +206,24 @@ class GoogleSheetService
             $updateParams = [
                 'valueInputOption' => 'RAW',
             ];
-
-            try {
-                // Update the Google Sheet with the new values
-                $service->spreadsheets_values->update($crawlResult->gSheetId, $crawlResult->gSheetName, $updateBody, $updateParams);
             
                 // Update the crawl result status
                 $crawlResult->status = "Completed";
                 $crawlResult->save();
-            } catch (\Google\Service\Exception $e) {
-                \Log::info($e);
-                $crawlResult->status = "Failed";
-                $crawlResult->save();
-                self::revertImport($batchUuid);
-            }
+
+            // try {
+            //     // Update the Google Sheet with the new values
+            //     $service->spreadsheets_values->update($crawlResult->gSheetId, $crawlResult->gSheetName, $updateBody, $updateParams);
+            
+            //     // Update the crawl result status
+            //     $crawlResult->status = "Completed";
+            //     $crawlResult->save();
+            // } catch (\Google\Service\Exception $e) {
+            //     \Log::info($e);
+            //     $crawlResult->status = "Failed";
+            //     $crawlResult->save();
+            //     self::revertImport($batchUuid);
+            // }
 
         } catch (\Exception $e) {
             \Log::info($e);
