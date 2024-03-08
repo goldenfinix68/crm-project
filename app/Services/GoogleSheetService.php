@@ -132,85 +132,61 @@ class GoogleSheetService
             $crawlResult->status = "Running";
             $crawlResult->rowCount = count($results);
             $crawlResult->save();
-
+            $processed = 0;
             if(!empty($results)){
                 foreach($results as $key => $result){
 
-                    $contact = false;
+                    if(isset($result['SL_UUID']) && !empty($result['SL_UUID'])){
+                        $errors = self::validateData($customFields, $result, $crawlResult->columnMappings);
 
-                    if(isset($result['SL_ID']) && !empty($result['SL_ID'])){
-                        
-                        \Log::info("SLID" . $result['SL_ID']);
-                        $contact = Contact::find($result['SL_ID']);
-                        if(empty($contact)){
-                            continue;
-                        }
-                    }
+                        if(empty($errors)){
+                            DB::beginTransaction();
+                            
+                            $contact = Contact::where('uuid', $result['SL_UUID'])->where('userId', $mainUser->id)->first();
+                            if(empty($contact)){
+                                $contact = new Contact();
+                                $contact->uuid = $result['SL_UUID'];
+                                $contact->userId = $mainUser->id;
+                            }
 
-                    $errors = self::validateData($customFields, $result, $crawlResult->columnMappings);
+                            $contact->googlesheetId = $crawlResult->gSheetId;
+                            $contact->batchUuid = $batchUuid;
+                            $contact->save();
 
-                    if(empty($errors)){
-                        DB::beginTransaction();
-                        if(!$contact){
-                            $contact = new Contact();
-                        }
-                        $contact->userId = $mainUser->id;
-                        $contact->googlesheetId = $crawlResult->gSheetId;
-                        $contact->batchUuid = $batchUuid;
-                        $contact->save();
+                            $continue = true;
 
-                        $continue = true;
+                            foreach ($crawlResult->columnMappings as $sourceColumn => $targetColumn) {
+                                try {
+                                    $customField = CustomField::find($targetColumn);
 
-                        foreach ($crawlResult->columnMappings as $sourceColumn => $targetColumn) {
-                            try {
-                                $customField = CustomField::find($targetColumn);
-
-                                if($customField->type == 'tag'){
-                                    $result[$sourceColumn] = [$result[$sourceColumn]];
+                                    if($customField->type == 'tag'){
+                                        $result[$sourceColumn] = [$result[$sourceColumn]];
+                                    }
+                                    CustomFieldService::createOrUpdateCustomFieldValue($contact->id, $customField, 'contact', $result[$sourceColumn]);
                                 }
-                                CustomFieldService::createOrUpdateCustomFieldValue($contact->id, $customField, 'contact', $result[$sourceColumn]);
+                                catch (Exception $e) {
+                                    \Log::info($e);
+                                    $continue = false;
+                                    DB::rollBack();
+                                    break;
+                                } 
                             }
-                            catch (Exception $e) {
-                                \Log::info($e);
-                                $continue = false;
-                                DB::rollBack();
-                                break;
-                            } 
-                        }
-                        if($continue){
-                            $results[$key]['SL_ID'] = $contact->id;
-                            DB::commit();
-                            if(!empty($crawlResult->roorAutoresponderId) && !empty($roorMapping)){
-                                $roorResult = RoorService::sendAutoCampaign($contact, $roorMapping, $crawlResult->roorAutoresponderId);
+                            if($continue){
+                                $processed++;
+                                DB::commit();
+                                if(!empty($crawlResult->roorAutoresponderId) && !empty($roorMapping)){
+                                    $roorResult = RoorService::sendAutoCampaign($contact, $roorMapping, $crawlResult->roorAutoresponderId);
+                                }
                             }
                         }
+                    
                     }
                 }
             }
 
-            // Update GSheet Data
-            $valuesToUpdate = [$keys];  // Include the array keys as the first row/header
-            foreach ($results as $row) {
-                $rowData = [];
-                foreach ($keys as $key) {
-                    $rowData[] = isset($row[$key]) ? $row[$key] : null;
-                }
-                $valuesToUpdate[] = $rowData;
-            }
-            
-            $updateBody = new Google_Service_Sheets_ValueRange([
-                'values' => $valuesToUpdate,
-            ]);
-            
-            $updateParams = [
-                'valueInputOption' => 'RAW',
-            ];
-
-            // Update the Google Sheet with the new values
-            $service->spreadsheets_values->update($crawlResult->gSheetId, $crawlResult->gSheetName, $updateBody, $updateParams);
-            
             // Update the crawl result status
             $crawlResult->status = "Completed";
+            $crawlResult->processed = $processed;
             $crawlResult->save();
 
         } catch (\Exception $e) {

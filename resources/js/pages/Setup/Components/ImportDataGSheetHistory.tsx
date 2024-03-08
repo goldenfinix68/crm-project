@@ -38,7 +38,13 @@ const ImportDataGSheetHistory = () => {
             title: "Successfully Imported",
             key: "sucess_imported",
             render: (_, result) => (
-                <TextEllipsis>{result.importedCount}</TextEllipsis>
+                <TextEllipsis>
+                    {result.status == "Queued" || result.status == "Failed"
+                        ? "0"
+                        : result.status == "Completed"
+                        ? result.processed
+                        : result.importedCount}
+                </TextEllipsis>
             ),
         },
         {

@@ -291,9 +291,10 @@ export type TGSheetCrawlHistory = {
     gSheetData?: string;
     created_at: string;
     initiatedBy: string;
-    status?: string;
+    status: "Completed" | "Failed" | "Queued" | "Running";
     importedCount?: string;
     rowCount?: string;
+    processed?: number;
 };
 export type TGSheetCrawl = {
     id: string;
@@ -302,7 +303,6 @@ export type TGSheetCrawl = {
 };
 
 export type TGSheetCrawlResult = {
-    status: "Success" | "Failed" | "Queued" | "Ongoing";
     isImportedToRoor: boolean;
     errors?: string[];
 };
