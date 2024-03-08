@@ -164,7 +164,7 @@ class GoogleSheetService
                         foreach ($crawlResult->columnMappings as $sourceColumn => $targetColumn) {
                             try {
                                 $customField = CustomField::find($targetColumn);
-    
+
                                 if($customField->type == 'tag'){
                                     $result[$sourceColumn] = [$result[$sourceColumn]];
                                 }
@@ -188,8 +188,7 @@ class GoogleSheetService
                 }
             }
 
-            
-            //update GSheet Data
+            // Update GSheet Data
             $valuesToUpdate = [$keys];  // Include the array keys as the first row/header
             foreach ($results as $row) {
                 $rowData = [];
@@ -206,30 +205,23 @@ class GoogleSheetService
             $updateParams = [
                 'valueInputOption' => 'RAW',
             ];
-            
 
-            try {
-                // Update the Google Sheet with the new values
-                $service->spreadsheets_values->update($crawlResult->gSheetId, $crawlResult->gSheetName, $updateBody, $updateParams);
+            // Update the Google Sheet with the new values
+            $service->spreadsheets_values->update($crawlResult->gSheetId, $crawlResult->gSheetName, $updateBody, $updateParams);
             
-                // Update the crawl result status
-                $crawlResult->status = "Completed";
-                $crawlResult->save();
-            } catch (\Exception $e) {
-                \Log::info($e);
-                $crawlResult->status = "Failed";
-                $crawlResult->save();
-                self::revertImport($batchUuid);
-            }
+            // Update the crawl result status
+            $crawlResult->status = "Completed";
+            $crawlResult->save();
 
         } catch (\Exception $e) {
             \Log::info($e);
             $crawlResult->status = "Failed";
             $crawlResult->save();
             self::revertImport($batchUuid);
-
         }
     }
+
+
     
     private function revertImport($batchUuid) {
         $contacts = Contact::where('batchUuid', $batchUuid)->get();
