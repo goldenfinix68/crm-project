@@ -484,7 +484,7 @@ class ContactsController extends Controller
         $crawlResult->status = "Queued";
         $crawlResult->save();
 
-        dispatch(new \App\Jobs\ProcessContactImportGSheet($crawlResult));
+        // dispatch(new \App\Jobs\ProcessContactImportGSheet($crawlResult));
 
         if($request->isAddToQueue){
             $crawl = GSheetCrawl::where('mainUserId', $mainUser->id)->first();
