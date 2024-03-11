@@ -58,7 +58,7 @@ class RoorService
         $endpoint = '/v1/manualTXT/key/' . env('ROOR_API_KEY') . '/response/json';
 
         $data = [
-            'to' => $text->to,
+            'to' => '+1' . $text->to,
             'from' => '+1' . $text->from,
             'message' => $text->message
         ];
