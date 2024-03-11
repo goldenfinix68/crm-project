@@ -25,7 +25,7 @@ import {
     PlusCircleOutlined,
 } from "@ant-design/icons"; // Step 1
 import { useNavigate } from "react-router-dom";
-import { getTimeAgo } from "../../../helpers";
+import { getTimeAgo, useArray } from "../../../helpers";
 import { TTextThreadList } from "../../../entities";
 import ConfirmModal from "../../../components/ConfirmModal";
 import { useMutation } from "react-query";
@@ -50,7 +50,11 @@ const TextList = ({ label }) => {
         total: 0,
     });
 
-    const [textThreads, setTextThreads] = useState<any>();
+    const {
+        array: textThreads,
+        updateById,
+        setInitialArray,
+    } = useArray<TTextThreadList>();
 
     const { data: filteredThreads, refetch: refetchTextThreads } =
         useTextThreads(pagination, () => {
@@ -114,7 +118,7 @@ const TextList = ({ label }) => {
 
     useEffect(() => {
         if (filteredThreads && filteredThreads.data) {
-            setTextThreads(filteredThreads.data);
+            setInitialArray(filteredThreads.data);
             setPagination({ ...pagination, total: filteredThreads.total });
         }
     }, [filteredThreads]);
@@ -225,6 +229,12 @@ const TextList = ({ label }) => {
                                         } // Step 4: Handle mouse leave
                                     >
                                         <CustomLink
+                                            onClick={() => {
+                                                updateById(thread.id, {
+                                                    ...thread,
+                                                    isLastTextSeen: true,
+                                                });
+                                            }}
                                             to={`/text-threads/${
                                                 thread.isContactSaved
                                                     ? `contact/${thread.contactId}`

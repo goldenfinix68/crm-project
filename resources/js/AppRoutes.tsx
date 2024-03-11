@@ -249,7 +249,7 @@ const AppRoutes = () => {
                                 path="/text-threads"
                                 element={
                                     <PrivateRoute title="Texts">
-                                        <Texts />
+                                        <TextBoxView />
                                     </PrivateRoute>
                                 }
                             />

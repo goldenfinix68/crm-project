@@ -42,7 +42,7 @@ const TextContent = ({ menu }: { menu: string }) => {
 
     const markAsSeen = useMutation(useMarkThreadSeen, {
         onSuccess: () => {
-            queryClient.invalidateQueries("textThreads");
+            // queryClient.invalidateQueries("textThreads");
         },
     });
 

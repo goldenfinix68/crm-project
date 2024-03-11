@@ -59,6 +59,11 @@ const TextBoxView = () => {
         TTextLabel | undefined
     >(undefined);
 
+    const { threadId } = useParams();
+    const { contactId } = useParams();
+
+    const isTextContentVisible = threadId || contactId;
+
     return (
         <Space direction="vertical" style={{ width: "100%" }}>
             <TextsHeaderMenu
@@ -66,21 +71,25 @@ const TextBoxView = () => {
             />
             <Card bodyStyle={{ padding: 0 }}>
                 <Row gutter={0} style={{ height: "85vh" }}>
-                    <Col span={11} style={{ padding: "24px" }}>
+                    <Col
+                        span={isTextContentVisible ? 11 : 24}
+                        style={{ padding: "24px" }}
+                    >
                         <TextList label={label} />
                     </Col>
-
-                    <Col
-                        span={13}
-                        style={{
-                            backgroundColor: "#F5F5F5",
-                            margin: 0,
-                            height: "85vh",
-                            overflowY: "auto",
-                        }}
-                    >
-                        <TextContent menu={"all"} />
-                    </Col>
+                    {isTextContentVisible && (
+                        <Col
+                            span={13}
+                            style={{
+                                backgroundColor: "#F5F5F5",
+                                margin: 0,
+                                height: "85vh",
+                                overflowY: "auto",
+                            }}
+                        >
+                            <TextContent menu={"all"} />
+                        </Col>
+                    )}
                 </Row>
 
                 <AddUpdateTextLabelModal
