@@ -59,7 +59,7 @@ class RoorService
 
         $data = [
             'to' => $text->to,
-            'from' => '+' . $text->from,
+            'from' => '+1' . $text->from,
             'message' => $text->message
         ];
         $headers = [
