@@ -174,7 +174,7 @@ class TextsController extends Controller
         foreach($mainUserIds as $id){
             $pusher->trigger('notif-channel-'.$id, 'notif-received-'.$id, [
                 'type' => 'text',
-                'message' => "Text Received",
+                'message' => "Text from " . $text->sender,
                 'description' => $text->message,
             ]);
         }
