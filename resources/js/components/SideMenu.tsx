@@ -62,11 +62,6 @@ const SideMenu = ({ children, title }: { children: any; title?: string }) => {
                 : loggedInUser?.main_user?.id;
         // Subscribe to the Pusher channel and bind to the event
 
-        console.log(
-            `notif-channel-${mainUserId}`,
-            `notif-received-${mainUserId}`
-        );
-
         const channel = pusher.subscribe(`notif-channel-${mainUserId}`);
         channel.bind(`notif-received-${mainUserId}`, (data) => {
             console.log("notif received", data);
@@ -78,7 +73,6 @@ const SideMenu = ({ children, title }: { children: any; title?: string }) => {
             api.open({
                 message: <b>{data?.message}</b> ?? "Default",
                 description: data?.description ?? "Default",
-                duration: 0,
             });
         });
 
