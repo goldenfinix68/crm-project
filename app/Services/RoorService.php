@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Services\MobileNumberService;
+
 class RoorService
 {
     public function makeRequest($endpoint, $method = 'GET', $data = [], $headers = [])
@@ -58,8 +60,8 @@ class RoorService
         $endpoint = '/v1/manualTXT/key/' . env('ROOR_API_KEY') . '/response/json';
 
         $data = [
-            'to' => '+1' . $text->to,
-            'from' => '+1' . $text->from,
+            'to' => '+1' . MobileNumberService::formatPhoneNumber($text->to),
+            'from' => '+1' . MobileNumberService::formatPhoneNumber($text->from),
             'message' => $text->message
         ];
         $headers = [

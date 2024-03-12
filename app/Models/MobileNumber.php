@@ -14,4 +14,5 @@ class MobileNumber extends Model
     {
         return $this->belongsTo(User::class, 'userId');
     }
+
 }

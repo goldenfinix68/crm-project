@@ -112,12 +112,22 @@ class User extends Authenticatable implements MustVerifyEmail
             event(new UserCreated($user));
         });
     }
+    
     public function toArray()
     {
         $array = parent::toArray();
-        $array['mobileNumbers'] = $this->numbers;
+
+        // Format mobile numbers before adding them to the array
+        $formattedNumbers = $this->numbers->map(function ($number) {
+            $number->mobileNumber = preg_replace("/^(\d{3})(\d{3})(\d{4})$/", "($1) $2-$3", $number->mobileNumber);
+            return $number;
+        });
+
+        $array['mobileNumbers'] = $formattedNumbers;
+
         return $array;
     }
+
     
 
 //     public function getNumbersAttribute()
