@@ -32,22 +32,22 @@ class TextThread extends Model
         return $this->belongsToMany(\App\Models\TextLabel::class, 'thread_labels_pivot', 'textThreadId', 'textLabelId')->orderBy('name');
     }
 
-    public function getContactAttribute()
-    {
-        $user = Auth::user();
-        $contacts = ContactService::getContactsByMobile($this->contactNumber, [$user->mainId]);
+    // public function getContactAttribute()
+    // {
+    //     $user = Auth::user();
+    //     $contacts = ContactService::getContactsByMobile($this->contactNumber, [$user->mainId]);
 
-        if(!empty($contacts)){
-            return $contacts->first();
-        }
+    //     if(!empty($contacts)){
+    //         return $contacts->first();
+    //     }
 
-        return false;
-    }
+    //     return false;
+    // }
 
-    public function getContactNameAttribute()
-    {
-        return !empty($this->contact) ? $this->contact->fields['firstName'] . ' ' . $this->contact->fields['lastName'] : $this->contactNumber;
-    }
+    // public function getContactNameAttribute()
+    // {
+    //     return !empty($this->contact) ? $this->contact->fields['firstName'] . ' ' . $this->contact->fields['lastName'] : $this->contactNumber;
+    // }
 
     public function lastText()
     {

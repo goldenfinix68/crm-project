@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\TextThread;
 use App\Models\Text;
 use App\Models\CustomField;
+use App\Models\CustomFieldValue;
 use App\Models\Contact;
 use Auth;
 use DB;
@@ -49,27 +50,35 @@ class TextThreadsController extends Controller
 
         $texts = $texts->paginate($request->input('page_size', 20));
 
-
-        // $threads = TextThread::whereIn('userNumber', $this->getMainUserNumbers())
-        //     ->with(['lastText', 'labels']);
-
-        // if (!empty($request->searchKey)) {
-        //     $threads->where(function($query) use ($request) {
-        //         $query->whereHas('texts', function($query) use ($request) {
-        //             $query->where('message', 'like', '%' . $request->searchKey . '%');
-        //         })
-        //         ->orWhere('contactNumber', 'like', '%' . $request->searchKey . '%');
-        //     });
-        // }
-
-        // $threads = $threads->paginate($request->input('page_size', 20));
-
-
         $data = [];
         foreach($texts->items() as $text){
-            $thread = $text->thread;
 
-            $contactName = $thread->contactName;
+            $thread = $text->thread;
+            $contactId = "";
+            $contactName = preg_replace("/^(\d{3})(\d{3})(\d{4})$/", "($1) $2-$3", $thread->contactNumber);
+            
+            $fieldValue = CustomFieldValue::where('value', $thread->contactNumber)
+                ->whereHas('customField', function ($query) {
+                    $query->where('type', 'mobile')
+                        ->orWhere('type', 'phone');
+                })
+                ->first();
+            
+            if(!empty($fieldValue)){
+                
+                $contactId = $fieldValue->customableId;
+
+                $names = CustomFieldValue::select('value')
+                    ->where('customableId', $fieldValue->customableId)
+                    ->whereHas('customField', function ($query) {
+                        $query->where('fieldName', 'firstName')
+                            ->orWhere('fieldName', 'lastName');
+                    })
+                    ->pluck('value');
+
+                $contactName = $names[1] . " " . $names[0];
+            }
+
             $lastText = $thread->lastText;
             $isLastTextSeen = !empty($lastText->seen_at);
             $createdAt = $lastText->created_at;
@@ -89,9 +98,9 @@ class TextThreadsController extends Controller
             } else {
                 $data[] = [
                     'id' => $thread->id,
-                    'contactId' => optional($thread->contact)->id ?? "",
+                    'contactId' => $contactId,
                     'contactName' => $contactName,
-                    'isContactSaved' => !empty($thread->contact),
+                    'isContactSaved' => !empty($contactId),
                     'lastText' => $lastText->message,
                     'isLastTextSeen' => $isLastTextSeen,
                     'created_at' => $createdAt,
@@ -163,11 +172,22 @@ class TextThreadsController extends Controller
                 return strtotime($b['created_at']) - strtotime($a['created_at']);
             });
 
+            $formattedNumbers = [];
+            foreach ($contact->phoneNumbers as $phoneNumber) {
+                // Format each phone number
+                $formattedNumber = preg_replace("/^(\d{3})(\d{3})(\d{4})$/", "($1) $2-$3", $phoneNumber);
+                // Add the formatted number to the array
+                $formattedNumbers[] = $formattedNumber;
+            }
+            
+            // Implode the formatted numbers into a single string
+            $combinedNumbers = implode(", ", $formattedNumbers);
+            
             return [
                 'texts' => $texts,
                 'contact' => $contact,
                 'contactName' => $contact->fields['firstName'] . ' ' . $contact->fields['lastName'],
-                'phoneNumbers' => implode(", ", $contact->phoneNumbers),
+                'phoneNumbers' => $combinedNumbers ,
             ];
         }
         else{
@@ -177,7 +197,7 @@ class TextThreadsController extends Controller
                 'texts' => $thread->texts,
                 'contact' => null,
                 'contactName' => $thread->contactName,
-                'phoneNumbers' => $thread->contactNumber,
+                'phoneNumbers' => preg_replace("/^(\d{3})(\d{3})(\d{4})$/", "($1) $2-$3", $thread->contactNumber),
             ];
         }
 

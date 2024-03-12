@@ -134,7 +134,8 @@ class Contact extends Model
             ->join('custom_fields', 'custom_fields.id', '=', 'custom_field_values.customFieldId')
             ->whereIn('custom_fields.type', ['mobile', 'phone'])
             ->whereNotNull('value')
-            ->pluck('value')->toArray();
+            ->pluck('value')
+            ->toArray();
 
         return array_unique($phoneNumbers);
     }

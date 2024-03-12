@@ -99,6 +99,7 @@ class Text extends Model
                     ->where('customableType', 'contact')
                     ->whereHas('customField', function ($query) {
                         $query->where('type', 'mobile');
+                        $query->orWhere('type', 'phone');
                     })
                     ->first();
 
