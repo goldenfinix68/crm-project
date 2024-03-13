@@ -52,9 +52,6 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
     const contactTypelookupId = contact.fields?.contactTypelookupIds
         ? JSON.parse(contact.fields.contactTypelookupIds)[0]
         : "0";
-    const contactType = contactTypes?.find(
-        (type) => type.id == contactTypelookupId
-    );
     // const { contact } = useContext(ContactContext);
     const [tagSearchKey, setTagSearchKey] = React.useState("");
 
@@ -317,8 +314,7 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                         ?.filter(
                             (field) =>
                                 field.fieldName != "firstName" &&
-                                field.fieldName != "lastName" &&
-                                field.isDisplayTable
+                                field.fieldName != "lastName"
                         )
                         .sort(
                             (a, b) => (a?.tableSort ?? 0) - (b?.tableSort ?? 0)
