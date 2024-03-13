@@ -76,7 +76,7 @@ class TextThreadsController extends Controller
                     })
                     ->pluck('value');
 
-                $contactName = $names[1] . " " . $names[0];
+                $contactName = $names[0] . " " . $names[1];
             }
 
             $lastText = $thread->lastText;
