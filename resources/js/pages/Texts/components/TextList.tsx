@@ -253,7 +253,10 @@ const TextList = ({ label }) => {
                                                 <Col span={6}>
                                                     <TextEllipsis
                                                         style={{
-                                                            fontWeight: "bold",
+                                                            fontWeight:
+                                                                !thread?.isLastTextSeen
+                                                                    ? "bold"
+                                                                    : "",
                                                             fontSize: "16px",
                                                         }}
                                                     >
