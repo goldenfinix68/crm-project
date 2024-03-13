@@ -142,6 +142,7 @@ class Contact extends Model
 
     public function getDuplicatePhoneNumbersAttribute()
     {
+        return [];
         
         $user = Auth::user();
 
