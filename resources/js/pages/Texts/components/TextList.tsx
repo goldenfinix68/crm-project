@@ -98,11 +98,6 @@ const TextList = ({ label }) => {
         },
     });
 
-    // Step 2: Add hover state tracking
-    const [hoveredItemIndex, setHoveredItemIndex] = useState<number | null>(
-        null
-    );
-
     const handlePaginationChange = (page, pageSize) => {
         setPagination({ ...pagination, page: page, page_size: pageSize });
     };
@@ -221,12 +216,6 @@ const TextList = ({ label }) => {
                                                     ? "#ffc166"
                                                     : "",
                                         }}
-                                        onMouseEnter={() =>
-                                            setHoveredItemIndex(index)
-                                        } // Step 4: Handle mouse enter
-                                        onMouseLeave={() =>
-                                            setHoveredItemIndex(null)
-                                        } // Step 4: Handle mouse leave
                                     >
                                         <CustomLink
                                             onClick={() => {
@@ -350,69 +339,31 @@ const TextList = ({ label }) => {
                                                             textAlign: "right",
                                                         }}
                                                     >
-                                                        {hoveredItemIndex ===
-                                                            index ||
-                                                        selectedThread ? ( // Step 3: Conditional rendering
-                                                            <Space
-                                                                onClick={(
-                                                                    e
-                                                                ) => {
-                                                                    e.stopPropagation();
-                                                                    setSelectedThread(
-                                                                        thread
-                                                                    );
-                                                                    setIsViaMultiple(
-                                                                        false
-                                                                    );
-                                                                }}
-                                                            >
-                                                                <DeleteOutlined
-                                                                    onClick={(
-                                                                        e
-                                                                    ) => {
-                                                                        setIsDeleteModalOpen(
-                                                                            true
-                                                                        );
-                                                                    }}
-                                                                />
-                                                                <Dropdown
-                                                                    overlay={
-                                                                        <Menu>
-                                                                            <Menu.Item
-                                                                                key="assignLabel"
-                                                                                onClick={() =>
-                                                                                    setIsAssignLabelModalOpen(
-                                                                                        true
-                                                                                    )
-                                                                                }
-                                                                            >
-                                                                                Assign
-                                                                                Label
-                                                                            </Menu.Item>
-                                                                        </Menu>
-                                                                    }
-                                                                    trigger={[
-                                                                        "click",
-                                                                    ]}
-                                                                >
-                                                                    <EllipsisOutlined
-                                                                        style={{
-                                                                            transform:
-                                                                                "rotate(90deg)",
-                                                                        }}
-                                                                    />
-                                                                </Dropdown>
-                                                            </Space>
-                                                        ) : (
-                                                            moment
-                                                                .utc(
-                                                                    thread?.created_at
-                                                                )
-                                                                .local()
-                                                                .format(
-                                                                    "MMM DD"
-                                                                )
-                                                        )}
+                                                        {moment
+                                                            .utc(
+                                                                thread?.created_at
+                                                            )
+                                                            .local()
+                                                            .isSame(
+                                                                moment(),
+                                                                "day"
+                                                            )
+                                                            ? moment
+                                                                  .utc(
+                                                                      thread?.created_at
+                                                                  )
+                                                                  .local()
+                                                                  .format(
+                                                                      "hh:mm A"
+                                                                  )
+                                                            : moment
+                                                                  .utc(
+                                                                      thread?.created_at
+                                                                  )
+                                                                  .local()
+                                                                  .format(
+                                                                      "MMM DD"
+                                                                  )}
                                                     </TextEllipsis>
                                                 </Col>
                                             </Row>
