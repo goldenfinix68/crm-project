@@ -3,7 +3,6 @@ import { Avatar, Space, Tooltip } from "antd";
 import { TText } from "../../../entities";
 import { CalendarOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import moment from "moment";
-import { timeToLocalMachineTZ } from "../../../helpers";
 
 const ChatBoxItem = ({ name, text }: { name: string; text: TText }) => {
     return !text.isFromApp ? (
@@ -25,7 +24,10 @@ const ChatBoxItem = ({ name, text }: { name: string; text: TText }) => {
                     {text.message}
                 </div>
                 <div style={{ marginTop: "8px", fontSize: "10px" }}>
-                    {`${text.to} ${moment
+                    {`${text.from.replace(
+                        /^(\d{3})(\d{3})(\d{4})$/,
+                        "($1) $2-$3"
+                    )} ${moment
                         .utc(text.created_at)
                         .local()
                         .format("MMM DD, YYYY hh:mm A")}`}
@@ -78,7 +80,10 @@ const ChatBoxItem = ({ name, text }: { name: string; text: TText }) => {
                     {`${moment
                         .utc(text.created_at)
                         .local()
-                        .format("MMM DD, YYYY hh:mm A")} ${text.from}`}
+                        .format("MMM DD, YYYY hh:mm A")} ${text.to.replace(
+                        /^(\d{3})(\d{3})(\d{4})$/,
+                        "($1) $2-$3"
+                    )}`}
                 </div>
             </div>
         </div>
