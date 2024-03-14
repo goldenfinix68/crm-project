@@ -30,8 +30,7 @@ class CallsController extends Controller
         $calls = Call::select('*')
             ->whereIn('id', function($query) {
                 $query->select(DB::raw('MAX(id)'))
-                    ->from('calls')
-                    ->groupBy('telnyxCallSessionId');
+                    ->from('calls');
             })
             ->orderBy('id', 'desc')
             ->get();
@@ -44,45 +43,30 @@ class CallsController extends Controller
     }
 
     public function prepareCall ($call) {
-        $callData = Call::where('telnyxCallSessionId', $call->telnyxCallSessionId)->get();
-        $isFromApp = MobileNumber::where('mobileNumber', $call->from)->first();
-        
-        $contact = $this->getContactByMobile(!empty($isFromApp) ? $call->to : $call->from);
+        $from = $call->from;
+        $to = $call->to;
+        $from = str_replace('+', '', $from);
+        $from = str_replace(' ', '', $from);
+        $from = str_replace('-', '', $from);
 
-        $contactName = !empty($isFromApp) ? $call->to : $call->from;
+        $to = str_replace('+', '', $to);
+        $to = str_replace(' ', '', $to);
+        $to = str_replace('-', '', $to);
+        $isFromApp = MobileNumber::where('mobileNumber', $from)->with('user')->first();
+        $isToApp = MobileNumber::where('mobileNumber', $to)->with('user')->first();
         
-        if(!empty($contact)){
-            $contactName = $contact->fields['firstName'] . ' ' . $contact->fields['lastName'];
-        }
 
-        if(!empty($isFromApp)){
-            $user = $isFromApp->user;
-            $userName = $user->firstName . ' ' . $user->lastName;
-        }
-        else{
-            $mobileNumnber = MobileNumber::where('mobileNumber', $call->to)->orderBy('id', 'desc')->first();
-            if(!empty($mobileNumnber) && !empty($mobileNumnber->user)){
-                $userName = $mobileNumnber->user->firstName . ' ' . $mobileNumnber->user->lastName;
-            }
-            else{
-                $userName = $call->to;
-            }
-        }
-
-        $answeredData = $callData->where('type', 'call.answered')->first();
-        $hangupData = $callData->where('type', 'call.hangup')->first();
-        $isAnswered = !empty($answeredData) && !empty($hangupData);
-        
         return [
             'telnyxCallSessionId' => $call->telnyxCallSessionId,
-            'dateTime' => $call->created_at->format('M j, Y h:i a'),
-            'isFromApp' => !empty($isFromApp),
-            'contactName' => $contactName,
-            'to' => $call->to,
-            'from' => $call->from,
-            'duration' => $isAnswered ? $hangupData->created_at->diffInSeconds($answeredData->created_at) : "0",
-            'userName' => $userName,
-            'recording_url' => $call->recording->recording_url ?? "",
+            'dateTime' => $call->call_received_date,
+            'type' => $call->type,
+            'isFromApp' => $isFromApp,
+            'isToApp' => $isToApp,
+            'from' => !empty($isFromApp) ? $isFromApp->user->fullName : $call->from,
+            'to' => !empty($isToApp) ? $isToApp->user->fullName : $call->to,
+            'duration' => $call->duration,
+            'outcome' => $call->status,
+            'recording_url' => $call->url_recording ?? "",
         ];
     }
 
