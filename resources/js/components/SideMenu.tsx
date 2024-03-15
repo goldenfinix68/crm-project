@@ -23,9 +23,6 @@ import CustomLink from "./CustomLink";
 const { Header, Sider, Content } = Layout;
 
 const SideMenu = ({ children, title }: { children: any; title?: string }) => {
-    const navigate = useNavigate();
-    const { setIsModalOpen, setCallerNumber, setDestinationNumber } =
-        useCallContext();
     const [api, contextHolder] = notification.useNotification();
 
     const { loggedInUser } = useAppContextProvider();
@@ -36,24 +33,6 @@ const SideMenu = ({ children, title }: { children: any; title?: string }) => {
     const pusher = new Pusher((window as any).PUSHER_APP_KEY, {
         cluster: (window as any).PUSHER_APP_CLUSTER,
     });
-
-    // useEffect(() => {
-    //     // Subscribe to the Pusher channel and bind to the event
-    //     const channel = pusher.subscribe("text-channel");
-    //     channel.bind("text-received", (data) => {
-    //         console.log("Received a text:", data);
-    //         queryClient.invalidateQueries("callHistory");
-
-    //         const audio = new Audio("/path/to/sound.mp3"); // Provide the path to your sound file
-    //         audio.play();
-    //     });
-
-    //     // Clean up the subscription when the component unmounts
-    //     return () => {
-    //         channel.unbind("text-received");
-    //         pusher.unsubscribe("text-channel");
-    //     };
-    // }, []);
 
     useEffect(() => {
         const mainUserId =
@@ -89,7 +68,7 @@ const SideMenu = ({ children, title }: { children: any; title?: string }) => {
             <ReactClearCache />
             <ImpersonateBanner />
             <Layout style={{ minHeight: "100vh" }}>
-                <Sider
+                {/* <Sider
                     trigger={null}
                     collapsible
                     collapsed={true}
@@ -127,11 +106,6 @@ const SideMenu = ({ children, title }: { children: any; title?: string }) => {
                                     </CustomLink>
                                 ),
                             },
-                            // {
-                            //     key: "/activities",
-                            //     icon: <CheckCircleOutlined />,
-                            //     label: "Activities",
-                            // },
                             {
                                 key: "/deals",
                                 icon: <DollarCircleOutlined />,
@@ -139,11 +113,6 @@ const SideMenu = ({ children, title }: { children: any; title?: string }) => {
                                     <CustomLink to="/deals">Deals</CustomLink>
                                 ),
                             },
-                            // {
-                            //     key: "/inbox",
-                            //     icon: <MailOutlined />,
-                            //     label: "Inbox",
-                            // },
                             {
                                 key: "/text-threads",
                                 icon: <MobileOutlined />,
@@ -153,36 +122,22 @@ const SideMenu = ({ children, title }: { children: any; title?: string }) => {
                                     </CustomLink>
                                 ),
                             },
-                            // {
-                            //     key: "/dialer",
-                            //     icon: <PhoneOutlined />,
-                            //     label: "Dialer",
-                            //     onClick: () => {
-                            //         setCallerNumber(
-                            //             loggedInUser?.numbers?.length
-                            //                 ? loggedInUser.numbers[0]
-                            //                       .mobileNumber
-                            //                 : ""
-                            //         );
-                            //         setDestinationNumber("");
-                            //         setIsModalOpen(true);
-                            //     },
-                            // },
                         ]}
                     />
-                </Sider>
+                </Sider> */}
+
+                <Header
+                    style={{
+                        padding: "0px 30px",
+                        background: colorBgContainer,
+                    }}
+                >
+                    <Navigation title={title} />
+                </Header>
                 <Layout>
-                    <Header
-                        style={{
-                            padding: "0px 30px",
-                            background: colorBgContainer,
-                        }}
-                    >
-                        <Navigation title={title} />
-                    </Header>
                     <Content
                         style={{
-                            padding: 24,
+                            padding: "10px",
                             minHeight: 280,
                         }}
                     >

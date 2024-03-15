@@ -10,6 +10,7 @@ import {
     Menu,
     Row,
     Space,
+    Tooltip,
     Typography,
 } from "antd";
 import type { MenuProps } from "antd";
@@ -18,9 +19,13 @@ import { faCircle, faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
 
 import { Link, useNavigate } from "react-router-dom";
 import {
+    DollarCircleOutlined,
+    HomeOutlined,
     LoadingOutlined,
+    MobileOutlined,
     PoweroffOutlined,
     SettingOutlined,
+    UsergroupAddOutlined,
 } from "@ant-design/icons";
 import NavigationComponentsQuickAdd from "./NavigationComponents/NavigationComponentsQuickAdd";
 import NavigationComponentsCall from "./NavigationComponents/NavigationComponentsCall";
@@ -35,8 +40,6 @@ type NavigationProps = {
     title?: string; // Add this line to include the 'title' prop
 };
 const Navigation: React.FC<NavigationProps> = ({ title }) => {
-    const navigate = useNavigate();
-    const [searchKeyword, setSearchKey] = useState("");
     const { loggedInUser } = useAppContextProvider();
 
     const { isRoleStats } = useAppContextProvider();
@@ -181,8 +184,48 @@ const Navigation: React.FC<NavigationProps> = ({ title }) => {
                 justifyContent: "space-between",
             }}
         >
-            {/* Page title on the left */}
-            <Typography.Text strong>{title}</Typography.Text>
+            <Menu
+                theme="light"
+                mode="horizontal"
+                defaultSelectedKeys={["1"]}
+                items={[
+                    {
+                        key: "/dashboard",
+                        label: (
+                            <CustomLink
+                                to="/dashboard"
+                                tooltipTitle="Dashboard"
+                            >
+                                <HomeOutlined />
+                            </CustomLink>
+                        ),
+                    },
+                    {
+                        key: "/contacts",
+                        icon: (
+                            <CustomLink to="/contacts" tooltipTitle="Contacts">
+                                <UsergroupAddOutlined />
+                            </CustomLink>
+                        ),
+                    },
+                    {
+                        key: "/deals",
+                        icon: (
+                            <CustomLink to="/deals" tooltipTitle="Deals">
+                                <DollarCircleOutlined />
+                            </CustomLink>
+                        ),
+                    },
+                    {
+                        key: "/text-threads",
+                        icon: (
+                            <CustomLink to="/text-threads" tooltipTitle="Texts">
+                                <MobileOutlined />
+                            </CustomLink>
+                        ),
+                    },
+                ]}
+            />
 
             {/* Components on the right */}
             <Space wrap className="header-btn m-l-sm" size={20}>

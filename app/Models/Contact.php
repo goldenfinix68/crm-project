@@ -133,7 +133,7 @@ class Contact extends Model
         $phoneNumbers = $this->customFieldValues()
             ->join('custom_fields', 'custom_fields.id', '=', 'custom_field_values.customFieldId')
             ->whereIn('custom_fields.type', ['mobile', 'phone'])
-            ->whereNotNull('value')
+            ->where('value', '!=', "")
             ->pluck('value')
             ->toArray();
 
@@ -142,12 +142,12 @@ class Contact extends Model
 
     public function getDuplicatePhoneNumbersAttribute()
     {
-        return [];
+        // return [];
         
         $user = Auth::user();
 
         $uniquePhoneNumbers = $this->phoneNumbers;
-
+        
         $contacts = \App\Models\Contact::where('userId', $user->mainId)
             ->where('id', "!=", $this->id)
             ->whereHas('customFieldValues', function ($query) use ($uniquePhoneNumbers) {

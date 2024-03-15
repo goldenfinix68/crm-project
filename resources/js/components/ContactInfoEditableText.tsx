@@ -20,6 +20,7 @@ import { useMutation } from "react-query";
 import queryClient from "../queryClient";
 import ContactTypeTag from "./ContactTypeTag";
 import CustomFieldInput from "./CustomFieldInput";
+import TextEllipsis from "./TextEllipsis";
 
 interface ContactInfoEditableTextProps {
     record: any;
@@ -59,33 +60,33 @@ const ContactInfoEditableText = ({
         if (field.type == "contactTypeLookup") {
             return <ContactTypeTag fields={record} />;
         }
+        if (field.type == "url") {
+            return (
+                <a href={record[field.fieldName]} target="_blank">
+                    {record[field.fieldName]}
+                </a>
+            );
+        }
         return record[field.fieldName] ?? "_";
     };
 
     return (
         <div
-            className="cell cell-hover"
+            className="cell cell-hover w-100"
             style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                paddingLeft: "10px",
-                paddingRight: "1px",
-                borderRadius: "5px",
-                paddingTop: "0px",
-                paddingBottom: "0px",
-                width: "100%", // Set the width to 100%
                 overflow: "hidden",
             }}
         >
             {!isEditMode && (
                 <div
                     className="w-100"
-                    onClick={() => {
+                    onDoubleClick={() => {
                         setIsEditMode(true);
                     }}
                 >
-                    <Tooltip title={getLabel()}>{getLabel()}</Tooltip>
+                    <Tooltip title={getLabel()}>
+                        <TextEllipsis>{getLabel()}</TextEllipsis>
+                    </Tooltip>
                 </div>
             )}
 
