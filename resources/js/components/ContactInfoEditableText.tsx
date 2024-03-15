@@ -49,54 +49,93 @@ const ContactInfoEditableText = ({
     });
 
     const handleFinish = async (values) => {
-        await save.mutate({
-            customableId: record.contactId,
-            customableType: "contact",
-            fields: values,
-        });
+        if (form.isFieldsTouched(true)) {
+            await save.mutate({
+                customableId: record.contactId,
+                customableType: "contact",
+                fields: values,
+            });
+        }
     };
 
     const getLabel = () => {
         if (field.type == "contactTypeLookup") {
             return <ContactTypeTag fields={record} />;
         }
-        if (field.type == "url") {
+        if (field.type == "url" && record[field.fieldName]) {
             return (
-                <a href={record[field.fieldName]} target="_blank">
+                <a
+                    href={record[field.fieldName]}
+                    target="_blank"
+                    style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                    }}
+                >
                     {record[field.fieldName]}
                 </a>
             );
         }
-        return record[field.fieldName] ?? "_";
+        return record[field.fieldName] ? record[field.fieldName] : "_";
     };
 
     return (
         <div
             className="cell cell-hover w-100"
             style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: "100%",
+                whiteSpace: "nowrap",
                 overflow: "hidden",
             }}
         >
-            {!isEditMode && (
-                <div
-                    className="w-100"
-                    onDoubleClick={() => {
-                        setIsEditMode(true);
-                    }}
-                >
-                    <Tooltip title={getLabel()}>
-                        <TextEllipsis>{getLabel()}</TextEllipsis>
-                    </Tooltip>
-                </div>
-            )}
+            {!isEditMode &&
+                (field.type == "url" ? (
+                    <>
+                        <div
+                            style={{
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                width: "70%",
+                            }}
+                        >
+                            {getLabel()}
+                        </div>
+                        <EditOutlined
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                                message.error("Cannot edit default section");
+                            }}
+                        />
+                    </>
+                ) : (
+                    <div
+                        onDoubleClick={() => {
+                            setIsEditMode(true);
+                        }}
+                        style={{ width: "50%" }}
+                    >
+                        <Tooltip title={getLabel()}>
+                            <TextEllipsis>{getLabel()}</TextEllipsis>
+                        </Tooltip>
+                    </div>
+                ))}
 
             {isEditMode && (
                 <div
                     onBlur={() => {
-                        setIsEditMode(false);
                         form.submit();
+                        setIsEditMode(false);
                     }}
-                    style={{ width: "100%", margin: "0 auto" }}
+                    style={{
+                        width: "50%",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                    }}
                 >
                     <Form
                         form={form}

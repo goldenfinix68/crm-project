@@ -158,7 +158,7 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
     };
 
     return (
-        <Card style={{ width: "100%" }}>
+        <Card style={{ width: "100%", overflow: "hidden" }}>
             <Space direction="vertical" style={{ width: "100%" }} size="large">
                 <Row>
                     <Col span={12}>
