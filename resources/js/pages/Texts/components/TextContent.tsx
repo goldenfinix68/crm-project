@@ -11,6 +11,7 @@ import CustomFieldFormModal from "../../../components/CustomFieldFormModal";
 import ModalAddExistingNumberContact from "../../../components/ModalAddExistingNumberContact";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTextThread } from "../../../api/query/textQuery";
+import CustomLink from "../../../components/CustomLink";
 // import AssignLabelDropdown from "./AssignLabelDropdown";
 
 const TextContent = ({ menu }: { menu: string }) => {
@@ -111,9 +112,19 @@ const TextContent = ({ menu }: { menu: string }) => {
                             }}
                         >
                             <Space direction="vertical" size={0}>
-                                <Typography.Text strong>
-                                    {thread?.contactName}
-                                </Typography.Text>
+                                {thread?.contact?.id ? (
+                                    <CustomLink
+                                        to={"/contacts/" + thread?.contact?.id}
+                                    >
+                                        <Typography.Text strong>
+                                            {thread?.contactName}
+                                        </Typography.Text>
+                                    </CustomLink>
+                                ) : (
+                                    <Typography.Text strong>
+                                        {thread?.contactName}
+                                    </Typography.Text>
+                                )}
                                 <Typography.Text>
                                     {thread?.phoneNumbers}
                                 </Typography.Text>

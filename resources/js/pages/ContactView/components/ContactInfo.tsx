@@ -41,6 +41,7 @@ import TextEllipsis from "../../../components/TextEllipsis";
 import CustomFieldFormModal from "../../../components/CustomFieldFormModal";
 import ContactInfoEditableText from "../../../components/ContactInfoEditableText";
 import { useCustomFields } from "../../../api/query/customFieldQuery";
+import CustomLink from "../../../components/CustomLink";
 
 const ContactInfo = ({ contact }: { contact: TContact }) => {
     const navigate = useNavigate();
@@ -256,11 +257,13 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                     <Badge count={1} offset={[-8, 8]} showZero>
                         <AvatarWithPopover />
                     </Badge>
-                    <Typography.Title level={5}>
-                        {contact.fields.firstName +
-                            " " +
-                            contact.fields.lastName}
-                    </Typography.Title>
+                    <CustomLink to={"/contacts/" + contact.id}>
+                        <Typography.Title level={5}>
+                            {contact.fields.firstName +
+                                " " +
+                                contact.fields.lastName}
+                        </Typography.Title>
+                    </CustomLink>
                 </Space>
 
                 {contact.duplicatePhoneNumbers?.length ? (
