@@ -58,6 +58,8 @@ export type TTextTemplate = {
 };
 
 export type TCallHistory = {
+    isToApp: any;
+    url_recording: string;
     telnyxCallSessionId: string;
     recording_url?: string;
     isAnswered: boolean;

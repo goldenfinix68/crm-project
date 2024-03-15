@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, DatePicker, Space, Table } from "antd";
+import { Button, DatePicker, Space, Table, Tooltip } from "antd";
 import type { ColumnsType, TableProps } from "antd/es/table";
 import { TCallHistory, TUser } from "../../../entities";
 import { Link } from "react-router-dom";
@@ -43,53 +43,104 @@ const CallLogsTable = () => {
             title: "Duration",
             key: "duration",
             render: (_: any, record: TCallHistory) => {
-                return record.duration + " secs";
+                return record.duration;
             },
         },
         {
             title: "Type",
             key: "type",
-            render: (_: any, record: TCallHistory) => {
-                return record.isFromApp ? "Outbound" : "Inbound";
-            },
+            dataIndex: "type",
         },
         {
             title: "Outcome",
             dataIndex: "outcome",
+            key: "outcome",
+        },
+        {
+            title: "From",
+            // dataIndex: "from",
+            key: "from",
             render: (_: any, record: TCallHistory) => {
-                return record.isAnswered ? "Connected" : "No Answer";
+                if (record.isFromApp) {
+                    return <div>{record.from}</div>;
+                } else {
+                    return (
+                        <div>
+                            <Tooltip title={record.from}>
+                                <span>Not saved</span>
+                            </Tooltip>
+                        </div>
+                    );
+                }
             },
         },
         {
-            title: "Contact",
-            key: "contact",
+            title: "To",
+            // dataIndex: "to",
+            key: "to",
             render: (_: any, record: TCallHistory) => {
-                const contactNumber = record.isFromApp
-                    ? record.to
-                    : record.from;
-                return contactNumber == record.contactName
-                    ? "Not saved"
-                    : record.contactName;
+                if (record.isToApp) {
+                    return <div>{record.to}</div>;
+                } else {
+                    return (
+                        <div>
+                            <Tooltip title={record.to}>
+                                <span>Not saved</span>
+                            </Tooltip>
+                        </div>
+                    );
+                }
             },
         },
+        // {
+        //     title: "Contact",
+        //     key: "contact",
+        //     render: (_: any, record: TCallHistory) => {
+        //         const contactNumber = record.isFromApp
+        //             ? record.to
+        //             : record.from;
+        //         return contactNumber == record.contactName
+        //             ? "Not saved"
+        //             : record.contactName;
+        //     },
+        // },
+        // {
+        //     title: "Contact Number",
+        //     key: "contact_number",
+        //     render: (_: any, record: TCallHistory) => {
+        //         return record.isFromApp ? record.to : record.from;
+        //     },
+        // },
+        // {
+        //     title: "SM Number",
+        //     key: "sm_number",
+        //     render: (_: any, record: TCallHistory) => {
+        //         return record.isFromApp ? record.from : record.to;
+        //     },
+        // },
+        // {
+        //     title: "User",
+        //     dataIndex: "userName",
+        //     key: "user",
+        // },
         {
-            title: "Contact Number",
-            key: "contact_number",
+            title: "Call Recording",
+            // dataIndex: "url_recording",
+            key: "url_recording",
             render: (_: any, record: TCallHistory) => {
-                return record.isFromApp ? record.to : record.from;
+                // play audio for record.url_recording
+                console.log(record);
+                let url: any = record.recording_url;
+                url = url.split(",");
+                url = url[0];
+                url = url.replace("playAudio('", "");
+                console.log("url", url);
+                return (
+                    <div style={{ padding: 10 }}>
+                        <audio src={url} controls />
+                    </div>
+                );
             },
-        },
-        {
-            title: "SM Number",
-            key: "sm_number",
-            render: (_: any, record: TCallHistory) => {
-                return record.isFromApp ? record.from : record.to;
-            },
-        },
-        {
-            title: "User",
-            dataIndex: "userName",
-            key: "user",
         },
     ];
     const rangePresets: TimeRangePickerProps["presets"] = [
