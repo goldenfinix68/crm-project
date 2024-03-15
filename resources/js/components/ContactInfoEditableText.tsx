@@ -9,6 +9,9 @@ import {
     Space,
     message,
     Tooltip,
+    Row,
+    Col,
+    Typography,
 } from "antd";
 
 import React from "react";
@@ -35,6 +38,7 @@ const ContactInfoEditableText = ({
 }: ContactInfoEditableTextProps) => {
     const [form] = Form.useForm();
     const [isEditMode, setIsEditMode] = React.useState(false);
+    const [isHovered, setIsHovered] = React.useState(false);
 
     const save = useMutation(saveCustomFieldValuesMutation, {
         onSuccess: () => {
@@ -64,15 +68,7 @@ const ContactInfoEditableText = ({
         }
         if (field.type == "url" && record[field.fieldName]) {
             return (
-                <a
-                    href={record[field.fieldName]}
-                    target="_blank"
-                    style={{
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                    }}
-                >
+                <a href={record[field.fieldName]} target="_blank">
                     {record[field.fieldName]}
                 </a>
             );
@@ -82,42 +78,60 @@ const ContactInfoEditableText = ({
 
     return (
         <div
-            className="cell cell-hover w-100"
+            className=""
             style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: "100%",
+                maxWidth: "100%",
                 whiteSpace: "nowrap",
                 overflow: "hidden",
+                textOverflow: "ellipsis",
             }}
         >
             {!isEditMode &&
-                (field.type == "url" ? (
-                    <>
-                        <div
-                            style={{
-                                whiteSpace: "nowrap",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                width: "70%",
-                            }}
-                        >
-                            {getLabel()}
-                        </div>
-                        <EditOutlined
-                            style={{ cursor: "pointer" }}
-                            onClick={() => {
-                                message.error("Cannot edit default section");
-                            }}
-                        />
-                    </>
+                (field.type == "url" && record[field.fieldName] ? (
+                    <div
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}
+                    >
+                        {isHovered && (
+                            <EditOutlined
+                                className="p-r-xs"
+                                style={{
+                                    cursor: "pointer",
+                                }}
+                                onClick={() => setIsEditMode(true)}
+                            />
+                        )}
+                        {getLabel()}
+                    </div>
                 ) : (
+                    // <Row
+                    //     align="middle"
+                    //     onMouseEnter={() => setIsHovered(true)}
+                    //     onMouseLeave={() => setIsHovered(false)}
+                    //     gutter={0}
+                    // >
+                    //     {isHovered && (
+                    //         <Col span={4}>
+                    //             <EditOutlined
+                    //                 style={{
+                    //                     cursor: "pointer",
+                    //                 }}
+                    //                 onClick={() => setIsEditMode(true)}
+                    //             />
+                    //         </Col>
+                    //     )}
+                    //     <Col
+                    //         flex="auto"
+                    //         span={isHovered ? 20 : 24}
+                    //         style={{ overflow: "hidden", width: "100%" }}
+                    //     >
+                    //         {getLabel()}
+                    //     </Col>
+                    // </Row>
                     <div
                         onDoubleClick={() => {
                             setIsEditMode(true);
                         }}
-                        style={{ width: "50%" }}
                     >
                         <Tooltip title={getLabel()}>
                             <TextEllipsis>{getLabel()}</TextEllipsis>
@@ -130,11 +144,12 @@ const ContactInfoEditableText = ({
                     onBlur={() => {
                         form.submit();
                         setIsEditMode(false);
+                        setIsHovered(false);
                     }}
                     style={{
-                        width: "50%",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
+                        width: field.type == "url" ? "100%" : "50%",
                     }}
                 >
                     <Form

@@ -158,8 +158,21 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
     };
 
     return (
-        <Card style={{ width: "100%", overflow: "hidden" }}>
-            <Space direction="vertical" style={{ width: "100%" }} size="large">
+        <Card
+            style={{
+                width: "100%",
+                overflow: "hidden",
+            }}
+        >
+            <Space
+                direction="vertical"
+                style={{
+                    width: "100%",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                }}
+                size="large"
+            >
                 <Row>
                     <Col span={12}>
                         <Dropdown
@@ -286,24 +299,7 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                         type="warning"
                     />
                 ) : null}
-                {/* <DropdownComponent
-                    menuList={actionMenuList}
-                    label={
-                        <Space>
-                            <Avatar
-                                style={{
-                                    backgroundColor: "#C0CA33",
-                                    verticalAlign: "middle",
-                                }}
-                                size={20}
-                            >
-                                J
-                            </Avatar>
-                            <Typography.Text>Jesse Ashley</Typography.Text>
-                        </Space>
-                    }
-                    disabled={isRoleStats}
-                /> */}
+
                 <ActionMenu contact={contact} />
 
                 <Space
@@ -349,6 +345,7 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                     />
                 </Table>
             </Space>
+
             {isEditContactModalOpen && (
                 <CustomFieldFormModal
                     isModalOpen={isEditContactModalOpen}
