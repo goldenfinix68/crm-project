@@ -17,7 +17,8 @@ export const useContactTypesAll = () => {
                 },
             });
             return response.data;
-        }
+        },
+        { staleTime: Infinity }
     );
 
     return {
@@ -42,6 +43,7 @@ export const useGetContact = (
             return response.data;
         },
         {
+            staleTime: Infinity,
             onSuccess: (data) => {
                 if (onSuccess) {
                     onSuccess(data);
@@ -69,7 +71,8 @@ export const useContactsAll = (filter?: any) => {
                 },
             });
             return response.data.data;
-        }
+        },
+        { staleTime: Infinity }
     );
 
     return {
@@ -94,7 +97,8 @@ export const useContactsTableColumn = () => {
                 }
             );
             return response.data;
-        }
+        },
+        { staleTime: Infinity }
     );
 
     return {
@@ -117,7 +121,8 @@ export const filteredContactsQuery = (values: any) => {
                 body: JSON.stringify(values),
             });
             return response.data;
-        }
+        },
+        { staleTime: Infinity }
     );
 
     return {

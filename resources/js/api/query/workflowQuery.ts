@@ -16,7 +16,8 @@ export const useWorkflowsQuery = () => {
                 },
             });
             return response.data;
-        }
+        },
+        { staleTime: Infinity }
     );
 
     return {

@@ -56,6 +56,7 @@ export const mutateGet = (
             return response.data;
         },
         {
+            staleTime: Infinity,
             onSuccess: (data) => {
                 if (onSuccess) {
                     onSuccess();

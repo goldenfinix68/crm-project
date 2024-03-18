@@ -16,7 +16,8 @@ export const gSheetCrawlResults = () => {
                 },
             });
             return response.data;
-        }
+        },
+        { staleTime: Infinity }
     );
 
     return {
@@ -40,7 +41,8 @@ export const gSheetCrawl = () => {
                 },
             });
             return response.data;
-        }
+        },
+        { staleTime: Infinity }
     );
 
     return {

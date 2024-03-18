@@ -1,6 +1,4 @@
 import React from "react";
-import { Route, useNavigate } from "react-router-dom";
-import { useLoggedInUser } from "../api/query/userQuery";
 import { CaretDownFilled } from "@ant-design/icons";
 import { Dropdown, Menu, Typography } from "antd";
 

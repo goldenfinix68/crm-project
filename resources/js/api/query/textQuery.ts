@@ -10,18 +10,22 @@ import {
 } from "../../entities";
 
 export const useTexts = () => {
-    const { data, isLoading } = useQuery<TText[]>("texts", async () => {
-        const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
-        const response = await axios.get("/api/texts", {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                // data: {
-                //     id: 1,
-                // },
-            },
-        });
-        return response.data;
-    });
+    const { data, isLoading } = useQuery<TText[]>(
+        "texts",
+        async () => {
+            const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+            const response = await axios.get("/api/texts", {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    // data: {
+                    //     id: 1,
+                    // },
+                },
+            });
+            return response.data;
+        },
+        { staleTime: Infinity }
+    );
 
     return {
         texts: data,
@@ -43,7 +47,8 @@ export const useTextLabels = () => {
                 },
             });
             return response.data;
-        }
+        },
+        { staleTime: Infinity }
     );
 
     return {
@@ -66,6 +71,7 @@ export const useTextThreads = (params: any, onSuccess?: () => void) => {
             return response.data;
         },
         {
+            staleTime: Infinity,
             onSuccess: () => {
                 if (onSuccess) {
                     onSuccess();
@@ -105,6 +111,7 @@ export const useTextThread = (
             }
         },
         {
+            staleTime: Infinity,
             onSuccess: (data) => {
                 if (onSuccess) {
                     onSuccess(data);
