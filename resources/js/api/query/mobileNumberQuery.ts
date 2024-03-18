@@ -16,7 +16,8 @@ export const useMobileNumbersQuery = () => {
                 },
             });
             return response.data;
-        }
+        },
+        { staleTime: Infinity }
     );
 
     return {

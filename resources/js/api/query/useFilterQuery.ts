@@ -16,7 +16,8 @@ export const filtersQuery = () => {
                 },
             });
             return response.data;
-        }
+        },
+        { staleTime: Infinity }
     );
 
     return {

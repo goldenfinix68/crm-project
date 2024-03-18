@@ -16,7 +16,8 @@ export const useDealsAll = (url: any) => {
                 }
             );
             return response.data;
-        }
+        },
+        { staleTime: Infinity }
     );
 
     return {
@@ -34,15 +35,19 @@ export const usefindDeal = (id: string) => {
             isLoading: false,
         };
     }
-    const { data, isLoading, isError } = useQuery("findDeal", async () => {
-        const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
-        const response = await axios.get(`/api/deals/${id}`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        });
-        return response.data;
-    });
+    const { data, isLoading, isError } = useQuery(
+        "findDeal",
+        async () => {
+            const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+            const response = await axios.get(`/api/deals/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            return response.data;
+        },
+        { staleTime: Infinity }
+    );
 
     return {
         deal: data,
@@ -62,7 +67,8 @@ export const useDealsByid = (id: string) => {
                 },
             });
             return response.data;
-        }
+        },
+        { staleTime: Infinity }
     );
 
     return {
@@ -84,7 +90,8 @@ export const dealPipelines = () => {
                 },
             });
             return response.data;
-        }
+        },
+        { staleTime: Infinity }
     );
 
     return {

@@ -1,12 +1,9 @@
-import React, { useContext } from "react";
-import { useLoggedInUser } from "../api/query/userQuery";
+import React from "react";
 import { Space, List, Typography, Popover, Button } from "antd";
 import { useTextTemplates } from "../api/query/textTemplateQuery";
 import { replacePlaceholders } from "../helpers";
-import ContactContext from "../pages/ContactView/context";
 import Search from "antd/es/input/Search";
 import LoadingComponent from "./LoadingComponent";
-import { TContact } from "../entities";
 
 const UseTemplatePopover = ({
     handleSelect,

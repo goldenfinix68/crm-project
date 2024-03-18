@@ -16,7 +16,8 @@ export const useTextTemplateFolders = () => {
                 },
             });
             return response.data;
-        }
+        },
+        { staleTime: Infinity }
     );
 
     return {
@@ -40,7 +41,8 @@ export const useTextTemplates = () => {
                 },
             });
             return response.data;
-        }
+        },
+        { staleTime: Infinity }
     );
 
     return {
