@@ -203,17 +203,17 @@ class Contact extends Model
         if (empty($this->phoneNumbers)) {
             return [];
         }
+        \Log::info('phoneNumbers');
+        \Log::info($this->phoneNumbers);
         $data = [];
         $calls = Call::select('*')
-        ->whereIn('id', function($query) {
-            $query->select(DB::raw('MAX(id)'))
-                ->from('calls')
-                ->whereIn('to', $this->phoneNumbers)
-                ->orWhereIn('from', $this->phoneNumbers)
-                ->groupBy('telnyxCallSessionId');
-        })
-        ->orderBy('id', 'desc')
-        ->get();
+            ->whereIn(\DB::raw("REPLACE(REPLACE(REPLACE(`to`,'+',''),' ',''),'-','')"), $this->phoneNumbers)
+            ->orWhereIn(\DB::raw("REPLACE(REPLACE(REPLACE(`from`,'+',''),' ',''),'-','')"), $this->phoneNumbers)
+            ->orderBy('id', 'desc');
+        // \Log::info($calls->toSql());
+        $calls = $calls->get();
+        // \Log::info('calls');
+        // \Log::info($calls);
         $callsController = new CallsController();
 
         foreach($calls as $call){
