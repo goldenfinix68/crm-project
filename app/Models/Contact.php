@@ -207,8 +207,8 @@ class Contact extends Model
         \Log::info($this->phoneNumbers);
         $data = [];
         $calls = Call::select('*')
-            ->whereIn(\DB::raw("REPLACE(REPLACE(REPLACE(`to`,'+',''),' ',''),'-','')"), $this->phoneNumbers)
-            ->orWhereIn(\DB::raw("REPLACE(REPLACE(REPLACE(`from`,'+',''),' ',''),'-','')"), $this->phoneNumbers)
+            ->whereIn('to', $this->phoneNumbers)
+            ->orWhereIn('from', $this->phoneNumbers)
             ->orderBy('id', 'desc');
         // \Log::info($calls->toSql());
         $calls = $calls->get();

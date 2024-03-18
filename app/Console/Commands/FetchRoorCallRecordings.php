@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
+use App\Services\MobileNumberService;
+
 class FetchRoorCallRecordings extends Command
 {
     /**
@@ -69,17 +71,19 @@ class FetchRoorCallRecordings extends Command
             // Decode the response
             $data = json_decode($response, true);
 
-
+            
             \Log::info($data);
             // Loop through the response and save each call recording to the database
             foreach ($data as $call) {
+                $from = MobileNumberService::formatPhoneNumber($call['from']);
+                $to = MobileNumberService::formatPhoneNumber($call['to']);
                 $call = \App\Models\Call::updateOrCreate([
-                    'from' => $call['from'],
-                    'to' => $call['to'],
+                    'from' => $from,
+                    'to' => $to,
                     'call_received_date' => $call['call_received_date'],
                 ],[
-                    'from' => $call['from'],
-                    'to' => $call['to'],
+                    'from' => $from,
+                    'to' => $to,
                     'url_recording' => $call['url_recording'],
                     'status' => $call['status'],
                     'disposition' => $call['disposition'],
