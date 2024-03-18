@@ -35,6 +35,7 @@ export type TNote = {
     id?: string;
     contactId: string;
     notes: string;
+    user: TUser;
 };
 
 export type TTextTemplateFolder = {

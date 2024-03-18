@@ -14,5 +14,11 @@ class Note extends Model
     protected $fillable = [
         'contactId',
         'notes',
+        'userId',
     ];
+    
+    public function user()
+    {
+        return $this->belongsTo('\App\Models\User', 'userId', 'id');
+    }
 }

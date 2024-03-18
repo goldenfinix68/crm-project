@@ -181,7 +181,7 @@ class Contact extends Model
 
     public function notes()
     {
-        return $this->hasMany(\App\Models\Note::class, 'contactId', 'id');
+        return $this->hasMany(\App\Models\Note::class, 'contactId', 'id')->with(['user']);
     }
 
     public function texts()

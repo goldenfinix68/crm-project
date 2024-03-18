@@ -5,6 +5,7 @@ import {
     CaretDownOutlined,
     CaretUpOutlined,
     ClockCircleOutlined,
+    CloseCircleOutlined,
     DeleteOutlined,
     DownloadOutlined,
     InfoCircleOutlined,
@@ -24,6 +25,7 @@ import {
     Divider,
     Empty,
     Menu,
+    Popconfirm,
     Popover,
     Row,
     Space,
@@ -38,6 +40,9 @@ import { TNote, TUser, TWallData } from "../../../entities";
 import { useLoggedInUser } from "../../../api/query/userQuery";
 import moment from "moment";
 import CustomLink from "../../../components/CustomLink";
+import { useMutation } from "react-query";
+import { deleteNoteMutation } from "../../../api/mutation/useNoteMutation";
+import queryClient from "../../../queryClient";
 
 const ContactsWall = () => {
     const { contact } = useContext(ContactContext);
@@ -139,7 +144,7 @@ const ContactsWall = () => {
 
     const feedBox = (data: TWallData) => {
         if (data.type === "note") {
-            return <NoteBox data={data} user={user!} />;
+            return <NoteBox data={data} />;
         } else if (data.type === "text") {
             return <TextBox data={data} user={user!} />;
         } else if (data.type === "deal") {
@@ -238,7 +243,7 @@ const ContactsWall = () => {
     );
 };
 
-const NoteBox = ({ data, user }: { data: TWallData; user: TUser }) => {
+const NoteBox = ({ data }: { data: TWallData }) => {
     const [expanded, setExpanded] = React.useState(false);
     const contentRef = useRef<HTMLDivElement>(null);
     const [divHeight, setDivHeight] = React.useState(0);
@@ -248,6 +253,18 @@ const NoteBox = ({ data, user }: { data: TWallData; user: TUser }) => {
         setDivHeight(contentRef?.current?.getBoundingClientRect().height ?? 0);
         setActualContentHeight(contentRef?.current?.scrollHeight ?? 0);
     }, [data.note?.notes, expanded]);
+
+    const deleteTemplate = useMutation(
+        (id: string) => deleteNoteMutation(data.note?.id!),
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries("getContact");
+            },
+            onError: (e: any) => {
+                console.log(e.message || "An error occurred");
+            },
+        }
+    );
 
     // Helper function to get the card content
     const getCardContent = () => {
@@ -290,9 +307,37 @@ const NoteBox = ({ data, user }: { data: TWallData; user: TUser }) => {
     };
     return (
         <Card
-            title={<Typography.Text>Note Added - by Jesse</Typography.Text>}
+            title={
+                <Typography.Text>
+                    Note Added - by{" "}
+                    {data.note?.user.firstName + " " + data.note?.user.lastName}
+                </Typography.Text>
+            }
             bordered={false}
-            extra={moment.utc(data.date).local().format("MMM DD")}
+            extra={
+                <Space size={0}>
+                    {moment.utc(data.date).local().format("MMM DD")}{" "}
+                    <Popconfirm
+                        title="Delete"
+                        description="Are you sure to delete this note?"
+                        onConfirm={() => {
+                            deleteTemplate.mutate(data.note?.id!);
+                        }}
+                        // onCancel={cancel}
+                        okText="Yes"
+                        cancelText="No"
+                    >
+                        <Button
+                            className="p-0"
+                            type="text"
+                            icon={
+                                <CloseCircleOutlined style={{ color: "red" }} />
+                            }
+                            loading={deleteTemplate.isLoading}
+                        />
+                    </Popconfirm>
+                </Space>
+            }
             // Set the height to 300px when not expanded
             style={{
                 height: expanded || divHeight < 300 ? "auto" : 300,

@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Note;
 
+use Auth;
+
 class NotesController extends Controller
 {
     /**
@@ -37,12 +39,16 @@ class NotesController extends Controller
      */
     public function store(Request $request)
     {
+        $userId = Auth::id();
+
         $validator = Validator::make($request->all(), [
             'contactId' => 'required',
             'note' => 'required',
         ]);
         
-        $note = Note::create($request->all());
+        $note = Note::create(array_merge($request->all(), [
+            'userId' => $userId, 
+        ]));
         
         return response()->json($note, 200);
     }
@@ -89,6 +95,6 @@ class NotesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return Note::find($id)->delete();
     }
 }
