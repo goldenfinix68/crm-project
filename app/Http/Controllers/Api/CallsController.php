@@ -28,10 +28,6 @@ class CallsController extends Controller
     {
         $data = [];
         $calls = Call::select('*')
-            ->whereIn('id', function($query) {
-                $query->select(DB::raw('MAX(id)'))
-                    ->from('calls');
-            })
             ->orderBy('id', 'desc')
             ->get();
 
