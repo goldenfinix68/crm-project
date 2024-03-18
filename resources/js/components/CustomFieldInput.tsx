@@ -30,7 +30,6 @@ const CustomFieldInput = ({
     showLabel?: boolean;
     isSelectOptionsOpen?: boolean;
 }) => {
-    const { contacts } = useAppContextProvider();
     const { users, isLoading } = useUsersAll();
     const { contactTypes, isLoading: isContactTypeLoading } =
         useContactTypesAll();

@@ -41,6 +41,7 @@ import TextEllipsis from "../../../components/TextEllipsis";
 import CustomFieldFormModal from "../../../components/CustomFieldFormModal";
 import ContactInfoEditableText from "../../../components/ContactInfoEditableText";
 import { useCustomFields } from "../../../api/query/customFieldQuery";
+import CustomLink from "../../../components/CustomLink";
 
 const ContactInfo = ({ contact }: { contact: TContact }) => {
     const navigate = useNavigate();
@@ -157,8 +158,21 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
     };
 
     return (
-        <Card style={{ width: "100%" }}>
-            <Space direction="vertical" style={{ width: "100%" }} size="large">
+        <Card
+            style={{
+                width: "100%",
+                overflow: "hidden",
+            }}
+        >
+            <Space
+                direction="vertical"
+                style={{
+                    width: "100%",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                }}
+                size="large"
+            >
                 <Row>
                     <Col span={12}>
                         <Dropdown
@@ -256,11 +270,13 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                     <Badge count={1} offset={[-8, 8]} showZero>
                         <AvatarWithPopover />
                     </Badge>
-                    <Typography.Title level={5}>
-                        {contact.fields.firstName +
-                            " " +
-                            contact.fields.lastName}
-                    </Typography.Title>
+                    <CustomLink to={"/contacts/" + contact.id}>
+                        <Typography.Title level={5}>
+                            {contact.fields.firstName +
+                                " " +
+                                contact.fields.lastName}
+                        </Typography.Title>
+                    </CustomLink>
                 </Space>
 
                 {contact.duplicatePhoneNumbers?.length ? (
@@ -283,24 +299,7 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                         type="warning"
                     />
                 ) : null}
-                {/* <DropdownComponent
-                    menuList={actionMenuList}
-                    label={
-                        <Space>
-                            <Avatar
-                                style={{
-                                    backgroundColor: "#C0CA33",
-                                    verticalAlign: "middle",
-                                }}
-                                size={20}
-                            >
-                                J
-                            </Avatar>
-                            <Typography.Text>Jesse Ashley</Typography.Text>
-                        </Space>
-                    }
-                    disabled={isRoleStats}
-                /> */}
+
                 <ActionMenu contact={contact} />
 
                 <Space
@@ -346,6 +345,7 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                     />
                 </Table>
             </Space>
+
             {isEditContactModalOpen && (
                 <CustomFieldFormModal
                     isModalOpen={isEditContactModalOpen}

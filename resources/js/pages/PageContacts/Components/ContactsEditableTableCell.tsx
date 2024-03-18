@@ -1,16 +1,4 @@
-import { faPen } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    Avatar,
-    Button,
-    Form,
-    Input,
-    Popconfirm,
-    Space,
-    message,
-    Tooltip,
-    Select,
-} from "antd";
+import { Form, Popconfirm, Space, message, Tooltip, Select } from "antd";
 
 import React, { useState } from "react";
 import CustomFieldInput from "../../../components/CustomFieldInput";
@@ -18,11 +6,8 @@ import { saveCustomFieldValuesMutation } from "../../../api/mutation/useCustomFi
 import { useMutation } from "react-query";
 import queryClient from "../../../queryClient";
 import { TCustomField } from "../../../entities";
-import { Link } from "react-router-dom";
 import ContactTypeTag from "../../../components/ContactTypeTag";
-import { useAppContextProvider } from "../../../context/AppContext";
 import { EditOutlined } from "@ant-design/icons";
-import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
 
 interface ContactsEditableTableCellProps {
     record: any;
