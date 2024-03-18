@@ -440,7 +440,7 @@ const Log = ({ data, user }: { data: TWallData; user: TUser }) => {
     );
 };
 const Activities = ({ data, user }: { data: TWallData; user: TUser }) => {
-    // console.log("data", data);
+    console.log("data activities", data);
     return (
         <Card
             title={
@@ -595,6 +595,7 @@ const CallBox = ({ data, user }: { data: TWallData; user: TUser }) => {
     };
 
     useEffect(() => {
+        console.log("data", data);
         if (audioRef.current) {
             audioRef.current.addEventListener("timeupdate", handleTimeUpdate);
             return () => {
@@ -606,14 +607,18 @@ const CallBox = ({ data, user }: { data: TWallData; user: TUser }) => {
         }
     }, []);
 
+    const capFirstLetter = (word) => {
+        return word.charAt(0).toUpperCase() + word.slice(1);
+    };
+
     return (
         <Card
             title={
                 <Typography.Text>
                     Call{" "}
                     {data.call?.isFromApp
-                        ? `by ${data.call?.userName}`
-                        : `for ${data.call?.userName}`}
+                        ? `by ${data.call?.contactNameFrom}`
+                        : `for ${data.call?.contactNameTo}`}
                 </Typography.Text>
             }
             bordered={false}
@@ -639,8 +644,7 @@ const CallBox = ({ data, user }: { data: TWallData; user: TUser }) => {
                         <ClockCircleOutlined /> {data.call?.duration}
                     </Typography.Text>
                     <Typography.Text>
-                        Outcome:{" "}
-                        {data.call?.isAnswered ? "Connected" : "No Answer"}
+                        Outcome: {capFirstLetter(data.call?.outcome)}
                     </Typography.Text>
                 </Space>
                 {data.call?.recording_url ? (

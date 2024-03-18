@@ -58,6 +58,8 @@ export type TTextTemplate = {
 };
 
 export type TCallHistory = {
+    contactNameFrom: string;
+    contactNameTo: string;
     isToApp: any;
     url_recording: string;
     telnyxCallSessionId: string;
@@ -70,6 +72,7 @@ export type TCallHistory = {
     duration: string;
     from: string;
     to: string;
+    outcome: string;
 };
 
 export type TText = {
