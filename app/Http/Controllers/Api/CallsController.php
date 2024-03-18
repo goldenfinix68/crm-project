@@ -28,10 +28,6 @@ class CallsController extends Controller
     {
         $data = [];
         $calls = Call::select('*')
-            ->whereIn('id', function($query) {
-                $query->select(DB::raw('MAX(id)'))
-                    ->from('calls');
-            })
             ->orderBy('id', 'desc')
             ->get();
 
@@ -45,13 +41,6 @@ class CallsController extends Controller
     public function prepareCall ($call) {
         $from = $call->from;
         $to = $call->to;
-        $from = str_replace('+', '', $from);
-        $from = str_replace(' ', '', $from);
-        $from = str_replace('-', '', $from);
-
-        $to = str_replace('+', '', $to);
-        $to = str_replace(' ', '', $to);
-        $to = str_replace('-', '', $to);
         $isFromApp = MobileNumber::where('mobileNumber', $from)->with('user')->first();
         $isToApp = MobileNumber::where('mobileNumber', $to)->with('user')->first();
         $contactNameFrom = "Not saved";
