@@ -31,6 +31,8 @@ class Controller extends BaseController
 
     public function getContactByMobile($mobile) {
         $mobile = str_replace('+', '', $mobile);
+        $mobile = str_replace(' ', '', $mobile);
+        $mobile = str_replace('-', '', $mobile);
         $fieldValue = CustomFieldValue::with(['customField'])
                 ->where(DB::raw("REPLACE(`value`, '+', '')"), $mobile)
                 ->where('customableType', 'contact')

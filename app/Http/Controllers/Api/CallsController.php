@@ -54,6 +54,25 @@ class CallsController extends Controller
         $to = str_replace('-', '', $to);
         $isFromApp = MobileNumber::where('mobileNumber', $from)->with('user')->first();
         $isToApp = MobileNumber::where('mobileNumber', $to)->with('user')->first();
+        $contactNameFrom = "Not saved";
+        $contactNameTo = "Not saved";
+        if(empty($isFromApp)) {
+            $contact = $this->getContactByMobile($from);
+            if(!empty($contact)) {
+                $contactNameFrom = $contact->fields['firstName'] . ' ' . $contact->fields['lastName'];
+            }
+        } else {
+            $contactNameFrom = $isFromApp->user->fullName;
+        }
+        if(empty($isToApp)) {
+            $contact = $this->getContactByMobile($to);
+            if(!empty($contact)) {
+                $contactNameTo = $contact->fields['firstName'] . ' ' . $contact->fields['lastName'];
+            }
+           
+        } else {
+            $contactNameTo = $isToApp->user->fullName;
+        }
         
 
         return [
@@ -62,11 +81,15 @@ class CallsController extends Controller
             'type' => $call->type,
             'isFromApp' => $isFromApp,
             'isToApp' => $isToApp,
-            'from' => !empty($isFromApp) ? $isFromApp->user->fullName : $call->from,
-            'to' => !empty($isToApp) ? $isToApp->user->fullName : $call->to,
+            'from' => $call->from,
+            'to' => $call->to,
             'duration' => $call->duration,
             'outcome' => $call->status,
             'recording_url' => $call->url_recording ?? "",
+            'from_formatted' => $from,
+            'to_formatted' => $to,
+            'contactNameFrom' => $contactNameFrom,
+            'contactNameTo' => $contactNameTo,
         ];
     }
 

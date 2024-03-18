@@ -61,8 +61,8 @@ const CallLogsTable = () => {
             // dataIndex: "from",
             key: "from",
             render: (_: any, record: TCallHistory) => {
-                if (record.isFromApp) {
-                    return <div>{record.from}</div>;
+                if (record.contactNameTo !== "Not saved") {
+                    return <div>{record.contactNameTo}</div>;
                 } else {
                     return (
                         <div>
@@ -79,8 +79,8 @@ const CallLogsTable = () => {
             // dataIndex: "to",
             key: "to",
             render: (_: any, record: TCallHistory) => {
-                if (record.isToApp) {
-                    return <div>{record.to}</div>;
+                if (record.contactNameFrom !== "Not saved") {
+                    return <div>{record.contactNameFrom}</div>;
                 } else {
                     return (
                         <div>
