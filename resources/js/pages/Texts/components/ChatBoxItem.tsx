@@ -1,10 +1,19 @@
 import React from "react";
-import { Avatar, Space, Tooltip } from "antd";
+import { Avatar, Button, Space, Tooltip, Typography } from "antd";
 import { TText } from "../../../entities";
 import { CalendarOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import moment from "moment";
+import { useMutation } from "react-query";
+import { mutatePost } from "../../../api/mutation/useSetupMutation";
+import queryClient from "../../../queryClient";
 
 const ChatBoxItem = ({ name, text }: { name: string; text: TText }) => {
+    const resendText = useMutation(mutatePost, {
+        onSuccess: (res) => {
+            queryClient.invalidateQueries("thread");
+        },
+    });
+
     return !text.isFromApp ? (
         <div
             style={{
@@ -52,13 +61,15 @@ const ChatBoxItem = ({ name, text }: { name: string; text: TText }) => {
             >
                 <div
                     style={{
+                        display: "flex", // Use flexbox
+                        alignItems: "center", // Align items vertically in the center
                         backgroundColor: "#D6EAFF",
                         padding: "12px 24px",
                         borderRadius: "20px 20px 0 20px",
                     }}
                 >
                     {text.status == "failed" ? (
-                        <Tooltip title={text.telnyxResponse}>
+                        <Tooltip title={text?.errorMessage}>
                             <ExclamationCircleOutlined
                                 style={{ color: "red" }}
                             />
@@ -73,10 +84,10 @@ const ChatBoxItem = ({ name, text }: { name: string; text: TText }) => {
                         >
                             <CalendarOutlined />
                         </Tooltip>
-                    ) : null}{" "}
-                    {text.message}
+                    ) : null}
+                    <div className="p-l-xs">{text.message}</div>
                 </div>
-                <div style={{ marginTop: "8px", fontSize: "10px" }}>
+                <Space style={{ marginTop: "8px", fontSize: "10px" }} size={1}>
                     {`${moment
                         .utc(text.created_at)
                         .local()
@@ -84,7 +95,28 @@ const ChatBoxItem = ({ name, text }: { name: string; text: TText }) => {
                         /^(\d{3})(\d{3})(\d{4})$/,
                         "($1) $2-$3"
                     )}`}
-                </div>
+                    {text.status == "failed" && (
+                        <Button
+                            className="p-0"
+                            type="text"
+                            style={{
+                                color: "red",
+                                cursor: "pointer",
+                                fontSize: "10px",
+                            }}
+                            onClick={() => {
+                                resendText.mutate({
+                                    data: { id: text.id },
+                                    url: "/api/texts/resend",
+                                });
+                            }}
+                            loading={resendText.isLoading}
+                        >
+                            Re-try
+                        </Button>
+                    )}
+                    {text.status == "queued" && <div>(Sending)</div>}
+                </Space>
             </div>
         </div>
     );

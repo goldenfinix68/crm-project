@@ -160,9 +160,6 @@ const TextContent = ({ menu }: { menu: string }) => {
                             >
                                 <TextForm
                                     handleSubmit={() => {
-                                        queryClient.invalidateQueries(
-                                            "getContact"
-                                        );
                                         queryClient.invalidateQueries("thread");
                                     }}
                                     phoneNumbers={

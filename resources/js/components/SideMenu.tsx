@@ -44,15 +44,20 @@ const SideMenu = ({ children, title }: { children: any; title?: string }) => {
         const channel = pusher.subscribe(`notif-channel-${mainUserId}`);
         channel.bind(`notif-received-${mainUserId}`, (data) => {
             console.log("notif received", data);
-            if (data?.type == "text") {
-                const audio = new Audio("/sounds/text_sound.mp3");
-                audio.play();
-            }
 
-            api.open({
-                message: <b>{data?.message}</b> ?? "Default",
-                description: data?.description ?? "Default",
-            });
+            if (data?.type == "invalidateQuery") {
+                queryClient.invalidateQueries(data.message);
+            } else {
+                if (data?.type == "text") {
+                    const audio = new Audio("/sounds/text_sound.mp3");
+                    audio.play();
+                }
+
+                api.open({
+                    message: <b>{data?.message}</b> ?? "Default",
+                    description: data?.description ?? "Default",
+                });
+            }
         });
 
         // Clean up the subscription when the component unmounts

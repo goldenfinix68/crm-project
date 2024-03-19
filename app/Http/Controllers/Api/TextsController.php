@@ -179,4 +179,22 @@ class TextsController extends Controller
             ]);
         }
     }
+
+    public function resend(Request $request)
+    {
+        $text = Text::find($request->id);
+
+        if(empty($text)){
+            abort(404);
+        }
+        $text->status = "queued";
+        $text->save();
+        
+        SendText::dispatch($text);
+        
+        return response()->json([
+            'success' => true,
+            'message' => "Text queued.",
+        ], 200);
+    }
 }

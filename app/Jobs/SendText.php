@@ -12,6 +12,8 @@ use App\Models\Text;
 use Illuminate\Support\Facades\Validator;
 
 use App\Services\RoorService;
+use App\Services\UserService;
+use App\Business\Pusher;
 
 class SendText implements ShouldQueue
 {
@@ -56,6 +58,19 @@ class SendText implements ShouldQueue
                 $text->status = $result['status'] == 'success' ? 'sent' : 'failed';
                 $text->errorMessage = $result['message'] ?? "";
                 $text->save();
+            }
+
+            $userNumber = $text->isFromApp ? $text->from : $text->to;
+            
+            $mainUserIds = UserService::getMainUsersByMobile($userNumber);
+            
+            $pusher = new Pusher();
+            foreach($mainUserIds as $id){
+                $pusher->trigger('notif-channel-'.$id, 'notif-received-'.$id, [
+                    'type' => 'invalidateQuery',
+                    'message' => "thread",
+                    'description' => "",
+                ]);
             }
         
 

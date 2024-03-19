@@ -96,6 +96,7 @@ export type TText = {
     telnyxResponse?: string;
     schedule?: string;
     seen_at?: string;
+    errorMessage?: string;
 };
 
 export type TTextThreadList = {
