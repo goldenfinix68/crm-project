@@ -369,8 +369,20 @@ const TextBox = ({ data, user }: { data: TWallData; user: TUser }) => {
         >
             <Space direction="vertical" size={"middle"}>
                 <Space size={"large"}>
-                    <Typography.Text>To: {data.text?.to}</Typography.Text>
-                    <Typography.Text>From: {data.text?.from}</Typography.Text>
+                    <Typography.Text>
+                        To:{" "}
+                        {data.text?.to.replace(
+                            /^(\d{3})(\d{3})(\d{4})$/,
+                            "($1) $2-$3"
+                        )}
+                    </Typography.Text>
+                    <Typography.Text>
+                        From:{" "}
+                        {data.text?.from.replace(
+                            /^(\d{3})(\d{3})(\d{4})$/,
+                            "($1) $2-$3"
+                        )}
+                    </Typography.Text>
                 </Space>
                 <Typography.Text>{data.text?.message}</Typography.Text>
             </Space>

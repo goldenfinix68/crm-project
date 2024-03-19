@@ -17,6 +17,7 @@ import {
     Popconfirm,
     message,
     Alert,
+    Descriptions,
 } from "antd";
 import React from "react";
 import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
@@ -161,7 +162,6 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
         <Card
             style={{
                 width: "100%",
-                overflow: "hidden",
             }}
         >
             <Space
@@ -308,6 +308,44 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                     <Typography.Text strong>Contact Details</Typography.Text>
                 </Space>
 
+                <Descriptions column={1} size="small">
+                    {contactFields
+                        ?.filter(
+                            (field) =>
+                                field.fieldName !== "firstName" &&
+                                field.fieldName !== "lastName"
+                        )
+                        .sort(
+                            (a, b) => (a?.tableSort ?? 0) - (b?.tableSort ?? 0)
+                        )
+                        .map((record) => (
+                            <div
+                                key={record.fieldName}
+                                style={{ borderBottom: "1px solid #F0F0F0" }}
+                            >
+                                <div
+                                    style={{
+                                        minWidth: "100px",
+                                        textAlign: "left",
+                                    }}
+                                >
+                                    <TextEllipsis>{`${record.label}: `}</TextEllipsis>
+                                </div>
+                                <ContactInfoEditableText
+                                    record={contact.fields}
+                                    field={record}
+                                    handleSubmit={() => {
+                                        queryClient.invalidateQueries(
+                                            "getContact"
+                                        );
+                                        queryClient.invalidateQueries("thread");
+                                    }}
+                                />
+                            </div>
+                        ))}
+                </Descriptions>
+
+                {/* 
                 <Table
                     dataSource={contactFields
                         ?.filter(
@@ -332,18 +370,21 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                     <Table.Column
                         key="value"
                         render={(text, record: any) => (
-                            <ContactInfoEditableText
-                                record={contact.fields}
-                                field={record}
-                                handleSubmit={() => {
-                                    queryClient.invalidateQueries("getContact");
-                                    queryClient.invalidateQueries("thread");
-                                }}
-                            />
+                            <TextEllipsis>{`${
+                                contact.fields[record.fieldName]
+                            }`}</TextEllipsis>
+                            // <ContactInfoEditableText
+                            //     record={contact.fields}
+                            //     field={record}
+                            //     handleSubmit={() => {
+                            //         queryClient.invalidateQueries("getContact");
+                            //         queryClient.invalidateQueries("thread");
+                            //     }}
+                            // />
                         )}
                         width={"70%"}
                     />
-                </Table>
+                </Table> */}
             </Space>
 
             {isEditContactModalOpen && (

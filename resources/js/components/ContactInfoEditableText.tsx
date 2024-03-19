@@ -78,9 +78,8 @@ const ContactInfoEditableText = ({
 
     return (
         <div
-            className=""
             style={{
-                maxWidth: "100%",
+                width: "100%",
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -104,34 +103,11 @@ const ContactInfoEditableText = ({
                         {getLabel()}
                     </div>
                 ) : (
-                    // <Row
-                    //     align="middle"
-                    //     onMouseEnter={() => setIsHovered(true)}
-                    //     onMouseLeave={() => setIsHovered(false)}
-                    //     gutter={0}
-                    // >
-                    //     {isHovered && (
-                    //         <Col span={4}>
-                    //             <EditOutlined
-                    //                 style={{
-                    //                     cursor: "pointer",
-                    //                 }}
-                    //                 onClick={() => setIsEditMode(true)}
-                    //             />
-                    //         </Col>
-                    //     )}
-                    //     <Col
-                    //         flex="auto"
-                    //         span={isHovered ? 20 : 24}
-                    //         style={{ overflow: "hidden", width: "100%" }}
-                    //     >
-                    //         {getLabel()}
-                    //     </Col>
-                    // </Row>
                     <div
                         onDoubleClick={() => {
                             setIsEditMode(true);
                         }}
+                        style={{ width: "100%", cursor: "pointer" }}
                     >
                         <Tooltip title={getLabel()}>
                             <TextEllipsis>{getLabel()}</TextEllipsis>
@@ -149,7 +125,7 @@ const ContactInfoEditableText = ({
                     style={{
                         overflow: "hidden",
                         textOverflow: "ellipsis",
-                        width: field.type == "url" ? "100%" : "50%",
+                        width: "100%",
                     }}
                 >
                     <Form
