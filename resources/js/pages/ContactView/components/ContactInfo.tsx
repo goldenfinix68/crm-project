@@ -321,7 +321,10 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                         .map((record) => (
                             <div
                                 key={record.fieldName}
-                                style={{ borderBottom: "1px solid #F0F0F0" }}
+                                style={{
+                                    borderBottom: "1px solid #F0F0F0",
+                                    paddingBottom: 0,
+                                }}
                             >
                                 <div
                                     style={{
