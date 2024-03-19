@@ -668,6 +668,10 @@ const CallBox = ({ data, user }: { data: TWallData; user: TUser }) => {
         return word.charAt(0).toUpperCase() + word.slice(1);
     };
 
+    let url: any = data.call?.recording_url;
+    url = url.split(",");
+    url = url[0];
+    url = url.replace("playAudio('", "");
     return (
         <Card
             title={
@@ -705,49 +709,11 @@ const CallBox = ({ data, user }: { data: TWallData; user: TUser }) => {
                     </Typography.Text>
                 </Space>
                 {data.call?.recording_url ? (
-                    <Space>
-                        <Button
-                            type="text"
-                            icon={
-                                isPlaying ? (
-                                    <PauseOutlined style={{ color: "red" }} />
-                                ) : (
-                                    <PlaySquareFilled
-                                        style={{ color: "green" }}
-                                    />
-                                )
-                            }
-                            onClick={handleTogglePlay}
-                        />
-
-                        <div className="p-t-xs">
-                            <input
-                                type="range"
-                                min={0}
-                                max={
-                                    audioRef.current
-                                        ? audioRef.current.duration
-                                        : 0
-                                }
-                                value={currentTime}
-                                onChange={handleSliderChange}
-                            />
-                        </div>
-                        {/* <Button type="text" icon={<DeleteOutlined />} /> */}
-
-                        <CustomLink to={data.call?.recording_url}>
-                            <Button type="text" icon={<DownloadOutlined />} />
-                        </CustomLink>
-                    </Space>
+                    <div style={{ padding: 10 }}>
+                        <audio src={url} controls />
+                    </div>
                 ) : null}
             </Space>
-
-            {/* Audio Element */}
-            <audio
-                ref={audioRef}
-                src={data.call?.recording_url}
-                onEnded={handleAudioEnded}
-            />
         </Card>
     );
 };
