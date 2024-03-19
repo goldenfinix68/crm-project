@@ -272,7 +272,7 @@ class Contact extends Model
             $createdAt = Carbon::parse($data['dateTime']);
             return [
                 'type' => 'call',
-                'date' => $data['dateTime'],
+                'date' => $createdAt,
                 'day' => $createdAt->format('j'),
                 'month' => $createdAt->format('F'),
                 'year' => $createdAt->format('Y'),
