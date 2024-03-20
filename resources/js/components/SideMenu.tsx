@@ -49,6 +49,8 @@ const SideMenu = ({ children, title }: { children: any; title?: string }) => {
                 queryClient.invalidateQueries(data.message);
             } else {
                 if (data?.type == "text") {
+                    queryClient.invalidateQueries("thread");
+                    queryClient.invalidateQueries("textThreads");
                     const audio = new Audio("/sounds/text_sound.mp3");
                     audio.play();
                 }
