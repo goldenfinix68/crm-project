@@ -26,6 +26,7 @@ interface Props {
     handleSubmit: () => void;
     deal?: TDeal;
     selectedRows?: React.Key[];
+    contactId?: string;
 }
 
 const ModalAddDeal = ({
@@ -34,15 +35,21 @@ const ModalAddDeal = ({
     handleSubmit,
     deal,
     selectedRows,
+    contactId,
 }: Props) => {
     const [form] = useForm();
     const { data: pipelines, isLoading, refetch } = dealPipelines();
     const pipelineId = Form.useWatch("pipelineId", form);
+    const stageId = Form.useWatch("stageId", form);
     const stages = pipelineId
         ? pipelines?.find((pipeline) => pipeline.id === pipelineId)?.stages
         : [];
 
     const onFinish = (values: any) => {
+        if (contactId) {
+            values.contactId = contactId;
+        }
+
         saveDeal.mutate({
             ...values,
             id: deal?.id ? deal.id : "",
@@ -84,6 +91,18 @@ const ModalAddDeal = ({
         }
     }, [deal]);
 
+    useEffect(() => {
+        if (pipelineId && !stageId && stages?.length) {
+            form.setFieldValue("stageId", stages[0].id);
+        }
+    }, [pipelineId]);
+
+    useEffect(() => {
+        if (pipelines && !stageId) {
+            form.setFieldValue("pipelineId", pipelines[0].id);
+        }
+    }, [pipelines]);
+
     return (
         <Modal
             className="your-modal"
@@ -121,7 +140,7 @@ const ModalAddDeal = ({
                 </div>
                 <Row gutter={12} style={{ marginTop: 10 }}>
                     <Col md={24} className="col-1-modal-act">
-                        {!selectedRows?.length && (
+                        {selectedRows?.length || contactId ? null : (
                             <CustomFieldInput
                                 customField={{
                                     type: "contactLookup",

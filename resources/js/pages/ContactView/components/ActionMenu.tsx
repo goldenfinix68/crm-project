@@ -125,6 +125,7 @@ const ActionMenu = ({ contact }: { contact: TContact }) => {
                         queryClient.invalidateQueries("getContact");
                     }}
                     closeModal={() => setDealModalOpen(false)}
+                    contactId={contact.id}
                 />
             )}
         </Space>
