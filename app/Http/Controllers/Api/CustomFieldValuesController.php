@@ -74,11 +74,11 @@ class CustomFieldValuesController extends Controller
                 //     }
                 // }
             }
-            $user = Auth::user();
+            $userId = $this->getMainUserId();
             foreach($fields as $key => $value){
                 $customField = CustomField::where('fieldName', $key)
                     ->where('customFieldSectionType', $request->customableType)
-                    ->where('userId', $user->id)
+                    ->where('userId', $userId)
                     ->first();
 
                 $fieldValue = $this->createOrUpdateCustomFieldValue($record->id, $customField, $request->customableType, $value);
