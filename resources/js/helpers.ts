@@ -66,6 +66,17 @@ export function replacePlaceholders(inputString, contact) {
     return replacedString;
 }
 
+export function maskToCurrency(number) {
+    // Convert number to string and split it into parts before and after the decimal point
+    const parts = number.toString().split(".");
+
+    // Add commas for thousands separator
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+    // Concatenate the parts and add '$' sign
+    return "$" + parts.join(".");
+}
+
 interface ArrayActions<T> {
     array: T[];
     add: (item: T) => void;
@@ -343,5 +354,5 @@ export function timeToLocalMachineTZ(date) {
     // Convert UTC time to local time
     const localDate = new Date(utcDate.getTime() + timezoneOffset * 60 * 1000);
 
-    return "asdasd";
+    return localDate;
 }

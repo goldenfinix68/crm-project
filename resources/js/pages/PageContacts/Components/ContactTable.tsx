@@ -17,6 +17,9 @@ import CustomResizeableTable from "../../../components/CustomResizeableTable";
 import { useCustomFields } from "../../../api/query/customFieldQuery";
 import LoadingComponent from "../../../components/LoadingComponent";
 import UpdateContactFieldModal from "../../../components/UpdateContactFieldModal";
+import ContactTypeTag from "../../../components/ContactTypeTag";
+import { maskToCurrency } from "../../../helpers";
+import ContactInfoEditableText from "../../../components/ContactInfoEditableText";
 interface Props {
     setSelectedRows: any;
     setSelectedRowKeys: any;
@@ -41,6 +44,7 @@ const ContactsTable = ({
 }: Props) => {
     const { isRoleStats } = useAppContextProvider();
     const [isModalOpen, setisModalOpen] = useState(false);
+    const [tableKey, setTableKey] = useState(0);
     const [selectedContactFields, setSelectedContactFields] = useState<
         | {
               [key: string]: any;
@@ -142,23 +146,30 @@ const ContactsTable = ({
                           key: field.id,
                           render: (text, record) => {
                               return (
-                                  <div
-                                      style={{
-                                          width: "100%",
-                                          cursor: "pointer",
+                                  <ContactInfoEditableText
+                                      record={record}
+                                      field={field}
+                                      handleSubmit={() => {
+                                          queryClient.invalidateQueries(
+                                              ENDPOINTS.contacts.cache
+                                          );
                                       }}
-                                      onDoubleClick={() => {
-                                          setIsUpdateCellModalOpen(true);
-                                          setUpdateCell({
-                                              field,
-                                              fields: record,
-                                          });
-                                      }}
-                                  >
-                                      <TextEllipsis>
-                                          {record[field.fieldName] ?? "_"}
-                                      </TextEllipsis>
-                                  </div>
+                                  />
+                                  //   <div
+                                  //       style={{
+                                  //           width: "100%",
+                                  //           cursor: "pointer",
+                                  //       }}
+                                  //       onDoubleClick={() => {
+                                  //           setIsUpdateCellModalOpen(true);
+                                  //           setUpdateCell({
+                                  //               field,
+                                  //               fields: record,
+                                  //           });
+                                  //       }}
+                                  //   >
+                                  //       <TextEllipsis>{getLabel()}</TextEllipsis>
+                                  //   </div>
                               );
                           },
                       };
@@ -177,8 +188,12 @@ const ContactsTable = ({
         return <LoadingComponent />;
     }
 
+    useEffect(() => {
+        console.log("qweqweqwe");
+        setTableKey(tableKey + 1);
+    }, [contactFields]);
     return (
-        <>
+        <div key={tableKey}>
             <CustomResizeableTable
                 columns={columns as ColumnsType<{ [key: string]: any }>}
                 dataSource={contacts?.map((contact) => contact.fields)}
@@ -230,7 +245,7 @@ const ContactsTable = ({
                     field={updateCell.field!}
                 />
             )}
-        </>
+        </div>
     );
 };
 

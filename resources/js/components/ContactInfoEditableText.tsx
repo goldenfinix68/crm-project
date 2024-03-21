@@ -24,6 +24,7 @@ import queryClient from "../queryClient";
 import ContactTypeTag from "./ContactTypeTag";
 import CustomFieldInput from "./CustomFieldInput";
 import TextEllipsis from "./TextEllipsis";
+import { maskToCurrency } from "../helpers";
 
 interface ContactInfoEditableTextProps {
     record: any;
@@ -72,6 +73,9 @@ const ContactInfoEditableText = ({
                     {record[field.fieldName]}
                 </a>
             );
+        }
+        if (field.type == "currency" && record[field.fieldName]) {
+            return maskToCurrency(record[field.fieldName]);
         }
         return record[field.fieldName] ? record[field.fieldName] : "_";
     };

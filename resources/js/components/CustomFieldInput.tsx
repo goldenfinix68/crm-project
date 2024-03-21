@@ -142,7 +142,22 @@ const CustomFieldInput = ({
             );
         }
         if (customField.type == "currency") {
-            return <InputNumber min={0} className="w-100" ref={inputRef} />;
+            const currencyFormatter = (value) => {
+                return `$${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            };
+
+            // Parser function to remove $ symbol and commas
+            const currencyParser = (value) => value.replace(/\$\s?|(,*)/g, "");
+
+            return (
+                <InputNumber
+                    min={0}
+                    className="w-100"
+                    ref={inputRef}
+                    formatter={currencyFormatter}
+                    parser={currencyParser}
+                />
+            );
         }
         if (customField.type == "contactLookup") {
             return (

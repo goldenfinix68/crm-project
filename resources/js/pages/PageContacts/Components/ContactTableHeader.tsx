@@ -54,6 +54,7 @@ import Filter from "../../Deal/components/Filter";
 import ContactsComponentsManageColumn from "./ContactsComponentsManageColumn";
 import { filtersQuery } from "../../../api/query/useFilterQuery";
 import { MenuProps } from "antd/lib";
+import { ENDPOINTS } from "../../../endpoints";
 interface Props {
     selectedRows?: {
         [key: string]: any;
