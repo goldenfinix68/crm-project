@@ -125,19 +125,13 @@ class ContactsController extends Controller
         $keyword = $request->keyword;
 
         $contacts = Contact::select('contacts.*')
+            ->where('userId', $userId)
             ->join('custom_field_values as cfv', 'cfv.customableId', '=', 'contacts.id')
             ->where('cfv.value', 'LIKE', "%$keyword%")
-            ->orWhereRaw('CONCAT((
-                SELECT cfv.value 
-                FROM custom_field_values cfv 
-                JOIN custom_fields cf ON cfv.customFieldId = cf.id 
-                WHERE cf.fieldName = "firstName" AND cfv.customableId = contacts.id
-            ), " ", (
-                SELECT cfv.value 
-                FROM custom_field_values cfv 
-                JOIN custom_fields cf ON cfv.customFieldId = cf.id 
-                WHERE cf.fieldName = "lastName" AND cfv.customableId = contacts.id
-            )) LIKE ?', ["%$keyword%"]);
+            ->orWhereRaw('(SELECT GROUP_CONCAT(cfv.value SEPARATOR " ") AS full_name
+                FROM custom_field_values cfv
+                JOIN custom_fields cf ON cf.id = cfv.customFieldId
+                WHERE cf.fieldName IN ("firstName", "lastName") AND cfv.customableId = contacts.id) LIKE ?', ["%$keyword%"]);
 
         $result = $contacts->distinct()->paginate(10);
 
