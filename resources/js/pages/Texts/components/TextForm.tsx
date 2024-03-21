@@ -71,20 +71,19 @@ const TextForm = ({
         TContact | undefined
     >(undefined);
 
-    const [pagination, setPagination] = useState({
-        page_size: 10,
-        page: 1,
-        total: 0,
-    });
     const [contacts, setContacts] = useState<any>();
 
-    const [filter, setFilter] = useState<any>(defaultFilter);
+    const [keyword, setKeyword] = useState<string>("");
+    const [isSearchLoading, setIsSearchLoading] = useState(false);
 
     const { data: filteredContacts, refetch: refetchFilteredContacts } =
         mutateGet(
-            { ...filter, ...pagination },
-            ENDPOINTS.contacts.url,
-            "globalSearch"
+            { keyword },
+            "/api/contacts/global-search",
+            "globalSearch",
+            () => {
+                setIsSearchLoading(false);
+            }
         );
 
     const debouncedSearch = _.debounce((value) => {
@@ -92,21 +91,13 @@ const TextForm = ({
     }, 300);
 
     const handleSearch = (value) => {
-        setFilter({
-            ...filter,
-            filters: {
-                conditions: [
-                    { key: "firstName", condition: "contains", value: value },
-                    { key: "lastName", condition: "contains", value: value },
-                ],
-                conditionalOperator: "or",
-            },
-        });
+        setKeyword(value);
     };
 
     useEffect(() => {
+        setIsSearchLoading(true);
         refetchFilteredContacts();
-    }, [filter]);
+    }, [keyword]);
 
     useEffect(() => {
         if (filteredContacts && filteredContacts.data) {

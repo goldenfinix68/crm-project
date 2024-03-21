@@ -11,6 +11,8 @@ import {
     List,
     Popconfirm,
     message,
+    Spin,
+    Empty,
 } from "antd";
 
 import { useMutation } from "react-query";
@@ -39,20 +41,19 @@ const ModalAddExistingNumberContact = ({
         TContact | undefined
     >(undefined);
 
-    const [pagination, setPagination] = useState({
-        page_size: 10,
-        page: 1,
-        total: 0,
-    });
     const [contacts, setContacts] = useState<any>();
 
-    const [filter, setFilter] = useState<any>(defaultFilter);
+    const [keyword, setKeyword] = useState<string>("");
+    const [isSearchLoading, setIsSearchLoading] = useState(false);
 
     const { data: filteredContacts, refetch: refetchFilteredContacts } =
         mutateGet(
-            { ...filter, ...pagination },
-            ENDPOINTS.contacts.url,
-            "globalSearch"
+            { keyword },
+            "/api/contacts/global-search",
+            "globalSearch",
+            () => {
+                setIsSearchLoading(false);
+            }
         );
 
     const debouncedSearch = _.debounce((value) => {
@@ -60,21 +61,13 @@ const ModalAddExistingNumberContact = ({
     }, 300);
 
     const handleSearch = (value) => {
-        setFilter({
-            ...filter,
-            filters: {
-                conditions: [
-                    { key: "firstName", condition: "contains", value: value },
-                    { key: "lastName", condition: "contains", value: value },
-                ],
-                conditionalOperator: "or",
-            },
-        });
+        setKeyword(value);
     };
 
     useEffect(() => {
+        setIsSearchLoading(true);
         refetchFilteredContacts();
-    }, [filter]);
+    }, [keyword]);
 
     useEffect(() => {
         if (filteredContacts && filteredContacts.data) {
@@ -131,27 +124,52 @@ const ModalAddExistingNumberContact = ({
                         <Col span={24} className="m-t-md">
                             <List
                                 className="field-list"
-                                size="large"
+                                size="default"
                                 header={false}
                                 footer={false}
                                 bordered
-                                dataSource={contacts}
-                                renderItem={(contact: TContact) => {
-                                    return (
+                            >
+                                <>
+                                    {isSearchLoading && (
                                         <div
-                                            className="w-100"
-                                            onClick={() => {
-                                                setStep(2);
-                                                setSelectedContact(contact);
+                                            style={{
+                                                display: "grid",
+                                                placeItems: "center",
+                                                padding: "24px",
                                             }}
                                         >
-                                            <ListItemComponent
-                                                text={`${contact.fields.firstName} ${contact.fields.lastName}`}
-                                            />
+                                            <Spin />
                                         </div>
-                                    );
-                                }}
-                            />
+                                    )}
+                                    {!isSearchLoading && (
+                                        <>
+                                            {contacts?.length ? (
+                                                contacts?.map((contact) => (
+                                                    <div
+                                                        className="w-100"
+                                                        onClick={() => {
+                                                            setStep(2);
+                                                            setSelectedContact(
+                                                                contact
+                                                            );
+                                                        }}
+                                                    >
+                                                        <ListItemComponent
+                                                            text={`${contact.fields.firstName} ${contact.fields.lastName}`}
+                                                        />
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <Empty
+                                                    image={
+                                                        Empty.PRESENTED_IMAGE_SIMPLE
+                                                    }
+                                                />
+                                            )}
+                                        </>
+                                    )}
+                                </>
+                            </List>
                         </Col>
                     </Row>
                 </>

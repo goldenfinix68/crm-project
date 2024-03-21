@@ -5,11 +5,13 @@ import {
     Card,
     Col,
     Dropdown,
+    Empty,
     Image,
     Input,
     Menu,
     Row,
     Space,
+    Spin,
     Tooltip,
     Typography,
 } from "antd";
@@ -44,20 +46,19 @@ const Navigation: React.FC<NavigationProps> = ({ title }) => {
 
     const { isRoleStats } = useAppContextProvider();
 
-    const [pagination, setPagination] = useState({
-        page_size: 10,
-        page: 1,
-        total: 0,
-    });
     const [contacts, setContacts] = useState<any>();
+    const [isSearchLoading, setIsSearchLoading] = useState(false);
 
-    const [filter, setFilter] = useState<any>(defaultFilter);
+    const [keyword, setKeyword] = useState<string>("");
 
     const { data: filteredContacts, refetch: refetchFilteredContacts } =
         mutateGet(
-            { ...filter, ...pagination },
-            ENDPOINTS.contacts.url,
-            "globalSearch"
+            { keyword },
+            "/api/contacts/global-search",
+            "globalSearch",
+            () => {
+                setIsSearchLoading(false);
+            }
         );
 
     const debouncedSearch = _.debounce((value) => {
@@ -65,21 +66,13 @@ const Navigation: React.FC<NavigationProps> = ({ title }) => {
     }, 300);
 
     const handleSearch = (value) => {
-        setFilter({
-            ...filter,
-            filters: {
-                conditions: [
-                    { key: "firstName", condition: "contains", value: value },
-                    { key: "lastName", condition: "contains", value: value },
-                ],
-                conditionalOperator: "or",
-            },
-        });
+        setKeyword(value);
     };
 
     useEffect(() => {
+        setIsSearchLoading(true);
         refetchFilteredContacts();
-    }, [filter]);
+    }, [keyword]);
 
     useEffect(() => {
         if (filteredContacts && filteredContacts.data) {
@@ -236,40 +229,64 @@ const Navigation: React.FC<NavigationProps> = ({ title }) => {
                     trigger={["click"]}
                     overlay={
                         <Menu>
-                            {contacts?.map((contact) => (
-                                <Menu.Item key={contact.id}>
-                                    <CustomLink to={`/contacts/${contact.id}`}>
-                                        <div className="list-data">
-                                            <Space
-                                                direction="vertical"
-                                                size={0}
-                                                className="m-l-xs"
-                                            >
-                                                <Typography.Text>
-                                                    {`${contact.fields?.firstName} ${contact.fields?.lastName}`}
-                                                </Typography.Text>
-                                                <Typography.Text className="list-data-info">
-                                                    <Typography.Text
-                                                        className="list-data-info"
-                                                        style={{
-                                                            fontWeight: 300,
-                                                        }}
-                                                    >
-                                                        {`Phone numbers: ${
-                                                            contact.phoneNumbers
-                                                                ?.length
-                                                                ? contact.phoneNumbers?.join(
-                                                                      ", "
-                                                                  )
-                                                                : "Not set"
-                                                        }`}
-                                                    </Typography.Text>
-                                                </Typography.Text>
-                                            </Space>
-                                        </div>
-                                    </CustomLink>
-                                </Menu.Item>
-                            ))}
+                            {isSearchLoading && (
+                                <div
+                                    style={{
+                                        display: "grid",
+                                        placeItems: "center",
+                                        padding: "24px",
+                                    }}
+                                >
+                                    <Spin />
+                                </div>
+                            )}
+                            {!isSearchLoading && (
+                                <>
+                                    {contacts?.length ? (
+                                        contacts?.map((contact) => (
+                                            <Menu.Item key={contact.id}>
+                                                <CustomLink
+                                                    to={`/contacts/${contact.id}`}
+                                                >
+                                                    <div className="list-data">
+                                                        <Space
+                                                            direction="vertical"
+                                                            size={0}
+                                                            className="m-l-xs"
+                                                        >
+                                                            <Typography.Text>
+                                                                {`${contact.fields?.firstName} ${contact.fields?.lastName}`}
+                                                            </Typography.Text>
+                                                            <Typography.Text className="list-data-info">
+                                                                <Typography.Text
+                                                                    className="list-data-info"
+                                                                    style={{
+                                                                        fontWeight: 300,
+                                                                    }}
+                                                                >
+                                                                    {`Phone numbers: ${
+                                                                        contact
+                                                                            .phoneNumbers
+                                                                            ?.length
+                                                                            ? contact.phoneNumbers?.join(
+                                                                                  ", "
+                                                                              )
+                                                                            : "Not set"
+                                                                    }`}
+                                                                </Typography.Text>
+                                                            </Typography.Text>
+                                                        </Space>
+                                                    </div>
+                                                </CustomLink>
+                                            </Menu.Item>
+                                        ))
+                                    ) : (
+                                        <Empty
+                                            image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                        />
+                                    )}
+                                </>
+                            )}
                         </Menu>
                     }
                 >

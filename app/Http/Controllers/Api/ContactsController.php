@@ -118,8 +118,34 @@ class ContactsController extends Controller
             'data' => $contacts,
         ], 200);
     }
-    
-     
+
+    public function globalSearch(Request $request)
+    {
+        $userId = $this->getMainUserId();
+        $keyword = $request->keyword;
+
+        $contacts = Contact::select('contacts.*')
+            ->join('custom_field_values as cfv', 'cfv.customableId', '=', 'contacts.id')
+            ->where('cfv.value', 'LIKE', "%$keyword%")
+            ->orWhereRaw('CONCAT((
+                SELECT cfv.value 
+                FROM custom_field_values cfv 
+                JOIN custom_fields cf ON cfv.customFieldId = cf.id 
+                WHERE cf.fieldName = "firstName" AND cfv.customableId = contacts.id
+            ), " ", (
+                SELECT cfv.value 
+                FROM custom_field_values cfv 
+                JOIN custom_fields cf ON cfv.customFieldId = cf.id 
+                WHERE cf.fieldName = "lastName" AND cfv.customableId = contacts.id
+            )) LIKE ?', ["%$keyword%"]);
+
+        $result = $contacts->distinct()->paginate(10);
+
+        return response()->json([
+            'success' => true,
+            'data' => $result,
+        ], 200);
+    }
 
     public function filteredContacts(Request $request)
     {
