@@ -167,6 +167,11 @@ Route::post('/telnyx/call/webhook/fail', 'App\Http\Controllers\Api\CallsControll
 
 
 
+Route::get('/openphone/webhook', function (Request $request) {
+    $json = json_decode(file_get_contents("php://input"), true);
+    \Log::error('openphonewebhook');
+    \Log::error($json);
+});
 Route::get('/telnyx/sms/webhook/fail', function (Request $request) {
     \Log::error('INCOMING SMS FAIL');
     $json = json_decode(file_get_contents("php://input"), true);
