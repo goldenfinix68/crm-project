@@ -94,15 +94,15 @@ class Controller extends BaseController
                 }
             }
             //tag should be unique, remove duplicates
-            if($customField->type == "tag") {
+            if($customField->type == "tag" && !empty($value)) {
                 $value = array_unique($value);
                 $data = implode(", ", $value);
             }
-            if(in_array($customField->type, ['multiSelect'])){
+            if(in_array($customField->type, ['multiSelect']) && !empty($value)){
                 $data = implode(", ", $value);
             }
             $fieldValue->lookupIds = json_encode($value);
-            $fieldValue->value =  $data;
+            $fieldValue->value =  $data ?? "";
         }
         else{
             if($customField->type == "mobile" || $customField->type == "phone"){

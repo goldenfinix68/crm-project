@@ -40,6 +40,8 @@ import { useCallContext } from "../context/CallContext";
 import CustomLink from "./CustomLink";
 import TextEllipsis from "./TextEllipsis";
 import DropdownComponent from "./DropdownComponent";
+import ContactTypeTag from "./ContactTypeTag";
+import { maskToCurrency } from "../helpers";
 interface Props {
     deal: TDeal;
     handleEditClick: () => void;
@@ -52,162 +54,209 @@ const DealCard = ({ deal, handleEditClick, sortBy }: Props) => {
     const { loggedInUser } = useAppContextProvider();
 
     const settings = loggedInUser?.settings;
+
+    const {
+        data: contactFields,
+        isLoading: isContactFieldsLoading,
+        refetch: refetchContactFields,
+    } = useCustomFields("contact");
+
+    const getLabel = (customFieldName, fields) => {
+        const customField = contactFields?.find(
+            (field) => field.fieldName == customFieldName
+        );
+        if (customField) {
+            if (customField?.type == "contactTypeLookup") {
+                return <ContactTypeTag fields={fields} />;
+            }
+            if (customField?.type == "url" && fields[customField?.fieldName]) {
+                return (
+                    <a href={fields[customField?.fieldName]} target="_blank">
+                        {fields[customField.fieldName]}
+                    </a>
+                );
+            }
+            if (
+                customField?.type == "currency" &&
+                fields[customField.fieldName]
+            ) {
+                return maskToCurrency(fields[customField.fieldName]);
+            }
+            return fields[customField.fieldName];
+        }
+
+        return null;
+    };
+
     return (
-        <Card className="w-100 p-0" bodyStyle={{ padding: "12px" }}>
-            <Space className="w-100" direction="vertical" size={0}>
-                <Space
-                    className="w-100"
-                    style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        marginTop: "auto",
-                    }}
-                >
-                    <Typography.Text
+        <Tooltip
+            title={
+                deal.contact?.fields.firstName +
+                " " +
+                deal.contact?.fields.lastName
+            }
+        >
+            <Card
+                className="w-100 p-0"
+                bodyStyle={{ padding: "12px" }}
+                loading={isContactFieldsLoading}
+            >
+                <Space className="w-100" direction="vertical" size={0}>
+                    <Space
+                        className="w-100"
                         style={{
-                            color: "gray",
-                            fontSize: "12px",
-                            fontWeight: sortBy == "aging" ? "bold" : "normal",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginTop: "auto",
                         }}
                     >
-                        {deal.aging}
-                    </Typography.Text>
-
-                    <DropdownComponent
-                        menuList={[
-                            {
-                                label: (
-                                    <div onClick={handleEditClick}>
-                                        Edit Deal
-                                    </div>
-                                ),
-                                key: 0,
-                            },
-                            {
-                                label: (
-                                    <CustomLink
-                                        to={"/contacts/" + deal.contact?.id}
-                                        style={{ color: "black" }}
-                                    >
-                                        View Contact
-                                    </CustomLink>
-                                ),
-                                key: 1,
-                            },
-                            {
-                                label: (
-                                    <div
-                                        onClick={() => {
-                                            setCallerNumber(
-                                                deal.contact?.fields
-                                                    ?.defaultMobileNumber ?? ""
-                                            );
-                                            setDestinationNumber(
-                                                deal.contact?.fields.mobile ??
-                                                    ""
-                                            );
-                                            setIsModalOpen(true);
-                                        }}
-                                    >
-                                        Call Contact
-                                    </div>
-                                ),
-                                key: 3,
-                            },
-                        ]}
-                        label={
-                            <EllipsisOutlined
-                                style={{ transform: "rotate(90deg)" }}
-                            />
-                        }
-                        floatRight
-                        showCarret={false}
-                    />
-                </Space>
-
-                <Row gutter={12}>
-                    <Col span={12}>
-                        <TextEllipsis
+                        <Typography.Text
                             style={{
+                                color: "gray",
+                                fontSize: "12px",
                                 fontWeight:
-                                    sortBy == "firstName" ? "bold" : "normal",
+                                    sortBy == "aging" ? "bold" : "normal",
                             }}
                         >
-                            {deal.contact?.fields.firstName +
-                                " " +
-                                deal.contact?.fields.lastName}
-                        </TextEllipsis>
-                    </Col>
+                            {deal.aging}
+                        </Typography.Text>
 
-                    <Col span={12} className="w-100">
-                        {settings?.dealCardpos2FieldId ? (
+                        <DropdownComponent
+                            menuList={[
+                                {
+                                    label: (
+                                        <div onClick={handleEditClick}>
+                                            Edit Deal
+                                        </div>
+                                    ),
+                                    key: 0,
+                                },
+                                {
+                                    label: (
+                                        <CustomLink
+                                            to={"/contacts/" + deal.contact?.id}
+                                            style={{ color: "black" }}
+                                        >
+                                            View Contact
+                                        </CustomLink>
+                                    ),
+                                    key: 1,
+                                },
+                                {
+                                    label: (
+                                        <div
+                                            onClick={() => {
+                                                setCallerNumber(
+                                                    deal.contact?.fields
+                                                        ?.defaultMobileNumber ??
+                                                        ""
+                                                );
+                                                setDestinationNumber(
+                                                    deal.contact?.fields
+                                                        .mobile ?? ""
+                                                );
+                                                setIsModalOpen(true);
+                                            }}
+                                        >
+                                            Call Contact
+                                        </div>
+                                    ),
+                                    key: 3,
+                                },
+                            ]}
+                            label={
+                                <EllipsisOutlined
+                                    style={{ transform: "rotate(90deg)" }}
+                                />
+                            }
+                            floatRight
+                            showCarret={false}
+                        />
+                    </Space>
+                    <Row>
+                        <Col span={12}>
                             <TextEllipsis
                                 style={{
                                     fontWeight:
-                                        sortBy == settings?.dealCardpos2FieldId
+                                        sortBy == "firstName"
                                             ? "bold"
                                             : "normal",
-                                    float: "right",
                                 }}
                             >
-                                {
-                                    deal.contact?.fields[
-                                        settings?.dealCardpos2FieldId
-                                    ]
-                                }
+                                {deal.contact?.fields.firstName +
+                                    " " +
+                                    deal.contact?.fields.lastName}
                             </TextEllipsis>
-                        ) : (
-                            <></>
-                        )}
-                    </Col>
-                </Row>
+                        </Col>
+                        <Col span={12}>
+                            {settings?.dealCardpos2FieldId ? (
+                                <div style={{ float: "right" }}>
+                                    <TextEllipsis
+                                        style={{
+                                            fontWeight:
+                                                sortBy ==
+                                                settings?.dealCardpos2FieldId
+                                                    ? "bold"
+                                                    : "normal",
+                                        }}
+                                    >
+                                        {getLabel(
+                                            settings?.dealCardpos2FieldId,
+                                            deal.contact?.fields
+                                        )}
+                                    </TextEllipsis>
+                                </div>
+                            ) : null}
+                        </Col>
+                    </Row>
 
-                <Row gutter={12}>
-                    <Col span={12}>
-                        {settings?.dealCardpos3FieldId ? (
-                            <TextEllipsis
-                                style={{
-                                    fontWeight:
-                                        sortBy == settings?.dealCardpos3FieldId
-                                            ? "bold"
-                                            : "normal",
-                                }}
-                            >
-                                {
-                                    deal.contact?.fields[
-                                        settings?.dealCardpos3FieldId
-                                    ]
-                                }
-                            </TextEllipsis>
-                        ) : (
-                            <></>
-                        )}
-                    </Col>
+                    <Row gutter={12}>
+                        <Col span={12}>
+                            {settings?.dealCardpos3FieldId ? (
+                                <TextEllipsis
+                                    style={{
+                                        fontWeight:
+                                            sortBy ==
+                                            settings?.dealCardpos3FieldId
+                                                ? "bold"
+                                                : "normal",
+                                    }}
+                                >
+                                    {getLabel(
+                                        settings?.dealCardpos3FieldId,
+                                        deal.contact?.fields
+                                    )}
+                                </TextEllipsis>
+                            ) : (
+                                <></>
+                            )}
+                        </Col>
 
-                    <Col span={12} className="w-100">
-                        {settings?.dealCardpos4FieldId ? (
-                            <TextEllipsis
-                                style={{
-                                    fontWeight:
-                                        sortBy == settings?.dealCardpos4FieldId
-                                            ? "bold"
-                                            : "normal",
-                                    float: "right",
-                                }}
-                            >
-                                {
-                                    deal.contact?.fields[
-                                        settings?.dealCardpos4FieldId
-                                    ]
-                                }
-                            </TextEllipsis>
-                        ) : (
-                            <></>
-                        )}
-                    </Col>
-                </Row>
-            </Space>
-        </Card>
+                        <Col span={12} className="w-100">
+                            {settings?.dealCardpos4FieldId ? (
+                                <TextEllipsis
+                                    style={{
+                                        fontWeight:
+                                            sortBy ==
+                                            settings?.dealCardpos4FieldId
+                                                ? "bold"
+                                                : "normal",
+                                        float: "right",
+                                    }}
+                                >
+                                    {getLabel(
+                                        settings?.dealCardpos4FieldId,
+                                        deal.contact?.fields
+                                    )}
+                                </TextEllipsis>
+                            ) : (
+                                <></>
+                            )}
+                        </Col>
+                    </Row>
+                </Space>
+            </Card>
+        </Tooltip>
     );
 };
 

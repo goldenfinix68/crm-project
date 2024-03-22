@@ -181,8 +181,17 @@ const DealCardConfigureModal = ({
                                         showSearch
                                         className="w-100"
                                         allowClear
-                                        options={fields}
-                                    />
+                                        optionFilterProp="children"
+                                    >
+                                        {fields?.map((field, index) => (
+                                            <Select.Option
+                                                value={field.value}
+                                                key={index}
+                                            >
+                                                {field.label}
+                                            </Select.Option>
+                                        ))}
+                                    </Select>
                                 </Form.Item>
                             </div>
 
@@ -201,8 +210,17 @@ const DealCardConfigureModal = ({
                                         showSearch
                                         className="w-100"
                                         allowClear
-                                        options={fields}
-                                    />
+                                        optionFilterProp="children"
+                                    >
+                                        {fields?.map((field, index) => (
+                                            <Select.Option
+                                                value={field.value}
+                                                key={index}
+                                            >
+                                                {field.label}
+                                            </Select.Option>
+                                        ))}
+                                    </Select>
                                 </Form.Item>
 
                                 <Form.Item
@@ -213,8 +231,17 @@ const DealCardConfigureModal = ({
                                         showSearch
                                         className="w-100"
                                         allowClear
-                                        options={fields}
-                                    />
+                                        optionFilterProp="children"
+                                    >
+                                        {fields?.map((field, index) => (
+                                            <Select.Option
+                                                value={field.value}
+                                                key={index}
+                                            >
+                                                {field.label}
+                                            </Select.Option>
+                                        ))}
+                                    </Select>
                                 </Form.Item>
                             </div>
                             <Space
