@@ -142,7 +142,7 @@ const ComponentImportData: React.FC = () => {
         <>
             {csvData.length ? (
                 <Space direction="vertical" className="w-100">
-                    <Card title="Map columns with Speedlead fields ">
+                    <Card title="Map columns from sheet to Speedlead fields ">
                         {isDuplicate && (
                             <Alert
                                 description="Same field selected for mapping."

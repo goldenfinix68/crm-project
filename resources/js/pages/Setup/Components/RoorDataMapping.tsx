@@ -35,9 +35,8 @@ const RoorDataMapping: React.FC = () => {
 
     const save = useMutation(userSettings, {
         onSuccess: () => {
-            queryClient.invalidateQueries("contacts");
-            queryClient.invalidateQueries("filteredContacts");
-            message.success("Crawl is queued.");
+            queryClient.invalidateQueries("user");
+            message.success("Successfully saved.");
         },
         onError: (e: any) => {
             console.log(e.message || "An error occurred");
