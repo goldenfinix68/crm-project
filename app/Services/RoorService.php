@@ -71,10 +71,10 @@ class RoorService
         return self::makeRequest($endpoint, 'POST', $data, $headers);
     }
 
-    public function sendAutoCampaign($contact, $roorMapping)
+    public function sendAutoCampaign($contact, $roorMapping, $responderId)
     {
 
-        $endpoint = '/post/autoCampaignSend/key/' . env('ROOR_API_KEY') . '/response/json/campaign/' . $roorMapping;
+        $endpoint = '/post/autoCampaignSend/key/' . env('ROOR_API_KEY') . '/response/json/campaign/' . $responderId;
 
         $data = [
             'phone' => $contact->fields[$roorMapping->phone ?? ""] ?? "",
