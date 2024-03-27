@@ -102,7 +102,7 @@ const ContactTableHeader = ({
     const deleteContact = useMutation(deleteContactMutation, {
         onSuccess: () => {
             console.log("success");
-            queryClient.invalidateQueries("contacts");
+            queryClient.invalidateQueries(ENDPOINTS.contacts.cache);
             clearSelection();
         },
     });

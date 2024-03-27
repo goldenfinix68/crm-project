@@ -281,14 +281,13 @@ class ContactsController extends Controller
     {
         foreach ($request->contactId as $id) {
             $contact = Contact::find($id);
-            
-            $contact->customFieldValues->delete();
+            $contact->customFieldValues()->delete();
 
-            $data = $contact->delete();
+            $contact->delete();
         }
         return response()->json([
             'success' => true,
-            'data' => $data
+            'data' => ""
         ]);
     }
     public function cloneContact(Request $request)
