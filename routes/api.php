@@ -171,6 +171,8 @@ Route::post('/openphone/webhook', function (Request $request) {
     $json = json_decode(file_get_contents("php://input"), true);
     \Log::info('openphonewebhook');
     \Log::info($json);
+
+    return 'GOT IT';
 });
 Route::get('/telnyx/sms/webhook/fail', function (Request $request) {
     \Log::error('INCOMING SMS FAIL');
