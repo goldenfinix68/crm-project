@@ -41,7 +41,10 @@ import ContactTypeTag from "../../../components/ContactTypeTag";
 import TextEllipsis from "../../../components/TextEllipsis";
 import CustomFieldFormModal from "../../../components/CustomFieldFormModal";
 import ContactInfoEditableText from "../../../components/ContactInfoEditableText";
-import { useCustomFields } from "../../../api/query/customFieldQuery";
+import {
+    useCustomFieldSections,
+    useCustomFields,
+} from "../../../api/query/customFieldQuery";
 import CustomLink from "../../../components/CustomLink";
 
 const ContactInfo = ({ contact }: { contact: TContact }) => {
@@ -59,11 +62,16 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
 
     const { isRoleStats } = useAppContextProvider();
 
-    const {
-        data: contactFields,
-        isLoading: isContactFieldsLoading,
-        refetch: refetchContactFields,
-    } = useCustomFields("contact");
+    // const {
+    //     data: contactFields,
+    //     isLoading: isContactFieldsLoading,
+    //     refetch: refetchContactFields,
+    // } = useCustomFields("contact");
+
+    const { data: sections, refetch: refetchSections } =
+        useCustomFieldSections("contact");
+
+    const contactFields = sections?.flatMap((section) => section.fields);
 
     const save = useMutation(saveCustomFieldValuesMutation, {
         onSuccess: () => {
@@ -312,15 +320,12 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                     {contactFields
                         ?.filter(
                             (field) =>
-                                field.fieldName !== "firstName" &&
-                                field.fieldName !== "lastName"
-                        )
-                        .sort(
-                            (a, b) => (a?.tableSort ?? 0) - (b?.tableSort ?? 0)
+                                field?.fieldName !== "firstName" &&
+                                field?.fieldName !== "lastName"
                         )
                         .map((record) => (
                             <div
-                                key={record.fieldName}
+                                key={record?.fieldName}
                                 style={{
                                     borderBottom: "1px solid #F0F0F0",
                                     paddingBottom: 0,
@@ -332,11 +337,11 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                                         textAlign: "left",
                                     }}
                                 >
-                                    <TextEllipsis>{`${record.label}: `}</TextEllipsis>
+                                    <TextEllipsis>{`${record?.label}: `}</TextEllipsis>
                                 </div>
                                 <ContactInfoEditableText
                                     record={contact.fields}
-                                    field={record}
+                                    field={record!}
                                     handleSubmit={() => {
                                         queryClient.invalidateQueries(
                                             "getContact"
