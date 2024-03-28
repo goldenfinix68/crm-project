@@ -154,7 +154,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::post('/googlesheet/change-bg-color', 'App\Http\Controllers\Api\GoogleSheetsController@updateRowBackgroundColor');
     Route::post('/googlesheet/get-column-names', 'App\Http\Controllers\Api\GoogleSheetsController@getColumnNames');
-
+    Route::post('/openphone/upload', 'App\Http\Controllers\Api\CallsController@openPhoneImportAudio');
 });
 
 Route::post('/calls/roorCalls', 'App\Http\Controllers\Api\CallsController@roorCalls');
@@ -167,13 +167,7 @@ Route::post('/telnyx/call/webhook/fail', 'App\Http\Controllers\Api\CallsControll
 
 
 
-Route::post('/openphone/webhook', function (Request $request) {
-    $json = json_decode(file_get_contents("php://input"), true);
-    \Log::info('openphonewebhook');
-    \Log::info($json);
 
-    return 'GOT IT';
-});
 Route::get('/telnyx/sms/webhook/fail', function (Request $request) {
     \Log::error('INCOMING SMS FAIL');
     $json = json_decode(file_get_contents("php://input"), true);

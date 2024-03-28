@@ -13,6 +13,7 @@ import {
     DatabaseOutlined,
     UsergroupAddOutlined,
     PicCenterOutlined,
+    UploadOutlined,
 } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppContextProvider } from "../../context/AppContext";
@@ -108,6 +109,11 @@ const Setup: React.FC = (props) => {
             icon: <PicCenterOutlined />,
             title: "Roor Data Mapping",
             link: "/setup/data-administration/roor-data-mapping",
+        },
+        {
+            icon: <UploadOutlined />,
+            title: "OpenPhone Audio Import",
+            link: "/setup/data-administration/openphone-audio-import",
         },
     ];
 

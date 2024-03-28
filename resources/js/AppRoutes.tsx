@@ -40,6 +40,7 @@ import TextTemplates from "./pages/TextTemplates";
 import Users from "./pages/Users";
 import AddEditUser from "./pages/Users/AddEditUser";
 import RoorDataMapping from "./pages/Setup/Components/RoorDataMapping";
+import OpenPhoneAudioImport from "./pages/Setup/Components/OpenPhoneAudioImport";
 
 const AppRoutes = () => {
     const { user, isLoading, isError } = useLoggedInUser();
@@ -382,6 +383,17 @@ const AppRoutes = () => {
                                         <SetupLayout
                                             content={<RoorDataMapping />}
                                             title="Roor Data Mapping"
+                                        />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/setup/data-administration/openphone-audio-import"
+                                element={
+                                    <PrivateRoute>
+                                        <SetupLayout
+                                            content={<OpenPhoneAudioImport />}
+                                            title="OpenPhone Audio Import"
                                         />
                                     </PrivateRoute>
                                 }
