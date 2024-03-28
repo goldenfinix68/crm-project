@@ -144,6 +144,11 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                     path: "/setup/data-administration/roor-data-mapping",
                     label: "Roor Data Mapping",
                 },
+                {
+                    key: "/setup/data-administration/openphone-audio-import",
+                    path: "/setup/data-administration/openphone-audio-import",
+                    label: "OpenPhone Audio Import",
+                },
             ],
         },
     ];

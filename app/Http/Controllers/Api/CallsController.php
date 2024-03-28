@@ -10,6 +10,7 @@ use App\Models\MobileNumber;
 use Carbon\Carbon;
 use DB;
 use App\Business\Pusher;
+use App\Services\MobileNumberService;
 
 class CallsController extends Controller
 {
@@ -225,5 +226,60 @@ class CallsController extends Controller
             'call_received_date' => $request->call_received_date,
         ]);
     }
+
+    public function openPhoneImportAudio(Request $request) {
+        // Validate the incoming file. Refuses anything bigger than 2048 kilobyes (=2MB)
+        $request->validate([
+            'audio' => 'nullable|file|mimes:audio/mpeg,mpga,mp3,wav,aac',
+        ]);
+
+        // Store the file in storage\app\public folder
+        $file = $request->file('audio');
+        $fileName = $file->getClientOriginalName();
+        $filePath = $file->storeAs('uploads', $fileName,'public');
+
+        // 2024-03-13T19_56_16+00_00+13034892316.mp3
+        // $fileName = str_replace(['T', '+', '_'], [' ', ' ', ' '], $fileName);
+        $fileName = explode('+', $fileName);
+        $timeStamp = $fileName[0];
+        $timeStamp = str_replace(['_'], [':'], $timeStamp);
+        $timeStamp = str_replace(['T'], [' '], $timeStamp);
+
+        $toNumber = $fileName[count($fileName) - 1];
+        $toNumber = explode('.', $toNumber);
+        $toNumber = $toNumber[0];
+
+
+        $toNumber = MobileNumberService::formatPhoneNumber($toNumber);
+
+        $url_recording = env('APP_URL').'/storage/'.$filePath;
+        $call = \App\Models\Call::updateOrCreate([
+            // 'from' => $request->from,
+            'to' => $toNumber,
+            'call_received_date' => $timeStamp,
+        ],[
+            'from' => '7207408070',
+            'to' => $toNumber,
+            'url_recording' => $url_recording,
+            'telnyxCallSessionId' => '',
+            // 'status' => $request->status,
+            // 'disposition' => $request->disposition,
+            // 'duration' => $request->duration,
+            'type' => '',
+            'call_received_date' => $timeStamp,
+        ]);
+
+        // // Store file information in the database
+        // $uploadedFile = new UploadedFile();
+        // $uploadedFile->filename = $fileName;
+        // $uploadedFile->original_name = $file->getClientOriginalName();
+        // $uploadedFile->file_path = $filePath;
+        // $uploadedFile->save();
+        return response()->json([
+            'success' => true,
+            'data' => $call,
+        ], 200);
+    }
 }
+
 
