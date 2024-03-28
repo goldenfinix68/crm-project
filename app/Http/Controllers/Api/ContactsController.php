@@ -141,23 +141,34 @@ class ContactsController extends Controller
         ], 200);
     }
 
-    public function filteredContacts(Request $request)
+    public function searchByNumber(Request $request)
     {
 
-        $data = [];
-        $contacts = Contact::where('userId', $this->getMainUserId());
+        $userId = $this->getMainUserId();
+        $keyword = $request->keyword;
 
-        if(!empty($request->filters)){
+        $contactIds = CustomFieldValue::distinct()->select('customableId')
+            ->join('contacts as c', 'custom_field_values.customableId', '=', 'c.id')
+            ->join('custom_fields as cf', 'cf.id', '=', 'custom_field_values.customFieldId')
+            
+            ->where('c.userId', $userId)
+            ->where(function ($q) {
+                $q->where('cf.type', 'mobile')
+                    ->orWhere('cf.type', 'phone')
+                    ->orWhere('cf.fieldName', 'firstName')
+                    ->orWhere('cf.fieldName', 'lastName');
+            })
+            ->where('value', '!=', "")
+            ->where('value', 'like', "%$keyword%")
+            ->limit(10)
+            ->pluck('customableId');
 
-        }
+        $contacts = Contact::whereIn('id', $contactIds)->get();
 
-
-        $contacts = $contacts
-        ->limit(100)
-        ->get();
-
-        // dd($contacts->customFieldValues);
-        return response()->json($contacts, 200);
+        return response()->json([
+            'success' => true,
+            'data' => $contacts,
+        ], 200);
 
     }
 

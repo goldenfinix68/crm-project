@@ -4,11 +4,14 @@ import {
     Button,
     Form,
     Input,
+    InputNumber,
+    Popconfirm,
     Select,
     Space,
     Typography,
+    message,
 } from "antd";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ICall } from "@telnyx/webrtc";
 import { useParams } from "react-router-dom";
 import { useGetContact } from "../../../api/query/contactsQuery";
@@ -18,6 +21,10 @@ import DialerKeyPad from "./DialerKeyPad";
 import { useLoggedInUser } from "../../../api/query/userQuery";
 import { useCallContext } from "../../../context/CallContext";
 import { useAppContextProvider } from "../../../context/AppContext";
+import { mutateGet, mutatePost } from "../../../api/mutation/useSetupMutation";
+import _ from "lodash";
+import InputMobile from "../../../components/InputMobile";
+import { useMutation } from "react-query";
 
 interface CallNotificationData {
     type: string | undefined;
@@ -25,177 +32,215 @@ interface CallNotificationData {
     direction: string | undefined;
 }
 
-const DialerTab = ({
-    handleFinish,
-    isCallBtnLoading,
-}: {
-    handleFinish: () => void;
-    isCallBtnLoading: boolean;
-}) => {
-    const { contactId } = useParams();
-    const { user, isLoading: isLogginUserLoading } = useLoggedInUser();
-    const { contacts, isContactsLoading, isRoleStats } =
-        useAppContextProvider();
-
+const DialerTab = () => {
     const [form] = Form.useForm();
+    const { user, isLoading: isLogginUserLoading } = useLoggedInUser();
+    const [isSearchLoading, setIsSearchLoading] = useState(false);
+    const [keyword, setKeyword] = useState<string>("");
+    const [contacts, setContacts] = useState<any>();
 
     const {
         setCallerNumber,
         setDestinationNumber,
+        setAgentNumber,
+        agentNumber,
         callerNumber,
         destinationNumber,
     } = useCallContext();
 
-    const handleCall = (value) => {
-        const data = {
-            callerNumber: `${value.callerNumber
-                ?.replace(/ /g, "")
-                .replace(/-/g, "")}`,
-            destinationNumber: `${value.destinationNumber
-                ?.replace(/ /g, "")
-                .replace(/-/g, "")}`,
-        };
-        handleFinish();
+    const { data: filteredContacts, refetch: refetchFilteredContacts } =
+        mutateGet(
+            { keyword },
+            "/api/contacts/search-by-number",
+            "contact-search-by-number",
+            () => {
+                setIsSearchLoading(false);
+            }
+        );
+
+    const inititateCall = useMutation(mutatePost, {
+        onSuccess: (res) => {
+            message.success("Call Initiated");
+        },
+    });
+
+    const debouncedSearch = _.debounce((e) => {
+        handleSearch(e);
+    }, 300);
+
+    const handleSearch = (value) => {
+        setKeyword(value);
     };
 
-    const handleFormChange = (value: any, allValues: any) => {
-        setCallerNumber(allValues.callerNumber);
-        setDestinationNumber(allValues.destinationNumber);
+    useEffect(() => {
+        setIsSearchLoading(true);
+        refetchFilteredContacts();
+    }, [keyword]);
+
+    useEffect(() => {
+        if (filteredContacts && filteredContacts.data) {
+            setContacts(filteredContacts.data);
+            console.log(filteredContacts.data);
+        }
+    }, [filteredContacts]);
+
+    const handleCall = (values) => {
+        console.log(values);
+        inititateCall.mutate({
+            url: "/api/calls/initiate-roor-call",
+            data: values,
+        });
     };
 
-    const handleKeyPressed = (e) => {
-        const currentValue = form.getFieldValue("destinationNumber");
-        form.setFieldValue("destinationNumber", `${currentValue ?? ""}${e}`);
-        console.log(`${currentValue}${e}`);
+    // const handleFormChange = (value: any, allValues: any) => {
+    //     setCallerNumber(allValues.callerNumber);
+    //     setDestinationNumber(allValues.destinationNumber);
+    //     setAgentNumber(allValues.agentNumber);
+    // };
+
+    const mobileFormatter = (value) => {
+        // Implement mobile formatting logic here
+        // For example, format as (XXX) XXX-XXXX
+        return `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6)}`;
     };
-    const filteredOptions = contacts?.filter((contact) =>
-        contact?.fields?.mobile?.includes(
-            destinationNumber ? destinationNumber.replace(/[-\s+_]/g, "") : ""
-        )
-    );
+
+    // Parser function to remove non-numeric characters
+    const mobileParser = (value) => value.replace(/\D/g, "");
+
     useEffect(() => {
         form.setFieldsValue({
             callerNumber: callerNumber,
             destinationNumber: destinationNumber,
+            agentNumber: agentNumber,
         });
-    }, [callerNumber, destinationNumber]);
-
-    if (isContactsLoading || isLogginUserLoading) {
-        return <LoadingComponent />;
-    }
+    }, [callerNumber, destinationNumber, agentNumber]);
 
     return (
         <Form
             form={form}
-            // initialValues={{
-            //     callerNumber: user.numbers?.length ? user.numbers[0] : "",
-            //     destinationNumber: contact ? contact.mobile : "",
-            // }}
             labelCol={{ span: 24 }}
             wrapperCol={{ span: 24 }}
             onFinish={handleCall}
-            onValuesChange={handleFormChange}
+            // onValuesChange={handleFormChange}
         >
-            <Space
-                style={{ padding: "0px 20px", width: "100%" }}
-                className="dialerTab"
-                direction="vertical"
+            <Form.Item
+                name="callerNumber"
+                label="From"
+                rules={[
+                    {
+                        required: true,
+                        message: DEFAULT_REQUIRED_MESSAGE,
+                    },
+                ]}
             >
-                <Form.Item
-                    name="callerNumber"
-                    label="From"
-                    rules={[
-                        {
-                            required: true,
-                            message: DEFAULT_REQUIRED_MESSAGE,
-                        },
-                    ]}
+                <Select style={{ width: "100%" }} value={callerNumber}>
+                    {user?.mobileNumbers?.map((number) => (
+                        <Select.Option
+                            value={number.mobileNumber}
+                            key={number.id}
+                        >
+                            {number.mobileNumber}
+                        </Select.Option>
+                    ))}
+                </Select>
+            </Form.Item>
+
+            <Form.Item
+                name="agentNumber"
+                label="Agent number"
+                rules={[
+                    {
+                        required: true,
+                        message: DEFAULT_REQUIRED_MESSAGE,
+                    },
+                ]}
+            >
+                <InputNumber
+                    className="w-100"
+                    formatter={mobileFormatter}
+                    parser={mobileParser}
+                />
+            </Form.Item>
+            <Form.Item
+                name="destinationNumber"
+                label="Contact"
+                rules={[
+                    {
+                        required: true,
+                        message: DEFAULT_REQUIRED_MESSAGE,
+                    },
+                ]}
+            >
+                <Select
+                    style={{ width: "100%" }}
+                    showSearch
+                    onSearch={debouncedSearch}
+                    loading={isSearchLoading}
+                    optionFilterProp="children"
                 >
-                    <Select style={{ width: "100%" }} value={callerNumber}>
-                        {user?.numbers?.map((number) => (
-                            <Select.Option
-                                value={number.mobileNumber}
-                                key={number.id}
-                            >
-                                {number.mobileNumber}
+                    {contacts?.map((contact) =>
+                        contact?.phoneNumbers?.map((number, index) => (
+                            <Select.Option value={number} key={index}>
+                                {`${number.replace(
+                                    /^(\d{3})(\d{3})(\d{4})$/,
+                                    "($1) $2-$3"
+                                )} (${contact.fields?.firstName} ${
+                                    contact.fields?.lastName
+                                })`}
                             </Select.Option>
-                        ))}
-                    </Select>
-                </Form.Item>
+                        ))
+                    )}
+                </Select>
+            </Form.Item>
 
-                <Form.Item
-                    name="destinationNumber"
-                    label="To"
-                    rules={[
-                        {
-                            required: true,
-                            message: DEFAULT_REQUIRED_MESSAGE,
-                        },
-                    ]}
+            {/* <Form.Item
+                name="destinationNumber"
+                label="Phone Number"
+                rules={[
+                    {
+                        required: true,
+                        message: DEFAULT_REQUIRED_MESSAGE,
+                    },
+                ]}
+            >
+                <Select style={{ width: "100%" }} showSearch>
+                    {phoneNumbers?.map((value, index) => (
+                        <Select.Option
+                            value={value.replace(
+                                /^(\d{3})(\d{3})(\d{4})$/,
+                                "($1) $2-$3"
+                            )}
+                            key={index}
+                        >
+                            {value.replace(
+                                /^(\d{3})(\d{3})(\d{4})$/,
+                                "($1) $2-$3"
+                            )}
+                        </Select.Option>
+                    ))}
+                </Select>
+            </Form.Item> */}
+
+            {/* <DialerKeyPad handleKeyPressed={handleKeyPressed} /> */}
+
+            <Popconfirm
+                title="Call"
+                description={`Are you sure you want to call this number?`}
+                onConfirm={async () => {
+                    form.validateFields().then((values) => {
+                        form.submit();
+                    });
+                }}
+            >
+                <Button
+                    type="primary"
+                    // htmlType="submit"
+                    loading={inititateCall.isLoading}
+                    style={{ float: "right" }}
                 >
-                    <AutoComplete
-                        options={filteredOptions?.map((option) => ({
-                            value: option.fields.mobile,
-                            label: (
-                                <Space>
-                                    <Typography.Text strong>
-                                        {`${option.fields.firstName} ${option.fields.lastName}`}
-                                    </Typography.Text>
-                                    <Typography.Text>
-                                        {option.fields.mobile}
-                                    </Typography.Text>
-                                </Space>
-                            ),
-                        }))}
-                        style={{ width: "100%" }}
-                        value={destinationNumber}
-                    >
-                        <Input
-                            // mask="+1 000-000-0000"
-                            value={destinationNumber}
-                        />
-                    </AutoComplete>
-                </Form.Item>
-
-                <DialerKeyPad handleKeyPressed={handleKeyPressed} />
-
-                <Space
-                    style={{
-                        position: "absolute",
-                        bottom: "16px",
-                        right: "16px",
-                    }}
-                >
-                    <Button
-                        type="primary"
-                        htmlType="submit"
-                        loading={isCallBtnLoading}
-                        disabled={isRoleStats}
-                    >
-                        Call <PhoneOutlined />
-                    </Button>
-                </Space>
-
-                {/* {call && call.state !== "destroy" ? (
-                    <Button
-                        style={{ width: "100%", backgroundColor: "red" }}
-                        className="dialerTabCallIcon"
-                        type="primary"
-                        onClick={() => call.hangup()}
-                    >
-                        Hangup <PhoneOutlined />
-                    </Button>
-                ) : (
-                    <Button
-                        style={{ width: "100%" }}
-                        className="dialerTabCallIcon"
-                        type="primary"
-                        htmlType="submit"
-                    >
-                        Call <PhoneOutlined />
-                    </Button>
-                )} */}
-            </Space>
+                    Call <PhoneOutlined />
+                </Button>
+            </Popconfirm>
         </Form>
     );
 };
