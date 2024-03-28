@@ -65,7 +65,7 @@ const OpenPhoneAudioImport = () => {
             console.log(file);
             try {
                 const res = axios.post(
-                    "https://crm-project.test/api/openphone/upload",
+                    "https://speedlead.click/api/openphone/upload",
                     fmData,
                     config
                 );
