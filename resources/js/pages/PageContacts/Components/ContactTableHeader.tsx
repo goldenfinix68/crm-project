@@ -364,7 +364,7 @@ const ContactTableHeader = ({
                     isModalOpen={isBulkUpdateModalOpen}
                     closeModal={() => setIsBulkUpdateModalOpen(false)}
                     handleSubmit={() => {
-                        console.log("qwe");
+                        queryClient.invalidateQueries(ENDPOINTS.contacts.cache);
                     }}
                     selectedRowKeys={selectedRowKeys}
                 />

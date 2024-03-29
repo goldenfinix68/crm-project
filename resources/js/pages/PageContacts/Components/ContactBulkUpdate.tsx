@@ -1,12 +1,11 @@
 import { Radio } from "antd";
 import { Button, Modal, Select, Typography, Form } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
-import React from "react";
+import React, { useEffect } from "react";
 import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
 import { useMutation, useQueryClient } from "react-query";
 import { bulkUpdateField } from "../../../api/mutation/useContactMutation";
 import { TContact } from "../../../entities";
-import { useAppContextProvider } from "../../../context/AppContext";
 import CustomFieldInput from "../../../components/CustomFieldInput";
 import { useCustomFields } from "../../../api/query/customFieldQuery";
 
@@ -15,12 +14,16 @@ interface ContactsComponentsUpdateProps {
     closeModal: () => void;
     handleSubmit: () => void;
     selectedRowKeys: string[];
+    type?: string;
+    defaultCustomFieldId?: string;
 }
 const ContactBulkUpdate = ({
     isModalOpen,
     closeModal,
     handleSubmit,
     selectedRowKeys,
+    defaultCustomFieldId,
+    type = "contact",
 }: ContactsComponentsUpdateProps) => {
     const queryClient = useQueryClient();
     const [form] = Form.useForm<TContact>();
@@ -45,8 +48,9 @@ const ContactBulkUpdate = ({
     const bulkUpdate = useMutation(bulkUpdateField, {
         onSuccess: () => {
             resetFields();
-            queryClient.invalidateQueries("contacts");
-            queryClient.invalidateQueries("filteredContacts");
+            if (handleSubmit) {
+                handleSubmit();
+            }
         },
     });
 
@@ -56,8 +60,15 @@ const ContactBulkUpdate = ({
             fieldValue: values[customField?.fieldName!],
             customField,
             action: values?.action ?? "",
+            type,
         });
     };
+
+    useEffect(() => {
+        if (defaultCustomFieldId) {
+            form.setFieldValue("customFieldId", defaultCustomFieldId);
+        }
+    }, [defaultCustomFieldId]);
 
     return (
         <>
@@ -106,16 +117,15 @@ const ContactBulkUpdate = ({
                             <Select
                                 defaultValue="Select"
                                 style={{ width: "100%" }}
+                                showSearch
+                                optionFilterProp="children"
+                                disabled={Boolean(defaultCustomFieldId)}
                             >
-                                {contactFields
-                                    ?.filter(
-                                        (field) => field.fieldName != "mobile"
-                                    )
-                                    ?.map((field) => (
-                                        <Select.Option value={field.id}>
-                                            {field.label}
-                                        </Select.Option>
-                                    ))}
+                                {contactFields?.map((field) => (
+                                    <Select.Option value={field.id}>
+                                        {field.label}
+                                    </Select.Option>
+                                ))}
                             </Select>
                         </Form.Item>
 

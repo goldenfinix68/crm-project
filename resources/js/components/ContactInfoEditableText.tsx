@@ -12,6 +12,7 @@ import {
     Row,
     Col,
     Typography,
+    Tag,
 } from "antd";
 
 import React from "react";
@@ -66,6 +67,12 @@ const ContactInfoEditableText = ({
     const getLabel = () => {
         if (field.type == "contactTypeLookup") {
             return <ContactTypeTag fields={record} />;
+        }
+        if (field.type == "tag" && record[field.fieldName]) {
+            const tags = JSON.parse(record[field.fieldName + "lookupIds"]);
+            if (Array.isArray(tags)) {
+                return tags?.map((tag) => <Tag>{tag}</Tag>);
+            }
         }
         if (field.type == "url" && record[field.fieldName]) {
             return (

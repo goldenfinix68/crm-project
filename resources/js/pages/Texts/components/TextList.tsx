@@ -39,6 +39,7 @@ import CustomLink from "../../../components/CustomLink";
 import moment from "moment";
 import { useCustomFields } from "../../../api/query/customFieldQuery";
 import _ from "lodash";
+import ContactBulkUpdate from "../../PageContacts/Components/ContactBulkUpdate";
 
 const TextList = ({ label }) => {
     const [isTextThreadLoading, setIsTextThreadLoading] = useState(true);
@@ -400,56 +401,69 @@ const TextList = ({ label }) => {
                     size="small"
                 />
             </center>
+            {isDeleteModalOpen && (
+                <ConfirmModal
+                    title="Confirm"
+                    message={`Are you sure you want to archive this thread?`}
+                    handleNo={() => {
+                        setIsDeleteModalOpen(false);
+                        setSelectedThread(undefined);
+                    }}
+                    handleYes={async () => {
+                        setIsDeleteBtnLoading(true);
+                        await archiveThread.mutate(
+                            isViaMultiple
+                                ? { threadIds: selectedThreadIds }
+                                : { threadIds: [selectedThread!.id!] }
+                        );
+                        setSelectedThread(undefined);
+                    }}
+                    isOpen={isDeleteModalOpen}
+                    loading={isDeleteBtnLoading}
+                />
+            )}
 
-            <ConfirmModal
-                title="Confirm"
-                message={`Are you sure you want to archive this thread?`}
-                handleNo={() => {
-                    setIsDeleteModalOpen(false);
-                    setSelectedThread(undefined);
-                }}
-                handleYes={async () => {
-                    setIsDeleteBtnLoading(true);
-                    await archiveThread.mutate(
+            {isAssignLabelModalOpen && (
+                <AssignLabelModal
+                    isModalOpen={isAssignLabelModalOpen}
+                    closeModal={() => {
+                        setIsAssignLabelModalOpen(false);
+                        setSelectedThread(undefined);
+                        setSelectedThreadIds([]);
+                    }}
+                    threadIds={
                         isViaMultiple
-                            ? { threadIds: selectedThreadIds }
-                            : { threadIds: [selectedThread!.id!] }
-                    );
-                    setSelectedThread(undefined);
-                }}
-                isOpen={isDeleteModalOpen}
-                loading={isDeleteBtnLoading}
-            />
+                            ? selectedThreadIds
+                            : [selectedThread?.id ?? ""]
+                    }
+                    defaultChecked={
+                        !isViaMultiple
+                            ? selectedThread?.labels?.map(
+                                  (label) => label.id ?? ""
+                              )
+                            : undefined
+                    }
+                    isViaMultiple={isViaMultiple}
+                />
+            )}
 
-            <AssignLabelModal
-                isModalOpen={isAssignLabelModalOpen}
-                closeModal={() => {
-                    setIsAssignLabelModalOpen(false);
-                    setSelectedThread(undefined);
-                    setSelectedThreadIds([]);
-                }}
-                threadIds={
-                    isViaMultiple
-                        ? selectedThreadIds
-                        : [selectedThread?.id ?? ""]
-                }
-                defaultChecked={
-                    !isViaMultiple
-                        ? selectedThread?.labels?.map((label) => label.id ?? "")
-                        : undefined
-                }
-                isViaMultiple={isViaMultiple}
-            />
-
-            <AddTagModal
-                isModalOpen={isAddTagModalOpen}
-                closeModal={() => {
-                    setIsAddTagModalOpen(false);
-                    setSelectedThread(undefined);
-                    setSelectedThreadIds([]);
-                }}
-                threadIds={selectedThreadIds}
-            />
+            {isAddTagModalOpen && (
+                <ContactBulkUpdate
+                    isModalOpen={isAddTagModalOpen}
+                    closeModal={() => setIsAddTagModalOpen(false)}
+                    handleSubmit={() => {
+                        queryClient.invalidateQueries("thread");
+                        setIsAddTagModalOpen(false);
+                        setSelectedThread(undefined);
+                        setSelectedThreadIds([]);
+                    }}
+                    selectedRowKeys={selectedThreadIds}
+                    type="thread"
+                    defaultCustomFieldId={
+                        contactFields?.find((field) => field.type == "tag")?.id
+                    }
+                />
+            )}
         </>
     );
 };

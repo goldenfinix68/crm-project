@@ -54,10 +54,6 @@ import { useMarkThreadSeen } from "../../../api/mutation/useTextMutation";
 
 const TextBoxView = () => {
     const [label, setLabel] = useState("");
-    const [isCreateLabelModalOpen, setIsCreateLabelModalOpen] = useState(false);
-    const [selectedTextLabel, setSelectedTextLabel] = useState<
-        TTextLabel | undefined
-    >(undefined);
 
     const { threadId } = useParams();
     const { contactId } = useParams();
@@ -89,12 +85,6 @@ const TextBoxView = () => {
                         </Col>
                     )}
                 </Row>
-
-                <AddUpdateTextLabelModal
-                    isModalOpen={isCreateLabelModalOpen}
-                    closeModal={() => setIsCreateLabelModalOpen(false)}
-                    textLabel={selectedTextLabel}
-                />
             </Card>
         </Space>
     );

@@ -12,9 +12,12 @@ use App\Models\ContactLog;
 use App\Models\Text;
 use App\Models\Deal;
 use App\Models\Activity;
+use App\Models\TextThread;
 use App\Models\GSheetCrawlResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+
+use App\Services\ContactService;
 
 use Ramsey\Uuid\Uuid;
 
@@ -601,30 +604,36 @@ class ContactsController extends Controller
         }
         $customField = CustomField::find($request->customField['id']);
 
+        $type = $request->type;
+        $user = Auth::user();
+
         foreach($request->contactIds as $id){
             $value = $request->fieldValue;
             if($customField->type == "tag" && !empty($request->action)){
-                $contact = Contact::find($id);
-                $curValue = json_decode($contact->fields[$customField->fieldName."lookupIds"]);
-                if(!empty($curValue)){
-                    $curValue = (array) $curValue;
-                    if($request->action == "add"){
-                        $value = array_merge($curValue, $value);
-                        $value = array_unique($value);
-                    }
-                    elseif ($request->action == "remove"){
-                        $value = array_diff($curValue, $value);
-                    }
+                if($type == "thread"){
+                    $thread = TextThread::find($id);
+                    $contacts = ContactService::getContactsByMobile($thread->contactNumber, [$user->mainId]);
                 }
-
-                // if(!empty($request->phoneFieldStatus)){
-                //     $fieldValue = CustomFieldValue::find($contact->fields[$customField->fieldName."Id"]);
-                //     $customFieldValuesController = new CustomFieldValue();
-                //     $customFieldValuesController->updateStatus($fieldValue, $request->phoneFieldStatus);
-                // }
+                else{
+                    $contacts = Contact::where('id', $id)->get();
+                }
+                foreach($contacts as $contact){
+                    $curValue = json_decode($contact->fields[$customField->fieldName."lookupIds"]);
+                    if(!empty($curValue)){
+                        $curValue = (array) $curValue;
+                        if($request->action == "add"){
+                            $value = array_merge($curValue, $value);
+                            $value = array_unique($value);
+                        }
+                        elseif ($request->action == "remove"){
+                            $value = array_diff($curValue, $value);
+                        }
+                    }
+                    $this->createOrUpdateCustomFieldValue($contact->id, $customField, 'contact', $value);
+                }
+                
             }
 
-            $this->createOrUpdateCustomFieldValue($id, $customField, 'contact', $value);
         }
         
         return response()->json(['message' => "Success"], 200);
