@@ -101,6 +101,10 @@ const TextsHeaderMenu = ({
                                             SELECT TEXT LABEL
                                         </Typography.Text>
                                     </Menu.Item>
+
+                                    <Menu.Item key="">
+                                        <Tag>No label</Tag>
+                                    </Menu.Item>
                                     {labels
                                         ?.filter((label) =>
                                             label.name.includes(tagSearchKey)

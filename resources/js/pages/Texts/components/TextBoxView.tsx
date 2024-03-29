@@ -66,9 +66,7 @@ const TextBoxView = () => {
 
     return (
         <Space direction="vertical" style={{ width: "100%" }}>
-            <TextsHeaderMenu
-                handleLabelChange={(e) => setLabel(`{{label:${e.key}}} `)}
-            />
+            <TextsHeaderMenu handleLabelChange={(e) => setLabel(e.key)} />
             <Card bodyStyle={{ padding: 0 }}>
                 <Row gutter={0} style={{ height: "85vh" }}>
                     <Col

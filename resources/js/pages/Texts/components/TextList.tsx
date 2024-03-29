@@ -47,6 +47,7 @@ const TextList = ({ label }) => {
         page_size: 20,
         page: 1,
         searchKey: "",
+        label: "",
         total: 0,
     });
 
@@ -103,13 +104,18 @@ const TextList = ({ label }) => {
     };
 
     useEffect(() => {
-        setSearchKey(label);
+        setPagination({ ...pagination, label: label });
     }, [label]);
 
     useEffect(() => {
         setIsTextThreadLoading(true);
         refetchTextThreads();
-    }, [pagination.page, pagination.searchKey, pagination.page_size]);
+    }, [
+        pagination.page,
+        pagination.searchKey,
+        pagination.page_size,
+        pagination.label,
+    ]);
 
     useEffect(() => {
         if (filteredThreads && filteredThreads.data) {
