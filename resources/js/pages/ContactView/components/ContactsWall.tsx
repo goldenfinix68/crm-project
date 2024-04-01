@@ -316,7 +316,7 @@ const NoteBox = ({ data }: { data: TWallData }) => {
             bordered={false}
             extra={
                 <Space size={0}>
-                    {moment.utc(data.date).local().format("MMM DD")}{" "}
+                    {moment.utc(data.date).local().format("MMM DD HH:MM A")}{" "}
                     <Popconfirm
                         title="Delete"
                         description="Are you sure to delete this note?"
