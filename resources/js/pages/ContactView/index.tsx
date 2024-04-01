@@ -1,5 +1,5 @@
 import { Card, Col, Row, Space, Spin } from "antd";
-import React, { createContext } from "react";
+import React, { createContext, useEffect } from "react";
 import ContactInfo from "./components/ContactInfo";
 import ActionsTabs from "./components/ActionsTabs";
 import ContactsWall from "./components/ContactsWall";
@@ -14,8 +14,12 @@ import DealSteps from "./components/DealSteps";
 
 const ContactView = () => {
     const { contactId } = useParams();
-    const { contact, isLoading } = useGetContact(contactId ?? "");
+    const { contact, isLoading, refetch } = useGetContact(contactId ?? "");
     const { isRoleStats } = useAppContextProvider();
+
+    useEffect(() => {
+        refetch();
+    }, [contactId]);
 
     if (isLoading || !contact) {
         return <LoadingComponent />;
