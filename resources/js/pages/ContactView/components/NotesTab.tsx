@@ -7,15 +7,25 @@ import "react-quill/dist/quill.snow.css";
 import { addNoteMutation } from "../../../api/mutation/useNoteMutation";
 import queryClient from "../../../queryClient";
 import ContactContext from "../context";
+import { TNote } from "../../../entities";
 
-const Notestab = () => {
+const Notestab = ({
+    note,
+    handleCancel,
+}: {
+    note?: TNote;
+    handleCancel?: () => void;
+}) => {
     const [form] = Form.useForm();
     const notes = Form.useWatch("notes", form);
     const quillRef = React.useRef(null);
-    const [isFocused, setIsFocused] = React.useState(false);
+    const [isFocused, setIsFocused] = React.useState(note ? true : false);
     const { contact } = useContext(ContactContext);
 
     const resetFields = () => {
+        if (handleCancel) {
+            handleCancel();
+        }
         setIsFocused(false);
         form.resetFields();
     };
@@ -30,7 +40,11 @@ const Notestab = () => {
     });
 
     const handleFinish = async (values) => {
-        await addNote.mutate({ ...values, contactId: contact.id });
+        await addNote.mutate({
+            ...values,
+            contactId: contact.id,
+            id: note?.id,
+        });
     };
 
     React.useEffect(() => {
@@ -39,13 +53,21 @@ const Notestab = () => {
         }
     }, [isFocused]);
 
+    React.useEffect(() => {
+        if (note) {
+            form.setFieldValue("notes", note.notes);
+        } else {
+            form.resetFields();
+        }
+    }, [note]);
+
     return (
         <Form form={form} onFinish={handleFinish}>
             <Form.Item name="notes">
                 {isFocused ? (
                     <ReactQuill
                         ref={quillRef}
-                        style={{ height: "150px" }}
+                        style={{ height: note ? "300px" : "150px" }}
                         onBlur={() => {
                             if (!notes || notes == "<p><br></p>") {
                                 resetFields();
