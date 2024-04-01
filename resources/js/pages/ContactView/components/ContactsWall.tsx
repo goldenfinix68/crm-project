@@ -427,7 +427,7 @@ const TextBox = ({ data, user }: { data: TWallData; user: TUser }) => {
                 </Typography.Text>
             }
             bordered={false}
-            extra={moment.utc(data.date).local().format("MMM DD")}
+            extra={moment.utc(data.date).local().format("MMM DD HH:MM A")}
         >
             <Space direction="vertical" size={"middle"}>
                 <Space size={"large"}>
@@ -463,7 +463,7 @@ const DealBox = ({ data, user }: { data: TWallData; user: TUser }) => {
                 </Typography.Text>
             }
             bordered={false}
-            extra={moment.utc(data.date).local().format("MMM DD")}
+            extra={moment.utc(data.date).local().format("MMM DD HH:MM A")}
         ></Card>
     );
 };
@@ -479,7 +479,7 @@ const UpdateBox = ({ data, user }: { data: TWallData; user: TUser }) => {
                 </Typography.Text>
             }
             bordered={false}
-            extra={moment.utc(data.date).local().format("MMM DD")}
+            extra={moment.utc(data.date).local().format("MMM DD HH:MM A")}
             style={{ backgroundColor: "transparent", boxShadow: "none" }}
         >
             {data.update?.from ?? "blank"} <ArrowRightOutlined />{" "}
@@ -501,7 +501,7 @@ const Log = ({ data, user }: { data: TWallData; user: TUser }) => {
                 </Typography.Text>
             }
             bordered={false}
-            extra={moment.utc(data.date).local().format("MMM DD")}
+            extra={moment.utc(data.date).local().format("MMM DD HH:MM A")}
         >
             <Row>
                 <Col md={14}>
@@ -572,7 +572,7 @@ const Activities = ({ data, user }: { data: TWallData; user: TUser }) => {
                 </Typography.Text>
             }
             bordered={false}
-            extra={moment.utc(data.date).local().format("MMM DD")}
+            extra={moment.utc(data.date).local().format("MMM DD HH:MM A")}
         >
             <Row>
                 <Col md={14}>
@@ -642,7 +642,7 @@ const File = ({ data, user }: { data: TWallData; user: TUser }) => {
                 </Typography.Text>
             }
             bordered={false}
-            extra={moment.utc(data.date).local().format("MMM DD")}
+            extra={moment.utc(data.date).local().format("MMM DD HH:MM A")}
         >
             <div
                 style={{
@@ -745,7 +745,7 @@ const CallBox = ({ data, user }: { data: TWallData; user: TUser }) => {
                 </Typography.Text>
             }
             bordered={false}
-            extra={moment.utc(data.date).local().format("MMM DD")}
+            extra={moment.utc(data.date).local().format("MMM DD HH:MM A")}
         >
             <Space
                 direction="vertical"
