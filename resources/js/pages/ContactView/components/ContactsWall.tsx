@@ -351,7 +351,7 @@ const NoteBox = ({ data }: { data: TWallData }) => {
                 bordered={false}
                 extra={
                     <Space size={"small"}>
-                        {moment.utc(data.date).local().format("MMM DD")}
+                        {moment.utc(data.date).local().format("MMM DD HH:MM A")}
                         <Dropdown
                             menu={{ items }}
                             className="dashboard-actions"
