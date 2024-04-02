@@ -30,6 +30,8 @@ class TextThreadsController extends Controller
         }
         $mainUserIds = $this->getMainUserNumbers();
 
+        $label = $request->label;
+
         $texts = Text::select('threadId')
             ->selectSub('MAX(created_at)', 'latest_created_at') // Subquery to get the latest created_at for each threadId
             ->whereHas('thread', function($query) use ($mainUserIds) {
@@ -45,6 +47,12 @@ class TextThreadsController extends Controller
                     ->orWhereHas('thread', function($query) use ($request) {
                         $query->where('contactNumber', 'like', '%' . $request->searchKey . '%');
                     });
+            });
+        }
+        
+        if (!empty($label)) {
+            $texts->whereHas('thread.labels', function($query) use ($label) {
+                $query->where('name', $label);
             });
         }
 

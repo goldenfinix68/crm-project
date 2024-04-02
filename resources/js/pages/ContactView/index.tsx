@@ -14,7 +14,7 @@ import DealSteps from "./components/DealSteps";
 
 const ContactView = () => {
     const { contactId } = useParams();
-    const { contact, isLoading } = useGetContact(contactId ?? "");
+    const { contact, isLoading, refetch } = useGetContact(contactId ?? "");
     const { isRoleStats } = useAppContextProvider();
 
     useEffect(() => {

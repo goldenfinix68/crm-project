@@ -109,30 +109,6 @@ export const useContactsTableColumn = () => {
     };
 };
 
-export const filteredContactsQuery = (values: any) => {
-    const { data, isLoading, isError, refetch } = useQuery<TContact[]>(
-        "filteredContacts",
-        async () => {
-            const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
-            const response = await axios.post("/api/contacts/filtered", {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-                body: JSON.stringify(values),
-            });
-            return response.data;
-        },
-        { staleTime: Infinity }
-    );
-
-    return {
-        data,
-        isLoading,
-        isError,
-        refetch,
-    };
-};
-
 export const createWorkflowMutation = async (workflow: any) => {
     const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
     const response = await fetch("/api/workflows", {

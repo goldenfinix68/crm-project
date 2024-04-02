@@ -15,6 +15,8 @@ interface CallContextType {
     setCallerNumber: Dispatch<SetStateAction<string>>;
     destinationNumber: string;
     setDestinationNumber: Dispatch<SetStateAction<string>>;
+    agentNumber: string;
+    setAgentNumber: Dispatch<SetStateAction<string>>;
 }
 
 // Create the context
@@ -29,6 +31,7 @@ export function CallProvider({ children }: CallProviderProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [callerNumber, setCallerNumber] = useState("");
     const [destinationNumber, setDestinationNumber] = useState("");
+    const [agentNumber, setAgentNumber] = useState("");
 
     return (
         <CallContext.Provider
@@ -39,6 +42,8 @@ export function CallProvider({ children }: CallProviderProps) {
                 setCallerNumber,
                 destinationNumber,
                 setDestinationNumber,
+                agentNumber,
+                setAgentNumber,
             }}
         >
             {children}

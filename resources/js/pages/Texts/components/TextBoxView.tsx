@@ -58,10 +58,6 @@ const TextBoxView = () => {
         return () => {};
     }, []);
     const [label, setLabel] = useState("");
-    const [isCreateLabelModalOpen, setIsCreateLabelModalOpen] = useState(false);
-    const [selectedTextLabel, setSelectedTextLabel] = useState<
-        TTextLabel | undefined
-    >(undefined);
 
     const { threadId } = useParams();
     const { contactId } = useParams();
@@ -70,9 +66,7 @@ const TextBoxView = () => {
 
     return (
         <Space direction="vertical" style={{ width: "100%" }}>
-            <TextsHeaderMenu
-                handleLabelChange={(e) => setLabel(`{{label:${e.key}}} `)}
-            />
+            <TextsHeaderMenu handleLabelChange={(e) => setLabel(e.key)} />
             <Card bodyStyle={{ padding: 0 }}>
                 <Row gutter={0} style={{ height: "85vh" }}>
                     <Col
@@ -95,12 +89,6 @@ const TextBoxView = () => {
                         </Col>
                     )}
                 </Row>
-
-                <AddUpdateTextLabelModal
-                    isModalOpen={isCreateLabelModalOpen}
-                    closeModal={() => setIsCreateLabelModalOpen(false)}
-                    textLabel={selectedTextLabel}
-                />
             </Card>
         </Space>
     );

@@ -46,9 +46,14 @@ class NotesController extends Controller
             'note' => 'required',
         ]);
         
-        $note = Note::create(array_merge($request->all(), [
-            'userId' => $userId, 
-        ]));
+        $data = $request->all();
+
+        $note = Note::updateOrCreate([
+            'id' => isset($data['id'])? $data['id'] : null],
+            array_merge($data, [
+                'userId' => $this->getMainUserId(), 
+            ])
+        );
         
         return response()->json($note, 200);
     }

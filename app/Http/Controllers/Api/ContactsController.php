@@ -12,9 +12,12 @@ use App\Models\ContactLog;
 use App\Models\Text;
 use App\Models\Deal;
 use App\Models\Activity;
+use App\Models\TextThread;
 use App\Models\GSheetCrawlResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+
+use App\Services\ContactService;
 
 use Ramsey\Uuid\Uuid;
 
@@ -141,23 +144,34 @@ class ContactsController extends Controller
         ], 200);
     }
 
-    public function filteredContacts(Request $request)
+    public function searchByNumber(Request $request)
     {
 
-        $data = [];
-        $contacts = Contact::where('userId', $this->getMainUserId());
+        $userId = $this->getMainUserId();
+        $keyword = $request->keyword;
 
-        if(!empty($request->filters)){
+        $contactIds = CustomFieldValue::distinct()->select('customableId')
+            ->join('contacts as c', 'custom_field_values.customableId', '=', 'c.id')
+            ->join('custom_fields as cf', 'cf.id', '=', 'custom_field_values.customFieldId')
+            
+            ->where('c.userId', $userId)
+            ->where(function ($q) {
+                $q->where('cf.type', 'mobile')
+                    ->orWhere('cf.type', 'phone')
+                    ->orWhere('cf.fieldName', 'firstName')
+                    ->orWhere('cf.fieldName', 'lastName');
+            })
+            ->where('value', '!=', "")
+            ->where('value', 'like', "%$keyword%")
+            ->limit(10)
+            ->pluck('customableId');
 
-        }
+        $contacts = Contact::whereIn('id', $contactIds)->get();
 
-
-        $contacts = $contacts
-        ->limit(100)
-        ->get();
-
-        // dd($contacts->customFieldValues);
-        return response()->json($contacts, 200);
+        return response()->json([
+            'success' => true,
+            'data' => $contacts,
+        ], 200);
 
     }
 
@@ -281,14 +295,13 @@ class ContactsController extends Controller
     {
         foreach ($request->contactId as $id) {
             $contact = Contact::find($id);
-            
-            $contact->customFieldValues->delete();
+            $contact->customFieldValues()->delete();
 
-            $data = $contact->delete();
+            $contact->delete();
         }
         return response()->json([
             'success' => true,
-            'data' => $data
+            'data' => ""
         ]);
     }
     public function cloneContact(Request $request)
@@ -591,30 +604,36 @@ class ContactsController extends Controller
         }
         $customField = CustomField::find($request->customField['id']);
 
+        $type = $request->type;
+        $user = Auth::user();
+
         foreach($request->contactIds as $id){
             $value = $request->fieldValue;
             if($customField->type == "tag" && !empty($request->action)){
-                $contact = Contact::find($id);
-                $curValue = json_decode($contact->fields[$customField->fieldName."lookupIds"]);
-                if(!empty($curValue)){
-                    $curValue = (array) $curValue;
-                    if($request->action == "add"){
-                        $value = array_merge($curValue, $value);
-                        $value = array_unique($value);
-                    }
-                    elseif ($request->action == "remove"){
-                        $value = array_diff($curValue, $value);
-                    }
+                if($type == "thread"){
+                    $thread = TextThread::find($id);
+                    $contacts = ContactService::getContactsByMobile($thread->contactNumber, [$user->mainId]);
                 }
-
-                // if(!empty($request->phoneFieldStatus)){
-                //     $fieldValue = CustomFieldValue::find($contact->fields[$customField->fieldName."Id"]);
-                //     $customFieldValuesController = new CustomFieldValue();
-                //     $customFieldValuesController->updateStatus($fieldValue, $request->phoneFieldStatus);
-                // }
+                else{
+                    $contacts = Contact::where('id', $id)->get();
+                }
+                foreach($contacts as $contact){
+                    $curValue = json_decode($contact->fields[$customField->fieldName."lookupIds"]);
+                    if(!empty($curValue)){
+                        $curValue = (array) $curValue;
+                        if($request->action == "add"){
+                            $value = array_merge($curValue, $value);
+                            $value = array_unique($value);
+                        }
+                        elseif ($request->action == "remove"){
+                            $value = array_diff($curValue, $value);
+                        }
+                    }
+                    $this->createOrUpdateCustomFieldValue($contact->id, $customField, 'contact', $value);
+                }
+                
             }
 
-            $this->createOrUpdateCustomFieldValue($id, $customField, 'contact', $value);
         }
         
         return response()->json(['message' => "Success"], 200);

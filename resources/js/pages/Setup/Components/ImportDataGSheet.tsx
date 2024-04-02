@@ -120,7 +120,7 @@ const ImportDataGSheet: React.FC = () => {
         <Space direction="vertical" className="w-100">
             {columnNames?.length ? (
                 <Card
-                    title="Map columns with Speedlead fields"
+                    title="Map columns from sheet to Speedlead fields"
                     className="w-100"
                 >
                     {isDuplicate && (
@@ -291,7 +291,7 @@ const ImportDataGSheet: React.FC = () => {
                             </Form.Item>
                         )}
                         <Form.Item name="isAddToQueue" valuePropName="checked">
-                            <Checkbox>Add to queue</Checkbox>
+                            <Checkbox>Recurring crawl queue</Checkbox>
                         </Form.Item>
 
                         <Space style={{ paddingTop: "5px" }}>

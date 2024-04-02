@@ -87,6 +87,7 @@ class UsersController extends Controller
         $user->mainUserId = $authUser->role == "superAdmin" ? $request->mainUserId : $authUser->id;
         $user->password = bcrypt($request->password);
         $user->sortCallForwarding = 0;
+        $user->save();
 
         if($authUser->role == "superAdmin"){
             $numbers = [];

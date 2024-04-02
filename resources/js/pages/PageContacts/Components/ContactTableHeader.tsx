@@ -102,7 +102,7 @@ const ContactTableHeader = ({
     const deleteContact = useMutation(deleteContactMutation, {
         onSuccess: () => {
             console.log("success");
-            queryClient.invalidateQueries("contacts");
+            queryClient.invalidateQueries(ENDPOINTS.contacts.cache);
             clearSelection();
         },
     });
@@ -364,7 +364,7 @@ const ContactTableHeader = ({
                     isModalOpen={isBulkUpdateModalOpen}
                     closeModal={() => setIsBulkUpdateModalOpen(false)}
                     handleSubmit={() => {
-                        console.log("qwe");
+                        queryClient.invalidateQueries(ENDPOINTS.contacts.cache);
                     }}
                     selectedRowKeys={selectedRowKeys}
                 />

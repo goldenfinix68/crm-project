@@ -6,8 +6,10 @@ import {
     CaretUpOutlined,
     ClockCircleOutlined,
     CloseCircleOutlined,
+    CloseOutlined,
     DeleteOutlined,
     DownloadOutlined,
+    EllipsisOutlined,
     InfoCircleOutlined,
     PaperClipOutlined,
     PauseOutlined,
@@ -23,8 +25,10 @@ import {
     Card,
     Col,
     Divider,
+    Dropdown,
     Empty,
     Menu,
+    Modal,
     Popconfirm,
     Popover,
     Row,
@@ -43,6 +47,7 @@ import CustomLink from "../../../components/CustomLink";
 import { useMutation } from "react-query";
 import { deleteNoteMutation } from "../../../api/mutation/useNoteMutation";
 import queryClient from "../../../queryClient";
+import { MenuProps } from "antd/lib";
 
 const ContactsWall = () => {
     const { contact } = useContext(ContactContext);
@@ -249,6 +254,8 @@ const NoteBox = ({ data }: { data: TWallData }) => {
     const [divHeight, setDivHeight] = React.useState(0);
     const [actualContentHeight, setActualContentHeight] = React.useState(0);
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     React.useEffect(() => {
         setDivHeight(contentRef?.current?.getBoundingClientRect().height ?? 0);
         setActualContentHeight(contentRef?.current?.scrollHeight ?? 0);
@@ -305,48 +312,103 @@ const NoteBox = ({ data }: { data: TWallData }) => {
             </Space>
         );
     };
+
+    const items: MenuProps["items"] = [
+        {
+            key: "1",
+            label: <div onClick={() => setIsModalOpen(true)}>Edit</div>,
+        },
+        {
+            key: "2",
+            label: (
+                <Popconfirm
+                    title="Delete"
+                    description="Are you sure to delete this note?"
+                    onConfirm={() => {
+                        deleteTemplate.mutate(data.note?.id!);
+                    }}
+                    // onCancel={cancel}
+                    okText="Yes"
+                    cancelText="No"
+                >
+                    Delete
+                </Popconfirm>
+            ),
+        },
+    ];
+
     return (
-        <Card
-            title={
-                <Typography.Text>
-                    Note Added - by{" "}
-                    {data.note?.user.firstName + " " + data.note?.user.lastName}
-                </Typography.Text>
-            }
-            bordered={false}
-            extra={
-                <Space size={0}>
-                    {moment.utc(data.date).local().format("MMM DD HH:MM A")}{" "}
-                    <Popconfirm
-                        title="Delete"
-                        description="Are you sure to delete this note?"
-                        onConfirm={() => {
-                            deleteTemplate.mutate(data.note?.id!);
-                        }}
-                        // onCancel={cancel}
-                        okText="Yes"
-                        cancelText="No"
-                    >
+        <>
+            <Card
+                title={
+                    <Typography.Text>
+                        Note Added - by{" "}
+                        {data.note?.user.firstName +
+                            " " +
+                            data.note?.user.lastName}
+                    </Typography.Text>
+                }
+                bordered={false}
+                extra={
+                    <Space size={"small"}>
+                        {moment.utc(data.date).local().format("MMM DD HH:MM A")}
+                        <Dropdown
+                            menu={{ items }}
+                            className="dashboard-actions"
+                            trigger={["click"]}
+                        >
+                            <Button type="link" style={{ padding: 0 }}>
+                                <EllipsisOutlined
+                                    style={{ transform: "rotate(90deg)" }}
+                                />
+                            </Button>
+                        </Dropdown>
+                    </Space>
+                }
+                // Set the height to 300px when not expanded
+                style={{
+                    height: expanded || divHeight < 300 ? "auto" : 300,
+                    overflow: expanded ? "visible" : "hidden",
+                }}
+                // Add the clickable area to expand/collapse the card
+            >
+                {getCardContent()}
+            </Card>
+            {isModalOpen && (
+                <Modal
+                    closable={false}
+                    className="your-modal"
+                    width={650}
+                    title={null}
+                    open={isModalOpen}
+                    style={{ maxHeight: "700px" }}
+                    footer={null}
+                >
+                    <div className="modal-header m-b-md">
+                        <Typography.Title level={5} style={{ color: "white" }}>
+                            Update note
+                        </Typography.Title>
+
                         <Button
-                            className="p-0"
-                            type="text"
-                            icon={
-                                <CloseCircleOutlined style={{ color: "red" }} />
-                            }
-                            loading={deleteTemplate.isLoading}
+                            style={{
+                                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                                border: "0px",
+                            }}
+                            onClick={() => setIsModalOpen(false)}
+                            icon={<CloseOutlined style={{ color: "white" }} />}
                         />
-                    </Popconfirm>
-                </Space>
-            }
-            // Set the height to 300px when not expanded
-            style={{
-                height: expanded || divHeight < 300 ? "auto" : 300,
-                overflow: expanded ? "visible" : "hidden",
-            }}
-            // Add the clickable area to expand/collapse the card
-        >
-            {getCardContent()}
-        </Card>
+                    </div>
+                    <div className="modal-content">
+                        <Notestab
+                            note={data.note}
+                            handleCancel={() => {
+                                setIsModalOpen(false);
+                            }}
+                        />
+                    </div>
+                </Modal>
+            )}
+        </>
     );
 };
 

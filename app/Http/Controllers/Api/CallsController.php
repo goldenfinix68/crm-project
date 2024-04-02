@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use DB;
 use App\Business\Pusher;
 use App\Services\MobileNumberService;
+use App\Services\RoorService;
 
 class CallsController extends Controller
 {
@@ -278,6 +279,22 @@ class CallsController extends Controller
         return response()->json([
             'success' => true,
             'data' => $call,
+        ], 200);
+    }
+    
+    public function roorInitiateCall(Request $request)
+    {
+        $this->validate($request, [
+            'agentNumber' => 'required',
+            'callerNumber' => 'required',
+            'destinationNumber' => 'required',
+        ]);
+
+        $result = RoorService::initiateCall($request->callerNumber, $request->destinationNumber, $request->agentNumber);
+
+        return response()->json([
+            'success' => true,
+            'data' => $result,
         ], 200);
     }
 }

@@ -101,4 +101,22 @@ class RoorService
         \Log::info($result);
         return $result;
     }
+    
+    public function initiateCall($callerNumber, $destinationNumber, $agentNumber)
+    {
+        $callerNumber = '+1' . MobileNumberService::formatPhoneNumber($callerNumber);
+        $destinationNumber = '+1' . MobileNumberService::formatPhoneNumber($destinationNumber);
+        $agentNumber = '+1' . MobileNumberService::formatPhoneNumber($agentNumber);
+
+        $endpoint = '/post/makeCall/key/' . env('ROOR_API_KEY') . '/response/json/initializer/' . $agentNumber . '/to/' . $destinationNumber . '/from/' . $callerNumber;
+
+        $response = self::makeRequest($endpoint, 'GET');
+
+        \Log::info('roor initiate call');
+        \Log::info($endpoint);
+        \Log::info($response);
+
+        return $response;
+    }
+
 }

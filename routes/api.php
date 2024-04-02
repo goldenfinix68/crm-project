@@ -68,7 +68,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/contacts/bulk-contact-import-csv', 'App\Http\Controllers\Api\ContactsController@bulkContactImportCsv');
     Route::post('/contacts/bulk-contact-import-gsheet', 'App\Http\Controllers\Api\ContactsController@bulkContactImportGSheet');
     Route::post('/contacts/bulk-update-field', 'App\Http\Controllers\Api\ContactsController@bulkUpdateField');
-    Route::get('/contacts/filtered', 'App\Http\Controllers\Api\ContactsController@filteredContacts');
+    Route::get('/contacts/search-by-number', 'App\Http\Controllers\Api\ContactsController@searchByNumber');
     Route::resource('/contacts', 'App\Http\Controllers\Api\ContactsController');
 
 
@@ -105,6 +105,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::resource('/activity_custome_fields', 'App\Http\Controllers\Api\ActivityCustomFieldController');
     Route::get('/calls/history', 'App\Http\Controllers\Api\CallsController@call_history');
+    
+    Route::post('/calls/initiate-roor-call', 'App\Http\Controllers\Api\CallsController@roorInitiateCall');
 
     // tag_management
     Route::resource('tag_management', 'App\Http\Controllers\Api\TagManagementController');
