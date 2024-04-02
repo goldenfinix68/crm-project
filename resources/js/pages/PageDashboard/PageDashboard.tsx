@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import DashboardComponentButtons from "./Components/DashboardComponentButtons";
 import DashboardComponentFilters from "./Components/DashboardComponentFilters";
 import DashboardComponentWidget from "./Components/DashboardComponentWidget";
@@ -10,6 +10,11 @@ interface MyProps {
 }
 
 const PageDashboard: React.FC<MyProps> = () => {
+    useEffect(() => {
+        document.title = "Dashboard - SpeedLead";
+        return () => {};
+    }, []);
+
     return (
         <Space direction="vertical" className="w-100">
             {/* <DashboardComponentButtons /> */}

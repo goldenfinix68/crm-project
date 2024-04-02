@@ -1,5 +1,5 @@
 import { Card, Col, Row, Space, Spin } from "antd";
-import React, { createContext } from "react";
+import React, { createContext, useEffect } from "react";
 import ContactInfo from "./components/ContactInfo";
 import ActionsTabs from "./components/ActionsTabs";
 import ContactsWall from "./components/ContactsWall";
@@ -17,9 +17,17 @@ const ContactView = () => {
     const { contact, isLoading } = useGetContact(contactId ?? "");
     const { isRoleStats } = useAppContextProvider();
 
+    useEffect(() => {
+        console.log("contact", contact);
+        if (contact) {
+            document.title = contact.fields.custom_field_16 + " - SpeedLead";
+        }
+        return () => {};
+    }, [contact]);
     if (isLoading || !contact) {
         return <LoadingComponent />;
     }
+
     return (
         <ContactContext.Provider value={{ contact }}>
             <Space direction="vertical" className="w-100">

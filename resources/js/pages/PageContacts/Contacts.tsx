@@ -32,6 +32,10 @@ interface ListItem {
 }
 
 const Contacts = () => {
+    useEffect(() => {
+        document.title = "Contacts - SpeedLead";
+        return () => {};
+    }, []);
     const [selectedRows, setSelectedRows] = useState<any>([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState<any>([]);
 

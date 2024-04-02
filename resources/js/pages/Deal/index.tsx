@@ -84,6 +84,10 @@ interface TDeals {
     owner: any;
 }
 const Deal = () => {
+    useEffect(() => {
+        document.title = "Deals - SpeedLead";
+        return () => {};
+    }, []);
     const { loggedInUser, isRoleStats } = useAppContextProvider();
 
     const {

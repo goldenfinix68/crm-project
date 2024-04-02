@@ -63,6 +63,7 @@ const TextContent = ({ menu }: { menu: string }) => {
                 id: contactId ?? threadId,
                 type: contactId ? "contact" : "thread",
             });
+            document.title = thread.contactName + " - SpeedLead";
         }
     }, [thread]);
 

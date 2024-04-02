@@ -53,6 +53,10 @@ import queryClient from "../../../queryClient";
 import { useMarkThreadSeen } from "../../../api/mutation/useTextMutation";
 
 const TextBoxView = () => {
+    useEffect(() => {
+        document.title = "Texts - SpeedLead";
+        return () => {};
+    }, []);
     const [label, setLabel] = useState("");
     const [isCreateLabelModalOpen, setIsCreateLabelModalOpen] = useState(false);
     const [selectedTextLabel, setSelectedTextLabel] = useState<
