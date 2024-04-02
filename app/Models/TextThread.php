@@ -24,7 +24,7 @@ class TextThread extends Model
     
     public function texts()
     {
-        return $this->hasMany(\App\Models\Text::class, 'threadId', 'id')->orderBy('id', 'desc');
+        return $this->hasMany(\App\Models\Text::class, 'threadId', 'id')->where('isSuppressed', false)->orderBy('id', 'desc');
     }
 
     public function labels()
@@ -51,6 +51,6 @@ class TextThread extends Model
 
     public function lastText()
     {
-        return $this->hasOne(\App\Models\Text::class, 'threadId', 'id')->orderBy('created_at', 'desc');
+        return $this->texts->first();
     }
 }

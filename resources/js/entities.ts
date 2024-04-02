@@ -333,4 +333,5 @@ export type TUserSettings = {
         email?: string;
         notes?: string;
     };
+    stopWordList?: string;
 };

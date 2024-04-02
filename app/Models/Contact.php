@@ -193,6 +193,7 @@ class Contact extends Model
             $query->orWhereIn('to', $this->phoneNumbers)
                 ->orWhereIn('from', $this->phoneNumbers);
         })
+            ->where('isSuppressed', false)
             ->orderBy('id', 'desc')
             ->get();
         return $texts;

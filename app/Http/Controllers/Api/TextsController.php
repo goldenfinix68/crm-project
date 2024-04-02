@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Text;
+use App\Models\User;
 use Auth;
 use Carbon\Carbon;
 use App\Jobs\SendText;
@@ -13,6 +14,7 @@ use App\Events\TextReceived;
 use App\Business\Pusher;
 
 use App\Services\UserService;
+use App\Services\TextService;
 
 class TextsController extends Controller
 {
@@ -172,11 +174,21 @@ class TextsController extends Controller
         
         $pusher = new Pusher();
         foreach($mainUserIds as $id){
-            $pusher->trigger('notif-channel-'.$id, 'notif-received-'.$id, [
-                'type' => 'text',
-                'message' => "Text from " . $text->sender,
-                'description' => $text->message,
-            ]);
+            $user = User::find($id);
+            $stopWordList = $user->settings->stopWordList;
+            $stopWordList = explode("\n", $stopWordList);
+
+            if(TextService::containsStopWord($text->message, $stopWordList)){
+                $text->isSuppressed = true;
+                $text->save();
+            }
+            else{
+                $pusher->trigger('notif-channel-'.$id, 'notif-received-'.$id, [
+                    'type' => 'text',
+                    'message' => "Text from " . $text->sender,
+                    'description' => $text->message,
+                ]);
+            }
         }
     }
 

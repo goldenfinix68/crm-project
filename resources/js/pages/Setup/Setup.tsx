@@ -14,6 +14,7 @@ import {
     UsergroupAddOutlined,
     PicCenterOutlined,
     UploadOutlined,
+    CommentOutlined,
 } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppContextProvider } from "../../context/AppContext";
@@ -114,6 +115,11 @@ const Setup: React.FC = (props) => {
             icon: <UploadOutlined />,
             title: "OpenPhone Audio Import",
             link: "/setup/data-administration/openphone-audio-import",
+        },
+        {
+            icon: <CommentOutlined />,
+            title: "Stop Word List",
+            link: "/setup/data-administration/stop-word-list",
         },
     ];
 

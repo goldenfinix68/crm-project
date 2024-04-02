@@ -149,6 +149,11 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                     path: "/setup/data-administration/openphone-audio-import",
                     label: "OpenPhone Audio Import",
                 },
+                {
+                    key: "/setup/data-administration/stop-word-list",
+                    path: "/setup/data-administration/stop-word-list",
+                    label: "Stop Word List",
+                },
             ],
         },
     ];

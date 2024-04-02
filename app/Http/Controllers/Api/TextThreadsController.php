@@ -33,6 +33,7 @@ class TextThreadsController extends Controller
         $label = $request->label;
 
         $texts = Text::select('threadId')
+            ->where('isSuppressed', false)
             ->selectSub('MAX(created_at)', 'latest_created_at') // Subquery to get the latest created_at for each threadId
             ->whereHas('thread', function($query) use ($mainUserIds) {
                 $query->whereIn('userNumber', $mainUserIds);
@@ -87,7 +88,7 @@ class TextThreadsController extends Controller
                 $contactName = $names[0] . " " . $names[1];
             }
 
-            $lastText = $thread->lastText;
+            $lastText = $thread->lastText();
             $isLastTextSeen = !empty($lastText->seen_at);
             $createdAt = $lastText->created_at;
 
@@ -320,18 +321,5 @@ class TextThreadsController extends Controller
         }
 
         return response()->json(['success' => true]);
-    }
-
-    private function prepareThreadTexts($thread){
-        $datas = TextThread::with('texts')->where('contactNumber', $thread->contactNumber)->get();
-
-        $mergedTexts = collect();
-        foreach($datas as $data){
-            $mergedTexts = $mergedTexts->merge($data->texts);
-        }
-        $thread->texts = $mergedTexts->sortByDesc('id')->values();
-        $thread->lastTextId = $thread->texts[0]->id;
-
-        return $thread;
     }
 }

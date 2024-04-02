@@ -41,6 +41,7 @@ import Users from "./pages/Users";
 import AddEditUser from "./pages/Users/AddEditUser";
 import RoorDataMapping from "./pages/Setup/Components/RoorDataMapping";
 import OpenPhoneAudioImport from "./pages/Setup/Components/OpenPhoneAudioImport";
+import StopWordList from "./pages/Setup/Components/StopWordList";
 
 const AppRoutes = () => {
     const { user, isLoading, isError } = useLoggedInUser();
@@ -383,6 +384,17 @@ const AppRoutes = () => {
                                         <SetupLayout
                                             content={<RoorDataMapping />}
                                             title="Roor Data Mapping"
+                                        />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/setup/data-administration/stop-word-list"
+                                element={
+                                    <PrivateRoute>
+                                        <SetupLayout
+                                            content={<StopWordList />}
+                                            title=""
                                         />
                                     </PrivateRoute>
                                 }

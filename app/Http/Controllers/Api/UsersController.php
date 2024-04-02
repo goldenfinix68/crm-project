@@ -236,6 +236,7 @@ class UsersController extends Controller
         $setting->dealCardpos3FieldId = $request->dealCardpos3FieldId ?? "";
         $setting->dealCardpos4FieldId = $request->dealCardpos4FieldId ?? "";
         $setting->roorMapping = $request->roorMapping ?? "";
+        $setting->stopWordList = $request->stopWordList ?? "";
 
         $setting->save();
 
