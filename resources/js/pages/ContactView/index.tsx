@@ -24,6 +24,11 @@ const ContactView = () => {
         }
         return () => {};
     }, [contact]);
+
+    useEffect(() => {
+        refetch();
+    }, [contactId]);
+
     if (isLoading || !contact) {
         return <LoadingComponent />;
     }
