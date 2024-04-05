@@ -68,6 +68,17 @@ class CustomFieldsController extends Controller
         ]);
 
         $data = $request->all();
+        $mainUserId = $this->getMainUserId();
+
+        $checkDuplicate = CustomField::where('label', $data['label'])->where('userId', $mainUserId)->count();
+
+        if(!empty($checkDuplicate)){
+            return response()->json([
+                'success' => false,
+                'message' => "Duplicate label. Label should be unique."
+            ], 422);
+        }
+        
         //check highest sort
         $highestSort = CustomField::where('customFieldSectionId', $data['customFieldSectionId'])->orderByRaw('CAST(`sort` AS UNSIGNED) DESC')->first();
         
@@ -94,7 +105,7 @@ class CustomFieldsController extends Controller
         $customField = CustomField::updateOrCreate(
             ['id' => isset($data['id'])? $data['id'] : null],
             array_merge($data, [
-                'userId' => $this->getMainUserId(), 
+                'userId' => $mainUserId, 
                 'sort' => $sort,
                 'tableSort' => $tableSort,
                 'customFieldSectionType' => $section->type,

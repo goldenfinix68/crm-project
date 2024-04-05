@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, DatePicker, Space, Table, Tooltip } from "antd";
+import { Button, Card, DatePicker, Space, Table, Tooltip } from "antd";
 import type { ColumnsType, TableProps } from "antd/es/table";
 import { TCallHistory, TUser } from "../../../entities";
 import { Link } from "react-router-dom";
@@ -17,21 +17,24 @@ import dayjs, { Dayjs } from "dayjs";
 import { EventValue } from "rc-picker/lib/interface";
 import CustomResizeableTable from "../../../components/CustomResizeableTable";
 
-const onChange: TableProps<TCallHistory>["onChange"] = (
-    pagination,
-    filters,
-    sorter,
-    extra
-) => {
-    console.log("params", pagination, filters, sorter, extra);
-};
+const CallLogsTable = ({ dateFilter }) => {
+    // const { calls, isLoading, refetch } = useCallHistory();
 
-const CallLogsTable = () => {
-    const { calls, isLoading } = useCallHistory();
-    const [dateFilter, setDateFilter] = useState<
-        [EventValue<Dayjs>, EventValue<Dayjs>]
-    >([dayjs().add(-7, "d"), dayjs()]);
-    const [dataSource, setDataSource] = useState<TCallHistory[]>();
+    const [isCallsLoading, setIsCallsLoading] = useState(true);
+
+    const [pagination, setPagination] = useState({
+        page_size: 10,
+        page: 1,
+        dateFilter: dateFilter,
+        total: 0,
+    });
+
+    const { data: calls, refetch: refetchCalls } = useCallHistory(
+        pagination,
+        () => {
+            setIsCallsLoading(false);
+        }
+    );
 
     const columns: ColumnsType<TCallHistory> = [
         {
@@ -143,65 +146,43 @@ const CallLogsTable = () => {
             },
         },
     ];
-    const rangePresets: TimeRangePickerProps["presets"] = [
-        { label: "Last 7 Days", value: [dayjs().add(-7, "d"), dayjs()] },
-        { label: "Last 14 Days", value: [dayjs().add(-14, "d"), dayjs()] },
-        { label: "Last 30 Days", value: [dayjs().add(-30, "d"), dayjs()] },
-        { label: "Last 90 Days", value: [dayjs().add(-90, "d"), dayjs()] },
-    ];
-    const onRangeChange = (
-        dates: null | (Dayjs | null)[],
-        dateStrings: string[]
-    ) => {
-        if (dates) {
-            setDateFilter([dates[0] || dayjs(), dates[1] || dayjs()]);
-        } else {
-            console.log("Clear");
-        }
+
+    const handleTableChange = (p) => {
+        setPagination({
+            ...pagination,
+            page: p.current,
+            page_size: p.pageSize,
+        });
     };
 
     useEffect(() => {
-        if (dateFilter.length) {
-            const filteredCalls = calls?.filter((call) => {
-                const callDateTime = dayjs(call.dateTime);
-                return (
-                    callDateTime.isAfter(dateFilter[0]) &&
-                    callDateTime.isBefore(dateFilter[1])
-                );
-            });
-            setDataSource(filteredCalls);
-        } else {
-            setDataSource(calls);
-        }
-    }, [dateFilter, calls]);
+        setIsCallsLoading(true);
+        refetchCalls();
+    }, [dateFilter, pagination.page_size, pagination.page]);
+
+    useEffect(() => {
+        setPagination({
+            ...pagination,
+            total: calls?.total,
+            dateFilter: dateFilter,
+        });
+    }, [calls, dateFilter]);
 
     return (
-        <Space direction="vertical" className="w-100">
-            <Space>
-                Period:
-                <DatePicker.RangePicker
-                    presets={rangePresets}
-                    onChange={onRangeChange}
-                    value={dateFilter}
-                />
-            </Space>
+        <Card title="Call Logs" loading={isCallsLoading}>
             <CustomResizeableTable
                 columns={columns}
-                dataSource={dataSource ?? []}
+                dataSource={calls?.data ?? []}
                 localStorageKey="callsTableColumnsWidth"
-            />
-            {/*             
-            <Table
-                columns={columns}
-                dataSource={dataSource}
-                onChange={onChange}
                 pagination={{
-                    defaultPageSize: 100,
-                    pageSizeOptions: ["100", "250"],
+                    pageSizeOptions: ["50", "100", "250"],
                     showSizeChanger: true,
+                    pageSize: pagination.page_size,
+                    total: pagination.total,
                 }}
-            /> */}
-        </Space>
+                onChange={handleTableChange}
+            />
+        </Card>
     );
 };
 

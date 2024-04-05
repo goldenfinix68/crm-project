@@ -3,6 +3,7 @@
 namespace App\Services;
 use App\Models\MobileNumber;
 
+use Auth;
 use DB;
 
 class UserService
@@ -27,6 +28,17 @@ class UserService
         $mainUserIds = array_unique($mainUserIds);
         
         return $mainUserIds;
+    }
+    
+    public function getMainUserId() {
+
+        $user = Auth::user();
+
+        if($user->role == 'superAdmin'){
+            return 0;
+        }
+        return $user->role == 'mainUser' ? $user->id : $user->mainUserId;
+
     }
     
 }

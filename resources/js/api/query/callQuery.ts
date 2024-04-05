@@ -2,8 +2,8 @@ import { useQuery } from "react-query";
 import axios from "axios";
 import { TCallHistory } from "../../entities";
 
-export const useCallHistory = () => {
-    const { data, isLoading, refetch } = useQuery<TCallHistory[]>(
+export const useCallHistory = (params: any, onSuccess?: () => void) => {
+    const { data, isLoading, refetch } = useQuery<any>(
         "callHistory",
         async () => {
             const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
@@ -14,20 +14,23 @@ export const useCallHistory = () => {
                     //     id: 1,
                     // },
                 },
+                params: params,
             });
             return response.data;
         },
         {
             staleTime: Infinity,
+            onSuccess: () => {
+                if (onSuccess) {
+                    onSuccess();
+                }
+            },
         }
     );
 
-    // Function to manually trigger refetch
-    const fetchUser = async () => {
-        await refetch();
-    };
     return {
-        calls: data,
+        data,
         isLoading,
+        refetch,
     };
 };

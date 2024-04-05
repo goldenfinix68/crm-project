@@ -26,18 +26,27 @@ class CallsController extends Controller
     }
 
     
-    public function call_history()
+    public function call_history(Request $request)
     {
         $data = [];
-        $calls = Call::select('*')
-            ->orderBy('id', 'desc')
-            ->get();
+        $dateString = str_replace(['"', '&quot;'], '', $request->dateFilter[0]);
+        $dateFrom = Carbon::parse($dateString)->toDateTimeString();
+        $dateString = str_replace(['"', '&quot;'], '', $request->dateFilter[1]);
+        $dateTo = Carbon::parse($dateString)->toDateTimeString();
 
-        foreach($calls as $call){
+        $calls = Call::select('*')
+            ->whereBetween('created_at', [$dateFrom, $dateTo])
+            ->orderBy('id', 'desc')
+            ->paginate($request->input('page_size', 20));
+
+        foreach($calls->items() as $call){
             $data[] = $this->prepareCall($call);
         }
         
-        return response()->json($data, 200);
+        return response()->json([
+            'data' => $data,
+            'total' => $calls->total(),
+        ], 200);
     }
 
     public function prepareCall ($call) {

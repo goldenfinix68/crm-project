@@ -157,6 +157,9 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/googlesheet/change-bg-color', 'App\Http\Controllers\Api\GoogleSheetsController@updateRowBackgroundColor');
     Route::post('/googlesheet/get-column-names', 'App\Http\Controllers\Api\GoogleSheetsController@getColumnNames');
     Route::post('/openphone/upload', 'App\Http\Controllers\Api\CallsController@openPhoneImportAudio');
+
+    Route::get('/dashboard/suppressed-contact-per-county', 'App\Http\Controllers\Api\DashboardsController@suppressedContactCounty');
+    Route::get('/dashboard/statistics', 'App\Http\Controllers\Api\DashboardsController@statistics');
 });
 
 Route::post('/calls/roorCalls', 'App\Http\Controllers\Api\CallsController@roorCalls');

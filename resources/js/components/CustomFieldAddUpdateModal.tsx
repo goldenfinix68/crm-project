@@ -13,6 +13,7 @@ import {
     Checkbox,
     Radio,
     Tooltip,
+    message,
 } from "antd";
 
 import { useMutation } from "react-query";
@@ -82,7 +83,7 @@ const CustomFieldAddUpdateModal = ({
             resetFields();
         },
         onError: (e: any) => {
-            console.log(e.message || "An error occurred");
+            message.error(e.message);
         },
     });
 
