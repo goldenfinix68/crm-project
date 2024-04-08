@@ -169,7 +169,7 @@ const CallLogsTable = ({ dateFilter }) => {
     }, [calls, dateFilter]);
 
     return (
-        <Card title="Call Logs" loading={isCallsLoading}>
+        <Card title="Call Logs">
             <CustomResizeableTable
                 columns={columns}
                 dataSource={calls?.data ?? []}
@@ -181,6 +181,7 @@ const CallLogsTable = ({ dateFilter }) => {
                     total: pagination.total,
                 }}
                 onChange={handleTableChange}
+                loading={isCallsLoading}
             />
         </Card>
     );

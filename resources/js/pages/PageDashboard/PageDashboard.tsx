@@ -25,6 +25,17 @@ const PageDashboard: React.FC<MyProps> = () => {
     >([dayjs().add(-7, "d"), dayjs()]);
 
     const rangePresets: TimeRangePickerProps["presets"] = [
+        {
+            label: "Today",
+            value: [dayjs().startOf("day"), dayjs().endOf("day")],
+        },
+        {
+            label: "Yesterday",
+            value: [
+                dayjs().add(-1, "d").startOf("day"),
+                dayjs().add(-1, "d").endOf("day"),
+            ],
+        },
         { label: "Last 7 Days", value: [dayjs().add(-7, "d"), dayjs()] },
         { label: "Last 14 Days", value: [dayjs().add(-14, "d"), dayjs()] },
         { label: "Last 30 Days", value: [dayjs().add(-30, "d"), dayjs()] },
