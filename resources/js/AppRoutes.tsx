@@ -405,7 +405,7 @@ const AppRoutes = () => {
                                     <PrivateRoute>
                                         <SetupLayout
                                             content={<OpenPhoneAudioImport />}
-                                            title="OpenPhone Audio Import"
+                                            title="Manual Audio Import"
                                         />
                                     </PrivateRoute>
                                 }

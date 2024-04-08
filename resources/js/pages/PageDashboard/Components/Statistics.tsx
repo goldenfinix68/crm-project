@@ -37,6 +37,12 @@ const Statistics = ({ dateFilter }) => {
                 </Col>
                 <Col span={6}>
                     <Statistic
+                        // style={{
+                        //     backgroundColor: "#172b4d",
+                        //     alignItems: "center",
+                        //     display: "flex",
+                        //     justifyContent: "center",
+                        // }}
                         title="Deals"
                         value={data?.data?.deals ?? 0}
                         prefix={<DollarCircleOutlined />}

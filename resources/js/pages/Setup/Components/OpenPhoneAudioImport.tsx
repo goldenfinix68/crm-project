@@ -11,6 +11,7 @@ import {
     Form,
     Col,
     Upload,
+    Modal,
 } from "antd";
 import { useMutation } from "react-query";
 import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
@@ -19,7 +20,7 @@ import { useAppContextProvider } from "../../../context/AppContext";
 import { userSettings } from "../../../api/mutation/useUserMutation";
 import { useCustomFields } from "../../../api/query/customFieldQuery";
 import type { UploadFile, UploadProps } from "antd";
-import { InboxOutlined } from "@ant-design/icons";
+import { CloseOutlined, InboxOutlined } from "@ant-design/icons";
 import axios from "axios";
 
 const { Dragger } = Upload;
@@ -31,6 +32,7 @@ const OpenPhoneAudioImport = () => {
     const [defaultFileList, setDefaultFileList] = useState<UploadFile<any>[]>(
         []
     );
+    const [isInstructionModalOpen, setIsInstructionModalOpen] = useState(false);
 
     const propsUpload: UploadProps = {
         name: "file",
@@ -94,36 +96,84 @@ const OpenPhoneAudioImport = () => {
     };
 
     return (
-        <Space direction="vertical">
-            <Card>
-                <Typography.Title level={3}>
-                    OpenPhone Audio Import
-                </Typography.Title>
-                <Typography className="m-b-sm">
-                    Now, you can import audio files from OpenPhone.
-                </Typography>
-                {/* <Button
-                    type="link"
-                    className="p-0"
-                    onClick={() => console.log(true)}
-                >
-                    Learn more about how to import contacts into Roor.
-                </Button> */}
-                <Divider />
-                <Dragger {...propsUpload}>
-                    <p className="ant-upload-drag-icon">
-                        <InboxOutlined />
-                    </p>
-                    <p className="ant-upload-text">
-                        Click or drag file to this area to upload
-                    </p>
-                    <p className="ant-upload-hint">
-                        Support for a single or bulk upload. Strictly prohibit
-                        from uploading company data or other band files
-                    </p>
-                </Dragger>
-            </Card>
-        </Space>
+        <Card className="w-100">
+            <Typography.Title level={3}>Manual Audio Import</Typography.Title>
+            <Typography className="m-b-sm">
+                Now, you can import audio files and automatically attached it
+                with the contact base on the file name.
+            </Typography>
+
+            <Button
+                type="link"
+                className="p-0"
+                onClick={() => setIsInstructionModalOpen(true)}
+            >
+                Learn more about manual audio import.
+            </Button>
+            <Divider />
+            <Dragger {...propsUpload}>
+                <p className="ant-upload-drag-icon">
+                    <InboxOutlined />
+                </p>
+                <p className="ant-upload-text">
+                    Click or drag file to this area to upload
+                </p>
+                <p className="ant-upload-hint">
+                    Support for a single or bulk upload. Strictly prohibit from
+                    uploading company data or other band files
+                </p>
+            </Dragger>
+
+            <Modal
+                className="modal-activity"
+                open={isInstructionModalOpen}
+                onCancel={() => {
+                    setIsInstructionModalOpen(false);
+                }}
+                footer={null}
+                title={null}
+                closable={false}
+                width={"500px"}
+            >
+                <div className="modal-header">
+                    <Typography.Title level={5} style={{ color: "white" }}>
+                        Instruction
+                    </Typography.Title>
+
+                    <Button
+                        onClick={() => {
+                            setIsInstructionModalOpen(false);
+                        }}
+                        style={{
+                            backgroundColor: "rgba(0, 0, 0, 0.5)",
+                            border: "0px",
+                        }}
+                        icon={<CloseOutlined style={{ color: "white" }} />}
+                    />
+                </div>
+                <ol className="p-t-xl">
+                    <li>
+                        Ensure that the file name follows the correct format:
+                        <ul>
+                            <li>
+                                Format: yyyy-mm-ddThh_mm_ss + contact number
+                            </li>
+                            <li>
+                                Example:
+                                2024-03-24T19_56_16+00_00+13034892316.mp3
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        The system will automatically attach the call recording
+                        to the contact's history within their profile. This
+                        ensures that the recording is seamlessly integrated into
+                        the contact's interaction log for easy access and
+                        reference.
+                    </li>
+                </ol>
+            </Modal>
+        </Card>
     );
 };
 export default OpenPhoneAudioImport;

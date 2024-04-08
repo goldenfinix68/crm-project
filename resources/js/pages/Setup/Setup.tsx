@@ -113,7 +113,7 @@ const Setup: React.FC = (props) => {
         },
         {
             icon: <UploadOutlined />,
-            title: "OpenPhone Audio Import",
+            title: "Manual Audio Import",
             link: "/setup/data-administration/openphone-audio-import",
         },
         {
