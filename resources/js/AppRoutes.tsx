@@ -163,6 +163,14 @@ const AppRoutes = () => {
                                 }
                             />
                             <Route
+                                path="/contacts/:contactId/:contactName"
+                                element={
+                                    <PrivateRoute title="Contacts">
+                                        <ContactView />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
                                 path="/home"
                                 element={
                                     <PrivateRoute>

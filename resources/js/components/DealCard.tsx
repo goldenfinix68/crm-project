@@ -134,7 +134,18 @@ const DealCard = ({ deal, handleEditClick, sortBy }: Props) => {
                                 {
                                     label: (
                                         <CustomLink
-                                            to={"/contacts/" + deal.contact?.id}
+                                            to={
+                                                "/contacts/" +
+                                                deal.contact?.id +
+                                                "/" +
+                                                deal?.contact?.fields[
+                                                    "firstName"
+                                                ].replace(/\s/g, "-") +
+                                                "-" +
+                                                deal?.contact?.fields[
+                                                    "lastName"
+                                                ].replace(/\s/g, "-")
+                                            }
                                             style={{ color: "black" }}
                                         >
                                             View Contact

@@ -115,7 +115,18 @@ const ContactsTable = ({
                                   >
                                       <Link
                                           to={
-                                              "/contacts/" + record["contactId"]
+                                              "/contacts/" +
+                                              record["contactId"] +
+                                              "/" +
+                                              record["firstName"].replace(
+                                                  /\s/g,
+                                                  "-"
+                                              ) +
+                                              "-" +
+                                              record["lastName"].replace(
+                                                  /\s/g,
+                                                  "-"
+                                              )
                                           }
                                       >
                                           {`${record["firstName"]} ${record["lastName"]}`}

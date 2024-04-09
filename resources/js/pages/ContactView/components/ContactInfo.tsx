@@ -278,7 +278,16 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                     <Badge count={1} offset={[-8, 8]} showZero>
                         <AvatarWithPopover />
                     </Badge>
-                    <CustomLink to={"/contacts/" + contact.id}>
+                    <CustomLink
+                        to={
+                            "/contacts/" +
+                            contact.id +
+                            "/" +
+                            contact.fields["firstName"].replace(/\s/g, "-") +
+                            "-" +
+                            contact.fields["lastName"].replace(/\s/g, "-")
+                        }
+                    >
                         <Typography.Title level={5}>
                             {contact.fields.firstName +
                                 " " +

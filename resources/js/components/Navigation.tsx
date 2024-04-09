@@ -246,7 +246,17 @@ const Navigation: React.FC<NavigationProps> = ({ title }) => {
                                         contacts?.map((contact) => (
                                             <Menu.Item key={contact.id}>
                                                 <CustomLink
-                                                    to={`/contacts/${contact.id}`}
+                                                    to={
+                                                        `/contacts/${contact.id}` +
+                                                        "/" +
+                                                        contact.fields[
+                                                            "firstName"
+                                                        ].replace(/\s/g, "-") +
+                                                        "-" +
+                                                        contact.fields[
+                                                            "lastName"
+                                                        ].replace(/\s/g, "-")
+                                                    }
                                                 >
                                                     <div className="list-data">
                                                         <Space

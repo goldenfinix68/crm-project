@@ -115,7 +115,18 @@ const TextContent = ({ menu }: { menu: string }) => {
                             <Space direction="vertical" size={0}>
                                 {thread?.contact?.id ? (
                                     <CustomLink
-                                        to={"/contacts/" + thread?.contact?.id}
+                                        to={
+                                            "/contacts/" +
+                                            thread?.contact?.id +
+                                            "/" +
+                                            thread.contact.fields[
+                                                "firstName"
+                                            ].replace(/\s/g, "-") +
+                                            "-" +
+                                            thread.contact.fields[
+                                                "lastName"
+                                            ].replace(/\s/g, "-")
+                                        }
                                     >
                                         <Typography.Text strong>
                                             {thread?.contactName}
