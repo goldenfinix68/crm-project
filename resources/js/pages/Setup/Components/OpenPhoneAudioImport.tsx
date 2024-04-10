@@ -26,6 +26,10 @@ import axios from "axios";
 const { Dragger } = Upload;
 
 const OpenPhoneAudioImport = () => {
+    useEffect(() => {
+        document.title = "OpenPhone Audio Import - SpeedLead";
+        return () => {};
+    }, []);
     const [progress, setProgress] = React.useState<number>(0);
     const [form] = Form.useForm();
     const { loggedInUser } = useAppContextProvider();

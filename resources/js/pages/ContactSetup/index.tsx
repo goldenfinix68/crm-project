@@ -27,6 +27,7 @@ const ContactSetup: React.FC = () => {
     useEffect(() => {
         refetchInactiveCustomFields();
         refetchSections();
+        document.title = "Contact Setup - SpeedLead";
     }, []);
     if (isLoading) {
         return <LoadingComponent />;

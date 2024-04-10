@@ -24,6 +24,10 @@ interface ListItem {
 }
 
 const CallForwarding: React.FC = ({}) => {
+    useEffect(() => {
+        document.title = "Call Forwarding - SpeedLead";
+        return () => {};
+    }, []);
     const queryClient = useQueryClient();
     const { users, isLoading } = useUsersAll();
     const { loggedInUser } = useAppContextProvider();

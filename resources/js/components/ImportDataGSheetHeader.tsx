@@ -11,6 +11,10 @@ import { Link } from "react-router-dom";
 import CustomLink from "./CustomLink";
 
 const ImportDataGSheetHeader = () => {
+    useEffect(() => {
+        document.title = "Import Data GSheet - SpeedLead";
+        return () => {};
+    }, []);
     return (
         <Menu
             // onClick={(e) => navigate("/" + e.key)}

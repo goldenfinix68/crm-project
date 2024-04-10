@@ -22,6 +22,10 @@ const RoorDataMapping: React.FC = () => {
     const [form] = Form.useForm();
     const { loggedInUser } = useAppContextProvider();
 
+    useEffect(() => {
+        document.title = "Roor Data Mapping - SpeedLead";
+        return () => {};
+    }, []);
     const {
         data: contactFields,
         isLoading: isContactFieldsLoading,

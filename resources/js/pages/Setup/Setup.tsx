@@ -22,6 +22,11 @@ import { allowedroleToAccess } from "../../constants";
 import CustomLink from "../../components/CustomLink";
 
 const Setup: React.FC = (props) => {
+    useEffect(() => {
+        document.title = "Setup - SpeedLead";
+        return () => {};
+    }, []);
+
     const navigate = useNavigate();
     const { loggedInUser } = useAppContextProvider();
     const customizationButtons: any = [

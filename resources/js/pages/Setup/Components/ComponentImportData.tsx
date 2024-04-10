@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Button,
     Typography,
@@ -35,6 +35,10 @@ import { useNavigate } from "react-router-dom";
 import { useCustomFields } from "../../../api/query/customFieldQuery";
 
 const ComponentImportData: React.FC = () => {
+    useEffect(() => {
+        document.title = "Import Data - SpeedLead";
+        return () => {};
+    }, []);
     const navigate = useNavigate();
     const {
         data: contactFields,

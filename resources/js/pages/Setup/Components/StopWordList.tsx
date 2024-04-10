@@ -20,6 +20,10 @@ import { userSettings } from "../../../api/mutation/useUserMutation";
 import { useCustomFields } from "../../../api/query/customFieldQuery";
 
 const StopWordList: React.FC = () => {
+    useEffect(() => {
+        document.title = "Stop Word List - SpeedLead";
+        return () => {};
+    }, []);
     const [form] = Form.useForm();
     const { loggedInUser } = useAppContextProvider();
 

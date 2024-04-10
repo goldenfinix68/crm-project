@@ -22,6 +22,10 @@ import PipelineCard from "./components/PipelineCard";
 
 const DealPipelineSetup: React.FC = () => {
     const { data: pipelines, isLoading, refetch } = dealPipelines();
+    useEffect(() => {
+        document.title = "Deal Pipeline Setup - SpeedLead";
+        return () => {};
+    }, []);
 
     if (isLoading) {
         return <LoadingComponent />;

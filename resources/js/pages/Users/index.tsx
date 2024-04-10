@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Card } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
 
@@ -11,6 +11,10 @@ const Users: React.FC = ({}) => {
     const queryClient = useQueryClient();
     const { users, isLoading } = useUsersAll();
 
+    useEffect(() => {
+        document.title = "Users - SpeedLead";
+        return () => {};
+    }, []);
     return (
         <>
             <Card bodyStyle={{ padding: 0 }}>
