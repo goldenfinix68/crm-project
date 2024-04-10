@@ -20,7 +20,12 @@ const ContactView = () => {
     useEffect(() => {
         console.log("contact", contact);
         if (contact) {
-            document.title = contact.fields.custom_field_16 + " - SpeedLead";
+            // document.title = contact.fields.custom_field_16 + " - SpeedLead";
+            document.title =
+                contact.fields["firstName"].replace(/\s/g, "-") +
+                " " +
+                contact.fields["lastName"].replace(/\s/g, "-") +
+                " - SpeedLead";
         }
         return () => {};
     }, [contact]);
