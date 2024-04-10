@@ -348,7 +348,6 @@ const NoteBox = ({ data }: { data: TWallData }) => {
                             data.note?.user.lastName}
                     </Typography.Text>
                 }
-                bordered={false}
                 extra={
                     <Space size={"small"}>
                         {moment.utc(data.date).local().format("MMM DD HH:MM A")}
@@ -369,6 +368,8 @@ const NoteBox = ({ data }: { data: TWallData }) => {
                 style={{
                     height: expanded || divHeight < 300 ? "auto" : 300,
                     overflow: expanded ? "visible" : "hidden",
+                    backgroundColor: "#fef9c1",
+                    border: "3px dashed black",
                 }}
                 // Add the clickable area to expand/collapse the card
             >
