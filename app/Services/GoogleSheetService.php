@@ -91,12 +91,20 @@ class GoogleSheetService
             $service = self::setupGoogleSheetsClient();
             $mainUser = User::find($crawlResult->mainUserId);
             $customFields = $mainUser->customFields->where('isActive', 1);
+            
+            \Log::info("-----------1");
 
             $roorMapping = $mainUser->settings->roorMapping;
+            
+            \Log::info("roorMapping");
 
             // Fetch data from the Google Sheet
             $response = $service->spreadsheets_values->get($crawlResult->gSheetId, $crawlResult->gSheetName);
+           
+            \Log::info("-----------response");
             $values = $response->getValues();
+
+            \Log::info("-----------2");
 
             $data = [];
             // Process the data as needed
@@ -110,6 +118,9 @@ class GoogleSheetService
                 // You can log or notify as needed
                 return;
             }
+
+            \Log::info("-----------3");
+
 
             $results = [];
 
@@ -129,10 +140,14 @@ class GoogleSheetService
                 }
             }
             
+            \Log::info("-----------4");
             $crawlResult->status = "Running";
             $crawlResult->rowCount = count($results);
             $crawlResult->save();
             $processed = 0;
+
+            
+            \Log::info("-----------5");
             if(!empty($results)){
                 foreach($results as $key => $result){
 
@@ -243,10 +258,16 @@ class GoogleSheetService
     
     private function setupGoogleSheetsClient()
     {
-        $client = new Google_Client();
-        $client->setAuthConfig(storage_path('gSheetCredentials.json'));
-        $client->addScope(Google_Service_Sheets::SPREADSHEETS);
-
-        return new Google_Service_Sheets($client);
+        try {
+            $client = new Google_Client();
+            $client->setAuthConfig(storage_path('gSheetCredentials.json'));
+            $client->addScope(Google_Service_Sheets::SPREADSHEETS);
+    
+            return new Google_Service_Sheets($client);
+        } catch (\Exception $e) {
+            // Log any errors that occur during setup
+            \Log::error("Error setting up Google Sheets client: " . $e->getMessage());
+            return null;
+        }
     }
 }
