@@ -41,6 +41,9 @@ class GSheetImportTrigger extends Command
      */
     public function handle()
     {
+        
+		$this->info('Starting crm:gSheet-trigger');
+
         $crawlResults = GSheetCrawlResult::where('status', "Queued")
             ->get();
         $processed = 0;
