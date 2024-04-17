@@ -51,7 +51,7 @@ class NotesController extends Controller
         $note = Note::updateOrCreate([
             'id' => isset($data['id'])? $data['id'] : null],
             array_merge($data, [
-                'userId' => $this->getMainUserId(), 
+                'userId' => $userId, 
             ])
         );
         
