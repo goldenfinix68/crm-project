@@ -66,7 +66,9 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/contacts/add_files', 'App\Http\Controllers\Api\ContactsController@add_files');
     Route::post('/contacts/save_column_setting', 'App\Http\Controllers\Api\ContactsController@save_column_setting');
     Route::post('/contacts/bulk-contact-import-csv', 'App\Http\Controllers\Api\ContactsController@bulkContactImportCsv');
+    
     Route::post('/contacts/bulk-contact-import-gsheet', 'App\Http\Controllers\Api\ContactsController@bulkContactImportGSheet');
+
     Route::post('/contacts/bulk-update-field', 'App\Http\Controllers\Api\ContactsController@bulkUpdateField');
     Route::get('/contacts/search-by-number', 'App\Http\Controllers\Api\ContactsController@searchByNumber');
     Route::resource('/contacts', 'App\Http\Controllers\Api\ContactsController');
@@ -149,7 +151,10 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/deal-pipeline-stages/sort', 'App\Http\Controllers\Api\DealPipelineStagesController@sort');
     
     Route::resource('/filters', 'App\Http\Controllers\Api\FiltersController');
+
+    Route::post('/gSheet-crawl-results/recrawl', 'App\Http\Controllers\Api\GSheetCrawlResultsController@reCrawl');
     Route::resource('/gSheet-crawl-results', 'App\Http\Controllers\Api\GSheetCrawlResultsController');
+
     Route::resource('/gSheet-crawl', 'App\Http\Controllers\Api\GSheetCrawlsController');
 
     Route::resource('/mobile-numbers', 'App\Http\Controllers\Api\MobileNumbersController');

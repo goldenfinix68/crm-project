@@ -22,6 +22,24 @@ class GSheetCrawlResultsController extends Controller
 
         return response()->json($results, 200);
     }
+    
+    public function reCrawl(Request $request)
+    {
+
+        $result = GSheetCrawlResult::find($request->id);
+
+        if(empty($result)){
+            abort(404);
+        }
+
+        $result->status = "Queued";
+        $result->save();
+
+        
+        return response()->json([
+            "success" => true
+        ], 200);
+    }
 
     /**
      * Show the form for creating a new resource.

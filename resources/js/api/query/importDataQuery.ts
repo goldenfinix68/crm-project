@@ -3,7 +3,9 @@ import { TGSheetCrawl, TGSheetCrawlHistory, TWorkflow } from "../../entities";
 import axios from "axios";
 
 export const gSheetCrawlResults = () => {
-    const { data, isLoading, isError } = useQuery<TGSheetCrawlHistory[]>(
+    const { data, isLoading, isError, refetch } = useQuery<
+        TGSheetCrawlHistory[]
+    >(
         "gSheetCrawlResults",
         async () => {
             const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
@@ -24,6 +26,7 @@ export const gSheetCrawlResults = () => {
         data,
         isLoading,
         isError,
+        refetch,
     };
 };
 

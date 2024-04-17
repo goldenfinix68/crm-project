@@ -1,14 +1,25 @@
 import React from "react";
-import { Button, Space, Table, TableColumnsType, message } from "antd";
+import { Button, Card, Space, Table, TableColumnsType, message } from "antd";
 
 import moment from "moment";
 import { gSheetCrawlResults } from "../../../api/query/importDataQuery";
 import { TGSheetCrawlHistory, TGSheetCrawlResult } from "../../../entities";
 import TextEllipsis from "../../../components/TextEllipsis";
 import copy from "copy-to-clipboard";
+import { useMutation } from "react-query";
+import { mutatePost } from "../../../api/mutation/useSetupMutation";
+import queryClient from "../../../queryClient";
+import { RedoOutlined } from "@ant-design/icons";
 
 const ImportDataGSheetHistory = () => {
-    const { data: crawlResults, isLoading } = gSheetCrawlResults();
+    const { data: crawlResults, isLoading, refetch } = gSheetCrawlResults();
+
+    const reCrawl = useMutation(mutatePost, {
+        onSuccess: (res) => {
+            queryClient.invalidateQueries("gSheetCrawlResults");
+            message.success("Re-crawling queued.");
+        },
+    });
 
     const columns: TableColumnsType<TGSheetCrawlHistory> = [
         {
@@ -76,18 +87,51 @@ const ImportDataGSheetHistory = () => {
                 );
             },
         },
+        {
+            title: "Action",
+            key: "action",
+            render: (_, record) => {
+                if (record.status == "Completed" || record.status == "Failed") {
+                    return (
+                        <Button
+                            type="default"
+                            size="small"
+                            onClick={() => {
+                                reCrawl.mutate({
+                                    url: "/api/gSheet-crawl-results/recrawl",
+                                    data: { id: record.id },
+                                });
+                            }}
+                        >
+                            Re-crawl
+                        </Button>
+                    );
+                }
+                return <></>;
+            },
+        },
     ];
 
     return (
-        <Space direction="vertical" className="w-100">
-            <div>
-                <Table
-                    className="default-table-row-height"
-                    columns={columns}
-                    dataSource={crawlResults}
-                />
-            </div>
-        </Space>
+        <Card className="w-100">
+            <Button
+                type="default"
+                size="small"
+                style={{ float: "right" }}
+                onClick={() => {
+                    refetch();
+                }}
+                icon={<RedoOutlined />}
+            >
+                Refresh
+            </Button>
+            <Table
+                className="default-table-row-height p-t-md"
+                columns={columns}
+                dataSource={crawlResults}
+                loading={isLoading}
+            />
+        </Card>
     );
 };
 
