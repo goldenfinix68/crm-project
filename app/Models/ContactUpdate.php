@@ -20,6 +20,9 @@ class ContactUpdate extends Model
 
     public function getByAttribute()
     {
+        if(empty($this->user)){
+            return "Automatic";
+        }
         return $this->user->firstName . ' ' . $this->user->lastName;
     }
 }

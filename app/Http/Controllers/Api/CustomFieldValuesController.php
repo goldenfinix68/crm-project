@@ -12,6 +12,8 @@ use App\Models\ContactType;
 use Auth;
 use DB;
 
+use App\Services\CustomFieldService;
+
 class CustomFieldValuesController extends Controller
 {
     /**
@@ -81,7 +83,7 @@ class CustomFieldValuesController extends Controller
                     ->where('userId', $userId)
                     ->first();
 
-                $fieldValue = $this->createOrUpdateCustomFieldValue($record->id, $customField, $request->customableType, $value);
+                $fieldValue = CustomFieldService::createOrUpdateCustomFieldValue($record->id, $customField, $request->customableType, $value);
                 if($customField->type == "phone" || $customField->type == "mobile"){
                     $fieldValue->status = $request->phoneFieldStatus ?? null;
                     $fieldValue->save();

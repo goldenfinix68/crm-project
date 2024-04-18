@@ -56,7 +56,7 @@ class DealsController extends Controller
                 //log deal update
                 $update = new ContactUpdate();
                 $update->userId = Auth::id();
-                $update->title = "Deal Updated";
+                $update->title = "Deal updated";
                 $update->contactId = $data->contactId;
                 $update->from = $data->pipeline->name . ' - ' . $data->stage->name;
 

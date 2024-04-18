@@ -6,9 +6,11 @@ use App\Models\Contact;
 use App\Models\CustomFieldValue;
 use App\Models\User;
 use App\Models\ContactType;
+use App\Models\ContactUpdate;
 use App\Services\MobileNumberService;
 
 use DB;
+use Auth;
 
 class CustomFieldService
 {
@@ -33,6 +35,8 @@ class CustomFieldService
     
     public function createOrUpdateCustomFieldValue($customableId, $customField, $customableType, $value)
     {
+        $user = Auth::user();
+
         $fieldValue = CustomFieldValue::where('customableId', $customableId)->where('customFieldId', $customField->id)->first();
         if(empty($fieldValue)){
             $fieldValue = new CustomFieldValue();
@@ -41,6 +45,13 @@ class CustomFieldService
         $fieldValue->customableId = $customableId;
         $fieldValue->customableType = $customableType;
         $fieldValue->customFieldId = $customField->id;
+
+        
+        $update = new ContactUpdate();
+        $update->userId = Auth::id();
+        $update->title = $customField->label . " updated";
+        $update->contactId = $fieldValue->customableId;
+        $update->from = $fieldValue->value;
 
 
         if(in_array($customField->type, ["userLookup", 'contactLookup', 'contactTypeLookup', 'multiSelect', 'tag'])){
@@ -91,5 +102,9 @@ class CustomFieldService
             $fieldValue->lookupIds = null;
         }
         $fieldValue->save();
+
+        
+        $update->to = $fieldValue->value;
+        $update->save();
     }
 }
