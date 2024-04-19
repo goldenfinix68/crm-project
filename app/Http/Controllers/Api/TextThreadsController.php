@@ -246,6 +246,7 @@ class TextThreadsController extends Controller
         
         foreach($request->threadIds as $id){
             $thread = TextThread::find($id);
+            $thread->texts()->delete();
             $thread->delete();
         }
 

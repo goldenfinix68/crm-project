@@ -90,10 +90,12 @@ const TextList = ({ label }) => {
 
     const archiveThread = useMutation(useDeleteThread, {
         onSuccess: () => {
-            queryClient.invalidateQueries("threads");
+            queryClient.invalidateQueries("textThreads");
             setIsDeleteModalOpen(false);
             setIsDeleteBtnLoading(false);
-            navigate("/text-threads");
+            setSelectedThread(undefined);
+            setSelectedThreadIds([]);
+            // navigate("/text-threads");
         },
         onError: (e: any) => {
             console.log(e.message || "An error occurred");
@@ -452,7 +454,7 @@ const TextList = ({ label }) => {
                     isModalOpen={isAddTagModalOpen}
                     closeModal={() => setIsAddTagModalOpen(false)}
                     handleSubmit={() => {
-                        queryClient.invalidateQueries("thread");
+                        queryClient.invalidateQueries("textThreads");
                         setIsAddTagModalOpen(false);
                         setSelectedThread(undefined);
                         setSelectedThreadIds([]);
