@@ -26,11 +26,7 @@ const RoorDataMapping: React.FC = () => {
         document.title = "Roor Data Mapping - SpeedLead";
         return () => {};
     }, []);
-    const {
-        data: contactFields,
-        isLoading: isContactFieldsLoading,
-        refetch: refetchContactFields,
-    } = useCustomFields("contact");
+    const { data: contactFields } = useCustomFields("contact");
 
     const settings =
         loggedInUser?.role == "mainUser"

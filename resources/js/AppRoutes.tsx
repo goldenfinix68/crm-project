@@ -9,32 +9,23 @@ import AdminSideMenu from "./components/SuperAdmin/AdminSideMenu";
 import { allowedroleToAccess } from "./constants";
 import { AppContextProvider } from "./context/AppContext";
 import { CallProvider } from "./context/CallContext";
-import Activity from "./pages/Activity";
-import ActivityCalendar from "./pages/Activity/ActivityCalendar";
-import ActivitySetup from "./pages/ActivitySetup";
 import ContactSetup from "./pages/ContactSetup";
 import ContactView from "./pages/ContactView";
 import Deal from "./pages/Deal";
 import DealPipelineSetup from "./pages/DealPipelineSetup";
 import DealSetup from "./pages/DealSetup";
-import Dialer from "./pages/Dialer/Dialer";
-import Home from "./pages/Home";
-import Inbox from "./pages/Inbox/Inbox";
 import BulkAction from "./pages/PageContacts/BulkAction";
 import Contacts from "./pages/PageContacts/Contacts";
 import MergeContacts from "./pages/PageContacts/MergeContacts";
 import PageDashboard from "./pages/PageDashboard/PageDashboard";
 import CallForwarding from "./pages/Setup/CallForwarding";
-import ComponentActivityType from "./pages/Setup/Components/ComponentActivityType";
 import ComponentImportData from "./pages/Setup/Components/ComponentImportData";
-import ComponentTagManagement from "./pages/Setup/Components/ComponentTagManagement";
 import ImportDataGSheet from "./pages/Setup/Components/ImportDataGSheet";
 import ImportDataGSheetHistory from "./pages/Setup/Components/ImportDataGSheetHistory";
 import Setup from "./pages/Setup/Setup";
 import SetupLayout from "./pages/Setup/SetupLayout";
 import AdminDashboard from "./pages/SuperAdmin/Dashboard/AdminDashboard";
 import AdminUsers from "./pages/SuperAdmin/Users/AdminUsers";
-import Texts from "./pages/Texts";
 import TextBoxView from "./pages/Texts/components/TextBoxView";
 import TextTemplates from "./pages/TextTemplates";
 import Users from "./pages/Users";
@@ -83,22 +74,6 @@ const AppRoutes = () => {
                                 element={
                                     <PrivateRoute title="Dashboard">
                                         <PageDashboard props={""} />
-                                    </PrivateRoute>
-                                }
-                            />
-                            <Route
-                                path="/dialer/:contactId"
-                                element={
-                                    <PrivateRoute>
-                                        <Dialer />
-                                    </PrivateRoute>
-                                }
-                            />
-                            <Route
-                                path="/dialer"
-                                element={
-                                    <PrivateRoute>
-                                        <Dialer />
                                     </PrivateRoute>
                                 }
                             />
@@ -171,14 +146,6 @@ const AppRoutes = () => {
                                 }
                             />
                             <Route
-                                path="/home"
-                                element={
-                                    <PrivateRoute>
-                                        <Home />
-                                    </PrivateRoute>
-                                }
-                            />
-                            <Route
                                 path="/contacts"
                                 element={
                                     <PrivateRoute title="Contacts">
@@ -189,23 +156,6 @@ const AppRoutes = () => {
                             <Route
                                 path="/contacts/mergeContacts"
                                 element={<MergeContacts />}
-                            />
-
-                            <Route
-                                path="/activities"
-                                element={
-                                    <PrivateRoute>
-                                        <Activity />
-                                    </PrivateRoute>
-                                }
-                            />
-                            <Route
-                                path="/activities/calendar"
-                                element={
-                                    <PrivateRoute>
-                                        <ActivityCalendar />
-                                    </PrivateRoute>
-                                }
                             />
                             <Route
                                 path="/deals"
@@ -231,14 +181,14 @@ const AppRoutes = () => {
                                     </PrivateRoute>
                                 }
                             /> */}
-                            <Route
+                            {/* <Route
                                 path="/inbox"
                                 element={
                                     <PrivateRoute>
                                         <Inbox />
                                     </PrivateRoute>
                                 }
-                            />
+                            /> */}
                             <Route
                                 path="/text-templates"
                                 element={
@@ -280,31 +230,10 @@ const AppRoutes = () => {
                                 }
                             />
                             <Route
-                                path="/texts/:route"
-                                element={
-                                    <PrivateRoute>
-                                        <Texts />
-                                    </PrivateRoute>
-                                }
-                            />
-                            <Route
                                 path="/setup"
                                 element={
                                     <PrivateRoute>
                                         <Setup />
-                                    </PrivateRoute>
-                                }
-                            />
-                            <Route
-                                path="/setup/customizations/tag"
-                                element={
-                                    <PrivateRoute
-                                        accessibleTo={allowedroleToAccess}
-                                    >
-                                        <SetupLayout
-                                            content={<ComponentTagManagement />}
-                                            title="Tag Management"
-                                        />
                                     </PrivateRoute>
                                 }
                             />
@@ -321,19 +250,6 @@ const AppRoutes = () => {
                                     </PrivateRoute>
                                 }
                             />
-                            {/* <Route
-                                path="/setup/customizations/activity"
-                                element={
-                                    <PrivateRoute
-                                        accessibleTo={allowedroleToAccess}
-                                    >
-                                        <SetupLayout
-                                            content={<ActivitySetup />}
-                                            title="Activity"
-                                        />
-                                    </PrivateRoute>
-                                }
-                            /> */}
                             <Route
                                 path="/setup/customizations/deal"
                                 element={
@@ -360,7 +276,7 @@ const AppRoutes = () => {
                                     </PrivateRoute>
                                 }
                             />
-                            <Route
+                            {/* <Route
                                 path="/setup/customizations/activity-types"
                                 element={
                                     <PrivateRoute
@@ -372,7 +288,7 @@ const AppRoutes = () => {
                                         />
                                     </PrivateRoute>
                                 }
-                            />
+                            /> */}
                             <Route
                                 path="/setup/data-administration/import-file"
                                 element={

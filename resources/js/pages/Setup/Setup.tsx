@@ -1,22 +1,16 @@
 import React, { useEffect } from "react";
 import { Button, Col, Divider, Row, Space, Typography } from "antd";
 import {
-    AppstoreOutlined,
-    BarChartOutlined,
-    CheckCircleOutlined,
-    ClockCircleOutlined,
     DollarCircleOutlined,
     PhoneOutlined,
-    TagsOutlined,
     UserOutlined,
-    ZoomInOutlined,
     DatabaseOutlined,
     UsergroupAddOutlined,
     PicCenterOutlined,
     UploadOutlined,
     CommentOutlined,
 } from "@ant-design/icons";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAppContextProvider } from "../../context/AppContext";
 import { allowedroleToAccess } from "../../constants";
 import CustomLink from "../../components/CustomLink";
@@ -27,7 +21,6 @@ const Setup: React.FC = (props) => {
         return () => {};
     }, []);
 
-    const navigate = useNavigate();
     const { loggedInUser } = useAppContextProvider();
     const customizationButtons: any = [
         {
@@ -40,51 +33,6 @@ const Setup: React.FC = (props) => {
             title: "Deal Pipeline",
             link: "/setup/customizations/deal-pipeline",
         },
-        // {
-        //     icon: <DollarCircleOutlined />,
-        //     title: "Deal",
-        //     link: "/setup/customizations/deal",
-        // },
-        // {
-        //     icon: <CheckCircleOutlined />,
-        //     title: "Activity",
-        //     link: "/setup/customizations/activity",
-        // },
-        // {
-        //     icon: <DollarOutlined />,
-        //     title: "Deal",
-        //     link: "/setup/customizations/deal",
-        // },
-        // {
-        //     icon: <CheckCircleOutlined />,
-        //     title: "Activity",
-        //     link: "/setup/customizations/activity",
-        // },
-        // {
-        //     icon: <PhoneOutlined />,
-        //     title: "Calling Configurations",
-        //     link: "/setup/customizations/activity",
-        // },c
-        // {
-        //     icon: <BarChartOutlined />,
-        //     title: "Deal Pipeline",
-        //     link: "/setup/customizations/tag",
-        // },
-        // {
-        //     icon: <ZoomInOutlined />,
-        //     title: "Activity Types",
-        //     link: "/setup/customizations/activity-types",
-        // },
-        // {
-        //     icon: <AppstoreOutlined />,
-        //     title: "System Modules",
-        //     link: "/setup/customizations/modules",
-        // },
-        // {
-        //     icon: <ClockCircleOutlined />,
-        //     title: "Availability",
-        //     link: "/setup/customizations/availability",
-        // },
     ];
 
     const usersAndSecurityButtons: any = [

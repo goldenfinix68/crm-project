@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
     Button,
     Col,
@@ -12,18 +12,13 @@ import {
 import Sider from "antd/es/layout/Sider";
 import {
     SlidersOutlined,
-    UploadOutlined,
-    UserOutlined,
-    VideoCameraOutlined,
     DatabaseOutlined,
     PlusCircleOutlined,
     SettingOutlined,
-    PhoneOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import CustomFieldAddUpdateModal from "../../components/CustomFieldAddUpdateModal";
 import CustomFieldSectionAddUpdateModal from "../../components/CustomFieldSectionAddUpdateModal";
-import { MenuProps } from "antd/lib";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import CustomFieldFormModal from "../../components/CustomFieldFormModal";
@@ -42,7 +37,6 @@ interface SetupLayoutProps {
 const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
     const { loggedInUser } = useAppContextProvider();
     const { content, title } = props;
-    const navigate = useNavigate();
 
     const [isCustomFieldAddUpdateOpen, setIsCustomFieldAddUpdateOpen] =
         React.useState(false);
@@ -61,66 +55,16 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
             icon: <SlidersOutlined />,
             label: "Customizations",
             children: [
-                // {
-                //     key: "/setup/customizations/contact",
-                //     path: "/setup/customizations/contact",
-                //     label: "Contact",
-                // },
-                // {
-                //     key: "/setup/customizations/deal",
-                //     path: "/setup/customizations/deal",
-                //     label: "Deal",
-                // },
-                // {
-                //     key: "/setup/customizations/activity",
-                //     path: "/setup/customizations/activity",
-                //     label: "Activity",
-                // },
-                // {
-                //     key: "/setup/customizations/calling",
-                //     path: "/setup/customizations/calling",
-                //     label: "Calling Configurations",
-                // },
                 {
                     key: "/setup/customizations/contact",
                     path: "/setup/customizations/contact",
                     label: "Contact",
                 },
-                // {
-                //     key: "/setup/customizations/deal",
-                //     path: "/setup/customizations/deal",
-                //     label: "Deal",
-                // },
-                // {
-                //     key: "/setup/customizations/activity",
-                //     path: "/setup/customizations/activity",
-                //     label: "Activity",
-                // },
-                // {
-                //     key: "/setup/customizations/tag",
-                //     path: "/setup/customizations/tag",
-                //     label: "Tag Management",
-                // },
                 {
                     key: "/setup/customizations/deal-pipeline",
                     path: "/setup/customizations/deal-pipeline",
                     label: "Deal Pipeline",
                 },
-                // {
-                //     key: "/setup/customizations/activity-types",
-                //     path: "/setup/customizations/activity-types",
-                //     label: "Activity Types",
-                // },
-                // {
-                //     key: "/setup/customizations/modules",
-                //     path: "/setup/customizations/modules",
-                //     label: "System Modules",
-                // },
-                // {
-                //     key: "/setup/customizations/availability",
-                //     path: "/setup/customizations/availability",
-                //     label: "Availabity",
-                // },
             ],
         },
 
@@ -158,12 +102,6 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
         },
     ];
 
-    const removeLastWordSeparatedByBackslash = (str) => {
-        const words = str.split("/"); // Split the string into an array of words using backslash as the separator
-        words.pop(); // Remove the last word from the array
-        return words.join("/"); // Join the remaining words back together using backslash as the separator
-    };
-
     if (loggedInUser && allowedroleToAccess.includes(loggedInUser.role)) {
         sideMenuItems.push({
             key: "users-security",
@@ -197,10 +135,7 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                         "customizations",
                         "users-security",
                         "data-administration",
-                    ]} // Set the default open keys here
-                    // onSelect={(info) => {
-                    //     navigate(info.key);
-                    // }}
+                    ]}
                 >
                     {sideMenuItems.map((item) => {
                         if (item.children) {
@@ -238,7 +173,6 @@ const SetupLayout: React.FC<SetupLayoutProps> = (props) => {
                 <Layout.Header
                     style={{
                         padding: 0,
-                        // background: colorBgContainer
                     }}
                 >
                     <Row gutter={12}>

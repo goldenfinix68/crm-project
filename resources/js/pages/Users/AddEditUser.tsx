@@ -1,18 +1,14 @@
-import { Card, Button, Form, Input, InputNumber, Select } from "antd";
+import { Card, Button, Form, Input, Select } from "antd";
 import React from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeftOutlined, UserAddOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 
 import { DEFAULT_REQUIRED_MESSAGE, userRoleOption } from "../../constants";
 import { addUserMutation } from "../../api/mutation/useUserMutation";
 import { TUser } from "../../entities";
 import { useForm } from "antd/es/form/Form";
-import {
-    useGetAvailableSipTrunkingConnectionTelnyx,
-    usefindUser,
-} from "../../api/query/userQuery";
-import LoadingComponent from "../../components/LoadingComponent";
+import { usefindUser } from "../../api/query/userQuery";
 import { useAppContextProvider } from "../../context/AppContext";
 
 const layout = {
@@ -44,10 +40,6 @@ const AddEditUser = () => {
     React.useEffect(() => {
         if (user) {
             form.setFieldsValue(user);
-            // form.setFieldValue(
-            //     "numbers",
-            //     user.numbers?.map((number) => number.mobileNumber)
-            // );
         } else {
             form.resetFields();
         }
@@ -72,7 +64,6 @@ const AddEditUser = () => {
                 style={{ maxWidth: 600 }}
                 onFinish={onFinish}
                 autoComplete="off"
-                // initialValues={userId ? user : []}
             >
                 <Form.Item name="id" style={{ display: "none" }}>
                     <Input />

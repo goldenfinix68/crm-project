@@ -1,28 +1,11 @@
-import React, {
-    createContext,
-    useContext,
-    useState,
-    ReactNode,
-    Dispatch,
-    SetStateAction,
-} from "react";
+import React, { createContext, useContext, ReactNode } from "react";
 import { TContact, TCustomField, TUser } from "../entities";
-import { useContactsAll } from "../api/query/contactsQuery";
 import { useLoggedInUser } from "../api/query/userQuery";
-import {
-    useCustomFieldSections,
-    useCustomFields,
-} from "../api/query/customFieldQuery";
 
 // Define the context type
 interface IAppContext {
-    contacts: TContact[];
-    isContactsLoading: boolean;
-    refetchContacts: any;
     loggedInUser: TUser | null;
-    contactFields: TCustomField[];
     isRoleStats: boolean;
-    isContactFieldsLoading: boolean;
     isSUperAdmin: boolean;
 }
 
@@ -35,32 +18,12 @@ interface AppContextProviderProps {
 }
 
 export function AppContextProvider({ children }: AppContextProviderProps) {
-    // const {
-    //     contacts,
-    //     isLoading: isContactsLoading,
-    //     refetch: refetchContacts,
-    // } = useContactsAll("All");
-    const contacts = [];
-    const isContactsLoading = false;
-    const refetchContacts = () => console.log("refetchContacts");
-
     const { user } = useLoggedInUser();
-
-    // const {
-    //     data: contactFields,
-    //     isLoading: isContactFieldsLoading,
-    //     refetch: refetchContactFields,
-    // } = useCustomFields("contact");
 
     return (
         <AppContext.Provider
             value={{
-                contacts: contacts ?? [],
-                isContactsLoading,
-                refetchContacts,
                 loggedInUser: user ?? null,
-                contactFields: [],
-                isContactFieldsLoading: false,
                 isRoleStats: user?.role == "stats",
                 isSUperAdmin: user?.role == "superAdmin",
             }}

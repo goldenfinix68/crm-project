@@ -7,19 +7,14 @@ import {
     Row,
     Upload,
     message,
-    List,
     Table,
     Space,
-    Popover,
-    Input,
     Modal,
     Select,
     Alert,
 } from "antd";
 import {
-    CaretDownOutlined,
     CheckCircleOutlined,
-    CloseCircleOutlined,
     CloseOutlined,
     DollarCircleOutlined,
     LoadingOutlined,
@@ -27,8 +22,6 @@ import {
     UserOutlined,
 } from "@ant-design/icons";
 import Papa from "papaparse";
-import AddAttributePopoverContent from "../../TextTemplates/components/AddAttributePopoverContent";
-import { useArray } from "../../../helpers";
 import { useMutation } from "react-query";
 import { useContactBulkImportCsv } from "../../../api/mutation/useContactMutation";
 import { useNavigate } from "react-router-dom";
@@ -40,11 +33,7 @@ const ComponentImportData: React.FC = () => {
         return () => {};
     }, []);
     const navigate = useNavigate();
-    const {
-        data: contactFields,
-        isLoading: isContactFieldsLoading,
-        refetch: refetchContactFields,
-    } = useCustomFields("contact");
+    const { data: contactFields } = useCustomFields("contact");
     const [loading, setLoading] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [csvData, setCsvData] = useState<any>([]);

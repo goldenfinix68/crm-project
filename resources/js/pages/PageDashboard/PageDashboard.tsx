@@ -1,14 +1,6 @@
 import React, { useEffect, useState } from "react";
-import DashboardComponentButtons from "./Components/DashboardComponentButtons";
-import DashboardComponentFilters from "./Components/DashboardComponentFilters";
-import DashboardComponentWidget from "./Components/DashboardComponentWidget";
-import { Card, Col, DatePicker, Row, Space, Statistic, Typography } from "antd";
+import { DatePicker, Space } from "antd";
 import CallLogsTable from "./Components/CallLogsTable";
-import {
-    DollarCircleOutlined,
-    LikeOutlined,
-    UserOutlined,
-} from "@ant-design/icons";
 import Statistics from "./Components/Statistics";
 import SuppressedContactsCounty from "./Components/SuppressedContactsCounty";
 import { TimeRangePickerProps } from "antd/lib";

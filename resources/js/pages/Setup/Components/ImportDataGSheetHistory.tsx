@@ -1,11 +1,10 @@
 import React from "react";
-import { Button, Card, Space, Table, TableColumnsType, message } from "antd";
+import { Button, Card, Table, TableColumnsType, message } from "antd";
 
 import moment from "moment";
 import { gSheetCrawlResults } from "../../../api/query/importDataQuery";
-import { TGSheetCrawlHistory, TGSheetCrawlResult } from "../../../entities";
+import { TGSheetCrawlHistory } from "../../../entities";
 import TextEllipsis from "../../../components/TextEllipsis";
-import copy from "copy-to-clipboard";
 import { useMutation } from "react-query";
 import { mutatePost } from "../../../api/mutation/useSetupMutation";
 import queryClient from "../../../queryClient";

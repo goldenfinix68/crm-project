@@ -1,15 +1,6 @@
 import React, { useEffect } from "react";
-import {
-    HomeOutlined,
-    PhoneOutlined,
-    DollarCircleOutlined,
-    MobileOutlined,
-    UsergroupAddOutlined,
-} from "@ant-design/icons";
-import { Layout, Menu, theme, notification } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Layout, theme, notification } from "antd";
 import Navigation from "./Navigation";
-import { useCallContext } from "../context/CallContext";
 import Pusher from "pusher-js";
 
 import IncomingCallListener from "../pages/Dialer/DialerTab/IncomingCallListener";
@@ -17,10 +8,8 @@ import { useAppContextProvider } from "../context/AppContext";
 import ReactClearCache from "./ReactClearCache";
 import ImpersonateBanner from "./ImpersonateBanner";
 import queryClient from "../queryClient";
-import { Link } from "react-router-dom";
-import CustomLink from "./CustomLink";
 
-const { Header, Sider, Content } = Layout;
+const { Header, Content } = Layout;
 
 const SideMenu = ({ children, title }: { children: any; title?: string }) => {
     const [api, contextHolder] = notification.useNotification();
@@ -75,64 +64,6 @@ const SideMenu = ({ children, title }: { children: any; title?: string }) => {
             <ReactClearCache />
             <ImpersonateBanner />
             <Layout style={{ minHeight: "100vh" }}>
-                {/* <Sider
-                    trigger={null}
-                    collapsible
-                    collapsed={true}
-                    style={{
-                        backgroundColor: "#F4F5F7",
-                        borderInlineEnd: "1px solid rgba(5, 5, 5, 0.06)",
-                    }}
-                >
-                    <div className="demo-logo-vertical" />
-                    <Menu
-                        theme="light"
-                        mode="inline"
-                        defaultSelectedKeys={["1"]}
-                        style={{
-                            minHeight: "100vh",
-                            backgroundColor: "#F4F5F7",
-                            border: 0,
-                        }}
-                        items={[
-                            {
-                                key: "/dashboard",
-                                icon: <HomeOutlined />,
-                                label: (
-                                    <CustomLink to="/dashboard">
-                                        Dashboard
-                                    </CustomLink>
-                                ),
-                            },
-                            {
-                                key: "/contacts",
-                                icon: <UsergroupAddOutlined />,
-                                label: (
-                                    <CustomLink to="/contacts">
-                                        Contacts
-                                    </CustomLink>
-                                ),
-                            },
-                            {
-                                key: "/deals",
-                                icon: <DollarCircleOutlined />,
-                                label: (
-                                    <CustomLink to="/deals">Deals</CustomLink>
-                                ),
-                            },
-                            {
-                                key: "/text-threads",
-                                icon: <MobileOutlined />,
-                                label: (
-                                    <CustomLink to="/text-threads">
-                                        Texts
-                                    </CustomLink>
-                                ),
-                            },
-                        ]}
-                    />
-                </Sider> */}
-
                 <Header
                     style={{
                         padding: "0px 30px",

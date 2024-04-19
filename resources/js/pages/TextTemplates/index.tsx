@@ -26,7 +26,6 @@ import CustomLink from "../../components/CustomLink";
 const TextTemplates = () => {
     const { route } = useParams();
     const { isRoleStats } = useAppContextProvider();
-    const navigate = useNavigate();
     const [menu, setMenu] = useState(route ?? "All");
     const [templateFolder, setTemplateFolder] = useState<
         TTextTemplateFolder | undefined
@@ -68,20 +67,9 @@ const TextTemplates = () => {
                                 </Space>
                                 <Menu
                                     mode="vertical"
-                                    // onClick={(e) => {
-                                    //     if (e.key == "All") {
-                                    //         navigate("/text-templates");
-                                    //     } else {
-                                    //         navigate(
-                                    //             "/text-templates/" + e.key
-                                    //         );
-                                    //     }
-                                    //     setMenu(e.key);
-                                    // }}
                                     selectedKeys={[menu]}
                                     style={{ height: "80vh" }}
                                 >
-                                    {/* Set mode to 'vertical' for a vertical menu */}
                                     <Menu.Item key="All">
                                         <CustomLink to="/text-templates">
                                             All

@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import { Card, Space, Row, Col } from "antd";
 
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 import DraggableCardSection from "../../components/DraggableCardSection";
 import {
     useCustomFieldSections,

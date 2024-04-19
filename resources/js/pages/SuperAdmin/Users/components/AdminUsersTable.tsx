@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Button, Table, Space, Input, Tooltip } from "antd";
-import type { ColumnsType, TableProps } from "antd/es/table";
-import { Link } from "react-router-dom";
+import { Button, Space, Input, Tooltip, Card } from "antd";
+import type { ColumnsType } from "antd/es/table";
 import {
     EditOutlined,
     LoginOutlined,
@@ -124,29 +123,30 @@ const AdminUsersTable = () => {
         refetch();
     };
     return (
-        <Space direction="vertical" className="w-100">
-            <Space
-                className="w-100"
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                }}
-            >
-                <Input.Search
-                    placeholder="Search"
-                    onSearch={handleSearch}
-                    style={{ width: 200 }}
-                />
-                <Button
-                    type="primary"
-                    icon={<PlusCircleOutlined />}
-                    onClick={() => setIsCreateUserModalOpen(true)}
+        <Card title="Users" loading={isLoading}>
+            <Space direction="vertical" className="w-100">
+                <Space
+                    className="w-100"
+                    style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                    }}
                 >
-                    Add User
-                </Button>
-            </Space>
-            {/* <Table
+                    <Input.Search
+                        placeholder="Search"
+                        onSearch={handleSearch}
+                        style={{ width: 200 }}
+                    />
+                    <Button
+                        type="primary"
+                        icon={<PlusCircleOutlined />}
+                        onClick={() => setIsCreateUserModalOpen(true)}
+                    >
+                        Add User
+                    </Button>
+                </Space>
+                {/* <Table
                 columns={columns}
                 dataSource={users.data}
                 pagination={{
@@ -162,31 +162,32 @@ const AdminUsersTable = () => {
                 }}
             /> */}
 
-            <CustomResizeableTable
-                columns={columns}
-                dataSource={users.data}
-                pagination={{
-                    current: page,
-                    defaultPageSize: 100,
-                    pageSizeOptions: ["100", "250"],
-                    showSizeChanger: true,
-                    total: users?.total || 0,
-                    onChange: (newPage) => {
-                        setPage(newPage);
-                        refetch();
-                    },
-                }}
-                localStorageKey="adminUsersTableColumnsWidth"
-            />
-            <AdminUsersAddUpdateModal
-                isModalOpen={isCreateUserModalOpen}
-                closeModal={() => setIsCreateUserModalOpen(false)}
-                handleSubmit={() => {
-                    console.log("qwe");
-                }}
-                user={selectedUser}
-            />
-        </Space>
+                <CustomResizeableTable
+                    columns={columns}
+                    dataSource={users.data}
+                    pagination={{
+                        current: page,
+                        defaultPageSize: 100,
+                        pageSizeOptions: ["100", "250"],
+                        showSizeChanger: true,
+                        total: users?.total || 0,
+                        onChange: (newPage) => {
+                            setPage(newPage);
+                            refetch();
+                        },
+                    }}
+                    localStorageKey="adminUsersTableColumnsWidth"
+                />
+                <AdminUsersAddUpdateModal
+                    isModalOpen={isCreateUserModalOpen}
+                    closeModal={() => setIsCreateUserModalOpen(false)}
+                    handleSubmit={() => {
+                        console.log("qwe");
+                    }}
+                    user={selectedUser}
+                />
+            </Space>
+        </Card>
     );
 };
 

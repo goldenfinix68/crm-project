@@ -4,21 +4,12 @@ import {
     Typography,
     Card,
     Divider,
-    Row,
     message,
-    Space,
-    Select,
     Form,
-    Col,
     Upload,
     Modal,
 } from "antd";
-import { useMutation } from "react-query";
-import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
-import queryClient from "../../../queryClient";
 import { useAppContextProvider } from "../../../context/AppContext";
-import { userSettings } from "../../../api/mutation/useUserMutation";
-import { useCustomFields } from "../../../api/query/customFieldQuery";
 import type { UploadFile, UploadProps } from "antd";
 import { CloseOutlined, InboxOutlined } from "@ant-design/icons";
 import axios from "axios";

@@ -10,17 +10,12 @@ import {
     Popconfirm,
     Typography,
     Empty,
-    Avatar,
-    Tooltip,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import {
     PlusCircleOutlined,
     DownOutlined,
-    FilterOutlined,
-    PhoneOutlined,
     MailOutlined,
-    UserOutlined,
     CloseOutlined,
     PlusSquareOutlined,
     SaveOutlined,
@@ -28,33 +23,20 @@ import {
     MobileOutlined,
     CheckCircleOutlined,
     FunnelPlotOutlined,
-    EditOutlined,
     SettingOutlined,
     UpOutlined,
 } from "@ant-design/icons";
 import ModalAddDeal from "./components/ModalAddDeal";
-import Filter from "./components/Filter";
-import { useNavigate } from "react-router-dom";
 import Board from "react-trello";
 import { dealPipelines, useDealsAll } from "../../api/query/dealQuery";
 import { useMutation, useQueryClient } from "react-query";
 import {
     moveCardAcrossLanesMutation,
     useDealMutationDeleteDeal,
-    useDealUpdateBoardMutation,
 } from "../../api/mutation/useDealMutation";
-import moment from "moment";
 import DealsTable from "./components/DealsTable";
 import { TDeal } from "../../entities";
-import LoadingComponent from "../../components/LoadingComponent";
 import { useAppContextProvider } from "../../context/AppContext";
-import { useCallContext } from "../../context/CallContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPen } from "@fortawesome/free-solid-svg-icons";
-import TextEllipsis from "../../components/TextEllipsis";
-import CustomButtonIcon from "../../components/CustomButtonIcon";
-import { Link } from "react-router-dom";
-import CustomLink from "../../components/CustomLink";
 import DealCardConfigureModal from "../../components/DealCardConfigureModal";
 import DealCard from "../../components/DealCard";
 import { useCustomFields } from "../../api/query/customFieldQuery";

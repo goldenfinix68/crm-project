@@ -1,35 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Space, Row, Card, Col, Select, Tabs, Input } from "antd";
+import { Space, Row, Card, Col } from "antd";
 
 import HeaderMenu from "./Components/HeaderMenu";
 import ContactsTable from "./Components/ContactTable";
 import ContactTableHeader from "./Components/ContactTableHeader";
 import { mutateGet } from "../../api/mutation/useSetupMutation";
 import { ENDPOINTS } from "../../endpoints";
-import { TContact, TFilter, TFilters } from "../../entities";
-import { filterData } from "../../helpers";
-import FilterAddUpdateModal from "../../components/FilterAddUpdateModal";
+import { TContact, TFilter } from "../../entities";
 import { defaultFilter } from "../../constants";
-import { useAppContextProvider } from "../../context/AppContext";
 import { useCustomFields } from "../../api/query/customFieldQuery";
-
-interface DataType {
-    key: React.Key;
-    name: string;
-    email: string;
-    mobile: string;
-    countryLink: string;
-    acres: string;
-    tags: string[];
-    owner: string;
-    avatar: any;
-}
-
-interface ListItem {
-    id: string;
-    title: string;
-    key: string;
-}
 
 const Contacts = () => {
     useEffect(() => {

@@ -2,13 +2,11 @@ import React, { useEffect } from "react";
 import { Button, Card } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
 
-import { useQueryClient } from "react-query";
 import { useUsersAll } from "../../api/query/userQuery";
 import UsersTable from "./components/UsersTable";
 import { Link } from "react-router-dom";
 
 const Users: React.FC = ({}) => {
-    const queryClient = useQueryClient();
     const { users, isLoading } = useUsersAll();
 
     useEffect(() => {

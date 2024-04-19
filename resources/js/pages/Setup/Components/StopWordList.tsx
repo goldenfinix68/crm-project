@@ -4,20 +4,15 @@ import {
     Typography,
     Card,
     Divider,
-    Row,
     message,
     Space,
-    Select,
     Form,
-    Col,
     Input,
 } from "antd";
 import { useMutation } from "react-query";
-import { DEFAULT_REQUIRED_MESSAGE } from "../../../constants";
 import queryClient from "../../../queryClient";
 import { useAppContextProvider } from "../../../context/AppContext";
 import { userSettings } from "../../../api/mutation/useUserMutation";
-import { useCustomFields } from "../../../api/query/customFieldQuery";
 
 const StopWordList: React.FC = () => {
     useEffect(() => {

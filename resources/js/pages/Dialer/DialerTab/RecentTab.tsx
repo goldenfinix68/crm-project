@@ -2,7 +2,6 @@ import { Button, Mentions, Form, Space, List, Avatar } from "antd";
 import React, { useContext } from "react";
 import { useCallHistory } from "../../../api/query/callQuery";
 import LoadingComponent from "../../../components/LoadingComponent";
-import "bootstrap-icons/font/bootstrap-icons.css";
 import { UserOutlined } from "@ant-design/icons";
 
 const RecentTab = () => {

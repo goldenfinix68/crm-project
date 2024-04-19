@@ -1,8 +1,7 @@
 import React from "react";
 import { UserOutlined, HomeOutlined } from "@ant-design/icons";
-import { Layout, Menu, Button, theme } from "antd";
+import { Layout, Menu, theme } from "antd";
 import { useNavigate } from "react-router-dom";
-import Navigation from "../Navigation";
 
 import ReactClearCache from "../ReactClearCache";
 import TopNavigation from "./TopNavigation";

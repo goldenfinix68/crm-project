@@ -1,45 +1,15 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import {
-    Badge,
-    Button,
-    Card,
-    Dropdown,
-    Menu,
-    Modal,
-    Space,
-    Table,
-    TableColumnsType,
-    Typography,
-} from "antd";
+import React from "react";
+import { Badge, Card, Space, Table, TableColumnsType } from "antd";
 
-import {
-    CloseOutlined,
-    DownOutlined,
-    PullRequestOutlined,
-    UserOutlined,
-} from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import HeaderMenu from "./Components/HeaderMenu";
-import { data } from "jquery";
 import { useWorkflowsQuery } from "../../api/query/workflowQuery";
 import { TWorkflow, TWorkflowItem } from "../../entities";
 import moment from "moment";
 import TextEllipsis from "../../components/TextEllipsis";
 
-interface ExpandedDataType {
-    key: React.Key;
-    date: string;
-    name: string;
-    upgradeNum: string;
-}
-const items = [
-    { key: "1", label: "Action 1" },
-    { key: "2", label: "Action 2" },
-];
-
 const BulkAction = () => {
-    const navigate = useNavigate();
-    const { workflows, isLoading } = useWorkflowsQuery();
+    const { workflows } = useWorkflowsQuery();
     const expandedRowRender = (record: TWorkflow) => {
         console.log(record);
         const columns: TableColumnsType<TWorkflowItem> = [

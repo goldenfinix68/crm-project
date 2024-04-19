@@ -2,29 +2,21 @@ import {
     PhoneFilled,
     MessageFilled,
     MailFilled,
-    EllipsisOutlined,
-    PhoneOutlined,
-    GlobalOutlined,
     DollarCircleOutlined,
     ApartmentOutlined,
 } from "@ant-design/icons";
-import { Button, Popover, Space, Typography } from "antd";
-import React, { useContext } from "react";
+import { Space } from "antd";
+import React from "react";
 import ActionMenuBtn from "./ActionMenuBtn";
-import DropdownComponent from "../../../components/DropdownComponent";
 import TextModal from "./TextModal";
-import ModalAddActivity from "../../Activity/components/ModalAddActivity";
 import ModalAddDeal from "../../Deal/components/ModalAddDeal";
 import queryClient from "../../../queryClient";
 import { useCallContext } from "../../../context/CallContext";
-import { useLoggedInUser } from "../../../api/query/userQuery";
-import ContactContext from "../context";
 import { TContact } from "../../../entities";
 import ModalSetDefaultMobile from "./ModalSetDefaultMobile";
 
 const ActionMenu = ({ contact }: { contact: TContact }) => {
     const [textModalOpen, setTextModalOpen] = React.useState(false);
-    const [activityModalOpen, setActivityModalOpen] = React.useState(false);
     const [dealModalOpen, setDealModalOpen] = React.useState(false);
     const [defaultMobileNumberModal, setDefaultMobileNumberModal] =
         React.useState(false);
@@ -112,11 +104,6 @@ const ActionMenu = ({ contact }: { contact: TContact }) => {
                 />
             )}
 
-            {/* <ModalAddActivity
-                isModalOpenAdd={activityModalOpen}
-                handleOkAdd={() => setActivityModalOpen(false)}
-                handleCancelAdd={() => setActivityModalOpen(false)}
-            /> */}
             {dealModalOpen && (
                 <ModalAddDeal
                     isModalOpen={dealModalOpen}
