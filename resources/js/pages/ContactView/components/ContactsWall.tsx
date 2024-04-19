@@ -54,8 +54,8 @@ const ContactsWall = () => {
     const [showing, setShowing] = React.useState("");
 
     const [showingClass, setShowingClass] = React.useState("");
-    const filteredData = contact.wall?.filter((data) =>
-        data.type.includes(showing)
+    const filteredData = contact.wall?.filter(
+        (data) => data.type.includes(showing) && data.type != "contactUpdates"
     );
     const { user, isLoading } = useLoggedInUser();
 
@@ -75,17 +75,17 @@ const ContactsWall = () => {
                 </a>
             ),
         },
-        {
-            title: (
-                <a
-                    onClick={() => {
-                        setShowing("activities");
-                    }}
-                >
-                    Activities
-                </a>
-            ),
-        },
+        // {
+        //     title: (
+        //         <a
+        //             onClick={() => {
+        //                 setShowing("activities");
+        //             }}
+        //         >
+        //             Activities
+        //         </a>
+        //     ),
+        // },
         {
             title: (
                 <a
@@ -108,9 +108,9 @@ const ContactsWall = () => {
                 </a>
             ),
         },
-        {
-            title: <a>Emails</a>,
-        },
+        // {
+        //     title: <a>Emails</a>,
+        // },
         {
             title: (
                 <a
@@ -154,7 +154,7 @@ const ContactsWall = () => {
             return <TextBox data={data} user={user!} />;
         } else if (data.type === "deal") {
             return <DealBox data={data} user={user!} />;
-        } else if (data.type === "update") {
+        } else if (data.type === "dealUpdates") {
             return <UpdateBox data={data} user={user!} />;
         } else if (data.type === "activity log") {
             return <Log data={data} user={user!} />;

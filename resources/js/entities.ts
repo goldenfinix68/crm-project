@@ -248,7 +248,8 @@ export type TWallData = {
         | "text"
         | "note"
         | "deal"
-        | "update"
+        | "contactUpdates"
+        | "dealUpdates"
         | "activity log"
         | "files"
         | "activities";

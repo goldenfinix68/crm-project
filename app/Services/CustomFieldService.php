@@ -50,6 +50,7 @@ class CustomFieldService
         $update = new ContactUpdate();
         $update->userId = Auth::id();
         $update->title = $customField->label . " updated";
+        $update->logable_type = "contact";
         $update->contactId = $fieldValue->customableId;
         $update->from = $fieldValue->value;
 

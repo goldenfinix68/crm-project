@@ -233,9 +233,14 @@ class Contact extends Model
         return $this->hasOne(\App\Models\Deal::class, 'contactId', 'id')->with(['creator', 'stage', 'pipeline', 'pipeline.stages']);
     }
 
-    public function updates()
+    public function contactUpdates()
     {
-        return $this->hasMany(\App\Models\ContactUpdate::class, 'contactId', 'id');
+        return $this->hasMany(\App\Models\ContactUpdate::class, 'contactId', 'id')->where('logable_type', 'contact');
+    }
+
+    public function dealUpdates()
+    {
+        return $this->hasMany(\App\Models\ContactUpdate::class, 'contactId', 'id')->where('logable_type', 'deal');
     }
 
     public function log()
@@ -319,10 +324,21 @@ class Contact extends Model
         //     ];
         // });
 
-        $updates = $this->updates->map(function ($data) {
+        $dealUpdates = $this->dealUpdates->map(function ($data) {
             $createdAt = Carbon::parse($data->created_at);
             return [
-                'type' => 'update',
+                'type' => 'dealUpdates',
+                'date' => $data->created_at,
+                'day' => $createdAt->format('j'),
+                'month' => $createdAt->format('F'),
+                'year' => $createdAt->format('Y'),
+                'update' => $data,
+            ];
+        });
+        $contactUpdates = $this->contactUpdates->map(function ($data) {
+            $createdAt = Carbon::parse($data->created_at);
+            return [
+                'type' => 'contactUpdates',
                 'date' => $data->created_at,
                 'day' => $createdAt->format('j'),
                 'month' => $createdAt->format('F'),
@@ -356,9 +372,10 @@ class Contact extends Model
         $data = $data->merge($notes)
             ->merge($texts)
             ->merge($deals)
-            ->merge($updates)
             ->merge($log)
             ->merge($files)
+            ->merge($contactUpdates)
+            ->merge($dealUpdates)
             ->merge($call);
             // ->merge($activity);
 

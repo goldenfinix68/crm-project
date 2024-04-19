@@ -54,7 +54,11 @@ const ContactView = () => {
                         </div>
                     </Col>
                     <Col span={7}>
-                        <CollapsibleDetails />
+                        <CollapsibleDetails
+                            logs={contact.wall?.filter(
+                                (data) => data.type == "contactUpdates"
+                            )}
+                        />
                     </Col>
                 </Row>
             </Space>
