@@ -33,7 +33,7 @@ class CustomFieldService
         return false;
     }
     
-    public function createOrUpdateCustomFieldValue($customableId, $customField, $customableType, $value)
+    public function createOrUpdateCustomFieldValue($customableId, $customField, $customableType, $value, $phoneFieldStatus = "")
     {
         $user = Auth::user();
 
@@ -98,13 +98,14 @@ class CustomFieldService
         else{
             if($customField->type == "mobile" || $customField->type == "phone"){
                 $value = MobileNumberService::formatPhoneNumber($value);
+                
+                $fieldValue->status = $phoneFieldStatus ?? null;
             }
             $fieldValue->value =  $value;
             $fieldValue->lookupIds = null;
         }
         $fieldValue->save();
 
-        
         $update->to = $fieldValue->value;
         $update->save();
     }

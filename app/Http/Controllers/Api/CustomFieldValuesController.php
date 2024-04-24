@@ -83,11 +83,8 @@ class CustomFieldValuesController extends Controller
                     ->where('userId', $userId)
                     ->first();
 
-                $fieldValue = CustomFieldService::createOrUpdateCustomFieldValue($record->id, $customField, $request->customableType, $value);
-                if($customField->type == "phone" || $customField->type == "mobile"){
-                    $fieldValue->status = $request->phoneFieldStatus ?? null;
-                    $fieldValue->save();
-                }
+                $fieldValue = CustomFieldService::createOrUpdateCustomFieldValue($record->id, $customField, $request->customableType, $value, $request->phoneFieldStatus);
+                
 
             }
             DB::commit();
