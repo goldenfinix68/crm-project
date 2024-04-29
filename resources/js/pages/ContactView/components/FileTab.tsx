@@ -56,11 +56,9 @@ const FileTab = () => {
             onSuccess: (res) => {
                 if (res.success) {
                     notification.success({
-                        message: "Deals",
-                        description: "File(s) Successfully Added",
+                        message: "File(s) Successfully Added",
                     });
                     queryClient.invalidateQueries("getContact");
-                    queryClient.invalidateQueries("deals_by_id");
                     setFileList([]);
                 }
             },
