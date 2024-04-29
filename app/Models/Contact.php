@@ -208,8 +208,11 @@ class Contact extends Model
         \Log::info($this->phoneNumbers);
         $data = [];
         $calls = Call::select('*')
-            ->whereIn('to', $this->phoneNumbers)
-            ->orWhereIn('from', $this->phoneNumbers)
+            ->where(function ($query) {
+                $query->orWhereIn('to', $this->phoneNumbers)
+                    ->orWhereIn('from', $this->phoneNumbers);
+            })
+            ->whereRaw("TIME_TO_SEC(duration) >= 30")
             ->orderBy('id', 'desc');
         // \Log::info($calls->toSql());
         $calls = $calls->get();
