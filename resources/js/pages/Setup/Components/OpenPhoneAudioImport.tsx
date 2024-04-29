@@ -18,7 +18,7 @@ const { Dragger } = Upload;
 
 const OpenPhoneAudioImport = () => {
     useEffect(() => {
-        document.title = "OpenPhone Audio Import - SpeedLead";
+        document.title = "Manual Audio Import - SpeedLead";
         return () => {};
     }, []);
     const [progress, setProgress] = React.useState<number>(0);
@@ -151,7 +151,8 @@ const OpenPhoneAudioImport = () => {
                         Ensure that the file name follows the correct format:
                         <ul>
                             <li>
-                                Format: yyyy-mm-ddThh_mm_ss + contact number
+                                Format: yyyy-mm-ddThh_mm_ss+00_00 + contact
+                                number
                             </li>
                             <li>
                                 Example:
