@@ -92,7 +92,7 @@ class GoogleSheetService
             $mainUser = User::find($crawlResult->mainUserId);
             $customFields = $mainUser->customFields->where('isActive', 1);
 
-            $roorMapping = $mainUser->settings->roorMapping;
+            $roorMapping = $mainUser->settings->roorMapping; 
 
             // Fetch data from the Google Sheet
             $response = $service->spreadsheets_values->get($crawlResult->gSheetId, $crawlResult->gSheetName);
