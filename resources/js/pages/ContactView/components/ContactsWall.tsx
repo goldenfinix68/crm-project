@@ -631,102 +631,50 @@ const Activities = ({ data, user }: { data: TWallData; user: TUser }) => {
     );
 };
 const File = ({ data, user }: { data: TWallData; user: TUser }) => {
-    // console.log(data);
+    console.log({ data });
     return (
         <Card
             title={
                 <Typography.Text>
-                    {user.id == data.update?.uploaded_by?.id
-                        ? "File Added - by You"
-                        : "File Added - by " +
-                          data.update?.uploaded_by?.firstName}
+                    {data?.file?.file_type +
+                        " Added - by " +
+                        data.file?.uploaded_by?.firstName}
                 </Typography.Text>
             }
             bordered={false}
             extra={moment.utc(data.date).local().format("MMM DD hh:mm A")}
         >
-            <div
-                style={{
-                    background: "#F2F5FA",
-                    borderRadius: 5,
-                    padding: 10,
-                    cursor: "pointer",
-                }}
-                onClick={() => {
-                    window.open(
-                        window.location.origin + "/" + data?.update?.file_url
-                    );
-                }}
-            >
+            {data?.file?.file_type == "Call Recording" && (
+                <audio
+                    src={window.location.origin + "/" + data?.file?.file_url}
+                    controls
+                />
+            )}
+
+            {data?.file?.file_type == "Image" && (
                 <div
                     style={{
-                        display: "flex",
-                        alignItems: "center",
+                        position: "relative",
+                        overflow: "hidden", // This ensures child elements don't overflow
                     }}
                 >
-                    <span>
-                        <PaperClipOutlined style={{ fontSize: 20 }} />
-                    </span>
-                    <span style={{ marginLeft: 10 }}>
-                        {data?.update?.file_name}
-
-                        <div style={{ fontSize: 10 }}>
-                            {" "}
-                            {data?.update?.file_size}
-                        </div>
-                    </span>
+                    <img
+                        src={
+                            window.location.origin + "/" + data?.file?.file_url
+                        }
+                        alt="Your Image"
+                        style={{
+                            width: "100%", // This ensures the image fills the parent container
+                            height: "auto", // This maintains the aspect ratio
+                            display: "block", // Removes any default inline styles
+                        }}
+                    />
                 </div>
-            </div>
+            )}
         </Card>
     );
 };
 const CallBox = ({ data, user }: { data: TWallData; user: TUser }) => {
-    const [isPlaying, setIsPlaying] = useState(false);
-    const audioRef = useRef<HTMLAudioElement>(null);
-    const [currentTime, setCurrentTime] = useState(0);
-
-    const handleTogglePlay = () => {
-        if (audioRef.current) {
-            if (isPlaying) {
-                audioRef.current.pause();
-            } else {
-                audioRef.current.play();
-            }
-            setIsPlaying(!isPlaying);
-        }
-    };
-
-    const handleAudioEnded = () => {
-        setIsPlaying(false);
-    };
-
-    const handleTimeUpdate = () => {
-        if (audioRef.current) {
-            setCurrentTime(audioRef.current.currentTime);
-        }
-    };
-
-    const handleSliderChange = (e) => {
-        if (audioRef.current) {
-            const newValue = parseFloat(e.target.value);
-            audioRef.current.currentTime = newValue;
-            setCurrentTime(newValue);
-        }
-    };
-
-    useEffect(() => {
-        console.log("data", data);
-        if (audioRef.current) {
-            audioRef.current.addEventListener("timeupdate", handleTimeUpdate);
-            return () => {
-                audioRef.current?.removeEventListener(
-                    "timeupdate",
-                    handleTimeUpdate
-                );
-            };
-        }
-    }, []);
-
     const capFirstLetter = (word) => {
         return word.charAt(0).toUpperCase() + word.slice(1);
     };

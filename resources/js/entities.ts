@@ -148,11 +148,6 @@ export type TUpdate = {
     owner: TUpdateOwner;
     start_date: string;
     outcome: string;
-    firstName: string;
-    uploaded_by: any;
-    file_url: string;
-    file_size: string;
-    file_name: string;
     availability: string;
 };
 
@@ -258,7 +253,18 @@ export type TWallData = {
     deal?: TDeal;
     update?: TUpdate;
     activity?: TUpdate;
+    file?: TFile;
     call?: TCallHistory;
+};
+
+export type TFile = {
+    id: string;
+    firstName: string;
+    uploaded_by: any;
+    file_url: string;
+    file_size: string;
+    file_name: string;
+    file_type: string;
 };
 
 export type TContact = {
