@@ -38,7 +38,7 @@ const FileTab = () => {
         }
     };
     const { contact } = useContext(ContactContext);
-    const { mutate: mutateUpload, isLoading: isLoadingUploadDeliveryRequest } =
+    const { mutate: mutateUpload, isLoading: isMutateUploadLoading } =
         POST_FILE("/api/contacts/add_files");
 
     const onSaveChangeFile = (value: any) => {
@@ -76,7 +76,7 @@ const FileTab = () => {
     return (
         <Space direction="vertical" className="w-100">
             <Space size={0} direction="vertical" className="w-100">
-                File Type
+                <b>File Type</b>
                 <Select
                     style={{ width: "100%" }}
                     value={fileType}
@@ -112,6 +112,7 @@ const FileTab = () => {
                     type="primary"
                     onClick={onSaveChangeFile}
                     style={{ float: "right" }}
+                    loading={isMutateUploadLoading}
                 >
                     Save
                 </Button>
