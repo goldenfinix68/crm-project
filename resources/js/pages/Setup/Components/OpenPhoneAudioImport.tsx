@@ -61,11 +61,7 @@ const OpenPhoneAudioImport = () => {
             fmData.append("audio", file);
             console.log(file);
             try {
-                const res = axios.post(
-                    "https://speedlead.click/api/openphone/upload",
-                    fmData,
-                    config
-                );
+                const res = axios.post("/api/openphone/upload", fmData, config);
 
                 res.then((res) => {
                     console.log(res.data);
@@ -73,10 +69,11 @@ const OpenPhoneAudioImport = () => {
                         onSuccess("Ok");
 
                         message.success(
-                            `${file.name} file uploaded successfully.`
+                            `${file.name} file uploaded successfully to ${res.data.contactName}.`
                         );
+                    } else {
+                        message.error(res.data.message);
                     }
-                    console.log("server res: ", res);
                 });
             } catch (err) {
                 console.log("Eroor: ", err);

@@ -12,6 +12,8 @@ use DB;
 use App\Business\Pusher;
 use App\Services\MobileNumberService;
 use App\Services\RoorService;
+use App\Services\ContactService;
+use App\Services\UserService;
 
 class CallsController extends Controller
 {
@@ -246,7 +248,6 @@ class CallsController extends Controller
         // Store the file in storage\app\public folder
         $file = $request->file('audio');
         $fileName = $file->getClientOriginalName();
-        $filePath = $file->storeAs('uploads', $fileName,'public');
 
         // 2024-03-13T19_56_16+00_00+13034892316.mp3
         // $fileName = str_replace(['T', '+', '_'], [' ', ' ', ' '], $fileName);
@@ -259,8 +260,18 @@ class CallsController extends Controller
         $toNumber = explode('.', $toNumber);
         $toNumber = $toNumber[0];
 
-
         $toNumber = MobileNumberService::formatPhoneNumber($toNumber);
+        $mainUserId = UserService::getMainUserId();
+        $contacts = ContactService::getContactsByMobile($toNumber, [$mainUserId]);
+
+        if($contacts->isEmpty()){
+            return response()->json([
+                'success' => false,
+                'message' => "Contact number not found!",
+            ], 200);
+        }
+        
+        $filePath = $file->storeAs('uploads', $file->getClientOriginalName(),'public');
 
         $url_recording = env('APP_URL').'/storage/'.$filePath;
         $call = \App\Models\Call::updateOrCreate([
@@ -279,15 +290,12 @@ class CallsController extends Controller
             'call_received_date' => $timeStamp,
         ]);
 
-        // // Store file information in the database
-        // $uploadedFile = new UploadedFile();
-        // $uploadedFile->filename = $fileName;
-        // $uploadedFile->original_name = $file->getClientOriginalName();
-        // $uploadedFile->file_path = $filePath;
-        // $uploadedFile->save();
+        $contact = $contacts->first();
+
         return response()->json([
             'success' => true,
             'data' => $call,
+            'contactName' => $contact->fields['firstName'] . ' ' . $contact->fields['lastName'],
         ], 200);
     }
     
