@@ -445,6 +445,7 @@ class ContactsController extends Controller
 
                     $file_url = str_replace('public/files/', '', $file_url);
                     ContactFile::create([
+                        'file_type' => $request->fileType,
                         'contact_id' => $request->contact_id,
                         'file_size' => $file_size,
                         'file_name' => $file_name,

@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { InboxOutlined } from "@ant-design/icons";
 import type { UploadProps } from "antd";
-import { Button, message, notification, Upload } from "antd";
+import { Button, message, notification, Select, Space, Upload } from "antd";
 import axios from "axios";
 import { useMutation } from "react-query";
 import ContactContext from "../context";
@@ -22,63 +22,15 @@ function POST_FILE(url: any) {
     });
 }
 
-const props: UploadProps = {
-    name: "file",
-    multiple: true,
-    action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
-    onChange(info) {
-        const { status } = info.file;
-        if (status !== "uploading") {
-            console.log(info.file, info.fileList);
-        }
-        if (status === "done") {
-            message.success(`${info.file.name} file uploaded successfully.`);
-        } else if (status === "error") {
-            message.error(`${info.file.name} file upload failed.`);
-        }
-    },
-    onDrop(e) {
-        console.log("Dropped files", e.dataTransfer.files);
-    },
-};
-
 const FileTab = () => {
     const [fileList, setFileList] = useState([]);
+    const [fileType, setFileType] = useState("Call Recording");
     const handleChangeUpload = async ({ fileList: newFileList }) => {
         try {
-            const modifiedFiles: any = await Promise.all(
-                newFileList.map(async (item) => {
-                    const compressedImage: any = await new Promise(
-                        (resolve) => {
-                            Resizer.imageFileResizer(
-                                item.originFileObj,
-                                1080, // maxWidth
-                                1080, // maxHeight
-                                "jpeg", // compressFormat
-                                70, // quality
-                                0, // rotation
-                                (compressedImage) => {
-                                    resolve(compressedImage);
-                                },
-                                "file", // outputType
-                                1000 // minWidth
-                            );
-                        }
-                    );
-
-                    return {
-                        originFileObj: compressedImage,
-                        is_delete: 0,
-                        lastModified: compressedImage.lastModified,
-                        lastModifiedDate: compressedImage.lastModifiedDate,
-                        name: compressedImage.name,
-                        size: compressedImage.size,
-                        type: compressedImage.type,
-                        uid: item.uid,
-                        status: "done",
-                    };
-                })
-            );
+            const modifiedFiles = newFileList.map((item) => ({
+                ...item,
+                status: "done",
+            }));
 
             setFileList(modifiedFiles);
         } catch (error) {
@@ -99,6 +51,7 @@ const FileTab = () => {
             count++;
         }
         data.append("files_count", "" + count);
+        data.append("fileType", fileType);
         mutateUpload(data, {
             onSuccess: (res) => {
                 if (res.success) {
@@ -123,14 +76,31 @@ const FileTab = () => {
     };
 
     return (
-        <>
+        <Space direction="vertical" className="w-100">
+            <Space size={0} direction="vertical" className="w-100">
+                File Type
+                <Select
+                    style={{ width: "100%" }}
+                    value={fileType}
+                    onChange={(e) => setFileType(e)}
+                >
+                    <Select.Option value="Call Recording">
+                        Call Recording
+                    </Select.Option>
+                    <Select.Option value="Image">Image</Select.Option>
+                </Select>
+            </Space>
             <Dragger
                 multiple={true}
                 name="avatar"
                 action={""}
                 fileList={fileList}
                 onChange={handleChangeUpload}
-                accept="image/png,image/jpg,image/jpeg,image/gif"
+                accept={
+                    fileType == "Call Recording"
+                        ? "audio/mpeg,audio/wav"
+                        : "image/png,image/jpg,image/jpeg,image/gif"
+                }
             >
                 <p className="ant-upload-drag-icon">
                     <InboxOutlined />
@@ -148,7 +118,7 @@ const FileTab = () => {
                     Save
                 </Button>
             </div>
-        </>
+        </Space>
     );
 };
 
