@@ -47,7 +47,29 @@ class NotesController extends Controller
         ]);
         
         $data = $request->all();
+        
+        
+        $noteContent = $data['notes'];
+        
+        // Extract image data from HTML content
+        preg_match_all('/<img[^>]+src="([^"]+)"[^>]*>/i', $noteContent, $matches);
+        $images = $matches[1];
+        
+        // Store each image on the server and replace the src attribute with the new URL
+        foreach ($images as $image) {
+            $imageData = explode(',', $image);
+            $imageBase64 = $imageData[1];
+            $extension = explode(';', explode('/', $imageData[0])[1])[0];
+            $imageName = uniqid().'.'.$extension;
+            $path = 'uploads/images/'.$imageName;
+            file_put_contents(public_path($path), base64_decode($imageBase64));
+            
+            // Replace image source with URL
+            $noteContent = str_replace($image, asset($path), $noteContent);
+        }
 
+        $data['notes'] = $noteContent;
+        
         $note = Note::updateOrCreate([
             'id' => isset($data['id'])? $data['id'] : null],
             array_merge($data, [
