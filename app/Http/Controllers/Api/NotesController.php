@@ -57,16 +57,23 @@ class NotesController extends Controller
         
         // Store each image on the server and replace the src attribute with the new URL
         foreach ($images as $image) {
-            $imageData = explode(',', $image);
-            $imageBase64 = $imageData[1];
-            $extension = explode(';', explode('/', $imageData[0])[1])[0];
-            $imageName = uniqid().'.'.$extension;
-            $path = 'uploads/images/'.$imageName;
-            file_put_contents(public_path($path), base64_decode($imageBase64));
+            // Check if the image URL is already stored on the server
+            if (strpos($image, 'http://') === 0 || strpos($image, 'https://') === 0) {
+               //Do nothing
+            } else {
+                $imageData = explode(',', $image);
+                $imageBase64 = $imageData[1];
+                $extension = explode(';', explode('/', $imageData[0])[1])[0];
+                $imageName = uniqid().'.'.$extension;
+                $path = 'uploads/images/'.$imageName;
+                file_put_contents(public_path($path), base64_decode($imageBase64));
+                
+                // Replace image source with URL
+                $noteContent = str_replace($image, asset($path), $noteContent);
+            }
             
-            // Replace image source with URL
-            $noteContent = str_replace($image, asset($path), $noteContent);
         }
+    
 
         $data['notes'] = $noteContent;
         
@@ -78,6 +85,21 @@ class NotesController extends Controller
         );
         
         return response()->json($note, 200);
+    }
+
+    private function getImagePathFromUrl($imageUrl)
+    {
+        // Extract image path from URL
+        $imageUrlParts = explode('/', $imageUrl);
+        $imageName = end($imageUrlParts);
+        $imagePath = 'uploads/images/' . $imageName;
+
+        // Check if image exists on server
+        if (file_exists(public_path($imagePath))) {
+            return $imagePath;
+        }
+
+        return false;
     }
 
     /**
