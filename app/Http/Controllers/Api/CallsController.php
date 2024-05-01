@@ -288,6 +288,7 @@ class CallsController extends Controller
             'duration' => '00:00:00',
             'type' => '',
             'call_received_date' => $timeStamp,
+            'tz' => 'utc',
         ]);
 
         $contact = $contacts->first();

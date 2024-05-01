@@ -213,18 +213,19 @@ class Contact extends Model
                     ->orWhereIn('from', $this->phoneNumbers);
             })
             ->whereRaw("TIME_TO_SEC(duration) >= 30")
-            ->orderBy('id', 'desc');
+            ->orderBy('id', 'desc')
+            ->get();
         // \Log::info($calls->toSql());
-        $calls = $calls->get();
+        // $calls = $calls->get();
         // \Log::info('calls');
         // \Log::info($calls);
-        $callsController = new CallsController();
+        // $callsController = new CallsController();
 
-        foreach($calls as $call){
-            $data[] = $callsController->prepareCall($call);
-        }
+        // foreach($calls as $call){
+        //     $data[] = $callsController->prepareCall($call);
+        // }
 
-        return collect($data);
+        return $calls;
     }
 
     public function deals()
@@ -278,7 +279,10 @@ class Contact extends Model
         });
 
         $call = $this->call() ? $this->call()->map(function ($data) {
-            $createdAt = Carbon::parse($data['dateTime']);
+            $createdAt = Carbon::parse($data['call_received_date']);
+            if($data['tz'] == 'mdt'){
+                $createdAt = Carbon::parse($data['call_received_date'], 'MDT')->utc();
+            }
             return [
                 'type' => 'call',
                 'date' => $createdAt,

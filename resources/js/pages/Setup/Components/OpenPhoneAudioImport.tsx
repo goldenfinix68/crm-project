@@ -158,6 +158,10 @@ const OpenPhoneAudioImport = () => {
                         </ul>
                     </li>
                     <li>
+                        Make sure that the date and time in file name is in UTC
+                        timezone.
+                    </li>
+                    <li>
                         The system will automatically attach the call recording
                         to the contact's history within their profile. This
                         ensures that the recording is seamlessly integrated into

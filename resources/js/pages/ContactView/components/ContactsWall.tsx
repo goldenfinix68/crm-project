@@ -679,7 +679,7 @@ const CallBox = ({ data, user }: { data: TWallData; user: TUser }) => {
         return word.charAt(0).toUpperCase() + word.slice(1);
     };
 
-    let url: any = data.call?.recording_url;
+    let url: any = data.call?.url_recording;
     url = url.split(",");
     url = url[0];
     url = url.replace("playAudio('", "");
@@ -709,17 +709,17 @@ const CallBox = ({ data, user }: { data: TWallData; user: TUser }) => {
                     </Button>
                 </Space>
                 <Space size={"large"}>
-                    <Typography.Text style={{ alignItems: "center" }}>
+                    {/* <Typography.Text style={{ alignItems: "center" }}>
                         <CalendarOutlined /> {data.call?.dateTime}
-                    </Typography.Text>
+                    </Typography.Text> */}
                     <Typography.Text>
                         <ClockCircleOutlined /> {data.call?.duration}
                     </Typography.Text>
                     <Typography.Text>
-                        Outcome: {capFirstLetter(data.call?.outcome)}
+                        Outcome: {capFirstLetter(data.call?.status)}
                     </Typography.Text>
                 </Space>
-                {data.call?.recording_url ? (
+                {data.call?.url_recording ? (
                     <div style={{ padding: 10 }}>
                         <audio src={url} controls />
                     </div>

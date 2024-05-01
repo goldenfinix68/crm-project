@@ -91,6 +91,7 @@ class FetchRoorCallRecordings extends Command
                     'call_received_date' => $call['call_received_date'],
                     'telnyxCallSessionId' => '',
                     'type' => $call['type'],
+                    'tz' => 'mdt',
                 ]);
             }
 

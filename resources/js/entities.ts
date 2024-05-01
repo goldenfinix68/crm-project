@@ -74,6 +74,7 @@ export type TCallHistory = {
     from: string;
     to: string;
     outcome: string;
+    status?: string;
 };
 
 export type TText = {
