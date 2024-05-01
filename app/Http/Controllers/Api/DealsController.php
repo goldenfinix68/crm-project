@@ -94,6 +94,7 @@ class DealsController extends Controller
                 $update->title = "Deal Updated";
                 $update->contactId = $data->contactId;
                 $update->from = $data->pipeline->name . ' - ' . $data->stage->name;
+                $update->logable_type = "deal";
 
             }
             
