@@ -7,8 +7,19 @@
     "css": [
       "assets/app-7ff841d5.css"
     ],
-    "file": "assets/app-9191832d.js",
+    "dynamicImports": [
+      "resources/js/pages/ContactView/components/ContactsWall.tsx"
+    ],
+    "file": "assets/app-ad153593.js",
     "isEntry": true,
     "src": "resources/js/app.tsx"
+  },
+  "resources/js/pages/ContactView/components/ContactsWall.tsx": {
+    "file": "assets/ContactsWall-3c8d4537.js",
+    "imports": [
+      "resources/js/app.tsx"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/ContactView/components/ContactsWall.tsx"
   }
 }
