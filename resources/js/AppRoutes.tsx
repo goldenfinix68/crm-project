@@ -10,6 +10,7 @@ import { CallProvider } from "./context/CallContext";
 import SetupLayout from "./pages/Setup/SetupLayout";
 import AdminDashboard from "./pages/SuperAdmin/Dashboard/AdminDashboard";
 import AdminUsers from "./pages/SuperAdmin/Users/AdminUsers";
+import { Card } from "antd";
 
 const AppRoutes = () => {
     const { user, isLoading, isError } = useLoggedInUser();
@@ -96,7 +97,16 @@ const AppRoutes = () => {
             ) : (
                 <AppContextProvider>
                     <CallProvider>
-                        <Suspense fallback={<LoadingComponent />}>
+                        <Suspense
+                            fallback={
+                                <SideMenu title="Loading">
+                                    <Card
+                                        loading={true}
+                                        className="w-100"
+                                    ></Card>
+                                </SideMenu>
+                            }
+                        >
                             <Routes>
                                 <Route
                                     path="/dashboard"
