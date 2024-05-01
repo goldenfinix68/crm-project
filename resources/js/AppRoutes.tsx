@@ -96,7 +96,7 @@ const AppRoutes = () => {
             ) : (
                 <AppContextProvider>
                     <CallProvider>
-                        <Suspense fallback={<></>}>
+                        <Suspense fallback={<LoadingComponent />}>
                             <Routes>
                                 <Route
                                     path="/dashboard"
