@@ -27,6 +27,7 @@ import { gSheetCrawl } from "../../../api/query/importDataQuery";
 import { mutatePost } from "../../../api/mutation/useSetupMutation";
 import { useCustomFields } from "../../../api/query/customFieldQuery";
 import { ENDPOINTS } from "../../../endpoints";
+import ImportDataGSheetHeader from "../../../components/ImportDataGSheetHeader";
 
 const ImportDataGSheet: React.FC = () => {
     const navigate = useNavigate();
@@ -118,6 +119,7 @@ const ImportDataGSheet: React.FC = () => {
 
     return (
         <Space direction="vertical" className="w-100">
+            <ImportDataGSheetHeader />
             {columnNames?.length ? (
                 <Card
                     title="Map columns from sheet to Speedlead fields"

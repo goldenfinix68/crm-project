@@ -1,5 +1,5 @@
 import { Col, Row, Space } from "antd";
-import React, { Suspense, useEffect } from "react";
+import React, { useEffect } from "react";
 import ContactInfo from "./components/ContactInfo";
 import ActionsTabs from "./components/ActionsTabs";
 import ContactsWall from "./components/ContactsWall";
@@ -36,9 +36,6 @@ const ContactView = () => {
     if (isLoading || !contact) {
         return <LoadingComponent />;
     }
-    const LazyContactsWall = React.lazy(
-        () => import("./components/ContactsWall")
-    );
 
     return (
         <ContactContext.Provider value={{ contact }}>
@@ -52,9 +49,7 @@ const ContactView = () => {
                     <Col span={10}>
                         {!isRoleStats && <ActionsTabs />}
                         <div style={{ paddingTop: "15px" }}>
-                            <Suspense fallback={<div>Loading...</div>}>
-                                <LazyContactsWall />
-                            </Suspense>
+                            <ContactsWall />
                         </div>
                     </Col>
                     <Col span={7}>

@@ -177,49 +177,39 @@ const Navigation: React.FC<NavigationProps> = ({ title }) => {
                 justifyContent: "space-between",
             }}
         >
-            <Menu
-                theme="light"
-                mode="horizontal"
-                defaultSelectedKeys={["1"]}
-                items={[
-                    {
-                        key: "/dashboard",
-                        label: (
-                            <CustomLink
-                                to="/dashboard"
-                                tooltipTitle="Dashboard"
-                            >
-                                <HomeOutlined />
-                            </CustomLink>
-                        ),
-                    },
-                    {
-                        key: "/contacts",
-                        icon: (
-                            <CustomLink to="/contacts" tooltipTitle="Contacts">
-                                <UsergroupAddOutlined />
-                            </CustomLink>
-                        ),
-                    },
-                    {
-                        key: "/deals",
-                        icon: (
-                            <CustomLink to="/deals" tooltipTitle="Deals">
-                                <DollarCircleOutlined />
-                            </CustomLink>
-                        ),
-                    },
-                    {
-                        key: "/text-threads",
-                        icon: (
-                            <CustomLink to="/text-threads" tooltipTitle="Texts">
-                                <MobileOutlined />
-                            </CustomLink>
-                        ),
-                    },
-                ]}
-            />
+            <Space size={"large"}>
+                <CustomLink
+                    to="/dashboard"
+                    tooltipTitle="Dashboard"
+                    style={{ color: "black" }}
+                >
+                    <HomeOutlined />
+                </CustomLink>
 
+                <CustomLink
+                    to="/contacts"
+                    tooltipTitle="Contacts"
+                    style={{ color: "black" }}
+                >
+                    <UsergroupAddOutlined />
+                </CustomLink>
+
+                <CustomLink
+                    to="/deals"
+                    tooltipTitle="Deals"
+                    style={{ color: "black" }}
+                >
+                    <DollarCircleOutlined />
+                </CustomLink>
+
+                <CustomLink
+                    to="/text-threads"
+                    tooltipTitle="Texts"
+                    style={{ color: "black" }}
+                >
+                    <MobileOutlined />
+                </CustomLink>
+            </Space>
             {/* Components on the right */}
             <Space wrap className="header-btn m-l-sm" size={20}>
                 <Dropdown

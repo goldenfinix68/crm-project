@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Card, Table, TableColumnsType, message } from "antd";
+import { Button, Card, Space, Table, TableColumnsType, message } from "antd";
 
 import moment from "moment";
 import { gSheetCrawlResults } from "../../../api/query/importDataQuery";
@@ -9,6 +9,7 @@ import { useMutation } from "react-query";
 import { mutatePost } from "../../../api/mutation/useSetupMutation";
 import queryClient from "../../../queryClient";
 import { RedoOutlined } from "@ant-design/icons";
+import ImportDataGSheetHeader from "../../../components/ImportDataGSheetHeader";
 
 const ImportDataGSheetHistory = () => {
     const { data: crawlResults, isLoading, refetch } = gSheetCrawlResults();
@@ -112,25 +113,28 @@ const ImportDataGSheetHistory = () => {
     ];
 
     return (
-        <Card className="w-100">
-            <Button
-                type="default"
-                size="small"
-                style={{ float: "right" }}
-                onClick={() => {
-                    refetch();
-                }}
-                icon={<RedoOutlined />}
-            >
-                Refresh
-            </Button>
-            <Table
-                className="default-table-row-height p-t-md"
-                columns={columns}
-                dataSource={crawlResults}
-                loading={isLoading}
-            />
-        </Card>
+        <Space direction="vertical" className="w-100">
+            <ImportDataGSheetHeader />
+            <Card className="w-100">
+                <Button
+                    type="default"
+                    size="small"
+                    style={{ float: "right" }}
+                    onClick={() => {
+                        refetch();
+                    }}
+                    icon={<RedoOutlined />}
+                >
+                    Refresh
+                </Button>
+                <Table
+                    className="default-table-row-height p-t-md"
+                    columns={columns}
+                    dataSource={crawlResults}
+                    loading={isLoading}
+                />
+            </Card>
+        </Space>
     );
 };
 
