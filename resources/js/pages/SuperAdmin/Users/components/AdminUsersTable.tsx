@@ -164,7 +164,7 @@ const AdminUsersTable = () => {
 
                 <CustomResizeableTable
                     columns={columns}
-                    dataSource={users.data}
+                    dataSource={users?.data}
                     pagination={{
                         current: page,
                         defaultPageSize: 100,

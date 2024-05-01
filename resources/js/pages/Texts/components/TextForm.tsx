@@ -86,18 +86,9 @@ const TextForm = ({
             }
         );
 
-    const debouncedSearch = _.debounce((value) => {
-        handleSearch(value);
-    }, 300);
-
-    const handleSearch = (value) => {
-        setKeyword(value);
-    };
-
-    useEffect(() => {
-        setIsSearchLoading(true);
+    const debouncedSearch = _.debounce(() => {
         refetchFilteredContacts();
-    }, [keyword]);
+    }, 300);
 
     useEffect(() => {
         if (filteredContacts && filteredContacts.data) {
@@ -202,7 +193,11 @@ const TextForm = ({
                                     }))}
                                     style={{ width: "100%" }}
                                     value={toFormValue}
-                                    onSearch={(e) => debouncedSearch(e)}
+                                    onSearch={(e) => {
+                                        setIsSearchLoading(true);
+                                        setKeyword(e);
+                                        debouncedSearch();
+                                    }}
                                 >
                                     <Input
                                         // mask="+1 000-000-0000"

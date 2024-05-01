@@ -31,6 +31,7 @@ import "../sass/setup/setup.css";
 import ForgotPassword from "./pages/ForgotPassword";
 import ForgotPasswordVerifyToken from "./pages/ForgotPasswordVerifyToken";
 import AppRoutes from "./AppRoutes";
+import LoadingComponent2 from "./components/LoadingComponent2";
 const App: React.FC = () => {
     const isLoginPage = window.location.pathname === "/";
     const isForgotPassword = window.location.pathname === "/forgot-password";

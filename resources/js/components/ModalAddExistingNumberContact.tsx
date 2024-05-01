@@ -56,18 +56,9 @@ const ModalAddExistingNumberContact = ({
             }
         );
 
-    const debouncedSearch = _.debounce((value) => {
-        handleSearch(value);
-    }, 300);
-
-    const handleSearch = (value) => {
-        setKeyword(value);
-    };
-
-    useEffect(() => {
-        setIsSearchLoading(true);
+    const debouncedSearch = _.debounce(() => {
         refetchFilteredContacts();
-    }, [keyword]);
+    }, 300);
 
     useEffect(() => {
         if (filteredContacts && filteredContacts.data) {
@@ -116,7 +107,9 @@ const ModalAddExistingNumberContact = ({
                                 placeholder="Search Contact"
                                 className="w-100"
                                 onChange={(event: any) => {
-                                    debouncedSearch(event.target.value);
+                                    setIsSearchLoading(true);
+                                    setKeyword(event.target.value);
+                                    debouncedSearch();
                                 }}
                             />
                         </Col>
