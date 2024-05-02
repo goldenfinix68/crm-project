@@ -1,1 +1,0 @@
-import{J as s}from"./app-36fe48bb.js";const o=({children:e,style:t})=>{const l={...{whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",maxWidth:"calc(100% - 10px)",padding:0},...t};return s.createElement("div",{style:l},e)};export{o as T};
