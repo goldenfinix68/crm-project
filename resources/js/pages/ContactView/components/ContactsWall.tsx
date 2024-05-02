@@ -35,6 +35,7 @@ import {
     Space,
     Tooltip,
     Typography,
+    message,
 } from "antd";
 import SubMenu from "antd/es/menu/SubMenu";
 import React, { useContext, useEffect, useRef, useState } from "react";
@@ -48,6 +49,7 @@ import { useMutation } from "react-query";
 import { deleteNoteMutation } from "../../../api/mutation/useNoteMutation";
 import queryClient from "../../../queryClient";
 import { MenuProps } from "antd/lib";
+import { mutatePost } from "../../../api/mutation/useSetupMutation";
 
 const ContactsWall = () => {
     const { contact } = useContext(ContactContext);
@@ -631,7 +633,44 @@ const Activities = ({ data, user }: { data: TWallData; user: TUser }) => {
     );
 };
 const File = ({ data, user }: { data: TWallData; user: TUser }) => {
-    console.log({ data });
+    const deleteNote = useMutation(mutatePost, {
+        onSuccess: (res) => {
+            if (res.success) {
+                message.success("File deleted!");
+                queryClient.invalidateQueries("getContact");
+            } else {
+                message.error(res.message);
+            }
+        },
+        onError: (res: any) => {
+            console.log(res);
+        },
+    });
+
+    const items: MenuProps["items"] = [
+        {
+            key: "1",
+            label: (
+                <Popconfirm
+                    title="Delete"
+                    description="Are you sure to delete this file?"
+                    onConfirm={() => {
+                        deleteNote.mutate({
+                            data: {
+                                id: data.file?.id,
+                            },
+                            url: "/api/contacts/delete-file",
+                        });
+                    }}
+                    // onCancel={cancel}
+                    okText="Yes"
+                    cancelText="No"
+                >
+                    Delete
+                </Popconfirm>
+            ),
+        },
+    ];
     return (
         <Card
             title={
@@ -642,7 +681,23 @@ const File = ({ data, user }: { data: TWallData; user: TUser }) => {
                 </Typography.Text>
             }
             bordered={false}
-            extra={moment.utc(data.date).local().format("MMM DD hh:mm A")}
+            extra={
+                <Space size={"small"}>
+                    {moment.utc(data.date).local().format("MMM DD hh:mm A")}
+
+                    <Dropdown
+                        menu={{ items }}
+                        className="dashboard-actions"
+                        trigger={["click"]}
+                    >
+                        <Button type="link" style={{ padding: 0 }}>
+                            <EllipsisOutlined
+                                style={{ transform: "rotate(90deg)" }}
+                            />
+                        </Button>
+                    </Dropdown>
+                </Space>
+            }
         >
             {data?.file?.file_type == "Call Recording" && (
                 <audio

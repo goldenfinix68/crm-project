@@ -70,6 +70,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/contacts/bulk-contact-import-gsheet', 'App\Http\Controllers\Api\ContactsController@bulkContactImportGSheet');
 
     Route::post('/contacts/bulk-update-field', 'App\Http\Controllers\Api\ContactsController@bulkUpdateField');
+    Route::post('/contacts/delete-file', 'App\Http\Controllers\Api\ContactsController@deleteFile');
     Route::get('/contacts/search-by-number', 'App\Http\Controllers\Api\ContactsController@searchByNumber');
     Route::resource('/contacts', 'App\Http\Controllers\Api\ContactsController');
 

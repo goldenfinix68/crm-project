@@ -465,6 +465,26 @@ class ContactsController extends Controller
 
         return response()->json($ret, 200);
     }
+    
+    public function deleteFile(Request $request)
+    {
+        $file = ContactFile::find($request->id);
+
+        if(empty($file)){
+            return response()->json([
+                "success" => false,
+                "message" => "File not found!"
+            ], 200);
+        }
+        
+        $file->delete();
+
+
+        return response()->json([
+            "success" => true,
+            "message" => "Success"
+        ], 200);
+    }
 
     // public function save_column_setting(Request $request)
     // {
