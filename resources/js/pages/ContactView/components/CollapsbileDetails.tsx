@@ -13,6 +13,7 @@ import ContactContext from "../context";
 import moment from "moment";
 import { TContact, TDeal, TWallData } from "../../../entities";
 import { ArrowRightOutlined } from "@ant-design/icons";
+import Paragraph from "antd/lib/typography/Paragraph";
 
 const CollapsibleDetails = ({ logs }: { logs?: TWallData[] }) => {
     const { contact } = useContext(ContactContext);
@@ -108,9 +109,29 @@ it can be found as a welcome guest in many households across the world.
                         {logs?.map((log) => {
                             return (
                                 <Descriptions.Item
-                                    label={`${log.update?.title}`}
+                                    // label={`${log.update?.title}`}
+                                    label={
+                                        <Tooltip
+                                            title={
+                                                <Space direction="vertical">
+                                                    {`By: ${log.update?.by}`}
+                                                    {`On: ${moment
+                                                        .utc(log.date)
+                                                        .local()
+                                                        .format(
+                                                            "MMM DD hh:mm A"
+                                                        )}`}
+                                                </Space>
+                                            }
+                                        >
+                                            {log.update?.title.replace(
+                                                "updated",
+                                                ""
+                                            )}
+                                        </Tooltip>
+                                    }
                                 >
-                                    <Tooltip
+                                    {/* <Tooltip
                                         title={
                                             <Space direction="vertical">
                                                 {`By: ${log.update?.by}`}
@@ -120,13 +141,42 @@ it can be found as a welcome guest in many households across the world.
                                                     .format("MMM DD hh:mm A")}`}
                                             </Space>
                                         }
-                                    >
-                                        <Space>
-                                            {log.update?.from ?? "blank"}
-                                            <ArrowRightOutlined />
-                                            {log.update?.to ?? "blank"}
-                                        </Space>
-                                    </Tooltip>
+                                    > */}
+                                    <Space>
+                                        {log.update?.from ? (
+                                            <Paragraph
+                                                ellipsis={{
+                                                    rows: 2,
+                                                    expandable: true,
+                                                    symbol: "see more",
+                                                }}
+                                            >
+                                                {log.update?.from}
+                                            </Paragraph>
+                                        ) : (
+                                            <span
+                                                style={{ whiteSpace: "nowrap" }}
+                                            >
+                                                blank
+                                            </span>
+                                        )}
+                                        <ArrowRightOutlined />
+                                        {log.update?.to ? (
+                                            <Paragraph
+                                                style={{ marginBottom: 0 }}
+                                                ellipsis={{
+                                                    rows: 2,
+                                                    expandable: true,
+                                                    symbol: "see more",
+                                                }}
+                                            >
+                                                {log.update?.to}
+                                            </Paragraph>
+                                        ) : (
+                                            <span style={{}}>blank</span>
+                                        )}
+                                    </Space>
+                                    {/* </Tooltip> */}
                                 </Descriptions.Item>
                             );
                         })}
