@@ -121,6 +121,9 @@ it can be found as a welcome guest in many households across the world.
                                                         .format(
                                                             "MMM DD hh:mm A"
                                                         )}`}
+                                                    {`${moment
+                                                        .utc(log.date)
+                                                        .fromNow(true)} ago`}
                                                 </Space>
                                             }
                                         >
@@ -131,7 +134,7 @@ it can be found as a welcome guest in many households across the world.
                                         </Tooltip>
                                     }
                                 >
-                                    {/* <Tooltip
+                                    <Tooltip
                                         title={
                                             <Space direction="vertical">
                                                 {`By: ${log.update?.by}`}
@@ -139,11 +142,14 @@ it can be found as a welcome guest in many households across the world.
                                                     .utc(log.date)
                                                     .local()
                                                     .format("MMM DD hh:mm A")}`}
+                                                {`${moment
+                                                    .utc(log.date)
+                                                    .fromNow(true)} ago`}
                                             </Space>
                                         }
-                                    > */}
-                                    <Space>
-                                        {log.update?.from ? (
+                                    >
+                                        <Space>
+                                            {/* {log.update?.from ? (
                                             <Paragraph
                                                 ellipsis={{
                                                     rows: 2,
@@ -159,24 +165,24 @@ it can be found as a welcome guest in many households across the world.
                                             >
                                                 blank
                                             </span>
-                                        )}
-                                        <ArrowRightOutlined />
-                                        {log.update?.to ? (
-                                            <Paragraph
-                                                style={{ marginBottom: 0 }}
-                                                ellipsis={{
-                                                    rows: 2,
-                                                    expandable: true,
-                                                    symbol: "see more",
-                                                }}
-                                            >
-                                                {log.update?.to}
-                                            </Paragraph>
-                                        ) : (
-                                            <span style={{}}>blank</span>
-                                        )}
-                                    </Space>
-                                    {/* </Tooltip> */}
+                                        )} */}
+                                            {/* <ArrowRightOutlined /> */}
+                                            {log.update?.to ? (
+                                                <Paragraph
+                                                    style={{ marginBottom: 0 }}
+                                                    ellipsis={{
+                                                        rows: 2,
+                                                        expandable: true,
+                                                        symbol: "see more",
+                                                    }}
+                                                >
+                                                    {log.update?.to}
+                                                </Paragraph>
+                                            ) : (
+                                                <span style={{}}>blank</span>
+                                            )}
+                                        </Space>
+                                    </Tooltip>
                                 </Descriptions.Item>
                             );
                         })}
