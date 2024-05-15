@@ -178,9 +178,26 @@ class DealsController extends Controller
             abort(404);
         }
 
+
+        //log deal update
+        $update = new ContactUpdate();
+        $update->userId = Auth::id();
+        $update->title = "Deal updated";
+        $update->logable_type = "deal";
+        $update->contactId = $deal->contactId;
+        $update->from = $deal->pipeline->name . ' - ' . $deal->stage->name;
+        
+
+        $stage = \App\Models\DealPipelineStage::find($request->stageId);
+        $deal->pipelineId = $stage->dealPipelineId;
         $deal->agingStartDate = $deal->stageId != $request->stageId ? Carbon::now() : $deal->agingStartDate;
         $deal->stageId = $request->stageId;
         $deal->save();
+        
+        
+        $deal = Deal::find($request->dealId);
+        $update->to = $deal->pipeline->name . ' - ' . $deal->stage->name;
+        $update->save();
 
         return response()->json(['success' => false, 'data' => $deal], 200);
     }
