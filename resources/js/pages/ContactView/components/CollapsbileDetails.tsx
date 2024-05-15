@@ -127,10 +127,9 @@ it can be found as a welcome guest in many households across the world.
                                                 </Space>
                                             }
                                         >
-                                            {log.update?.title.replace(
-                                                "updated",
-                                                ""
-                                            )}
+                                            {log.update?.title
+                                                .replace("updated", "")
+                                                .replace("Updated", "")}
                                         </Tooltip>
                                     }
                                 >
@@ -149,27 +148,31 @@ it can be found as a welcome guest in many households across the world.
                                         }
                                     >
                                         <Space>
-                                            {/* {log.update?.from ? (
-                                            <Paragraph
-                                                ellipsis={{
-                                                    rows: 2,
-                                                    expandable: true,
-                                                    symbol: "see more",
-                                                }}
-                                            >
-                                                {log.update?.from}
-                                            </Paragraph>
-                                        ) : (
-                                            <span
-                                                style={{ whiteSpace: "nowrap" }}
-                                            >
-                                                blank
-                                            </span>
-                                        )} */}
-                                            {/* <ArrowRightOutlined /> */}
+                                            {log.update?.from ? (
+                                                <Paragraph
+                                                    ellipsis={{
+                                                        rows: 2,
+                                                        expandable: true,
+                                                        symbol: "see more",
+                                                    }}
+                                                >
+                                                    {log.update?.from}
+                                                </Paragraph>
+                                            ) : (
+                                                <span
+                                                    style={{
+                                                        whiteSpace: "nowrap",
+                                                    }}
+                                                >
+                                                    blank
+                                                </span>
+                                            )}
+                                            <ArrowRightOutlined
+                                                style={{ marginBottom: 14 }}
+                                            />
                                             {log.update?.to ? (
                                                 <Paragraph
-                                                    style={{ marginBottom: 0 }}
+                                                    style={{ marginBottom: 12 }}
                                                     ellipsis={{
                                                         rows: 2,
                                                         expandable: true,

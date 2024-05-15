@@ -55,7 +55,7 @@ const ContactView = () => {
                     <Col span={7}>
                         <CollapsibleDetails
                             logs={contact.wall?.filter(
-                                (data) => data.type == "contactUpdates"
+                                (data) => data.type == "dealUpdates"
                             )}
                         />
                     </Col>
