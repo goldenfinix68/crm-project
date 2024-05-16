@@ -32,20 +32,55 @@ class TextThreadsController extends Controller
 
         $label = $request->label;
 
-        $texts = Text::select('threadId')
+        $texts = \App\Models\Text::select('threadId')
             ->where('isSuppressed', false)
             ->selectSub('MAX(created_at)', 'latest_created_at') // Subquery to get the latest created_at for each threadId
-            ->whereHas('thread', function($query) use ($mainUserIds) {
+            ->whereHas('thread', function($query) use ($mainUserIds, $request) {
+                if(!empty($request->searchKey)) {
+                    $query->withTrashed();
+                } else {
+                    if(!empty($request->textStatus)) {
+                        if($request->textStatus == 'Current') {
+                            // $texts->onlyTrashed();
+                        } else {
+                            $query->onlyTrashed();
+                        }
+                    }
+                }
                 $query->whereIn('userNumber', $mainUserIds);
             })
             ->groupBy('threadId') // Group by threadId
-            ->orderByDesc('latest_created_at');
-
+            ->orderByDesc('latest_created_at')
+            ->with(['thread' => function($query) use ($request) {
+                if(!empty($request->searchKey)) {
+                    $query->withTrashed();
+                } else {
+                    if(!empty($request->textStatus)) {
+                        if($request->textStatus == 'Current') {
+                            // $texts->onlyTrashed();
+                        } else {
+                            $query->onlyTrashed();
+                        }
+                    }
+                }
+            }]);
+        if(!empty($request->searchKey)) {
+            $texts->withTrashed();
+        } else {
+            if(!empty($request->textStatus)) {
+                if($request->textStatus == 'Current') {
+                    // $texts->onlyTrashed();
+                } else {
+                    $texts->onlyTrashed();
+                }
+            }
+        }
             
         if (!empty($request->searchKey)) {
             $texts->where(function($query) use ($request) {
                 $query->where('message', 'like', '%' . $request->searchKey . '%')
                     ->orWhereHas('thread', function($query) use ($request) {
+                        $query->withTrashed();
                         $query->where('contactNumber', 'like', '%' . $request->searchKey . '%');
                     });
             });
@@ -166,7 +201,7 @@ class TextThreadsController extends Controller
     {
         if($request->type == 'contact'){
             $contact = Contact::find($id);
-            $threads = TextThread::with('labels')->whereIn('contactNumber', $contact->phoneNumbers)->get();
+            $threads = TextThread::withTrashed()->with('labels')->whereIn('contactNumber', $contact->phoneNumbers)->get();
             $contact->duplicatePhoneNumbers = $contact->getDuplicatePhoneNumbersAttribute();
 
             $texts = [];

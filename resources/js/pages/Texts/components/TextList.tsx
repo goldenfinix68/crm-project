@@ -51,6 +51,16 @@ const TextList = ({ label }) => {
         label: "",
         total: 0,
     });
+    const [textStatus, setTextStatus] = useState(
+        localStorage.getItem("textStatus")
+    );
+    useEffect(() => {
+        if (textStatus) {
+            localStorage.setItem("textStatus", textStatus);
+        }
+
+        return () => {};
+    }, [textStatus]);
 
     const {
         array: textThreads,
@@ -59,7 +69,7 @@ const TextList = ({ label }) => {
     } = useArray<TTextThreadList>();
 
     const { data: filteredThreads, refetch: refetchTextThreads } =
-        useTextThreads(pagination, () => {
+        useTextThreads({ ...pagination, textStatus }, () => {
             setIsTextThreadLoading(false);
         });
 
@@ -69,7 +79,7 @@ const TextList = ({ label }) => {
 
     const debouncedSearch = _.debounce((e) => {
         handleSearch(e);
-    }, 300);
+    }, 500);
 
     const navigate = useNavigate();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -118,6 +128,7 @@ const TextList = ({ label }) => {
         pagination.searchKey,
         pagination.page_size,
         pagination.label,
+        textStatus,
     ]);
 
     useEffect(() => {
@@ -135,8 +146,23 @@ const TextList = ({ label }) => {
                 style={{ marginBottom: "20px" }}
                 onChange={debouncedSearch}
             />
+            <Space>
+                <Button
+                    onClick={(e) => setTextStatus("Current")}
+                    type={textStatus == "Current" ? "primary" : "default"}
+                >
+                    Current
+                </Button>
+                <Button
+                    onClick={(e) => setTextStatus("Archived")}
+                    type={textStatus == "Archived" ? "primary" : "default"}
+                >
+                    Archived
+                </Button>
+            </Space>
+
             {selectedThreadIds.length ? (
-                <Space style={{ width: "100%" }} size={0}>
+                <Space style={{ width: "100%", marginTop: 10 }}>
                     <Button
                         icon={<CloseOutlined />}
                         type="text"
@@ -147,16 +173,20 @@ const TextList = ({ label }) => {
                     <Typography.Text>
                         {selectedThreadIds?.length + " Selected"}
                     </Typography.Text>
-                    <Button
-                        icon={<DeleteOutlined />}
-                        type="text"
-                        onClick={() => {
-                            setIsViaMultiple(true);
-                            setIsDeleteModalOpen(true);
-                        }}
-                    >
-                        Delete
-                    </Button>
+                    {textStatus == "Current" ? (
+                        <Button
+                            icon={<DeleteOutlined />}
+                            type="text"
+                            onClick={() => {
+                                setIsViaMultiple(true);
+                                setIsDeleteModalOpen(true);
+                            }}
+                        >
+                            Archive
+                        </Button>
+                    ) : (
+                        <></>
+                    )}
 
                     <Button
                         onClick={() => {
@@ -187,7 +217,7 @@ const TextList = ({ label }) => {
                     )}
                 </Space>
             ) : (
-                <div style={{ height: "32px" }}></div>
+                <div style={{ height: "42px" }}></div>
             )}
             <List
                 itemLayout="horizontal"
@@ -390,7 +420,6 @@ const TextList = ({ label }) => {
                     </>
                 )}
             </List>
-
             <center>
                 <Pagination
                     className="p-t-sm"
@@ -424,7 +453,6 @@ const TextList = ({ label }) => {
                     loading={isDeleteBtnLoading}
                 />
             )}
-
             {isAssignLabelModalOpen && (
                 <AssignLabelModal
                     isModalOpen={isAssignLabelModalOpen}
@@ -448,7 +476,6 @@ const TextList = ({ label }) => {
                     isViaMultiple={isViaMultiple}
                 />
             )}
-
             {isAddTagModalOpen && (
                 <ContactBulkUpdate
                     isModalOpen={isAddTagModalOpen}

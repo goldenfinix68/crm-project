@@ -24,7 +24,7 @@ class TextThread extends Model
     
     public function texts()
     {
-        return $this->hasMany(\App\Models\Text::class, 'threadId', 'id')->where('isSuppressed', false)->orderBy('id', 'desc');
+        return $this->hasMany(\App\Models\Text::class, 'threadId', 'id')->withTrashed()->where('isSuppressed', false)->orderBy('id', 'desc');
     }
 
     public function labels()

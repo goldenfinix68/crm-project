@@ -257,21 +257,64 @@ Route::get('/mail_test', function (Request $request) {
 
 // Do not remove this code
 Route::get('/get_people', function (Request $request) {
-    // $data = \App\Models\User::select([
-    //     'id',
-    //     'firstName',
-    //     'lastName',
-    //     DB::raw("(SELECT CONCAT('users')) as `from_table`")
-    // ]) ->union(DB::table('contacts')->select(
-    //     'id',
-    //     'firstName',
-    //     'lastName',
-    //     DB::raw("(SELECT CONCAT('contacts')) as `from_table`")
-    // ))
-    // ->get();
+    $mainUserIds = ["7205388633"];
+    $texts = \App\Models\Text::select('threadId')
+        ->where('isSuppressed', false)
+        ->selectSub('MAX(created_at)', 'latest_created_at') // Subquery to get the latest created_at for each threadId
+        ->whereHas('thread', function($query) use ($mainUserIds, $request) {
+            if(!empty($request->searchKey)) {
+                $query->withTrashed();
+            } else {
+                if(!empty($request->textStatus)) {
+                    if($request->textStatus == 'Current') {
+                        // $texts->onlyTrashed();
+                    } else {
+                        $query->onlyTrashed();
+                    }
+                }
+            }
+            $query->whereIn('userNumber', $mainUserIds);
+        })
+        ->groupBy('threadId') // Group by threadId
+        ->orderByDesc('latest_created_at')
+        ->with(['thread' => function($q) use ($request) {
+            if(!empty($request->textStatus)) {
+                if($request->textStatus == 'Current') {
+                    // $texts->onlyTrashed();
+                } else {
+                    $q->onlyTrashed();
+                }
+            }
+        }]);
+    if(!empty($request->textStatus)) {
+        if($request->textStatus == 'Current') {
+            // $texts->withTrashed();
+        } else {
+            $texts->onlyTrashed();
+        }
+    }
+   
+    if (!empty($request->searchKey)) {
+        $texts->where(function($query) use ($request) {
+            $query->where('message', 'like', '%' . $request->searchKey . '%')
+                ->orWhereHas('thread', function($query) use ($request) {
+                    $query->where('contactNumber', 'like', '%' . $request->searchKey . '%');
+                });
+        });
+    }
+    
+    if (!empty($label)) {
+        $texts->whereHas('thread.labels', function($query) use ($label) {
+            $query->where('name', $label);
+        });
+    }
 
-    return response()->json([
-        'success' => true,
-        'data' => [],
-    ], 200);
+    $texts = $texts->paginate($request->input('page_size', 20));
+
+    // dd($texts->items());
+    $data = [];
+    foreach($texts->items() as $text){
+        $thread = $text->thread;
+        // dd($thread);
+    };
 });
