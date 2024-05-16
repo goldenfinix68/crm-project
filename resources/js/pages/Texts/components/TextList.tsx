@@ -52,7 +52,7 @@ const TextList = ({ label }) => {
         total: 0,
     });
     const [textStatus, setTextStatus] = useState(
-        localStorage.getItem("textStatus")
+        localStorage.getItem("textStatus") ?? "Current"
     );
     useEffect(() => {
         if (textStatus) {
