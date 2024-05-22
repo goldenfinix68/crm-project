@@ -20,7 +20,7 @@ import { saveCustomFieldValuesMutation } from "../api/mutation/useCustomFieldMut
 import { defaultFilter } from "../constants";
 import { useCustomFields } from "../api/query/customFieldQuery";
 import { TContact, TCustomField } from "../entities";
-import { mutateGet } from "../api/mutation/useSetupMutation";
+import { mutateGet, mutateGetManual } from "../api/mutation/useSetupMutation";
 import { ENDPOINTS } from "../endpoints";
 import _ from "lodash";
 interface Props {
@@ -47,7 +47,7 @@ const ModalAddExistingNumberContact = ({
     const [isSearchLoading, setIsSearchLoading] = useState(false);
 
     const { data: filteredContacts, refetch: refetchFilteredContacts } =
-        mutateGet(
+        mutateGetManual(
             { keyword },
             "/api/contacts/global-search",
             "globalSearch",
@@ -58,7 +58,7 @@ const ModalAddExistingNumberContact = ({
 
     const debouncedSearch = _.debounce(() => {
         refetchFilteredContacts();
-    }, 300);
+    }, 500);
 
     useEffect(() => {
         if (filteredContacts && filteredContacts.data) {

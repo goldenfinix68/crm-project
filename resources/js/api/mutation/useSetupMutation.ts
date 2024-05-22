@@ -73,3 +73,61 @@ export const mutateGet = (
         isFetching: isFetching,
     };
 };
+
+export const mutateGetManual = (
+    dataFilter: any,
+    url: any,
+    cache: string,
+    onSuccess?: () => void
+) => {
+    const { data, isLoading, isError, refetch, isFetching } = useQuery(
+        cache,
+        async () => {
+            const filterParams = new URLSearchParams();
+            for (const key in dataFilter) {
+                if (dataFilter.hasOwnProperty(key)) {
+                    if (typeof dataFilter[key] === "object") {
+                        filterParams.append(
+                            key,
+                            JSON.stringify(dataFilter[key])
+                        );
+                    } else {
+                        filterParams.append(key, dataFilter[key]);
+                    }
+                }
+            }
+            const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
+            const response = await axios.get(
+                `${url}?${new URLSearchParams(filterParams)}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            );
+
+            return response.data;
+        },
+        {
+            enabled: false,
+            retry: 1,
+            retryDelay: 500,
+            // fetchOnWindowFocus: false,
+            refetchOnWindowFocus: false,
+            staleTime: Infinity,
+            onSuccess: (data) => {
+                if (onSuccess) {
+                    onSuccess();
+                }
+            },
+        }
+    );
+
+    return {
+        data: data,
+        isLoading: isLoading,
+        isError: isError,
+        refetch: refetch,
+        isFetching: isFetching,
+    };
+};

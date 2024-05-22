@@ -35,7 +35,10 @@ import { TContact, TCustomFieldValue } from "../../../entities";
 import { useAppContextProvider } from "../../../context/AppContext";
 import AddAttributePopoverContent from "../../TextTemplates/components/AddAttributePopoverContent";
 import { defaultFilter } from "../../../constants";
-import { mutateGet } from "../../../api/mutation/useSetupMutation";
+import {
+    mutateGet,
+    mutateGetManual,
+} from "../../../api/mutation/useSetupMutation";
 import { ENDPOINTS } from "../../../endpoints";
 import _ from "lodash";
 interface Props {
@@ -77,7 +80,7 @@ const TextForm = ({
     const [isSearchLoading, setIsSearchLoading] = useState(false);
 
     const { data: filteredContacts, refetch: refetchFilteredContacts } =
-        mutateGet(
+        mutateGetManual(
             { keyword },
             "/api/contacts/global-search",
             "globalSearch",

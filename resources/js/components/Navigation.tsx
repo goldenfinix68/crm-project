@@ -35,7 +35,7 @@ import { useAppContextProvider } from "../context/AppContext";
 import CustomLink from "./CustomLink";
 import { defaultFilter } from "../constants";
 import { ENDPOINTS } from "../endpoints";
-import { mutateGet } from "../api/mutation/useSetupMutation";
+import { mutateGet, mutateGetManual } from "../api/mutation/useSetupMutation";
 import _ from "lodash";
 
 type NavigationProps = {
@@ -52,7 +52,7 @@ const Navigation: React.FC<NavigationProps> = ({ title }) => {
     const [keyword, setKeyword] = useState<string>("");
 
     const { data: filteredContacts, refetch: refetchFilteredContacts } =
-        mutateGet(
+        mutateGetManual(
             { keyword },
             "/api/contacts/global-search",
             "globalSearch",
@@ -63,15 +63,17 @@ const Navigation: React.FC<NavigationProps> = ({ title }) => {
 
     const debouncedSearch = _.debounce((value) => {
         handleSearch(value);
-    }, 300);
+    }, 500);
 
     const handleSearch = (value) => {
         setKeyword(value);
     };
 
     useEffect(() => {
-        setIsSearchLoading(true);
-        refetchFilteredContacts();
+        if (keyword != "") {
+            setIsSearchLoading(true);
+            refetchFilteredContacts();
+        }
     }, [keyword]);
 
     useEffect(() => {
