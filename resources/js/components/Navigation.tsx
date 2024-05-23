@@ -81,11 +81,6 @@ const Navigation: React.FC<NavigationProps> = ({ title }) => {
             setContacts(filteredContacts.data);
         }
     }, [filteredContacts]);
-    useEffect(() => {
-        if (contacts) {
-            console.log("contacts", contacts);
-        }
-    }, [contacts]);
 
     const [isDropdownVisible, setDropdownVisible] = useState(false);
     const handleSignOut = () => {

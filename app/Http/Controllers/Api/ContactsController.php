@@ -154,6 +154,8 @@ class ContactsController extends Controller
         // get only contacts
         $contacts = $custom_field_values->pluck('contact')->unique('id');   
 
+        // contacts re index array
+        $contacts = $contacts->values()->all();
 
         return response()->json([
             'success' => true,
