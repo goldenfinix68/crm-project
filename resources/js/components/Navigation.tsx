@@ -78,7 +78,7 @@ const Navigation: React.FC<NavigationProps> = ({ title }) => {
 
     useEffect(() => {
         if (filteredContacts && filteredContacts.data) {
-            setContacts(filteredContacts.data.data);
+            setContacts(filteredContacts.data);
         }
     }, [filteredContacts]);
 
