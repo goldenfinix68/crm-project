@@ -127,20 +127,37 @@ class ContactsController extends Controller
         $userId = $this->getMainUserId();
         $keyword = $request->keyword;
 
-        $contacts = Contact::select('contacts.*')
-            ->where('userId', $userId)
-            ->join('custom_field_values as cfv', 'cfv.customableId', '=', 'contacts.id')
-            ->where('cfv.value', 'LIKE', "%$keyword%");
-            // ->orWhereRaw('(SELECT GROUP_CONCAT(cfv.value SEPARATOR " ") AS full_name
-            //     FROM custom_field_values cfv
-            //     JOIN custom_fields cf ON cf.id = cfv.customFieldId
-            //     WHERE cf.fieldName IN ("firstName", "lastName") AND cfv.customableId = contacts.id) LIKE ?', ["%$keyword%"]);
+        // $contacts = Contact::select('contacts.*')
+        //     ->where('userId', $userId)
+        //     ->join('custom_field_values as cfv', 'cfv.customableId', '=', 'contacts.id')
+        //     ->where('cfv.value', 'LIKE', "%$keyword%");
+        //     // ->orWhereRaw('(SELECT GROUP_CONCAT(cfv.value SEPARATOR " ") AS full_name
+        //     //     FROM custom_field_values cfv
+        //     //     JOIN custom_fields cf ON cf.id = cfv.customFieldId
+        //     //     WHERE cf.fieldName IN ("firstName", "lastName") AND cfv.customableId = contacts.id) LIKE ?', ["%$keyword%"]);
 
-        $result = $contacts->distinct()->paginate(10);
+        // $result = $contacts->distinct()->paginate(10);
+
+        // return response()->json([
+        //     'success' => true,
+        //     'data' => $result,
+        // ], 200);
+
+
+
+        $custom_field_values = \App\Models\CustomFieldValue::select(['customableId','value'])
+            ->where('value', 'LIKE', "%$keyword%")
+            ->with(['contact' => function($q) use($userId) {
+                $q->where('userId', $userId);
+            }])
+            ->paginate(10);
+        // get only contacts
+        $contacts = $custom_field_values->pluck('contact')->unique('id');   
+
 
         return response()->json([
             'success' => true,
-            'data' => $result,
+            'data' => $contacts,
         ], 200);
     }
 

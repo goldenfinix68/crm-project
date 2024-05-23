@@ -254,6 +254,36 @@ Route::get('/mail_test', function (Request $request) {
 
     echo  env('MAIL_HOST');
 });
+Route::get('/gsearch', function (Request $request) {
+    // $userId = $this->getMainUserId();
+    $keyword = $request->keyword;
+
+    // $contacts = \App\Models\Contact::select('contacts.*')
+    //     // ->where('userId', $userId)
+    //     ->join('custom_field_values as cfv', 'cfv.customableId', '=', 'contacts.id')
+    //     ->where('cfv.value', 'LIKE', "%$keyword%");
+    //     // ->orWhereRaw('(SELECT GROUP_CONCAT(cfv.value SEPARATOR " ") AS full_name
+    //     //     FROM custom_field_values cfv
+    //     //     JOIN custom_fields cf ON cf.id = cfv.customFieldId
+    //     //     WHERE cf.fieldName IN ("firstName", "lastName") AND cfv.customableId = contacts.id) LIKE ?', ["%$keyword%"]);
+
+    $custom_field_values = \App\Models\CustomFieldValue::select(['customableId','value'])
+        ->where('value', 'LIKE', "%$keyword%")
+        ->with(['contact' => function($q)  {
+            // $q->where('userId', $userId);
+        }])
+        ->paginate(10);
+    // pluck only contacts from custom_field_values
+    $contacts = $custom_field_values->pluck('contact')->unique('id');
+
+        dd($contacts);
+    // $result = $contacts->distinct()->paginate(10);
+
+    // return response()->json([
+    //     'success' => true,
+    //     'data' => $result,
+    // ], 200);
+});
 
 // Do not remove this code
 Route::get('/get_people', function (Request $request) {
