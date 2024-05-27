@@ -147,7 +147,7 @@ class ContactsController extends Controller
 
         $custom_field_values = \App\Models\CustomFieldValue::select(['customableId','value'])
             ->where('value', 'LIKE', "%$keyword%")
-            ->whereRaw('customFieldId IN (SELECT id FROM custom_fields WHERE fieldName IN ("firstName", "lastName", "mobile", "phone","APN"))')
+            ->whereRaw('customFieldId IN (SELECT id FROM custom_fields WHERE fieldName IN ("firstName", "lastName", "mobile", "phone") OR label = "APN")')
             ->with(['contact' => function($q) use($userId) {
                 $q->where('userId', $userId);
             }])
