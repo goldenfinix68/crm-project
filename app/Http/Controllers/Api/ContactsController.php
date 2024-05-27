@@ -151,7 +151,7 @@ class ContactsController extends Controller
             ->with(['contact' => function($q) use($userId) {
                 $q->where('userId', $userId);
             }])
-            ->paginate(10);
+            ->paginate(20);
         // get only contacts
         $contacts = $custom_field_values->pluck('contact')->unique('id');   
 
