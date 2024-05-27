@@ -218,7 +218,7 @@ const Navigation: React.FC<NavigationProps> = ({ title }) => {
                     placement="bottomRight"
                     arrow
                     overlayClassName="header-search-bar"
-                    trigger={["click"]}
+                    trigger={["hover"]}
                     overlay={
                         <Menu>
                             {isSearchLoading && (
