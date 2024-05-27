@@ -28,7 +28,11 @@ class DealsController extends Controller
             return response()->json([], 200);
         }
         $mainUserId = $this->getMainUserId();
-        $deals = Deal::with(['contact', 'stage'])
+        $deals = Deal::with(['contact' => function($q) {
+            $q->select(['id','userId']);
+        }, 'stage' => function($q) {
+            $q->select(['id']);
+        }])
             ->where('pipelineId', $request->pipelineId)
             ->whereHas('contact', function ($query) use($mainUserId) {
                 $query->where('userId', $mainUserId);
