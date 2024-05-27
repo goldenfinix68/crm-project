@@ -135,7 +135,7 @@ const Deal = () => {
 
     const [isConfigureModalOpen, setIsConfigureModalOpen] = useState(false);
     const { deals, isLoading, refetch } = useDealsAll(filterPage);
-    const selectedpipeline = pipelines?.find(
+    let selectedpipeline = pipelines?.find(
         (pipeline) => pipeline.id === filterPage.pipelineId
     );
 
@@ -152,7 +152,9 @@ const Deal = () => {
     };
 
     useEffect(() => {
-        refetch();
+        if (filterPage.pipelineId) {
+            refetch();
+        }
     }, [filterPage]);
 
     const pipelineDropdownItem: MenuProps["items"] = pipelines?.map(
@@ -161,12 +163,12 @@ const Deal = () => {
                 key: pipeline.id,
                 label: (
                     <div
-                        onClick={() =>
+                        onClick={() => {
                             setFilterPage({
                                 ...filterPage,
                                 pipelineId: pipeline.id,
-                            })
-                        }
+                            });
+                        }}
                     >
                         {pipeline.name}
                     </div>
@@ -206,51 +208,53 @@ const Deal = () => {
                                     width: 280,
                                 },
                                 label: "",
-                                cards:
-                                    stage.deals
-                                        ?.slice() // Create a shallow copy of the array to avoid mutating the original array
-                                        .sort((a, b) => {
-                                            const compareValueA =
-                                                sortBy === "aging"
-                                                    ? a.aging ?? ""
-                                                    : a.contact?.fields[
-                                                          sortBy
-                                                      ] ?? "";
-                                            const compareValueB =
-                                                sortBy === "aging"
-                                                    ? b.aging ?? ""
-                                                    : b.contact?.fields[
-                                                          sortBy
-                                                      ] ?? "";
+                                cards: deals
+                                    ? deals
+                                          .filter((p) => p.stageId == stage.id)
+                                          ?.slice() // Create a shallow copy of the array to avoid mutating the original array
+                                          .sort((a, b) => {
+                                              const compareValueA =
+                                                  sortBy === "aging"
+                                                      ? a.aging ?? ""
+                                                      : a.contact?.fields[
+                                                            sortBy
+                                                        ] ?? "";
+                                              const compareValueB =
+                                                  sortBy === "aging"
+                                                      ? b.aging ?? ""
+                                                      : b.contact?.fields[
+                                                            sortBy
+                                                        ] ?? "";
 
-                                            return sortByAsc
-                                                ? compareValueA.localeCompare(
-                                                      compareValueB
-                                                  )
-                                                : compareValueB.localeCompare(
-                                                      compareValueA
-                                                  );
-                                        })
-                                        .map((deal) => {
-                                            return {
-                                                id: parseInt(deal.id ?? ""),
-                                                title: (
-                                                    <DealCard
-                                                        deal={deal}
-                                                        handleEditClick={() => {
-                                                            setSelectedDeal(
-                                                                deal
-                                                            );
-                                                            setIsModalOpenAdd(
-                                                                true
-                                                            );
-                                                        }}
-                                                        sortBy={sortBy}
-                                                    />
-                                                ),
-                                                laneId: stage.id,
-                                            };
-                                        }) ?? [],
+                                              return sortByAsc
+                                                  ? compareValueA.localeCompare(
+                                                        compareValueB
+                                                    )
+                                                  : compareValueB.localeCompare(
+                                                        compareValueA
+                                                    );
+                                          })
+                                          .map((deal) => {
+                                              return {
+                                                  id: parseInt(deal.id ?? ""),
+                                                  title: (
+                                                      <DealCard
+                                                          deal={deal}
+                                                          handleEditClick={() => {
+                                                              setSelectedDeal(
+                                                                  deal
+                                                              );
+                                                              setIsModalOpenAdd(
+                                                                  true
+                                                              );
+                                                          }}
+                                                          sortBy={sortBy}
+                                                      />
+                                                  ),
+                                                  laneId: stage.id,
+                                              };
+                                          })
+                                    : [],
                             };
                         }) ?? [],
                 };
@@ -268,6 +272,7 @@ const Deal = () => {
     });
 
     const onChangeListBoard = (e: any) => {
+        // alert(e);
         setListBoard(e.target.value);
         refetch();
     };
@@ -292,14 +297,14 @@ const Deal = () => {
 
     //set initial pipeline
     useEffect(() => {
-        if (pipelines?.length && !filterPage.pipelineId) {
+        if (pipelines?.length) {
             setFilterPage({
                 ...filterPage,
                 pipelineId: pipelines[0].id,
             });
-            setTimeout(() => {
-                refetch(); // Call refetch after a 1-second delay
-            }, 1000);
+            // setTimeout(() => {
+            //     refetch(); // Call refetch after a 1-second delay
+            // }, 1000);
         }
     }, [pipelines]);
 
@@ -501,6 +506,7 @@ const Deal = () => {
                                             <Board
                                                 draggable
                                                 data={boardData}
+                                                loading={isLoading}
                                                 laneDraggable={false}
                                                 hideCardDeleteIcon={true}
                                                 className="react-trello-board board"

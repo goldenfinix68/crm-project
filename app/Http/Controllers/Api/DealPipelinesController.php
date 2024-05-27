@@ -18,7 +18,7 @@ class DealPipelinesController extends Controller
     public function index()
     {
         return DealPipeline::where('userId', $this->getMainUserId())
-            ->with(['stages', 'stages.deals', 'stages.deals.contact'])
+            ->with(['stages'])
             ->get();
     }
 

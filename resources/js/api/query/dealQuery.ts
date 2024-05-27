@@ -17,7 +17,7 @@ export const useDealsAll = (url: any) => {
             );
             return response.data;
         },
-        { staleTime: Infinity }
+        { staleTime: Infinity , enabled: url.pipelineId ? true : false}
     );
 
     return {
