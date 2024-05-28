@@ -23,6 +23,11 @@ import {
     CloseOutlined,
     TagFilled,
     PlusCircleOutlined,
+    BackwardOutlined,
+    SaveOutlined,
+    LoadingOutlined,
+    Loading3QuartersOutlined,
+    RedoOutlined,
 } from "@ant-design/icons"; // Step 1
 import { useNavigate } from "react-router-dom";
 import { getTimeAgo, useArray } from "../../../helpers";
@@ -31,7 +36,10 @@ import ConfirmModal from "../../../components/ConfirmModal";
 import { useMutation } from "react-query";
 import queryClient from "../../../queryClient";
 import { useTextThreads } from "../../../api/query/textQuery";
-import { useDeleteThread } from "../../../api/mutation/useTextMutation";
+import {
+    useDeleteThread,
+    useRestoreThread,
+} from "../../../api/mutation/useTextMutation";
 import AssignLabelModal from "./AssignLabelModal";
 import { useAppContextProvider } from "../../../context/AppContext";
 import AddTagModal from "./AddTagModal";
@@ -83,8 +91,10 @@ const TextList = ({ label }) => {
 
     const navigate = useNavigate();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false);
     const [isAddTagModalOpen, setIsAddTagModalOpen] = useState(false);
     const [isDeleteBtnLoading, setIsDeleteBtnLoading] = useState(false);
+    const [isRestoreBtnLoading, setIsRestoreBtnLoading] = useState(false);
     const [selectedThread, setSelectedThread] = useState<
         TTextThreadList | undefined
     >(undefined);
@@ -103,6 +113,19 @@ const TextList = ({ label }) => {
             queryClient.invalidateQueries("textThreads");
             setIsDeleteModalOpen(false);
             setIsDeleteBtnLoading(false);
+            setSelectedThread(undefined);
+            setSelectedThreadIds([]);
+            // navigate("/text-threads");
+        },
+        onError: (e: any) => {
+            console.log(e.message || "An error occurred");
+        },
+    });
+    const restoreThread = useMutation(useRestoreThread, {
+        onSuccess: () => {
+            queryClient.invalidateQueries("textThreads");
+            setIsRestoreModalOpen(false);
+            setIsRestoreBtnLoading(false);
             setSelectedThread(undefined);
             setSelectedThreadIds([]);
             // navigate("/text-threads");
@@ -185,7 +208,16 @@ const TextList = ({ label }) => {
                             Archive
                         </Button>
                     ) : (
-                        <></>
+                        <Button
+                            icon={<RedoOutlined />}
+                            type="text"
+                            onClick={() => {
+                                setIsViaMultiple(true);
+                                setIsRestoreModalOpen(true);
+                            }}
+                        >
+                            Restore
+                        </Button>
                     )}
 
                     <Button
@@ -451,6 +483,27 @@ const TextList = ({ label }) => {
                     }}
                     isOpen={isDeleteModalOpen}
                     loading={isDeleteBtnLoading}
+                />
+            )}
+            {isRestoreModalOpen && (
+                <ConfirmModal
+                    title="Confirm"
+                    message={`Are you sure you want to restore this thread?`}
+                    handleNo={() => {
+                        setIsRestoreModalOpen(false);
+                        setSelectedThread(undefined);
+                    }}
+                    handleYes={async () => {
+                        setIsRestoreBtnLoading(true);
+                        await restoreThread.mutate(
+                            isViaMultiple
+                                ? { threadIds: selectedThreadIds }
+                                : { threadIds: [selectedThread!.id!] }
+                        );
+                        setSelectedThread(undefined);
+                    }}
+                    isOpen={isRestoreModalOpen}
+                    loading={isRestoreBtnLoading}
                 />
             )}
             {isAssignLabelModalOpen && (

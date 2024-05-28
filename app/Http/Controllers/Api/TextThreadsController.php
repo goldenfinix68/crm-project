@@ -288,6 +288,24 @@ class TextThreadsController extends Controller
         return response()->json(['success' => true]);
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function restore(Request $request)
+    {
+        
+        foreach($request->threadIds as $id){
+            $thread = TextThread::withTrashed()->find($id);
+            $thread->texts()->restore();
+            $thread->restore();
+        }
+
+        return response()->json(['success' => true]);
+    }
+
     public function assign_label(Request $request)
     {
         

@@ -143,6 +143,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/text-threads/mark-texts-seen', 'App\Http\Controllers\Api\TextThreadsController@mark_texts_seen');
     Route::post('/text-threads/delete', 'App\Http\Controllers\Api\TextThreadsController@destroy');
     Route::post('/text-threads/add-tag', 'App\Http\Controllers\Api\TextThreadsController@addTag');
+    Route::post('/text-threads/restore', 'App\Http\Controllers\Api\TextThreadsController@restore');
 
     Route::get('/telnyx/available-sip-trunking-connections', 'App\Http\Controllers\Api\TelnyxController@getAvailableSipTrunkingConnection');
 
