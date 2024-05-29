@@ -134,10 +134,16 @@ const Deal = () => {
     };
 
     const [isConfigureModalOpen, setIsConfigureModalOpen] = useState(false);
-    const { deals, isLoading, refetch } = useDealsAll(filterPage);
+    const { deals, isLoadingDeals, refetch, isFetchingDeals } =
+        useDealsAll(filterPage);
     let selectedpipeline = pipelines?.find(
         (pipeline) => pipeline.id === filterPage.pipelineId
     );
+
+    useEffect(() => {
+        console.log("isFetchingDeals", isFetchingDeals);
+        return () => {};
+    }, [isFetchingDeals]);
 
     const [selectedDeal, setSelectedDeal] = useState<TDeal | undefined>(
         undefined
@@ -311,7 +317,7 @@ const Deal = () => {
     return (
         <Row className="deal-group-row">
             <Col md={24}>
-                <Card loading={isLoading || isPipelinesLoading}>
+                <Card loading={isLoadingDeals || isPipelinesLoading}>
                     {showDeleteButton ? (
                         <Row
                             style={{
@@ -506,7 +512,10 @@ const Deal = () => {
                                             <Board
                                                 draggable
                                                 data={boardData}
-                                                loading={isLoading}
+                                                loading={
+                                                    isLoadingDeals ||
+                                                    isFetchingDeals
+                                                }
                                                 laneDraggable={false}
                                                 hideCardDeleteIcon={true}
                                                 className="react-trello-board board"

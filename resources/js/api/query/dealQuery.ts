@@ -3,7 +3,7 @@ import axios from "axios";
 import { TDeal, TDealPipeline } from "../../entities";
 
 export const useDealsAll = (url: any) => {
-    const { data, isLoading, isError, refetch } = useQuery<TDeal[]>(
+    const { data, isLoading, isError, refetch,isFetching } = useQuery<TDeal[]>(
         "deals",
         async () => {
             const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
@@ -22,9 +22,10 @@ export const useDealsAll = (url: any) => {
 
     return {
         deals: data,
-        isLoading,
+        isLoadingDeals: isLoading,
         isError,
         refetch,
+        isFetchingDeals: isFetching
     };
 };
 
