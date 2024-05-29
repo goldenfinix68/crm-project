@@ -17,6 +17,8 @@ class GSheetImportTrigger extends Command
      */
     protected $signature = 'crm:gSheet-trigger';
 
+    protected $timeout = 600;
+
     /**
      * The console command description.
      *
