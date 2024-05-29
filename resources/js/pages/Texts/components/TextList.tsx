@@ -251,6 +251,18 @@ const TextList = ({ label }) => {
             ) : (
                 <div style={{ height: "42px" }}></div>
             )}
+
+            <Checkbox
+                onClick={(e) => {
+                    if (e.target.checked) {
+                        setSelectedThreadIds(
+                            textThreads.map((thread) => thread.id)
+                        );
+                    } else {
+                        setSelectedThreadIds([]);
+                    }
+                }}
+            />
             <List
                 itemLayout="horizontal"
                 style={{
