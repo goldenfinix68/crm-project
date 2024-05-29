@@ -17,6 +17,8 @@ class GSheetImportTrigger extends Command
      */
     protected $signature = 'crm:gSheet-trigger';
 
+    protected $timeout = 600;
+
     /**
      * The console command description.
      *
@@ -41,7 +43,9 @@ class GSheetImportTrigger extends Command
      */
     public function handle()
     {
-        
+        set_time_limit(600);
+
+
 		$this->info('Starting crm:gSheet-trigger');
 
         $crawlResults = GSheetCrawlResult::where('status', "Queued")
