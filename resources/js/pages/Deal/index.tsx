@@ -10,6 +10,7 @@ import {
     Popconfirm,
     Typography,
     Empty,
+    Spin,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import {
@@ -495,7 +496,7 @@ const Deal = () => {
                             </div>
                         </>
                     )}
-
+                    {/* {isFetchingDeals && <Spin />} */}
                     {deals?.length ? (
                         <>
                             {boardData &&
@@ -509,40 +510,56 @@ const Deal = () => {
                                                 height: "100vh",
                                             }}
                                         >
-                                            <Board
-                                                draggable
-                                                data={boardData}
-                                                loading={
-                                                    isLoadingDeals ||
-                                                    isFetchingDeals
-                                                }
-                                                laneDraggable={false}
-                                                hideCardDeleteIcon={true}
-                                                className="react-trello-board board"
-                                                cardDragClass="card-drag"
-                                                cardDropClass="card-drop"
-                                                style={{
-                                                    background:
-                                                        "none!important",
-                                                }}
-                                                customCardLayout={true}
-                                                // onDataChange={onDataChangeBoard}
-                                                onCardMoveAcrossLanes={(
-                                                    fromLaneId,
-                                                    toLaneId,
-                                                    cardId,
-                                                    index
-                                                ) => {
-                                                    console.log(
+                                            {isFetchingDeals ||
+                                            isLoadingDeals ? (
+                                                <div
+                                                    style={{
+                                                        display: "grid",
+                                                        placeItems: "center",
+                                                        marginTop: "5%",
+                                                    }}
+                                                >
+                                                    <Spin />
+                                                </div>
+                                            ) : (
+                                                <Board
+                                                    draggable
+                                                    data={boardData}
+                                                    loading={
+                                                        isLoadingDeals ||
+                                                        isFetchingDeals
+                                                    }
+                                                    laneDraggable={false}
+                                                    hideCardDeleteIcon={true}
+                                                    className="react-trello-board board"
+                                                    cardDragClass="card-drag"
+                                                    cardDropClass="card-drop"
+                                                    style={{
+                                                        background:
+                                                            "none!important",
+                                                    }}
+                                                    customCardLayout={true}
+                                                    // onDataChange={onDataChangeBoard}
+                                                    onCardMoveAcrossLanes={(
+                                                        fromLaneId,
+                                                        toLaneId,
                                                         cardId,
-                                                        toLaneId
-                                                    );
-                                                    moveCardAcrossLanes.mutate({
-                                                        dealId: cardId,
-                                                        stageId: toLaneId,
-                                                    });
-                                                }}
-                                            />
+                                                        index
+                                                    ) => {
+                                                        console.log(
+                                                            cardId,
+                                                            toLaneId
+                                                        );
+                                                        moveCardAcrossLanes.mutate(
+                                                            {
+                                                                dealId: cardId,
+                                                                stageId:
+                                                                    toLaneId,
+                                                            }
+                                                        );
+                                                    }}
+                                                />
+                                            )}
                                         </div>
                                     </div>
                                 </div>
