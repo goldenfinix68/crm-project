@@ -10,6 +10,7 @@ import {
     Popconfirm,
     Typography,
     Empty,
+    Spin,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import {
@@ -134,10 +135,16 @@ const Deal = () => {
     };
 
     const [isConfigureModalOpen, setIsConfigureModalOpen] = useState(false);
-    const { deals, isLoading, refetch } = useDealsAll(filterPage);
+    const { deals, isLoadingDeals, refetch, isFetchingDeals } =
+        useDealsAll(filterPage);
     let selectedpipeline = pipelines?.find(
         (pipeline) => pipeline.id === filterPage.pipelineId
     );
+
+    useEffect(() => {
+        console.log("isFetchingDeals", isFetchingDeals);
+        return () => {};
+    }, [isFetchingDeals]);
 
     const [selectedDeal, setSelectedDeal] = useState<TDeal | undefined>(
         undefined
@@ -311,7 +318,7 @@ const Deal = () => {
     return (
         <Row className="deal-group-row">
             <Col md={24}>
-                <Card loading={isLoading || isPipelinesLoading}>
+                <Card loading={isLoadingDeals || isPipelinesLoading}>
                     {showDeleteButton ? (
                         <Row
                             style={{
@@ -489,7 +496,7 @@ const Deal = () => {
                             </div>
                         </>
                     )}
-
+                    {/* {isFetchingDeals && <Spin />} */}
                     {deals?.length ? (
                         <>
                             {boardData &&
@@ -503,37 +510,56 @@ const Deal = () => {
                                                 height: "100vh",
                                             }}
                                         >
-                                            <Board
-                                                draggable
-                                                data={boardData}
-                                                loading={isLoading}
-                                                laneDraggable={false}
-                                                hideCardDeleteIcon={true}
-                                                className="react-trello-board board"
-                                                cardDragClass="card-drag"
-                                                cardDropClass="card-drop"
-                                                style={{
-                                                    background:
-                                                        "none!important",
-                                                }}
-                                                customCardLayout={true}
-                                                // onDataChange={onDataChangeBoard}
-                                                onCardMoveAcrossLanes={(
-                                                    fromLaneId,
-                                                    toLaneId,
-                                                    cardId,
-                                                    index
-                                                ) => {
-                                                    console.log(
+                                            {isFetchingDeals ||
+                                            isLoadingDeals ? (
+                                                <div
+                                                    style={{
+                                                        display: "grid",
+                                                        placeItems: "center",
+                                                        marginTop: "5%",
+                                                    }}
+                                                >
+                                                    <Spin />
+                                                </div>
+                                            ) : (
+                                                <Board
+                                                    draggable
+                                                    data={boardData}
+                                                    loading={
+                                                        isLoadingDeals ||
+                                                        isFetchingDeals
+                                                    }
+                                                    laneDraggable={false}
+                                                    hideCardDeleteIcon={true}
+                                                    className="react-trello-board board"
+                                                    cardDragClass="card-drag"
+                                                    cardDropClass="card-drop"
+                                                    style={{
+                                                        background:
+                                                            "none!important",
+                                                    }}
+                                                    customCardLayout={true}
+                                                    // onDataChange={onDataChangeBoard}
+                                                    onCardMoveAcrossLanes={(
+                                                        fromLaneId,
+                                                        toLaneId,
                                                         cardId,
-                                                        toLaneId
-                                                    );
-                                                    moveCardAcrossLanes.mutate({
-                                                        dealId: cardId,
-                                                        stageId: toLaneId,
-                                                    });
-                                                }}
-                                            />
+                                                        index
+                                                    ) => {
+                                                        console.log(
+                                                            cardId,
+                                                            toLaneId
+                                                        );
+                                                        moveCardAcrossLanes.mutate(
+                                                            {
+                                                                dealId: cardId,
+                                                                stageId:
+                                                                    toLaneId,
+                                                            }
+                                                        );
+                                                    }}
+                                                />
+                                            )}
                                         </div>
                                     </div>
                                 </div>
