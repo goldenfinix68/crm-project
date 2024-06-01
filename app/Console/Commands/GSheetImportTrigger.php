@@ -17,7 +17,7 @@ class GSheetImportTrigger extends Command
      */
     protected $signature = 'crm:gSheet-trigger';
 
-    protected $timeout = 600;
+    protected $timeout = 0;
 
     /**
      * The console command description.
@@ -43,7 +43,7 @@ class GSheetImportTrigger extends Command
      */
     public function handle()
     {
-        set_time_limit(600);
+        set_time_limit(0);
 
 
 		$this->info('Starting crm:gSheet-trigger');
