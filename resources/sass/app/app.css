@@ -12526,6 +12526,13 @@ fieldset:disabled .btn {
     font-weight: 600;
     margin-bottom: 0px;
 }
+.updateAvailableDiv .div2 h5 {
+    margin-top: 0;
+    margin-bottom: .5rem;
+    font-weight: 500;
+    line-height: 1.2;    
+    font-size: 1.125rem;
+}
 .updateAvailableDiv .div2 p {
     color: #b5b5b5;
     line-height: 1.3;
