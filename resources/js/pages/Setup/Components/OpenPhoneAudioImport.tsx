@@ -148,12 +148,11 @@ const OpenPhoneAudioImport = () => {
                         Ensure that the file name follows the correct format:
                         <ul>
                             <li>
-                                Format: yyyy-mm-ddThh_mm_ss+00_00 + contact
-                                number
+                                Format: yyyy-mm-ddThh_mm_ss+00_00contact number
                             </li>
                             <li>
                                 Example:
-                                2024-03-24T19_56_16+00_00+13034892316.mp3
+                                2024-03-24T19_56_16+00_0019876543210.mp3
                             </li>
                         </ul>
                     </li>

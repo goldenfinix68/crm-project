@@ -251,7 +251,7 @@ class CallsController extends Controller
 
         // 2024-03-13T19_56_16+00_00+13034892316.mp3
         // $fileName = str_replace(['T', '+', '_'], [' ', ' ', ' '], $fileName);
-        $fileName = explode('+', $fileName);
+        $fileName = explode('+00_00', $fileName);
         $timeStamp = $fileName[0];
         $timeStamp = str_replace(['_'], [':'], $timeStamp);
         $timeStamp = str_replace(['T'], [' '], $timeStamp);
