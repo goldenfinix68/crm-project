@@ -189,7 +189,8 @@ const TextList = ({ label }) => {
                     style={{
                         width: "100%",
                         marginTop: 10,
-                        background: "#f8f8f8",
+                        background:
+                            textStatus == "Current" ? "white" : "#f8f8f8",
                     }}
                 >
                     <Button
@@ -262,7 +263,7 @@ const TextList = ({ label }) => {
                 style={{
                     paddingLeft: 10,
                     paddingTop: 5,
-                    background: "#f8f8f8",
+                    background: textStatus == "Current" ? "white" : "#f8f8f8",
                 }}
             >
                 <Checkbox
@@ -283,7 +284,7 @@ const TextList = ({ label }) => {
                     marginTop: 0,
                     height: "69vh",
                     overflow: "auto",
-                    background: "#f8f8f8",
+                    background: textStatus == "Current" ? "white" : "#f8f8f8",
                     paddingLeft: 10,
                     paddingRight: 10,
                 }}
