@@ -185,7 +185,13 @@ const TextList = ({ label }) => {
             </Space>
 
             {selectedThreadIds.length ? (
-                <Space style={{ width: "100%", marginTop: 10 }}>
+                <Space
+                    style={{
+                        width: "100%",
+                        marginTop: 10,
+                        background: "#f8f8f8",
+                    }}
+                >
                     <Button
                         icon={<CloseOutlined />}
                         type="text"
@@ -252,23 +258,34 @@ const TextList = ({ label }) => {
                 <div style={{ height: "42px" }}></div>
             )}
 
-            <Checkbox
-                onClick={(e) => {
-                    if (e.target.checked) {
-                        setSelectedThreadIds(
-                            textThreads.map((thread) => thread.id)
-                        );
-                    } else {
-                        setSelectedThreadIds([]);
-                    }
+            <div
+                style={{
+                    paddingLeft: 10,
+                    paddingTop: 5,
+                    background: "#f8f8f8",
                 }}
-            />
+            >
+                <Checkbox
+                    onClick={(e) => {
+                        if (e.target.checked) {
+                            setSelectedThreadIds(
+                                textThreads.map((thread) => thread.id)
+                            );
+                        } else {
+                            setSelectedThreadIds([]);
+                        }
+                    }}
+                />
+            </div>
             <List
                 itemLayout="horizontal"
                 style={{
                     marginTop: 0,
                     height: "69vh",
                     overflow: "auto",
+                    background: "#f8f8f8",
+                    paddingLeft: 10,
+                    paddingRight: 10,
                 }}
             >
                 {isTextThreadLoading ? (
