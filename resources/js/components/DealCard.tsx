@@ -48,8 +48,14 @@ interface Props {
     deal: TDeal;
     handleEditClick: () => void;
     sortBy: string;
+    updateStarredDeal: (deal: TDeal) => void;
 }
-const DealCard = ({ deal, handleEditClick, sortBy }: Props) => {
+const DealCard = ({
+    deal,
+    handleEditClick,
+    sortBy,
+    updateStarredDeal,
+}: Props) => {
     const { setIsModalOpen, setCallerNumber, setDestinationNumber } =
         useCallContext();
 
@@ -88,21 +94,6 @@ const DealCard = ({ deal, handleEditClick, sortBy }: Props) => {
         }
 
         return null;
-    };
-
-    const updateContact = useMutation(useDealMutationUpdateStarred, {
-        onSuccess: () => {
-            console.log("success");
-            queryClient.invalidateQueries("deals");
-            // setShowupdateButton(false);
-        },
-    });
-
-    const updateStarredDeal = async (deal) => {
-        console.log("deal", deal.star);
-        await updateContact.mutate({
-            id: deal.id,
-        });
     };
 
     return (

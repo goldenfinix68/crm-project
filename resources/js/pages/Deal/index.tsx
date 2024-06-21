@@ -34,6 +34,7 @@ import { useMutation, useQueryClient } from "react-query";
 import {
     moveCardAcrossLanesMutation,
     useDealMutationDeleteDeal,
+    useDealMutationUpdateStarred,
 } from "../../api/mutation/useDealMutation";
 import DealsTable from "./components/DealsTable";
 import { TDeal } from "../../entities";
@@ -263,6 +264,9 @@ const Deal = () => {
                                                               );
                                                           }}
                                                           sortBy={sortBy}
+                                                          updateStarredDeal={
+                                                              updateStarredDeal
+                                                          }
                                                       />
                                                   ),
                                                   laneId: stage.id,
@@ -321,6 +325,21 @@ const Deal = () => {
             // }, 1000);
         }
     }, [pipelines]);
+
+    const updateContact = useMutation(useDealMutationUpdateStarred, {
+        onSuccess: () => {
+            console.log("success");
+            queryClient.invalidateQueries("deals");
+            // setShowupdateButton(false);
+        },
+    });
+
+    const updateStarredDeal = async (deal) => {
+        console.log("deal", deal.star);
+        await updateContact.mutate({
+            id: deal.id,
+        });
+    };
 
     return (
         <Row className="deal-group-row">
