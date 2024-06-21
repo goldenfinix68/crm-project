@@ -233,13 +233,20 @@ const Deal = () => {
                                                             sortBy
                                                         ] ?? "";
 
-                                              return sortByAsc
-                                                  ? compareValueA.localeCompare(
-                                                        compareValueB
-                                                    )
-                                                  : compareValueB.localeCompare(
-                                                        compareValueA
-                                                    );
+                                              if (a.star === b.star) {
+                                                  return b.star - a.star ||
+                                                      sortByAsc
+                                                      ? compareValueA.localeCompare(
+                                                            compareValueB
+                                                        )
+                                                      : compareValueB.localeCompare(
+                                                            compareValueA
+                                                        );
+                                              } else if (a.star) {
+                                                  return -1;
+                                              }
+
+                                              return 1;
                                           })
                                           .map((deal) => {
                                               return {

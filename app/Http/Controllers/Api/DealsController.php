@@ -37,7 +37,10 @@ class DealsController extends Controller
             ->whereHas('contact', function ($query) use($mainUserId) {
                 $query->where('userId', $mainUserId);
             })
+            ->orderBy('star','desc')
             ->get();
+
+            // echo 'test';
 
         return response()->json($deals, 200);
     }
@@ -231,5 +234,13 @@ class DealsController extends Controller
         }
 
         return response()->json(['success' => true, 'data' => $data], 200);
+    }
+
+    public function starred(Request $request) {
+        $deal = Deal::find($request->id);
+        $deal->star = $deal->star == 0 ? 1 : 0;
+        $deal->save();
+
+        return response()->json(['success' => true, 'data' => $deal], 200);
     }
 }

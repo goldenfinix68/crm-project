@@ -95,6 +95,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/deals/favorite', 'App\Http\Controllers\Api\DealsController@favorite');
     Route::post('/deals/del_favorite', 'App\Http\Controllers\Api\DealsController@del_favorite');
     Route::post('/deals/update_title_form', 'App\Http\Controllers\Api\DealsController@update_title_form');
+    Route::post('/deals/starred', 'App\Http\Controllers\Api\DealsController@starred');
     Route::resource('/notes', 'App\Http\Controllers\Api\NotesController');
 
     Route::resource('/texts', 'App\Http\Controllers\Api\TextsController');

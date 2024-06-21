@@ -1,4 +1,4 @@
-import { CheckOutlined, LeftOutlined } from "@ant-design/icons";
+import { CheckOutlined, LeftOutlined, StarFilled } from "@ant-design/icons";
 import {
     Badge,
     Button,
@@ -295,7 +295,6 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                         </Typography.Title>
                     </CustomLink>
                 </Space>
-
                 {contact.duplicatePhoneNumbers?.length ? (
                     <Alert
                         message={
@@ -316,15 +315,12 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                         type="warning"
                     />
                 ) : null}
-
                 <ActionMenu contact={contact} />
-
                 <Space
                     style={{ width: "100%", justifyContent: "space-between" }}
                 >
                     <Typography.Text strong>Contact Details</Typography.Text>
                 </Space>
-
                 <Descriptions column={1} size="small">
                     {contactFields
                         ?.filter(
@@ -361,7 +357,6 @@ const ContactInfo = ({ contact }: { contact: TContact }) => {
                             </div>
                         ))}
                 </Descriptions>
-
                 {/* 
                 <Table
                     dataSource={contactFields

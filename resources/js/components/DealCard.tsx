@@ -22,6 +22,7 @@ import {
     EditOutlined,
     EllipsisOutlined,
     PhoneOutlined,
+    StarFilled,
     UserOutlined,
 } from "@ant-design/icons";
 
@@ -42,6 +43,7 @@ import TextEllipsis from "./TextEllipsis";
 import DropdownComponent from "./DropdownComponent";
 import ContactTypeTag from "./ContactTypeTag";
 import { maskToCurrency } from "../helpers";
+import { useDealMutationUpdateStarred } from "../api/mutation/useDealMutation";
 interface Props {
     deal: TDeal;
     handleEditClick: () => void;
@@ -88,6 +90,21 @@ const DealCard = ({ deal, handleEditClick, sortBy }: Props) => {
         return null;
     };
 
+    const updateContact = useMutation(useDealMutationUpdateStarred, {
+        onSuccess: () => {
+            console.log("success");
+            queryClient.invalidateQueries("deals");
+            // setShowupdateButton(false);
+        },
+    });
+
+    const updateStarredDeal = async (deal) => {
+        console.log("deal", deal.star);
+        await updateContact.mutate({
+            id: deal.id,
+        });
+    };
+
     return (
         <Tooltip
             title={
@@ -110,79 +127,95 @@ const DealCard = ({ deal, handleEditClick, sortBy }: Props) => {
                             marginTop: "auto",
                         }}
                     >
-                        <Typography.Text
-                            style={{
-                                color: "gray",
-                                fontSize: "12px",
-                                fontWeight:
-                                    sortBy == "aging" ? "bold" : "normal",
-                            }}
-                        >
-                            {deal.aging}
-                        </Typography.Text>
+                        <div>
+                            <Typography.Text
+                                style={{
+                                    color: "gray",
+                                    fontSize: "12px",
+                                    fontWeight:
+                                        sortBy == "aging" ? "bold" : "normal",
+                                }}
+                            >
+                                {deal.aging}
+                            </Typography.Text>
+                            <StarFilled
+                                style={{
+                                    cursor: "pointer",
+                                    display: "inline-block",
+                                    marginLeft: 3,
+                                    color: deal.star ? "gold" : "gray",
+                                }}
+                                onClick={() => {
+                                    // alert();
+                                    updateStarredDeal(deal);
+                                }}
+                            />
+                        </div>
 
-                        <DropdownComponent
-                            menuList={[
-                                {
-                                    label: (
-                                        <div onClick={handleEditClick}>
-                                            Edit Deal
-                                        </div>
-                                    ),
-                                    key: 0,
-                                },
-                                {
-                                    label: (
-                                        <CustomLink
-                                            to={
-                                                "/contacts/" +
-                                                deal.contact?.id +
-                                                "/" +
-                                                deal?.contact?.fields[
-                                                    "firstName"
-                                                ].replace(/\s/g, "-") +
-                                                "-" +
-                                                deal?.contact?.fields[
-                                                    "lastName"
-                                                ].replace(/\s/g, "-")
-                                            }
-                                            style={{ color: "black" }}
-                                        >
-                                            View Contact
-                                        </CustomLink>
-                                    ),
-                                    key: 1,
-                                },
-                                {
-                                    label: (
-                                        <div
-                                            onClick={() => {
-                                                setCallerNumber(
-                                                    deal.contact?.fields
-                                                        ?.defaultMobileNumber ??
-                                                        ""
-                                                );
-                                                setDestinationNumber(
-                                                    deal.contact?.fields
-                                                        .mobile ?? ""
-                                                );
-                                                setIsModalOpen(true);
-                                            }}
-                                        >
-                                            Call Contact
-                                        </div>
-                                    ),
-                                    key: 3,
-                                },
-                            ]}
-                            label={
-                                <EllipsisOutlined
-                                    style={{ transform: "rotate(90deg)" }}
-                                />
-                            }
-                            floatRight
-                            showCarret={false}
-                        />
+                        <div>
+                            <DropdownComponent
+                                menuList={[
+                                    {
+                                        label: (
+                                            <div onClick={handleEditClick}>
+                                                Edit Deal
+                                            </div>
+                                        ),
+                                        key: 0,
+                                    },
+                                    {
+                                        label: (
+                                            <CustomLink
+                                                to={
+                                                    "/contacts/" +
+                                                    deal.contact?.id +
+                                                    "/" +
+                                                    deal?.contact?.fields[
+                                                        "firstName"
+                                                    ].replace(/\s/g, "-") +
+                                                    "-" +
+                                                    deal?.contact?.fields[
+                                                        "lastName"
+                                                    ].replace(/\s/g, "-")
+                                                }
+                                                style={{ color: "black" }}
+                                            >
+                                                View Contact
+                                            </CustomLink>
+                                        ),
+                                        key: 1,
+                                    },
+                                    {
+                                        label: (
+                                            <div
+                                                onClick={() => {
+                                                    setCallerNumber(
+                                                        deal.contact?.fields
+                                                            ?.defaultMobileNumber ??
+                                                            ""
+                                                    );
+                                                    setDestinationNumber(
+                                                        deal.contact?.fields
+                                                            .mobile ?? ""
+                                                    );
+                                                    setIsModalOpen(true);
+                                                }}
+                                            >
+                                                Call Contact
+                                            </div>
+                                        ),
+                                        key: 3,
+                                    },
+                                ]}
+                                label={
+                                    <EllipsisOutlined
+                                        style={{ transform: "rotate(90deg)" }}
+                                    />
+                                }
+                                floatRight
+                                showCarret={false}
+                            />
+                        </div>
                     </Space>
                     <Row>
                         <Col span={12}>

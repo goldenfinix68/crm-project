@@ -4,6 +4,7 @@ import {
     MailFilled,
     DollarCircleOutlined,
     ApartmentOutlined,
+    StarFilled,
 } from "@ant-design/icons";
 import { Space } from "antd";
 import React from "react";
@@ -14,6 +15,8 @@ import queryClient from "../../../queryClient";
 import { useCallContext } from "../../../context/CallContext";
 import { TContact } from "../../../entities";
 import ModalSetDefaultMobile from "./ModalSetDefaultMobile";
+import { useDealMutationUpdateStarred } from "../../../api/mutation/useDealMutation";
+import { useMutation } from "react-query";
 
 const ActionMenu = ({ contact }: { contact: TContact }) => {
     const [textModalOpen, setTextModalOpen] = React.useState(false);
@@ -23,6 +26,19 @@ const ActionMenu = ({ contact }: { contact: TContact }) => {
     const { setIsModalOpen, setCallerNumber, setDestinationNumber } =
         useCallContext();
 
+    const updateContact = useMutation(useDealMutationUpdateStarred, {
+        onSuccess: () => {
+            console.log("success");
+            queryClient.invalidateQueries("getContact");
+            // setShowupdateButton(false);
+        },
+    });
+    const updateStarredDeal = async (deal) => {
+        console.log("deal", deal.star);
+        await updateContact.mutate({
+            id: deal.id,
+        });
+    };
     return (
         <Space
             style={{
@@ -33,6 +49,28 @@ const ActionMenu = ({ contact }: { contact: TContact }) => {
                 padding: "8px",
             }}
         >
+            <ActionMenuBtn
+                handleClick={() => {
+                    // setCallerNumber(contact?.defaultMobileNumber ?? "");
+                    // setDestinationNumber(contact?.fields.mobile ?? "");
+                    // setIsModalOpen(true);
+                    console.log("contact deal star", contact.deal?.star);
+                }}
+                icon={
+                    <StarFilled
+                        style={{
+                            color:
+                                contact?.deal?.star == 1 ? "yellow" : "white",
+                            fontSize: "10px",
+                        }}
+                        onClick={() => {
+                            // alert();
+                            updateStarredDeal(contact.deal);
+                        }}
+                    />
+                }
+                tooltip="Add to Favorites"
+            />
             <ActionMenuBtn
                 handleClick={() => {
                     setCallerNumber(contact?.defaultMobileNumber ?? "");

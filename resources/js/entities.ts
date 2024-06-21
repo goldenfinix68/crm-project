@@ -121,6 +121,7 @@ export type TTextThreadContent = {
 };
 
 export type TDeal = {
+    [x: string]: any;
     id?: string;
     contact?: TContact;
     pipeline?: TDealPipeline;
