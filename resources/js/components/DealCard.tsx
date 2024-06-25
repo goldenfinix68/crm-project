@@ -129,18 +129,22 @@ const DealCard = ({
                             >
                                 {deal.aging}
                             </Typography.Text>
-                            <StarFilled
-                                style={{
-                                    cursor: "pointer",
-                                    display: "inline-block",
-                                    marginLeft: 3,
-                                    color: deal.star ? "gold" : "gray",
-                                }}
-                                onClick={() => {
-                                    // alert();
-                                    updateStarredDeal(deal);
-                                }}
-                            />
+                            {deal.star ? (
+                                <StarFilled
+                                    style={{
+                                        cursor: "pointer",
+                                        display: "inline-block",
+                                        marginLeft: 3,
+                                        color: "gold",
+                                    }}
+                                    onClick={() => {
+                                        // alert();
+                                        // updateStarredDeal(deal);
+                                    }}
+                                />
+                            ) : (
+                                <></>
+                            )}
                         </div>
 
                         <div>
@@ -196,6 +200,20 @@ const DealCard = ({
                                             </div>
                                         ),
                                         key: 3,
+                                    },
+                                    {
+                                        label: (
+                                            <div
+                                                onClick={() => {
+                                                    updateStarredDeal(deal);
+                                                }}
+                                            >
+                                                {deal.star
+                                                    ? "Remove to Favorites"
+                                                    : "Add to Favorites"}
+                                            </div>
+                                        ),
+                                        key: 4,
                                     },
                                 ]}
                                 label={
