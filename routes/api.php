@@ -77,6 +77,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::resource('/contact-types', 'App\Http\Controllers\Api\ContactTypesController');
     Route::resource('/deals', 'App\Http\Controllers\Api\DealsController');
+    Route::get('/deals/deals-by-stage', 'App\Http\Controllers\Api\DealsController@dealsByStageId');
     Route::post('/deals/add_notes', 'App\Http\Controllers\Api\DealsController@add_notes');
     Route::post('/deals/move-data-across-lane', 'App\Http\Controllers\Api\DealsController@moveCardAcrossLanes');
     Route::post('/deals/add_files', 'App\Http\Controllers\Api\DealsController@add_files');
@@ -150,6 +151,7 @@ Route::middleware('auth:api')->group(function () {
     
     Route::resource('/deal-pipeline-stages', 'App\Http\Controllers\Api\DealPipelineStagesController');
     Route::post('/deal-pipeline-stages/sort', 'App\Http\Controllers\Api\DealPipelineStagesController@sort');
+
     
     Route::resource('/filters', 'App\Http\Controllers\Api\FiltersController');
 

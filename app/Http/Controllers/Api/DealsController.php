@@ -39,6 +39,29 @@ class DealsController extends Controller
     }
 
     /**
+     * Display a listing of the deals by stageId.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function dealsByStageId(Request $request)
+    {
+        $mainUserId = $this->getMainUserId();
+
+        $page = $request->input('page', 1);
+        $pageSize = $request->input('page_size', 50);
+        $sortField = $request->input('sort_field', 'id');
+        $sortOrder = $request->input('sort_order', 'asc');
+        $stageId = $request->input('stage_id');
+        $deals = Deal::with(['contact', 'pipeline', 'stage'])
+            ->where('stageId', $stageId)
+            ->orderBy($sortField, $sortOrder)
+            ->paginate($pageSize, ['*'], 'page', $page);
+
+        return response()->json($deals, 200);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
