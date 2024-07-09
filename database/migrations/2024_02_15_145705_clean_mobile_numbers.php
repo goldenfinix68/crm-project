@@ -14,12 +14,7 @@ class CleanMobileNumbers extends Migration
     public function up()
     {
         Schema::table('mobile_numbers', function (Blueprint $table) {
-            $table->dropColumn('messagingProfileId');
-            $table->dropColumn('connectionId');
-            $table->dropColumn('sipTrunkUsername');
-            $table->dropColumn('sipTrunkPassword');
             $table->dropColumn('telnyxMobileId');
-            $table->dropColumn('telnyxId');
         });
     }
 

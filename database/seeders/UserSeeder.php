@@ -33,9 +33,9 @@ class UserSeeder extends Seeder
                     'firstName' => $row['firstName'],
                     'lastName' => $row['lastName'],
                     'email' => $row['email'],
-                    'password' => \Hash::make($row['password']),
+                    'password' => $row['password'],
                     // 'username' => $row['username'],
-                    // 'role' => $row['role'],
+                    'role' => $row['role'],
                     // 'status' => $row['status'],
                 ],
             );
