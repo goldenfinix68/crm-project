@@ -146,6 +146,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/telnyx/available-sip-trunking-connections', 'App\Http\Controllers\Api\TelnyxController@getAvailableSipTrunkingConnection');
 
     Route::resource('/deal-pipelines', 'App\Http\Controllers\Api\DealPipelinesController');
+    Route::resource('/deal-pipelines/selected-pipeline', 'App\Http\Controllers\Api\DealPipelinesController@selectedPipeline');
     
     Route::resource('/deal-pipeline-stages', 'App\Http\Controllers\Api\DealPipelineStagesController');
     Route::post('/deal-pipeline-stages/sort', 'App\Http\Controllers\Api\DealPipelineStagesController@sort');

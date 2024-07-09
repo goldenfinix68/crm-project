@@ -23,6 +23,23 @@ class DealPipelinesController extends Controller
     }
 
     /**
+     * Display a pipeline with stages
+     * 
+     * @return \Illuminate\Http\Response
+     */
+
+    public function selectedPipeline($request)
+    {
+        $pipeline_id = $request->input('id');
+        $page = $request->input('page', 1);
+        $pageSize = $request->input('page_size', 10);
+        return DealPipeline::where('userId', $this->getMainUserId())
+            ->where('id', $pipeline_id)
+            ->with(['stages'])
+            ->paginate($pageSize, ['*'], 'page', $page);
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
