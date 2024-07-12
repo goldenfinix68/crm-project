@@ -9,6 +9,7 @@ use App\Models\DealNote;
 use App\Models\DealFile;
 use App\Models\DealFavorite;
 use App\Models\ContactUpdate;
+use App\Models\UserSetting;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -37,17 +38,29 @@ class DealsController extends Controller
             })
             ->orderBy('star','desc')
             ->paginate($request->page_size);
+            
+        $settings = UserSetting::where('mainUserId', $mainUserId)->first();
+
+        // dd($settings->dealCardpos2FieldId);
 
         $data = [];
         foreach($deals->items() as $deal){
             $data[] = [
+                'id' => $deal->id,
                 'pipeline' => $deal->pipeline,
                 'stage' => $deal->stage,
                 'aging' => $deal->aging,
                 'contactId' => $deal->contactId,
                 'stageId' => $deal->stageId,
+                'star' => $deal->star,
                 'pipelineId' => $deal->pipelineId,
                 'fullName' => $deal->fullName,
+                'dealCardpos2FieldValue' => $deal->contact->fields[$settings->dealCardpos2FieldId],
+                'dealCardpos2FieldName' => $settings->dealCardpos2FieldId,
+                'dealCardpos3FieldValue' => $deal->contact->fields[$settings->dealCardpos3FieldId],
+                'dealCardpos3FieldName' => $settings->dealCardpos3FieldId,
+                'dealCardpos4FieldValue' => $deal->contact->fields[$settings->dealCardpos4FieldId],
+                'dealCardpos4FieldName' => $settings->dealCardpos4FieldId,
             ];
         }
 

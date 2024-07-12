@@ -69,39 +69,37 @@ const DealCard = ({
         refetch: refetchContactFields,
     } = useCustomFields("contact");
 
-    const getLabel = (customFieldName, fields) => {
+    const getLabel = (dealCardpos2FieldName, dealCardpos2FieldValue) => {
         const customField = contactFields?.find(
-            (field) => field.fieldName == customFieldName
+            (field) => field.fieldName == dealCardpos2FieldName
         );
 
-        if (!customField || fields[customField.fieldName] === undefined) {
+        if (
+            !customField ||
+            dealCardpos2FieldValue === undefined ||
+            !dealCardpos2FieldValue
+        ) {
             return "";
         }
 
-        if (customField?.type == "contactTypeLookup") {
-            return <ContactTypeTag fields={fields} />;
-        }
-        if (customField?.type == "url" && fields[customField?.fieldName]) {
+        // if (customField?.type == "contactTypeLookup") {
+        //     return <ContactTypeTag fields={fields} />;
+        // }
+        if (customField?.type == "url") {
             return (
-                <a href={fields[customField?.fieldName]} target="_blank">
-                    {fields[customField.fieldName]}
+                <a href={dealCardpos2FieldValue} target="_blank">
+                    {dealCardpos2FieldValue}
                 </a>
             );
         }
-        if (customField?.type == "currency" && fields[customField.fieldName]) {
-            return maskToCurrency(fields[customField.fieldName]);
+        if (customField?.type == "currency") {
+            return maskToCurrency(dealCardpos2FieldValue);
         }
-        return fields[customField.fieldName] ?? "";
+        return dealCardpos2FieldValue;
     };
 
     return (
-        <Tooltip
-            title={
-                deal.contact?.fields.firstName +
-                " " +
-                deal.contact?.fields.lastName
-            }
-        >
+        <Tooltip title={deal.fullName}>
             <Card
                 className="w-100 p-0"
                 bodyStyle={{ padding: "12px" }}
@@ -161,15 +159,12 @@ const DealCard = ({
                                             <CustomLink
                                                 to={
                                                     "/contacts/" +
-                                                    deal.contact?.id +
+                                                    deal.contactId +
                                                     "/" +
-                                                    deal?.contact?.fields[
-                                                        "firstName"
-                                                    ].replace(/\s/g, "-") +
-                                                    "-" +
-                                                    deal?.contact?.fields[
-                                                        "lastName"
-                                                    ].replace(/\s/g, "-")
+                                                    deal?.fullName.replace(
+                                                        /\s/g,
+                                                        "-"
+                                                    )
                                                 }
                                                 style={{ color: "black" }}
                                             >
@@ -234,9 +229,7 @@ const DealCard = ({
                                             : "normal",
                                 }}
                             >
-                                {deal.contact?.fields.firstName +
-                                    " " +
-                                    deal.contact?.fields.lastName}
+                                {deal.fullName}
                             </TextEllipsis>
                         </Col>
                         <Col span={12}>
@@ -252,8 +245,8 @@ const DealCard = ({
                                         }}
                                     >
                                         {getLabel(
-                                            settings?.dealCardpos2FieldId,
-                                            deal.contact?.fields
+                                            deal.dealCardpos2FieldName,
+                                            deal.dealCardpos2FieldValue
                                         )}
                                     </TextEllipsis>
                                 </div>
@@ -274,8 +267,8 @@ const DealCard = ({
                                     }}
                                 >
                                     {getLabel(
-                                        settings?.dealCardpos3FieldId,
-                                        deal.contact?.fields
+                                        deal.dealCardpos3FieldName,
+                                        deal.dealCardpos3FieldValue
                                     )}
                                 </TextEllipsis>
                             ) : (
@@ -296,8 +289,8 @@ const DealCard = ({
                                     }}
                                 >
                                     {getLabel(
-                                        settings?.dealCardpos4FieldId,
-                                        deal.contact?.fields
+                                        deal.dealCardpos4FieldName,
+                                        deal.dealCardpos4FieldValue
                                     )}
                                 </TextEllipsis>
                             ) : (
