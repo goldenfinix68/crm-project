@@ -57,8 +57,6 @@ const DealsTable = ({
     ) => {
         setFilterPage({
             ...filterPage,
-            sort_field: filters.field,
-            sort_order: filters.order ? filters.order.replace("end", "") : null,
             page: pagination.current,
             page_size: pagination.pageSize,
         });
@@ -119,11 +117,7 @@ const DealsTable = ({
                             />
                         )}
 
-                        <span>
-                            {record.contact?.fields.firstName +
-                                " " +
-                                record.contact?.fields.lastName}
-                        </span>
+                        <span>{record?.fullName}</span>
                     </div>
                 </>
             ),

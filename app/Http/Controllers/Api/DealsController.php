@@ -27,22 +27,32 @@ class DealsController extends Controller
         if(empty($request->pipelineId)){
             return response()->json([], 200);
         }
+
         $mainUserId = $this->getMainUserId();
-        $deals = Deal::with(['contact' => function($q) {
-            $q->select(['id','userId']);
-        }, 'stage' => function($q) {
-            $q->select(['id']);
-        }])
+            
+        $deals = Deal::with(['pipeline', 'stage'])
             ->where('pipelineId', $request->pipelineId)
-            ->whereHas('contact', function ($query) use($mainUserId) {
+            ->whereHas('pipeline', function ($query) use($mainUserId) {
                 $query->where('userId', $mainUserId);
             })
             ->orderBy('star','desc')
-            ->get();
+            ->paginate($request->page_size);
 
-            // echo 'test';
+        $data = [];
+        foreach($deals->items() as $deal){
+            $data[] = [
+                'pipeline' => $deal->pipeline,
+                'stage' => $deal->stage,
+                'aging' => $deal->aging,
+                'contactId' => $deal->contactId,
+                'stageId' => $deal->stageId,
+                'pipelineId' => $deal->pipelineId,
+                'fullName' => $deal->fullName,
+            ];
+        }
 
-        return response()->json($deals, 200);
+
+        return response()->json($data, 200);
     }
 
     /**

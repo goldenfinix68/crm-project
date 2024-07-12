@@ -73,27 +73,25 @@ const DealCard = ({
         const customField = contactFields?.find(
             (field) => field.fieldName == customFieldName
         );
-        if (customField) {
-            if (customField?.type == "contactTypeLookup") {
-                return <ContactTypeTag fields={fields} />;
-            }
-            if (customField?.type == "url" && fields[customField?.fieldName]) {
-                return (
-                    <a href={fields[customField?.fieldName]} target="_blank">
-                        {fields[customField.fieldName]}
-                    </a>
-                );
-            }
-            if (
-                customField?.type == "currency" &&
-                fields[customField.fieldName]
-            ) {
-                return maskToCurrency(fields[customField.fieldName]);
-            }
-            return fields[customField.fieldName];
+
+        if (!customField || fields[customField.fieldName] === undefined) {
+            return "";
         }
 
-        return null;
+        if (customField?.type == "contactTypeLookup") {
+            return <ContactTypeTag fields={fields} />;
+        }
+        if (customField?.type == "url" && fields[customField?.fieldName]) {
+            return (
+                <a href={fields[customField?.fieldName]} target="_blank">
+                    {fields[customField.fieldName]}
+                </a>
+            );
+        }
+        if (customField?.type == "currency" && fields[customField.fieldName]) {
+            return maskToCurrency(fields[customField.fieldName]);
+        }
+        return fields[customField.fieldName] ?? "";
     };
 
     return (

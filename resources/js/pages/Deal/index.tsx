@@ -85,13 +85,8 @@ const Deal = () => {
     const queryClient = useQueryClient();
     const [filterPage, setFilterPage] = useState({
         pipelineId: pipelines?.length ? pipelines[0].id : "",
-        title: "",
-        status: "All Deals",
         page: 1,
-        page_size: 50,
-        search: "",
-        sort_field: "id",
-        sort_order: "asc",
+        page_size: 100,
     });
     const [sortBy, setSortBy] = useState("firstName");
     const [sortByAsc, setSortByAsc] = useState(true);

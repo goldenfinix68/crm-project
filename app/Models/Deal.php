@@ -56,5 +56,8 @@ class Deal extends Model
             return Carbon::now()->diffInDays($date) . "d";
         }
     }
-
+    
+    public function getFullNameAttribute(){
+        return $this->contact->fields['firstName'] . ' ' . $this->contact->fields['lastName'];
+    }
 }
