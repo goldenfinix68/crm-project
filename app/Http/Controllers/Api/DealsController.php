@@ -55,11 +55,11 @@ class DealsController extends Controller
                 'star' => $deal->star,
                 'pipelineId' => $deal->pipelineId,
                 'fullName' => $deal->fullName,
-                'dealCardpos2FieldValue' => $deal->contact->fields[$settings->dealCardpos2FieldId],
+                'dealCardpos2FieldValue' => $deal->contact->fields[$settings->dealCardpos2FieldId] ?? "",
                 'dealCardpos2FieldName' => $settings->dealCardpos2FieldId,
-                'dealCardpos3FieldValue' => $deal->contact->fields[$settings->dealCardpos3FieldId],
+                'dealCardpos3FieldValue' => $deal->contact->fields[$settings->dealCardpos3FieldId] ?? "",
                 'dealCardpos3FieldName' => $settings->dealCardpos3FieldId,
-                'dealCardpos4FieldValue' => $deal->contact->fields[$settings->dealCardpos4FieldId],
+                'dealCardpos4FieldValue' => $deal->contact->fields[$settings->dealCardpos4FieldId] ?? "",
                 'dealCardpos4FieldName' => $settings->dealCardpos4FieldId,
             ];
         }
