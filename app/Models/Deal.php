@@ -58,7 +58,7 @@ class Deal extends Model
     }
     
     public function getFullNameAttribute(){
-        if(empty($this->contact->fields)){
+        if(empty($this->contact)){
             return "";
         }
         return $this->contact->fields['firstName'] . ' ' . $this->contact->fields['lastName'];
