@@ -91,8 +91,8 @@ const Deal = () => {
 
     const { data: pipelines, isLoading: isPipelinesLoading } = dealPipelines();
 
-    const [isLoadingBoardData, setIsLoadingBoardData] =
-        useState<boolean>(false);
+    //const [isLoadingBoardData, setIsLoadingBoardData] =
+    //    useState<boolean>(false);
     const queryClient = useQueryClient();
     const [filterPage, setFilterPage] = useState({
         pipelineId: pipelines?.length ? pipelines[0].id : "",
@@ -220,17 +220,17 @@ const Deal = () => {
                 }) ?? []
             );
 
-            setIsLoadingBoardData(false);
+            //setIsLoadingBoardData(false);
             setDealsByStage(newDealsByStage);
         };
         if (listBoard != "List") {
-            setIsLoadingBoardData(true);
+            //setIsLoadingBoardData(true);
             fetchDealsByStage();
         }
     }, [listBoard, sortBy, sortByAsc, selectedpipeline?.stages]);
 
     const handleLane = async (requestedPage, laneId) => {
-        setIsLoadingBoardData(true);
+        //setIsLoadingBoardData(true);
         const newDealsByStage = { ...dealsByStage };
 
         const current = dealsByStage[laneId] ?? { page: 0, data: [] };
@@ -251,7 +251,7 @@ const Deal = () => {
             newDealsByStage[laneId] = current;
         }
 
-        setIsLoadingBoardData(false);
+        //setIsLoadingBoardData(false);
         setDealsByStage(newDealsByStage);
     };
 
@@ -413,8 +413,7 @@ const Deal = () => {
                 <Card
                     loading={
                         (isLoadingDeals && listBoard == "List") ||
-                        ((isPipelinesLoading || isLoadingBoardData) &&
-                            listBoard != "List")
+                        (isPipelinesLoading && listBoard != "List")
                     }
                 >
                     {showDeleteButton ? (
