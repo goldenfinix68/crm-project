@@ -654,6 +654,7 @@ const Deal = () => {
                                                     style={{
                                                         background:
                                                             "none!important",
+                                                        height: "900px",
                                                     }}
                                                     customCardLayout={true}
                                                     onLaneScroll={handleLane}
