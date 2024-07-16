@@ -76,17 +76,16 @@ class DealsController extends Controller
      */
     public function dealsByStageId(Request $request)
     {
-        $pipelineId = $request->input('pipelineId');
-        $stageId = $request->input('stageId');
-        $pageSize = $request->input('page_size');
-        $page = $request->input('page');
+        if(empty($request->pipelineId)){
+            return response()->json([], 200);
+        }
 
         $mainUserId = $this->getMainUserId();
             
-        $deals = Deal::with(['pipeline', 'stage'])
+        $deals = Deal::with(['contact'])
             ->where('pipelineId', $request->pipelineId)
             ->where('stageId', $request->stageId)
-            ->whereHas('pipeline', function ($query) use($mainUserId) {
+            ->whereHas('contact', function ($query) use($mainUserId) {
                 $query->where('userId', $mainUserId);
             })
             ->orderBy('star','desc')
@@ -98,13 +97,9 @@ class DealsController extends Controller
         foreach($deals->items() as $deal){
             $data[] = [
                 'id' => $deal->id,
-                'pipeline' => $deal->pipeline,
-                'stage' => $deal->stage,
                 'aging' => $deal->aging,
                 'contactId' => $deal->contactId,
-                'stageId' => $deal->stageId,
                 'star' => $deal->star,
-                'pipelineId' => $deal->pipelineId,
                 'fullName' => $deal->fullName,
                 'dealCardpos2FieldValue' => $deal->contact->fields[$settings->dealCardpos2FieldId] ?? "",
                 'dealCardpos2FieldName' => $settings->dealCardpos2FieldId,
