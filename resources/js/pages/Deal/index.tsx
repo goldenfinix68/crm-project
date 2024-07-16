@@ -204,7 +204,7 @@ const Deal = () => {
                     const current = { page: 0, data: [] };
                     const data = await dealsByStageId({
                         page: current.page + 1,
-                        page_size: 10,
+                        page_size: 15,
                         stageId: stage.id,
                         pipelineId: selectedpipeline?.id,
                     });
