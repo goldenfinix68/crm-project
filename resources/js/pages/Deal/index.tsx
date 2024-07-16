@@ -90,6 +90,9 @@ const Deal = () => {
     const settings = loggedInUser?.settings;
 
     const { data: pipelines, isLoading: isPipelinesLoading } = dealPipelines();
+
+    const [isLoadingBoardData, setIsLoadingBoardData] =
+        useState<boolean>(false);
     const queryClient = useQueryClient();
     const [filterPage, setFilterPage] = useState({
         pipelineId: pipelines?.length ? pipelines[0].id : "",
@@ -217,17 +220,21 @@ const Deal = () => {
                 }) ?? []
             );
 
+            setIsLoadingBoardData(false);
             setDealsByStage(newDealsByStage);
         };
         if (listBoard != "List") {
+            setIsLoadingBoardData(true);
             fetchDealsByStage();
         }
     }, [listBoard, sortBy, sortByAsc, selectedpipeline?.stages]);
 
     const handleLane = async (requestedPage, laneId) => {
-        console.log(requestedPage, laneId);
-        const current = dealsByStage[laneId] ?? { page: 0, data: [] };
+        setIsLoadingBoardData(true);
         const newDealsByStage = { ...dealsByStage };
+
+        const current = dealsByStage[laneId] ?? { page: 0, data: [] };
+
         const data = await dealsByStageId({
             page: current.page + 1,
             page_size: 10,
@@ -244,6 +251,7 @@ const Deal = () => {
             newDealsByStage[laneId] = current;
         }
 
+        setIsLoadingBoardData(false);
         setDealsByStage(newDealsByStage);
     };
 
@@ -402,7 +410,13 @@ const Deal = () => {
     return (
         <Row className="deal-group-row">
             <Col md={24}>
-                <Card loading={isLoadingDeals || isPipelinesLoading}>
+                <Card
+                    loading={
+                        (isLoadingDeals && listBoard == "List") ||
+                        ((isPipelinesLoading || isLoadingBoardData) &&
+                            listBoard != "List")
+                    }
+                >
                     {showDeleteButton ? (
                         <Row
                             style={{
