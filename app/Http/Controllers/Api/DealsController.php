@@ -69,6 +69,57 @@ class DealsController extends Controller
     }
 
     /**
+     * Get deals by stage.
+     *
+     * @param \Illuminate\Http\Request
+     * @return \Illuminate\Http\Response
+     */
+    public function dealsByStageId(Request $request)
+    {
+        $pipelineId = $request->input('pipelineId');
+        $stageId = $request->input('stageId');
+        $pageSize = $request->input('page_size');
+        $page = $request->input('page');
+
+        $mainUserId = $this->getMainUserId();
+            
+        $deals = Deal::with(['pipeline', 'stage'])
+            ->where('pipelineId', $request->pipelineId)
+            ->where('stageId', $request->stageId)
+            ->whereHas('pipeline', function ($query) use($mainUserId) {
+                $query->where('userId', $mainUserId);
+            })
+            ->orderBy('star','desc')
+            ->paginate($request->page_size);
+            
+        $settings = UserSetting::where('mainUserId', $mainUserId)->first();
+
+        $data = [];
+        foreach($deals->items() as $deal){
+            $data[] = [
+                'id' => $deal->id,
+                'pipeline' => $deal->pipeline,
+                'stage' => $deal->stage,
+                'aging' => $deal->aging,
+                'contactId' => $deal->contactId,
+                'stageId' => $deal->stageId,
+                'star' => $deal->star,
+                'pipelineId' => $deal->pipelineId,
+                'fullName' => $deal->fullName,
+                'dealCardpos2FieldValue' => $deal->contact->fields[$settings->dealCardpos2FieldId] ?? "",
+                'dealCardpos2FieldName' => $settings->dealCardpos2FieldId,
+                'dealCardpos3FieldValue' => $deal->contact->fields[$settings->dealCardpos3FieldId] ?? "",
+                'dealCardpos3FieldName' => $settings->dealCardpos3FieldId,
+                'dealCardpos4FieldValue' => $deal->contact->fields[$settings->dealCardpos4FieldId] ?? "",
+                'dealCardpos4FieldName' => $settings->dealCardpos4FieldId,
+            ];
+        }
+
+
+        return response()->json($data, 200);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
