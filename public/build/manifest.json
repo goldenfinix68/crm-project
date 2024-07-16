@@ -1,161 +1,161 @@
 {
-  "_CheckCircleOutlined-f3f79167.js": {
-    "file": "assets/CheckCircleOutlined-f3f79167.js",
+  "_CheckCircleOutlined-7ced3d0e.js": {
+    "file": "assets/CheckCircleOutlined-7ced3d0e.js",
     "imports": [
       "resources/js/app.tsx"
     ]
   },
-  "_CommentOutlined-7532ac0b.js": {
-    "file": "assets/CommentOutlined-7532ac0b.js",
+  "_CommentOutlined-1dc82502.js": {
+    "file": "assets/CommentOutlined-1dc82502.js",
     "imports": [
       "resources/js/app.tsx"
     ]
   },
-  "_ConfirmModal-45e4a93f.js": {
-    "file": "assets/ConfirmModal-45e4a93f.js",
+  "_ConfirmModal-65d91a06.js": {
+    "file": "assets/ConfirmModal-65d91a06.js",
     "imports": [
       "resources/js/app.tsx"
     ]
   },
-  "_ContactBulkUpdate-de406093.js": {
-    "file": "assets/ContactBulkUpdate-de406093.js",
+  "_ContactBulkUpdate-5cea67ad.js": {
+    "file": "assets/ContactBulkUpdate-5cea67ad.js",
     "imports": [
       "resources/js/app.tsx",
-      "_useContactMutation-3ababb15.js"
+      "_useContactMutation-df5f3176.js"
     ]
   },
-  "_ContactInfo-97f9e931.js": {
-    "file": "assets/ContactInfo-97f9e931.js",
+  "_ContactInfo-3347e2f9.js": {
+    "file": "assets/ContactInfo-3347e2f9.js",
     "imports": [
       "resources/js/app.tsx",
-      "_DropdownComponent-847582d7.js",
-      "_useContactMutation-3ababb15.js",
-      "_ContactInfoEditableText-2a371276.js",
-      "_TextEllipsis-77fe4724.js",
-      "_index-7be4deb3.js",
-      "_index-bcbd0851.js"
+      "_DropdownComponent-6d8d478d.js",
+      "_useContactMutation-df5f3176.js",
+      "_ContactInfoEditableText-1da99275.js",
+      "_TextEllipsis-df1af34f.js",
+      "_index-22bda623.js",
+      "_index-9f6d4684.js"
     ]
   },
-  "_ContactInfoEditableText-2a371276.js": {
-    "file": "assets/ContactInfoEditableText-2a371276.js",
+  "_ContactInfoEditableText-1da99275.js": {
+    "file": "assets/ContactInfoEditableText-1da99275.js",
     "imports": [
       "resources/js/app.tsx",
-      "_index-7be4deb3.js",
-      "_TextEllipsis-77fe4724.js"
+      "_index-22bda623.js",
+      "_TextEllipsis-df1af34f.js"
     ]
   },
-  "_DeleteOutlined-1ddb0046.js": {
-    "file": "assets/DeleteOutlined-1ddb0046.js",
+  "_DeleteOutlined-33c10e39.js": {
+    "file": "assets/DeleteOutlined-33c10e39.js",
     "imports": [
       "resources/js/app.tsx"
     ]
   },
-  "_DropdownComponent-847582d7.js": {
-    "file": "assets/DropdownComponent-847582d7.js",
+  "_DropdownComponent-6d8d478d.js": {
+    "file": "assets/DropdownComponent-6d8d478d.js",
     "imports": [
       "resources/js/app.tsx"
     ]
   },
-  "_HeaderMenu-13916678.js": {
-    "file": "assets/HeaderMenu-13916678.js",
+  "_HeaderMenu-bf71834e.js": {
+    "file": "assets/HeaderMenu-bf71834e.js",
     "imports": [
       "resources/js/app.tsx"
     ]
   },
-  "_ImportDataGSheetHeader-6c61552c.js": {
-    "file": "assets/ImportDataGSheetHeader-6c61552c.js",
+  "_ImportDataGSheetHeader-b9c78fac.js": {
+    "file": "assets/ImportDataGSheetHeader-b9c78fac.js",
     "imports": [
       "resources/js/app.tsx"
     ]
   },
-  "_InactiveCustomFields-45875a4d.js": {
-    "file": "assets/InactiveCustomFields-45875a4d.js",
+  "_InactiveCustomFields-83b15dc5.js": {
+    "file": "assets/InactiveCustomFields-83b15dc5.js",
     "imports": [
       "resources/js/app.tsx",
-      "_ConfirmModal-45e4a93f.js",
-      "_useDrop-55f70ff4.js",
-      "_index-7be4deb3.js",
-      "_DeleteOutlined-1ddb0046.js"
+      "_ConfirmModal-65d91a06.js",
+      "_useDrop-a01a3b79.js",
+      "_index-22bda623.js",
+      "_DeleteOutlined-33c10e39.js"
     ]
   },
-  "_InboxOutlined-b8d35f8e.js": {
-    "file": "assets/InboxOutlined-b8d35f8e.js",
+  "_InboxOutlined-5021369c.js": {
+    "file": "assets/InboxOutlined-5021369c.js",
     "imports": [
       "resources/js/app.tsx"
     ]
   },
-  "_Paragraph-3a4caf56.js": {
-    "file": "assets/Paragraph-3a4caf56.js",
+  "_Paragraph-48c8006e.js": {
+    "file": "assets/Paragraph-48c8006e.js",
     "imports": [
       "resources/js/app.tsx",
-      "_defineProperty-97ef3476.js"
+      "_defineProperty-96b5e53a.js"
     ]
   },
-  "_RedoOutlined-d1114c88.js": {
-    "file": "assets/RedoOutlined-d1114c88.js",
+  "_RedoOutlined-ffbc479e.js": {
+    "file": "assets/RedoOutlined-ffbc479e.js",
     "imports": [
       "resources/js/app.tsx"
     ]
   },
-  "_TextEllipsis-77fe4724.js": {
-    "file": "assets/TextEllipsis-77fe4724.js",
+  "_TextEllipsis-df1af34f.js": {
+    "file": "assets/TextEllipsis-df1af34f.js",
     "imports": [
       "resources/js/app.tsx"
     ]
   },
-  "_Upload-8eeabba0.js": {
-    "file": "assets/Upload-8eeabba0.js",
+  "_Upload-0cded447.js": {
+    "file": "assets/Upload-0cded447.js",
     "imports": [
       "resources/js/app.tsx"
     ]
   },
-  "_UploadOutlined-1b7405eb.js": {
-    "file": "assets/UploadOutlined-1b7405eb.js",
+  "_UploadOutlined-59b51f50.js": {
+    "file": "assets/UploadOutlined-59b51f50.js",
     "imports": [
       "resources/js/app.tsx"
     ]
   },
-  "_defineProperty-97ef3476.js": {
-    "file": "assets/defineProperty-97ef3476.js"
+  "_defineProperty-96b5e53a.js": {
+    "file": "assets/defineProperty-96b5e53a.js"
   },
-  "_hoist-non-react-statics.cjs-4aaae12a.js": {
-    "file": "assets/hoist-non-react-statics.cjs-4aaae12a.js",
+  "_hoist-non-react-statics.cjs-abc24bdf.js": {
+    "file": "assets/hoist-non-react-statics.cjs-abc24bdf.js",
     "imports": [
       "resources/js/app.tsx"
     ]
   },
-  "_index-4fe6d7fe.js": {
-    "file": "assets/index-4fe6d7fe.js",
+  "_index-22bda623.js": {
+    "file": "assets/index-22bda623.js",
     "imports": [
+      "resources/js/app.tsx"
+    ]
+  },
+  "_index-676a65cf.js": {
+    "file": "assets/index-676a65cf.js",
+    "imports": [
+      "_defineProperty-96b5e53a.js",
       "resources/js/app.tsx",
-      "_Upload-8eeabba0.js",
-      "_DeleteOutlined-1ddb0046.js"
-    ]
-  },
-  "_index-7be4deb3.js": {
-    "file": "assets/index-7be4deb3.js",
-    "imports": [
-      "resources/js/app.tsx"
-    ]
-  },
-  "_index-bcbd0851.js": {
-    "file": "assets/index-bcbd0851.js",
-    "imports": [
-      "resources/js/app.tsx"
-    ]
-  },
-  "_index-cd1efe08.js": {
-    "file": "assets/index-cd1efe08.js",
-    "imports": [
-      "_defineProperty-97ef3476.js",
-      "resources/js/app.tsx",
-      "_Paragraph-3a4caf56.js",
-      "_Upload-8eeabba0.js",
+      "_Paragraph-48c8006e.js",
+      "_Upload-0cded447.js",
       "_objectWithoutProperties-89b13c98.js"
     ]
   },
-  "_isEqual-7ef14f26.js": {
-    "file": "assets/isEqual-7ef14f26.js",
+  "_index-9f6d4684.js": {
+    "file": "assets/index-9f6d4684.js",
+    "imports": [
+      "resources/js/app.tsx"
+    ]
+  },
+  "_index-c52826a1.js": {
+    "file": "assets/index-c52826a1.js",
+    "imports": [
+      "resources/js/app.tsx",
+      "_Upload-0cded447.js",
+      "_DeleteOutlined-33c10e39.js"
+    ]
+  },
+  "_isEqual-40f36e50.js": {
+    "file": "assets/isEqual-40f36e50.js",
     "imports": [
       "resources/js/app.tsx"
     ]
@@ -163,8 +163,8 @@
   "_objectWithoutProperties-89b13c98.js": {
     "file": "assets/objectWithoutProperties-89b13c98.js"
   },
-  "_papaparse.min-3b4a697d.js": {
-    "file": "assets/papaparse.min-3b4a697d.js",
+  "_papaparse.min-09077af8.js": {
+    "file": "assets/papaparse.min-09077af8.js",
     "imports": [
       "resources/js/app.tsx"
     ]
@@ -172,14 +172,14 @@
   "_tslib.es6-5ccb94e2.js": {
     "file": "assets/tslib.es6-5ccb94e2.js"
   },
-  "_useContactMutation-3ababb15.js": {
-    "file": "assets/useContactMutation-3ababb15.js",
+  "_useContactMutation-df5f3176.js": {
+    "file": "assets/useContactMutation-df5f3176.js",
     "imports": [
       "resources/js/app.tsx"
     ]
   },
-  "_useDrop-55f70ff4.js": {
-    "file": "assets/useDrop-55f70ff4.js",
+  "_useDrop-a01a3b79.js": {
+    "file": "assets/useDrop-a01a3b79.js",
     "imports": [
       "resources/js/app.tsx"
     ]
@@ -215,23 +215,23 @@
       "resources/js/pages/Setup/Components/ComponentImportData.tsx",
       "resources/js/pages/PageContacts/BulkAction.tsx"
     ],
-    "file": "assets/app-12367ae8.js",
+    "file": "assets/app-8cabbfeb.js",
     "isEntry": true,
     "src": "resources/js/app.tsx"
   },
   "resources/js/pages/ContactSetup/index.tsx": {
-    "file": "assets/index-a30b98ba.js",
+    "file": "assets/index-6a1c63a0.js",
     "imports": [
       "resources/js/app.tsx",
-      "_InactiveCustomFields-45875a4d.js",
-      "_index-cd1efe08.js",
-      "_ConfirmModal-45e4a93f.js",
-      "_useDrop-55f70ff4.js",
-      "_index-7be4deb3.js",
-      "_DeleteOutlined-1ddb0046.js",
-      "_defineProperty-97ef3476.js",
-      "_Paragraph-3a4caf56.js",
-      "_Upload-8eeabba0.js",
+      "_InactiveCustomFields-83b15dc5.js",
+      "_index-676a65cf.js",
+      "_ConfirmModal-65d91a06.js",
+      "_useDrop-a01a3b79.js",
+      "_index-22bda623.js",
+      "_DeleteOutlined-33c10e39.js",
+      "_defineProperty-96b5e53a.js",
+      "_Paragraph-48c8006e.js",
+      "_Upload-0cded447.js",
       "_objectWithoutProperties-89b13c98.js"
     ],
     "isDynamicEntry": true,
@@ -245,187 +245,187 @@
     "css": [
       "assets/index-cf9a4bd4.css"
     ],
-    "file": "assets/index-d0a15ad2.js",
+    "file": "assets/index-d14a8360.js",
     "imports": [
       "resources/js/app.tsx",
-      "_ContactInfo-97f9e931.js",
-      "_isEqual-7ef14f26.js",
-      "_Paragraph-3a4caf56.js",
-      "_useContactMutation-3ababb15.js",
-      "_InboxOutlined-b8d35f8e.js",
-      "_index-4fe6d7fe.js",
-      "_DropdownComponent-847582d7.js",
-      "_ContactInfoEditableText-2a371276.js",
-      "_index-7be4deb3.js",
-      "_TextEllipsis-77fe4724.js",
-      "_index-bcbd0851.js",
-      "_defineProperty-97ef3476.js",
-      "_Upload-8eeabba0.js",
-      "_DeleteOutlined-1ddb0046.js"
+      "_ContactInfo-3347e2f9.js",
+      "_isEqual-40f36e50.js",
+      "_Paragraph-48c8006e.js",
+      "_useContactMutation-df5f3176.js",
+      "_InboxOutlined-5021369c.js",
+      "_index-c52826a1.js",
+      "_DropdownComponent-6d8d478d.js",
+      "_ContactInfoEditableText-1da99275.js",
+      "_index-22bda623.js",
+      "_TextEllipsis-df1af34f.js",
+      "_index-9f6d4684.js",
+      "_defineProperty-96b5e53a.js",
+      "_Upload-0cded447.js",
+      "_DeleteOutlined-33c10e39.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/ContactView/index.tsx"
   },
   "resources/js/pages/Deal/index.tsx": {
-    "file": "assets/index-c8814706.js",
+    "file": "assets/index-2804769e.js",
     "imports": [
       "resources/js/app.tsx",
-      "_defineProperty-97ef3476.js",
+      "_defineProperty-96b5e53a.js",
       "_objectWithoutProperties-89b13c98.js",
-      "_hoist-non-react-statics.cjs-4aaae12a.js",
-      "_isEqual-7ef14f26.js",
+      "_hoist-non-react-statics.cjs-abc24bdf.js",
+      "_isEqual-40f36e50.js",
       "_tslib.es6-5ccb94e2.js",
-      "_TextEllipsis-77fe4724.js",
-      "_DropdownComponent-847582d7.js",
-      "_CheckCircleOutlined-f3f79167.js"
+      "_TextEllipsis-df1af34f.js",
+      "_DropdownComponent-6d8d478d.js",
+      "_CheckCircleOutlined-7ced3d0e.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/Deal/index.tsx"
   },
   "resources/js/pages/DealPipelineSetup/index.tsx": {
-    "file": "assets/index-5603fe04.js",
+    "file": "assets/index-a99306c2.js",
     "imports": [
       "resources/js/app.tsx",
-      "_index-cd1efe08.js",
-      "_useDrop-55f70ff4.js",
-      "_DeleteOutlined-1ddb0046.js",
-      "_defineProperty-97ef3476.js",
-      "_Paragraph-3a4caf56.js",
-      "_Upload-8eeabba0.js",
+      "_index-676a65cf.js",
+      "_useDrop-a01a3b79.js",
+      "_DeleteOutlined-33c10e39.js",
+      "_defineProperty-96b5e53a.js",
+      "_Paragraph-48c8006e.js",
+      "_Upload-0cded447.js",
       "_objectWithoutProperties-89b13c98.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/DealPipelineSetup/index.tsx"
   },
   "resources/js/pages/DealSetup/index.tsx": {
-    "file": "assets/index-d4b5a787.js",
+    "file": "assets/index-0b2053c0.js",
     "imports": [
       "resources/js/app.tsx",
-      "_InactiveCustomFields-45875a4d.js",
-      "_index-cd1efe08.js",
-      "_ConfirmModal-45e4a93f.js",
-      "_useDrop-55f70ff4.js",
-      "_index-7be4deb3.js",
-      "_DeleteOutlined-1ddb0046.js",
-      "_defineProperty-97ef3476.js",
-      "_Paragraph-3a4caf56.js",
-      "_Upload-8eeabba0.js",
+      "_InactiveCustomFields-83b15dc5.js",
+      "_index-676a65cf.js",
+      "_ConfirmModal-65d91a06.js",
+      "_useDrop-a01a3b79.js",
+      "_index-22bda623.js",
+      "_DeleteOutlined-33c10e39.js",
+      "_defineProperty-96b5e53a.js",
+      "_Paragraph-48c8006e.js",
+      "_Upload-0cded447.js",
       "_objectWithoutProperties-89b13c98.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/DealSetup/index.tsx"
   },
   "resources/js/pages/PageContacts/BulkAction.tsx": {
-    "file": "assets/BulkAction-1aa86a0e.js",
+    "file": "assets/BulkAction-e44ec5b2.js",
     "imports": [
       "resources/js/app.tsx",
-      "_HeaderMenu-13916678.js",
-      "_TextEllipsis-77fe4724.js",
-      "_index-bcbd0851.js"
+      "_HeaderMenu-bf71834e.js",
+      "_TextEllipsis-df1af34f.js",
+      "_index-9f6d4684.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/PageContacts/BulkAction.tsx"
   },
   "resources/js/pages/PageContacts/Contacts.tsx": {
-    "file": "assets/Contacts-33dfea85.js",
+    "file": "assets/Contacts-aa11643e.js",
     "imports": [
       "resources/js/app.tsx",
-      "_HeaderMenu-13916678.js",
-      "_TextEllipsis-77fe4724.js",
-      "_ContactInfoEditableText-2a371276.js",
-      "_useContactMutation-3ababb15.js",
-      "_ContactBulkUpdate-de406093.js",
-      "_papaparse.min-3b4a697d.js",
-      "_index-cd1efe08.js",
-      "_hoist-non-react-statics.cjs-4aaae12a.js",
-      "_CheckCircleOutlined-f3f79167.js",
-      "_index-7be4deb3.js",
-      "_defineProperty-97ef3476.js",
-      "_Paragraph-3a4caf56.js",
-      "_Upload-8eeabba0.js",
+      "_HeaderMenu-bf71834e.js",
+      "_TextEllipsis-df1af34f.js",
+      "_ContactInfoEditableText-1da99275.js",
+      "_useContactMutation-df5f3176.js",
+      "_ContactBulkUpdate-5cea67ad.js",
+      "_papaparse.min-09077af8.js",
+      "_index-676a65cf.js",
+      "_hoist-non-react-statics.cjs-abc24bdf.js",
+      "_CheckCircleOutlined-7ced3d0e.js",
+      "_index-22bda623.js",
+      "_defineProperty-96b5e53a.js",
+      "_Paragraph-48c8006e.js",
+      "_Upload-0cded447.js",
       "_objectWithoutProperties-89b13c98.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/PageContacts/Contacts.tsx"
   },
   "resources/js/pages/PageContacts/MergeContacts.tsx": {
-    "file": "assets/MergeContacts-0686cf1d.js",
+    "file": "assets/MergeContacts-50984f56.js",
     "imports": [
       "resources/js/app.tsx",
-      "_useContactMutation-3ababb15.js"
+      "_useContactMutation-df5f3176.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/PageContacts/MergeContacts.tsx"
   },
   "resources/js/pages/PageDashboard/PageDashboard.tsx": {
-    "file": "assets/PageDashboard-332f3d4b.js",
+    "file": "assets/PageDashboard-738cb418.js",
     "imports": [
       "resources/js/app.tsx",
-      "_CommentOutlined-7532ac0b.js",
+      "_CommentOutlined-1dc82502.js",
       "_tslib.es6-5ccb94e2.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/PageDashboard/PageDashboard.tsx"
   },
   "resources/js/pages/Setup/CallForwarding.tsx": {
-    "file": "assets/CallForwarding-a2973911.js",
+    "file": "assets/CallForwarding-25219561.js",
     "imports": [
       "resources/js/app.tsx",
-      "_TextEllipsis-77fe4724.js"
+      "_TextEllipsis-df1af34f.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/Setup/CallForwarding.tsx"
   },
   "resources/js/pages/Setup/Components/ComponentImportData.tsx": {
-    "file": "assets/ComponentImportData-f6c3bc99.js",
+    "file": "assets/ComponentImportData-8e0e89df.js",
     "imports": [
       "resources/js/app.tsx",
-      "_papaparse.min-3b4a697d.js",
-      "_useContactMutation-3ababb15.js",
-      "_index-4fe6d7fe.js",
-      "_CheckCircleOutlined-f3f79167.js",
-      "_UploadOutlined-1b7405eb.js",
-      "_Upload-8eeabba0.js",
-      "_DeleteOutlined-1ddb0046.js"
+      "_papaparse.min-09077af8.js",
+      "_useContactMutation-df5f3176.js",
+      "_index-c52826a1.js",
+      "_CheckCircleOutlined-7ced3d0e.js",
+      "_UploadOutlined-59b51f50.js",
+      "_Upload-0cded447.js",
+      "_DeleteOutlined-33c10e39.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/Setup/Components/ComponentImportData.tsx"
   },
   "resources/js/pages/Setup/Components/ImportDataGSheet.tsx": {
-    "file": "assets/ImportDataGSheet-adda5249.js",
+    "file": "assets/ImportDataGSheet-383460d2.js",
     "imports": [
       "resources/js/app.tsx",
-      "_useContactMutation-3ababb15.js",
-      "_ImportDataGSheetHeader-6c61552c.js"
+      "_useContactMutation-df5f3176.js",
+      "_ImportDataGSheetHeader-b9c78fac.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/Setup/Components/ImportDataGSheet.tsx"
   },
   "resources/js/pages/Setup/Components/ImportDataGSheetHistory.tsx": {
-    "file": "assets/ImportDataGSheetHistory-8d092510.js",
+    "file": "assets/ImportDataGSheetHistory-3e2c5d0e.js",
     "imports": [
       "resources/js/app.tsx",
-      "_ImportDataGSheetHeader-6c61552c.js",
-      "_TextEllipsis-77fe4724.js",
-      "_RedoOutlined-d1114c88.js"
+      "_ImportDataGSheetHeader-b9c78fac.js",
+      "_TextEllipsis-df1af34f.js",
+      "_RedoOutlined-ffbc479e.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/Setup/Components/ImportDataGSheetHistory.tsx"
   },
   "resources/js/pages/Setup/Components/OpenPhoneAudioImport.tsx": {
-    "file": "assets/OpenPhoneAudioImport-38115028.js",
+    "file": "assets/OpenPhoneAudioImport-d8f70be1.js",
     "imports": [
       "resources/js/app.tsx",
-      "_index-4fe6d7fe.js",
-      "_InboxOutlined-b8d35f8e.js",
-      "_Upload-8eeabba0.js",
-      "_DeleteOutlined-1ddb0046.js"
+      "_index-c52826a1.js",
+      "_InboxOutlined-5021369c.js",
+      "_Upload-0cded447.js",
+      "_DeleteOutlined-33c10e39.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/Setup/Components/OpenPhoneAudioImport.tsx"
   },
   "resources/js/pages/Setup/Components/RoorDataMapping.tsx": {
-    "file": "assets/RoorDataMapping-33277325.js",
+    "file": "assets/RoorDataMapping-322a9c60.js",
     "imports": [
       "resources/js/app.tsx"
     ],
@@ -433,7 +433,7 @@
     "src": "resources/js/pages/Setup/Components/RoorDataMapping.tsx"
   },
   "resources/js/pages/Setup/Components/StopWordList.tsx": {
-    "file": "assets/StopWordList-d18b16bb.js",
+    "file": "assets/StopWordList-cca3c91e.js",
     "imports": [
       "resources/js/app.tsx"
     ],
@@ -441,47 +441,47 @@
     "src": "resources/js/pages/Setup/Components/StopWordList.tsx"
   },
   "resources/js/pages/Setup/Setup.tsx": {
-    "file": "assets/Setup-1021de69.js",
+    "file": "assets/Setup-b0ec9f60.js",
     "imports": [
       "resources/js/app.tsx",
-      "_UploadOutlined-1b7405eb.js",
-      "_CommentOutlined-7532ac0b.js"
+      "_UploadOutlined-59b51f50.js",
+      "_CommentOutlined-1dc82502.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/Setup/Setup.tsx"
   },
   "resources/js/pages/TextTemplates/index.tsx": {
-    "file": "assets/index-5096c58b.js",
+    "file": "assets/index-13cd9d84.js",
     "imports": [
       "resources/js/app.tsx",
-      "_ConfirmModal-45e4a93f.js",
-      "_DeleteOutlined-1ddb0046.js"
+      "_ConfirmModal-65d91a06.js",
+      "_DeleteOutlined-33c10e39.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/TextTemplates/index.tsx"
   },
   "resources/js/pages/Texts/components/TextBoxView.tsx": {
-    "file": "assets/TextBoxView-ec2d3e20.js",
+    "file": "assets/TextBoxView-cbf206a8.js",
     "imports": [
       "resources/js/app.tsx",
-      "_ContactInfo-97f9e931.js",
-      "_index-7be4deb3.js",
-      "_InboxOutlined-b8d35f8e.js",
-      "_DeleteOutlined-1ddb0046.js",
-      "_ConfirmModal-45e4a93f.js",
-      "_ContactBulkUpdate-de406093.js",
-      "_RedoOutlined-d1114c88.js",
-      "_DropdownComponent-847582d7.js",
-      "_useContactMutation-3ababb15.js",
-      "_ContactInfoEditableText-2a371276.js",
-      "_TextEllipsis-77fe4724.js",
-      "_index-bcbd0851.js"
+      "_ContactInfo-3347e2f9.js",
+      "_index-22bda623.js",
+      "_InboxOutlined-5021369c.js",
+      "_DeleteOutlined-33c10e39.js",
+      "_ConfirmModal-65d91a06.js",
+      "_ContactBulkUpdate-5cea67ad.js",
+      "_RedoOutlined-ffbc479e.js",
+      "_DropdownComponent-6d8d478d.js",
+      "_useContactMutation-df5f3176.js",
+      "_ContactInfoEditableText-1da99275.js",
+      "_TextEllipsis-df1af34f.js",
+      "_index-9f6d4684.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/Texts/components/TextBoxView.tsx"
   },
   "resources/js/pages/Users/AddEditUser.tsx": {
-    "file": "assets/AddEditUser-81807756.js",
+    "file": "assets/AddEditUser-622347e4.js",
     "imports": [
       "resources/js/app.tsx"
     ],
@@ -489,10 +489,10 @@
     "src": "resources/js/pages/Users/AddEditUser.tsx"
   },
   "resources/js/pages/Users/index.tsx": {
-    "file": "assets/index-33740486.js",
+    "file": "assets/index-44afbec2.js",
     "imports": [
       "resources/js/app.tsx",
-      "_TextEllipsis-77fe4724.js"
+      "_TextEllipsis-df1af34f.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/Users/index.tsx"
