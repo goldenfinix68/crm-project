@@ -32,6 +32,7 @@ import Board from "react-trello";
 import { dealPipelines, useDealsAll } from "../../api/query/dealQuery";
 import { useMutation, useQueryClient } from "react-query";
 import {
+    dealsByStageId,
     moveCardAcrossLanesMutation,
     useDealMutationDeleteDeal,
     useDealMutationUpdateStarred,
@@ -66,6 +67,13 @@ interface TDeals {
     stage: string;
     status: string;
     owner: any;
+}
+
+interface DealsByStage {
+    [id: number]: {
+        page: number;
+        data: any[];
+    };
 }
 const Deal = () => {
     useEffect(() => {
@@ -183,8 +191,64 @@ const Deal = () => {
     const [listBoard, setListBoard] = useState("Board");
     const [boardData, setBoardData] = useState<{ lanes: Lane[] } | undefined>();
 
+    const [dealsByStage, setDealsByStage] = useState<DealsByStage>({});
+
     useEffect(() => {
-        if (deals) {
+        const fetchDealsByStage = async () => {
+            const newDealsByStage = {};
+            await Promise.all(
+                selectedpipeline?.stages?.map(async (stage) => {
+                    const current = { page: 0, data: [] };
+                    const data = await dealsByStageId({
+                        page: current.page + 1,
+                        page_size: 10,
+                        stageId: stage.id,
+                        pipelineId: selectedpipeline?.id,
+                    });
+
+                    if (data.length) {
+                        newDealsByStage[stage.id] = {
+                            page: current.page + 1,
+                            data: [...current.data, ...data],
+                        };
+                    } else {
+                        newDealsByStage[stage.id] = current;
+                    }
+                }) ?? []
+            );
+
+            setDealsByStage(newDealsByStage);
+        };
+        if (listBoard != "List") {
+            fetchDealsByStage();
+        }
+    }, [listBoard, sortBy, sortByAsc, selectedpipeline?.stages]);
+
+    const handleLane = async (requestedPage, laneId) => {
+        console.log(requestedPage, laneId);
+        const current = dealsByStage[laneId] ?? { page: 0, data: [] };
+        const newDealsByStage = { ...dealsByStage };
+        const data = await dealsByStageId({
+            page: current.page + 1,
+            page_size: 10,
+            stageId: laneId,
+            pipelineId: selectedpipeline?.id,
+        });
+
+        if (data.length) {
+            newDealsByStage[laneId] = {
+                page: current.page + 1,
+                data: [...current.data, ...data],
+            };
+        } else {
+            newDealsByStage[laneId] = current;
+        }
+
+        setDealsByStage(newDealsByStage);
+    };
+
+    useEffect(() => {
+        if (dealsByStage) {
             if (listBoard != "List") {
                 const initialBoardData: { lanes: Lane[] } = {
                     lanes:
@@ -211,9 +275,8 @@ const Deal = () => {
                                     width: 280,
                                 },
                                 label: "",
-                                cards: deals
-                                    ? deals
-                                          .filter((p) => p.stageId == stage.id)
+                                cards: dealsByStage[stage.id]?.data
+                                    ? dealsByStage[stage.id]?.data
                                           ?.slice() // Create a shallow copy of the array to avoid mutating the original array
                                           .sort((a, b) => {
                                               const compareValueA =
@@ -275,7 +338,7 @@ const Deal = () => {
                 setBoardData(initialBoardData);
             }
         }
-    }, [deals, listBoard, sortBy, sortByAsc, selectedpipeline?.stages]);
+    }, [dealsByStage]);
 
     const moveCardAcrossLanes = useMutation(moveCardAcrossLanesMutation, {
         onSuccess: (res) => {
@@ -560,6 +623,7 @@ const Deal = () => {
                                                             "none!important",
                                                     }}
                                                     customCardLayout={true}
+                                                    onLaneScroll={handleLane}
                                                     // onDataChange={onDataChangeBoard}
                                                     onCardMoveAcrossLanes={(
                                                         fromLaneId,
