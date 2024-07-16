@@ -195,39 +195,55 @@ const Deal = () => {
     const [boardData, setBoardData] = useState<{ lanes: Lane[] } | undefined>();
 
     const [dealsByStage, setDealsByStage] = useState<DealsByStage>({});
+    const [fetchingDealsByStage, setFetchingDealsByStage] =
+        useState<boolean>(false);
+
+    const fetchDealsByStage = async () => {
+        const newDealsByStage = {};
+
+        await Promise.all(
+            selectedpipeline?.stages?.map(async (stage) => {
+                const current = { page: 0, data: [] };
+                const data = await dealsByStageId({
+                    page: current.page + 1,
+                    page_size: 10,
+                    stageId: stage.id,
+                    pipelineId: selectedpipeline?.id,
+                });
+
+                if (data.length) {
+                    newDealsByStage[stage.id] = {
+                        page: current.page + 1,
+                        data: [...current.data, ...data],
+                    };
+                } else {
+                    newDealsByStage[stage.id] = current;
+                }
+            }) ?? []
+        );
+
+        //setIsLoadingBoardData(false);
+        setDealsByStage(newDealsByStage);
+    };
 
     useEffect(() => {
-        const fetchDealsByStage = async () => {
-            const newDealsByStage = {};
-            await Promise.all(
-                selectedpipeline?.stages?.map(async (stage) => {
-                    const current = { page: 0, data: [] };
-                    const data = await dealsByStageId({
-                        page: current.page + 1,
-                        page_size: 15,
-                        stageId: stage.id,
-                        pipelineId: selectedpipeline?.id,
-                    });
-
-                    if (data.length) {
-                        newDealsByStage[stage.id] = {
-                            page: current.page + 1,
-                            data: [...current.data, ...data],
-                        };
-                    } else {
-                        newDealsByStage[stage.id] = current;
-                    }
-                }) ?? []
-            );
-
-            //setIsLoadingBoardData(false);
-            setDealsByStage(newDealsByStage);
-        };
-        if (listBoard != "List") {
+        if (
+            listBoard != "List" &&
+            (!isPipelinesLoading || fetchingDealsByStage)
+        ) {
             //setIsLoadingBoardData(true);
             fetchDealsByStage();
+            setFetchingDealsByStage(false);
         }
-    }, [listBoard, sortBy, sortByAsc, selectedpipeline?.stages]);
+    }, [
+        dealPipelines,
+        isPipelinesLoading,
+        fetchingDealsByStage,
+        listBoard,
+        sortBy,
+        sortByAsc,
+        selectedpipeline?.stages,
+    ]);
 
     const handleLane = async (requestedPage, laneId) => {
         //setIsLoadingBoardData(true);
@@ -322,9 +338,13 @@ const Deal = () => {
                                                       <DealCard
                                                           deal={deal}
                                                           handleEditClick={() => {
-                                                              setSelectedDeal(
-                                                                  deal
-                                                              );
+                                                              setSelectedDeal({
+                                                                  ...deal,
+                                                                  stageId:
+                                                                      stage.id,
+                                                                  pipelineId:
+                                                                      selectedpipeline?.id,
+                                                              });
                                                               setIsModalOpenAdd(
                                                                   true
                                                               );
@@ -648,12 +668,17 @@ const Deal = () => {
                                                             cardId,
                                                             toLaneId
                                                         );
+
                                                         moveCardAcrossLanes.mutate(
                                                             {
                                                                 dealId: cardId,
                                                                 stageId:
                                                                     toLaneId,
                                                             }
+                                                        );
+
+                                                        setFetchingDealsByStage(
+                                                            true
                                                         );
                                                     }}
                                                 />
@@ -701,6 +726,7 @@ const Deal = () => {
                         isModalOpen={isModalOpenAdd}
                         handleSubmit={() => {
                             console.log("qwe");
+                            setFetchingDealsByStage(true);
                         }}
                         closeModal={() => {
                             setIsModalOpenAdd(false);
