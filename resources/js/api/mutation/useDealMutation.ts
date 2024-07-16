@@ -260,6 +260,23 @@ export const useDealMutationUpdateMituli = async (items: any) => {
     return data;
 };
 
+export const dealsByStageId = async (url: any) => {
+    const accessToken = localStorage.getItem("access_token");
+    const response = await fetch("/api/deals/deals-by-stage", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(url),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch deals");
+    }
+    return data;
+};
+
 export const useDealAddFavorite = async (items: any) => {
     const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
     const response = await fetch("/api/deals/favorite", {
