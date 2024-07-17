@@ -76,7 +76,6 @@ const ModalAddDeal = ({
                     message: "Deal",
                     description: "Successfully Added",
                 });
-                queryClient.invalidateQueries("deals");
                 queryClient.invalidateQueries("dealPipelines");
                 handleSubmit();
                 resetFields();
