@@ -99,7 +99,7 @@ const Deal = () => {
         page: 1,
         page_size: 100,
     });
-    const [sortBy, setSortBy] = useState("firstName");
+    const [sortBy, setSortBy] = useState("fullName");
     const [sortByAsc, setSortByAsc] = useState(true);
 
     const getFieldLabelByFieldName = (value = "") => {
@@ -107,7 +107,7 @@ const Deal = () => {
     };
 
     const sortableItems: MenuProps["items"] = [
-        { key: 5, label: "Name", onClick: () => handleChangeSort("firstName") },
+        { key: 5, label: "Name", onClick: () => handleChangeSort("fullName") },
         { key: 1, label: "Aging", onClick: () => handleChangeSort("aging") },
         {
             key: settings?.dealCardpos2FieldId ? 2 : "",
@@ -241,6 +241,7 @@ const Deal = () => {
     ]);
 
     useEffect(() => {
+        console.log("Refetching ", refetchingIds, refetching);
         const refetchingDealsByStage = async () => {
             const newDealsByStage = { ...dealsByStage };
             await Promise.all(
@@ -253,7 +254,6 @@ const Deal = () => {
             setDealsByStage(newDealsByStage);
         };
         if (refetchingIds.length && refetching) {
-            console.log("Refetching", refetchingIds);
             refetchingDealsByStage();
         }
     }, [refetchingIds, refetching]);
@@ -300,15 +300,33 @@ const Deal = () => {
                                               const compareValueA =
                                                   sortBy === "aging"
                                                       ? a.aging ?? ""
-                                                      : a.contact?.fields[
-                                                            sortBy
-                                                        ] ?? "";
+                                                      : sortBy === "fullName"
+                                                      ? a.fullName
+                                                      : sortBy ===
+                                                        a?.dealCardpos2FieldName
+                                                      ? a?.dealCardpos2FieldValue
+                                                      : sortBy ===
+                                                        a?.dealCardpos3FieldName
+                                                      ? a?.dealCardpos3FieldValue
+                                                      : sortBy ===
+                                                        a?.dealCardpos4FieldName
+                                                      ? a?.dealCardpos4FieldValue
+                                                      : "";
                                               const compareValueB =
                                                   sortBy === "aging"
                                                       ? b.aging ?? ""
-                                                      : b.contact?.fields[
-                                                            sortBy
-                                                        ] ?? "";
+                                                      : sortBy === "fullName"
+                                                      ? b.fullName
+                                                      : sortBy ===
+                                                        b?.dealCardpos2FieldName
+                                                      ? b?.dealCardpos2FieldValue
+                                                      : sortBy ===
+                                                        b?.dealCardpos3FieldName
+                                                      ? b?.dealCardpos3FieldValue
+                                                      : sortBy ===
+                                                        b?.dealCardpos4FieldName
+                                                      ? b?.dealCardpos4FieldValue
+                                                      : "";
 
                                               if (a.star === b.star) {
                                                   return b.star - a.star ||
@@ -553,7 +571,7 @@ const Deal = () => {
                                             >
                                                 {sortBy == "aging"
                                                     ? "Aging"
-                                                    : sortBy != "firstName"
+                                                    : sortBy != "fullName"
                                                     ? getFieldLabelByFieldName(
                                                           sortBy
                                                       )
