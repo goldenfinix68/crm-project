@@ -241,13 +241,10 @@ const Navigation: React.FC<NavigationProps> = ({ title }) => {
                                                     to={
                                                         `/contacts/${contact.id}` +
                                                         "/" +
-                                                        contact.fields[
-                                                            "firstName"
-                                                        ].replace(/\s/g, "-") +
-                                                        "-" +
-                                                        contact.fields[
-                                                            "lastName"
-                                                        ].replace(/\s/g, "-")
+                                                        contact.fullName.replace(
+                                                            /\s/g,
+                                                            "-"
+                                                        )
                                                     }
                                                 >
                                                     <div className="list-data">
@@ -257,7 +254,7 @@ const Navigation: React.FC<NavigationProps> = ({ title }) => {
                                                             className="m-l-xs"
                                                         >
                                                             <Typography.Text>
-                                                                {`${contact.fields?.firstName} ${contact.fields?.lastName}`}
+                                                                {`${contact.fullName}`}
                                                             </Typography.Text>
                                                             <Typography.Text className="list-data-info">
                                                                 <Typography.Text

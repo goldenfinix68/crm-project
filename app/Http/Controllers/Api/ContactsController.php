@@ -145,27 +145,29 @@ class ContactsController extends Controller
 
 
 
-        $custom_field_values = \App\Models\CustomFieldValue::select(['customableId','value'])
+        $contactIds = CustomFieldValue::select('customableId')
             ->where('value', 'LIKE', "%$keyword%")
             ->whereRaw('customFieldId IN (SELECT id FROM custom_fields WHERE fieldName IN ("firstName", "lastName", "mobile", "phone") OR label = "APN")')
-            ->with(['contact' => function($q) use($userId) {
-                $q->where('userId', $userId);
-            }])
-            ->paginate(20);
-        // get only contacts
-        $contacts = $custom_field_values->pluck('contact')->unique('id');   
-
-        //remove null from $contacts array
-        $contacts = $contacts->filter(function ($value, $key) {
-            return !is_null($value);
-        });
-        // contacts re index array
-        $contacts = $contacts->values()->all();
-
-
+            ->join('contacts as c', 'c.id', '=', 'custom_field_values.customableId')
+            ->where('c.userId', $userId)
+            ->distinct()
+            ->limit(20)
+            ->get()
+            ->pluck('customableId');
+            
+        $data = [];
+        foreach($contactIds as $id){
+            $contact = Contact::find($id);
+            $data[] = [
+                'id' => $contact->id,
+                'fullName' => $contact->fields['firstName'] . ' ' . $contact->fields['lastName'],
+                'phoneNumbers' => $contact->phoneNumbers,
+            ];
+        }
+        
         return response()->json([
             'success' => true,
-            'data' => $contacts,
+            'data' => $data,
         ], 200);
     }
 
