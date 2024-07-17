@@ -227,11 +227,15 @@ const DealCard = ({
                             marginTop: "auto",
                         }}
                     >
-                        <div style={{ width: "50%" }}>
+                        <div
+                            style={{
+                                width: "50%",
+                            }}
+                        >
                             <TextEllipsis
                                 style={{
                                     fontWeight:
-                                        sortBy == "firstName"
+                                        sortBy == "fullName"
                                             ? "bold"
                                             : "normal",
                                 }}
