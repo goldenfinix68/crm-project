@@ -35,8 +35,6 @@ class DealPipelinesController extends Controller
                     // Populate the data array with the deal information and additional settings
                     $data[] = [
                         'id' => $deal->id,
-                        'pipeline' => $deal->pipeline,
-                        'stage' => $deal->stage,
                         'aging' => $deal->aging,
                         'contactId' => $deal->contactId,
                         'stageId' => $deal->stageId,
