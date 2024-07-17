@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Select } from "antd";
+import { Select, SelectProps } from "antd";
 import { ENDPOINTS } from "../endpoints";
 import { mutateGet } from "../api/mutation/useSetupMutation";
 import { defaultFilter } from "../constants";
 import _ from "lodash";
 
-interface Props {
+interface Props extends SelectProps<string> {
     mode?: "multiple" | "tags";
     defaultOpen?: boolean;
-    onChange?: (e) => void;
 }
 
 const SelectContact = ({
     mode = undefined,
     defaultOpen = false,
-    onChange = () => console.log("selectContact"),
+    value,
+    onChange,
 }: Props) => {
     const [pagination, setPagination] = useState({
         page_size: 10,
@@ -58,7 +58,6 @@ const SelectContact = ({
             setContacts(filteredContacts.data.data);
         }
     }, [filteredContacts]);
-
     return (
         <Select
             showSearch
@@ -68,6 +67,7 @@ const SelectContact = ({
             onSearch={(value) => debouncedSearch(value)} // Use debouncedSearch here
             filterOption={false}
             onChange={onChange}
+            value={value}
         >
             {contacts?.map((contact) => (
                 <Select.Option value={contact.id} key={contact.id}>

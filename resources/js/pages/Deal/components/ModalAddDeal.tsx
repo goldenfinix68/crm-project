@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Button,
     Col,
@@ -20,7 +20,7 @@ import { TDeal } from "../../../entities";
 import CustomFieldInput from "../../../components/CustomFieldInput";
 import { dealPipelines } from "../../../api/query/dealQuery";
 import queryClient from "../../../queryClient";
-import SelectContact from "../../../components/SelectContact";
+
 interface Props {
     isModalOpen: boolean;
     closeModal: () => void;
