@@ -135,6 +135,8 @@ class ContactsController extends Controller
         //     ->limit(10)
         //     ->get();
         $data = DB::table('contacts as c')
+            ->distinct()
+            ->limit(5)
             ->select([
                 'c.id',
                 DB::raw('(SELECT GROUP_CONCAT(cfv.value SEPARATOR " ")
