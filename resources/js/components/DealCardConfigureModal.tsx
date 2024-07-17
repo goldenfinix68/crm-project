@@ -69,6 +69,7 @@ const DealCardConfigureModal = ({
 
     const settings = useMutation(userSettings, {
         onSuccess: () => {
+            handleSubmit();
             queryClient.invalidateQueries("user");
             closeModal();
             resetFields();

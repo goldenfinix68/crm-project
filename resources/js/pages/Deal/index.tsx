@@ -33,6 +33,7 @@ import { dealPipelines, useDealsAll } from "../../api/query/dealQuery";
 import { useMutation, useQueryClient } from "react-query";
 import {
     dealsByStageId,
+    dealsCount,
     moveCardAcrossLanesMutation,
     useDealMutationDeleteDeal,
     useDealMutationUpdateStarred,
@@ -148,6 +149,20 @@ const Deal = () => {
         (pipeline) => pipeline.id === filterPage.pipelineId
     );
 
+    const [total, setTotal] = useState<number | undefined>();
+
+    useEffect(() => {
+        const fetchTotalDeals = async () => {
+            const count = await dealsCount({
+                pipelineId: selectedpipeline?.id,
+            });
+
+            setTotal(count);
+        };
+
+        fetchTotalDeals();
+    }, [selectedpipeline]);
+
     useEffect(() => {
         console.log("isFetchingDeals", isFetchingDeals);
         return () => {};
@@ -193,7 +208,8 @@ const Deal = () => {
 
     const [listBoard, setListBoard] = useState("Board");
     const [boardData, setBoardData] = useState<{ lanes: Lane[] } | undefined>();
-
+    const [isLoadingBoardData, setIsLoadingBoardData] =
+        useState<boolean>(false);
     const [dealsByStage, setDealsByStage] = useState<DealsByStage>({});
     const [refetchingIds, setRefetchingIds] = useState<number[]>([]);
     const [refetching, setRefetching] = useState<boolean>(false);
@@ -218,6 +234,7 @@ const Deal = () => {
 
     useEffect(() => {
         const fetchDealsByStage = async () => {
+            console.log("Start Fetching Deals", isLoadingBoardData);
             const newDealsByStage = {};
 
             await Promise.all(
@@ -225,12 +242,17 @@ const Deal = () => {
                     newDealsByStage[stage.id] = await fetchLane(stage.id);
                 }) ?? []
             );
-
+            setIsLoadingBoardData(false);
             setDealsByStage(newDealsByStage);
         };
-
-        if (listBoard != "List" && !isPipelinesLoading) {
+        if (isLoadingBoardData) {
             fetchDealsByStage();
+        }
+    }, [isLoadingBoardData]);
+
+    useEffect(() => {
+        if (listBoard != "List" && !isPipelinesLoading) {
+            setIsLoadingBoardData(true);
         }
     }, [
         isPipelinesLoading,
@@ -439,7 +461,6 @@ const Deal = () => {
             id: deal.id,
         });
     };
-
     return (
         <Row className="deal-group-row">
             <Col md={24}>
@@ -620,14 +641,14 @@ const Deal = () => {
                                 <div>
                                     <span style={{ marginRight: 15 }}>
                                         {" "}
-                                        # of Deals: <b>{deals?.length}</b>
+                                        # of Deals: <b>{total}</b>
                                     </span>
                                 </div>
                             </div>
                         </>
                     )}
                     {/* {isFetchingDeals && <Spin />} */}
-                    {deals?.length ? (
+                    {pipelines ? (
                         <>
                             {boardData &&
                             listBoard != "List" &&
@@ -640,8 +661,8 @@ const Deal = () => {
                                                 height: "100vh",
                                             }}
                                         >
-                                            {
-                                                /*refetching ? (
+                                            {isPipelinesLoading ||
+                                            isLoadingBoardData ? (
                                                 <div
                                                     style={{
                                                         display: "grid",
@@ -651,14 +672,10 @@ const Deal = () => {
                                                 >
                                                     <Spin />
                                                 </div>
-                                            ) :*/
+                                            ) : (
                                                 <Board
                                                     draggable
                                                     data={boardData}
-                                                    loading={
-                                                        isLoadingDeals ||
-                                                        isFetchingDeals
-                                                    }
                                                     laneDraggable={false}
                                                     hideCardDeleteIcon={true}
                                                     className="react-trello-board board"
@@ -703,7 +720,7 @@ const Deal = () => {
                                                         );
                                                     }}
                                                 />
-                                            }
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -760,7 +777,13 @@ const Deal = () => {
                     <DealCardConfigureModal
                         isModalOpen={isConfigureModalOpen}
                         handleSubmit={() => {
-                            console.log("qwe");
+                            console.log("Deal Card Config", selectedpipeline);
+                            const stageIds: number[] =
+                                selectedpipeline?.stages?.map((stage) =>
+                                    Number(stage.id)
+                                ) ?? [];
+                            setRefetchingIds(stageIds);
+                            setRefetching(true);
                         }}
                         closeModal={() => {
                             setIsConfigureModalOpen(false);

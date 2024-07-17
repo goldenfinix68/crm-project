@@ -69,6 +69,31 @@ class DealsController extends Controller
     }
 
     /**
+     * Display a count of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function count(Request $request)
+    {
+       
+        if(empty($request->pipelineId)){
+            return response()->json(['total' => 0], 200);
+        }
+
+        $mainUserId = $this->getMainUserId();
+            
+        $total = Deal::with(['pipeline'])
+            ->where('pipelineId', $request->pipelineId)
+            ->whereHas('pipeline', function ($query) use($mainUserId) {
+                $query->where('userId', $mainUserId);
+            })
+            ->count();
+            
+        return response()->json(['total' => $total], 200);
+    }
+       
+
+    /**
      * Get deals by stage.
      *
      * @param \Illuminate\Http\Request
