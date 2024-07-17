@@ -158,15 +158,25 @@ const Deal = () => {
 
             setTotal(count);
         };
+        if (selectedpipeline) {
+            fetchTotalDeals();
 
-        fetchTotalDeals();
-    }, [selectedpipeline]);
+            const newDealsByStage = {};
+            selectedpipeline?.stages?.map((stage) => {
+                const data = {
+                    page: 1,
+                    data: stage.deals,
+                };
+                newDealsByStage[stage.id] = data;
+            });
+
+            setDealsByStage(newDealsByStage);
+        }
+    }, [selectedpipeline?.id]);
 
     const [selectedDeal, setSelectedDeal] = useState<TDeal | undefined>(
         undefined
     );
-
-    const [showDeleteButton, setShowDeleteButton] = useState(false);
 
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
 
@@ -195,13 +205,12 @@ const Deal = () => {
     );
 
     const [boardData, setBoardData] = useState<{ lanes: Lane[] } | undefined>();
-    const [isLoadingBoardData, setIsLoadingBoardData] =
-        useState<boolean>(false);
     const [dealsByStage, setDealsByStage] = useState<DealsByStage>({});
     const [refetchingIds, setRefetchingIds] = useState<number[]>([]);
     const [refetching, setRefetching] = useState<boolean>(false);
 
     const fetchLane = async (laneId, dealsByStage = {}) => {
+        console.log({ dealsByStage, laneId });
         const current = dealsByStage[laneId] ?? { page: 0, data: [] };
 
         const data = await dealsByStageId({
@@ -218,30 +227,6 @@ const Deal = () => {
               }
             : current;
     };
-
-    useEffect(() => {
-        const fetchDealsByStage = async () => {
-            console.log("Start Fetching Deals", isLoadingBoardData);
-            const newDealsByStage = {};
-
-            await Promise.all(
-                selectedpipeline?.stages?.map(async (stage) => {
-                    newDealsByStage[stage.id] = await fetchLane(stage.id);
-                }) ?? []
-            );
-            setIsLoadingBoardData(false);
-            setDealsByStage(newDealsByStage);
-        };
-        if (isLoadingBoardData) {
-            fetchDealsByStage();
-        }
-    }, [isLoadingBoardData]);
-
-    useEffect(() => {
-        if (!isPipelinesLoading) {
-            setIsLoadingBoardData(true);
-        }
-    }, [isPipelinesLoading, sortBy, sortByAsc, selectedpipeline?.stages]);
 
     useEffect(() => {
         console.log("Refetching ", refetchingIds, refetching);
@@ -264,7 +249,6 @@ const Deal = () => {
     const handleLane = async (requestedPage, laneId) => {
         const newDealsByStage = { ...dealsByStage };
         newDealsByStage[laneId] = await fetchLane(laneId, dealsByStage);
-
         setDealsByStage(newDealsByStage);
     };
 
@@ -273,6 +257,7 @@ const Deal = () => {
             const initialBoardData: { lanes: Lane[] } = {
                 lanes:
                     selectedpipeline?.stages?.map((stage) => {
+                        console.log({ dealsByStage });
                         return {
                             id: stage.id,
                             title: (
@@ -296,53 +281,53 @@ const Deal = () => {
                             cards: dealsByStage[stage.id]?.data
                                 ? dealsByStage[stage.id]?.data
                                       ?.slice() // Create a shallow copy of the array to avoid mutating the original array
-                                      .sort((a, b) => {
-                                          const compareValueA =
-                                              sortBy === "aging"
-                                                  ? a.aging ?? ""
-                                                  : sortBy === "fullName"
-                                                  ? a.fullName
-                                                  : sortBy ===
-                                                    a?.dealCardpos2FieldName
-                                                  ? a?.dealCardpos2FieldValue
-                                                  : sortBy ===
-                                                    a?.dealCardpos3FieldName
-                                                  ? a?.dealCardpos3FieldValue
-                                                  : sortBy ===
-                                                    a?.dealCardpos4FieldName
-                                                  ? a?.dealCardpos4FieldValue
-                                                  : "";
-                                          const compareValueB =
-                                              sortBy === "aging"
-                                                  ? b.aging ?? ""
-                                                  : sortBy === "fullName"
-                                                  ? b.fullName
-                                                  : sortBy ===
-                                                    b?.dealCardpos2FieldName
-                                                  ? b?.dealCardpos2FieldValue
-                                                  : sortBy ===
-                                                    b?.dealCardpos3FieldName
-                                                  ? b?.dealCardpos3FieldValue
-                                                  : sortBy ===
-                                                    b?.dealCardpos4FieldName
-                                                  ? b?.dealCardpos4FieldValue
-                                                  : "";
+                                      //   .sort((a, b) => {
+                                      //       const compareValueA =
+                                      //           sortBy === "aging"
+                                      //               ? a.aging ?? ""
+                                      //               : sortBy === "fullName"
+                                      //               ? a.fullName
+                                      //               : sortBy ===
+                                      //                 a?.dealCardpos2FieldName
+                                      //               ? a?.dealCardpos2FieldValue
+                                      //               : sortBy ===
+                                      //                 a?.dealCardpos3FieldName
+                                      //               ? a?.dealCardpos3FieldValue
+                                      //               : sortBy ===
+                                      //                 a?.dealCardpos4FieldName
+                                      //               ? a?.dealCardpos4FieldValue
+                                      //               : "";
+                                      //       const compareValueB =
+                                      //           sortBy === "aging"
+                                      //               ? b.aging ?? ""
+                                      //               : sortBy === "fullName"
+                                      //               ? b.fullName
+                                      //               : sortBy ===
+                                      //                 b?.dealCardpos2FieldName
+                                      //               ? b?.dealCardpos2FieldValue
+                                      //               : sortBy ===
+                                      //                 b?.dealCardpos3FieldName
+                                      //               ? b?.dealCardpos3FieldValue
+                                      //               : sortBy ===
+                                      //                 b?.dealCardpos4FieldName
+                                      //               ? b?.dealCardpos4FieldValue
+                                      //               : "";
 
-                                          if (a.star === b.star) {
-                                              return b.star - a.star ||
-                                                  sortByAsc
-                                                  ? compareValueA.localeCompare(
-                                                        compareValueB
-                                                    )
-                                                  : compareValueB.localeCompare(
-                                                        compareValueA
-                                                    );
-                                          } else if (a.star) {
-                                              return -1;
-                                          }
+                                      //       if (a.star === b.star) {
+                                      //           return b.star - a.star ||
+                                      //               sortByAsc
+                                      //               ? compareValueA.localeCompare(
+                                      //                     compareValueB
+                                      //                 )
+                                      //               : compareValueB.localeCompare(
+                                      //                     compareValueA
+                                      //                 );
+                                      //       } else if (a.star) {
+                                      //           return -1;
+                                      //       }
 
-                                          return 1;
-                                      })
+                                      //       return 1;
+                                      //   })
                                       .map((deal) => {
                                           return {
                                               id: parseInt(deal.id ?? ""),
@@ -539,9 +524,7 @@ const Deal = () => {
                                             height: "100vh",
                                         }}
                                     >
-                                        {isPipelinesLoading ||
-                                        isLoadingBoardData ||
-                                        !boardData ? (
+                                        {isPipelinesLoading ? (
                                             <div
                                                 style={{
                                                     display: "grid",

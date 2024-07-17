@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\DealPipeline;
+use App\Models\UserSetting;
 use Auth;
 
 class DealPipelinesController extends Controller
@@ -17,10 +18,60 @@ class DealPipelinesController extends Controller
      */
     public function index()
     {
-        return DealPipeline::where('userId', $this->getMainUserId())
-            ->with(['stages'])
+        $pipelines = DealPipeline::where('userId', $this->getMainUserId())
             ->get();
+    
+        $mainUserId = $this->getMainUserId();
+        $settings = UserSetting::where('mainUserId', $mainUserId)->first();
+
+        $data1 = [];
+        foreach($pipelines as $pipeline){
+
+            $stages = [];
+            foreach($pipeline->stages as $stage){
+                $data = [];
+    
+                foreach($stage->deals as $deal){
+                    // Populate the data array with the deal information and additional settings
+                    $data[] = [
+                        'id' => $deal->id,
+                        'pipeline' => $deal->pipeline,
+                        'stage' => $deal->stage,
+                        'aging' => $deal->aging,
+                        'contactId' => $deal->contactId,
+                        'stageId' => $deal->stageId,
+                        'star' => $deal->star,
+                        'pipelineId' => $deal->pipelineId,
+                        'fullName' => $deal->fullName,
+                        'dealCardpos2FieldValue' => $deal->contact->fields[$settings->dealCardpos2FieldId] ?? "",
+                        'dealCardpos2FieldName' => $settings->dealCardpos2FieldId,
+                        'dealCardpos3FieldValue' => $deal->contact->fields[$settings->dealCardpos3FieldId] ?? "",
+                        'dealCardpos3FieldName' => $settings->dealCardpos3FieldId,
+                        'dealCardpos4FieldValue' => $deal->contact->fields[$settings->dealCardpos4FieldId] ?? "",
+                        'dealCardpos4FieldName' => $settings->dealCardpos4FieldId,
+                    ];
+                }
+    
+                // Replace the deals in the stage with the new data array
+                $stages[] = [
+                    'id' => $stage->id,
+                    'name' => $stage->name,
+                    'deals' => $data,
+                ];
+            }
+
+            $data1[] = [
+                'id' => $pipeline->id,
+                'name' => $pipeline->name,
+                'stages' => $stages,
+            ];
+        }
+    
+        // Return the pipelines as JSON response
+        return response()->json($data1, 200);
     }
+    
+    
 
     /**
      * Show the form for creating a new resource.

@@ -22,6 +22,6 @@ class DealPipelineStage extends Model
     
     public function deals()
     {
-        return $this->hasMany('\App\Models\Deal', 'stageId', 'id')->orderBy('sort');
+        return $this->hasMany('\App\Models\Deal', 'stageId', 'id')->limit(15)->orderBy('sort');
     }
 }
