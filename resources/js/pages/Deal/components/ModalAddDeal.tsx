@@ -52,6 +52,9 @@ const ModalAddDeal = ({
         if (contactId) {
             values.contactId = contactId;
         }
+        if (deal) {
+            values.contactId = deal.contactId;
+        }
         if (setUpdatedIds) {
             deal?.stageId && deal?.stageId != stageId
                 ? setUpdatedIds([deal?.stageId, stageId])
@@ -148,7 +151,7 @@ const ModalAddDeal = ({
                 </div>
                 <Row gutter={12} style={{ marginTop: 10 }}>
                     <Col md={24} className="col-1-modal-act">
-                        {selectedRows?.length || contactId ? null : (
+                        {selectedRows?.length || deal || contactId ? null : (
                             <CustomFieldInput
                                 customField={{
                                     type: "contactLookup",
