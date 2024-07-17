@@ -127,44 +127,38 @@ class ContactsController extends Controller
         $userId = $this->getMainUserId();
         $keyword = $request->keyword;
 
-        $data = DB::table('global_search_view')
-            ->where('fullName', 'LIKE', "%$keyword%")
-            ->orWhere('apn', 'LIKE', "%$keyword%")
-            ->orWhere('phoneNumbers', 'LIKE', "%$keyword%")
-            ->distinct()
-            ->limit(10)
-            ->get();
-
-        // Convert phoneNumbers to array format
-        $data->transform(function ($item) {
-            $item->phoneNumbers = json_decode($item->phoneNumbers);
-            unset($item->phoneNumbers);
-            return $item;
-        });
-
-        // $contactIds = CustomFieldValue::select('customableId')
-        //     ->where('value', 'LIKE', "%$keyword%")
-        //     ->whereRaw('customFieldId IN (SELECT id FROM custom_fields WHERE fieldName IN ("firstName", "lastName", "mobile", "phone") OR label = "APN")')
-        //     ->join('contacts as c', 'c.id', '=', 'custom_field_values.customableId')
-        //     ->where('c.userId', $userId)
+        // $data = DB::table('global_search_view')
+        //     ->where('fullName', 'LIKE', "%$keyword%")
+        //     ->orWhere('apn', 'LIKE', "%$keyword%")
+        //     ->orWhere('phoneNumbers', 'LIKE', "%$keyword%")
         //     ->distinct()
         //     ->limit(10)
-        //     ->get()
-        //     ->pluck('customableId');
+        //     ->get();
+            
+
+        $contactIds = CustomFieldValue::select('customableId')
+            ->where('value', 'LIKE', "%$keyword%")
+            ->whereRaw('customFieldId IN (SELECT id FROM custom_fields WHERE fieldName IN ("firstName", "lastName", "mobile", "phone") OR label = "APN")')
+            ->join('contacts as c', 'c.id', '=', 'custom_field_values.customableId')
+            ->where('c.userId', $userId)
+            ->distinct()
+            ->limit(10)
+            ->get()
+            ->pluck('customableId');
 
 
             
-        // $data = [];
-        // foreach($contactIds as $id){
-        //     $contact = Contact::find($id);
-        //     if(!empty($contact)){
-        //         $data[] = [
-        //             'id' => $contact->id,
-        //             'fullName' => $contact->fields['firstName'] . ' ' . $contact->fields['lastName'],
-        //             'phoneNumbers' => $contact->phoneNumbers,
-        //         ];
-        //     }
-        // }
+        $data = [];
+        foreach($contactIds as $id){
+            $contact = Contact::find($id);
+            if(!empty($contact)){
+                $data[] = [
+                    'id' => $contact->id,
+                    'fullName' => $contact->fields['firstName'] . ' ' . $contact->fields['lastName'],
+                    'phoneNumbers' => $contact->phoneNumbers,
+                ];
+            }
+        }
         
         return response()->json([
             'success' => true,
