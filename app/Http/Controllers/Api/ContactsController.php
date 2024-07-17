@@ -134,29 +134,30 @@ class ContactsController extends Controller
         //     ->distinct()
         //     ->limit(10)
         //     ->get();
-        $data = DB::table('contacts as c')
-            ->distinct()
-            ->limit(5)
-            ->select([
-                'c.id',
-                DB::raw('(SELECT GROUP_CONCAT(cfv.value SEPARATOR " ")
-                            FROM custom_field_values cfv
-                            JOIN custom_fields cf ON cf.id = cfv.customFieldId
-                            WHERE cfv.customableId = c.id
-                            AND (cf.fieldName = "firstName" OR cf.fieldName = "lastName")
-                        ) AS fullName'),
-                DB::raw('CONCAT("[", GROUP_CONCAT(
-                                CASE WHEN cf.type IN ("mobile", "phone") THEN cfv.value END
-                                SEPARATOR ", "
-                            ), "]") AS phoneNumbers'),
-                DB::raw('MAX(CASE WHEN cf.label IN ("APN") THEN cfv.value END) AS apn')
-            ])
-            ->leftJoin('custom_field_values as cfv', 'cfv.customableId', '=', 'c.id')
-            ->leftJoin('custom_fields as cf', 'cf.id', '=', 'cfv.customFieldId')
-            ->groupBy('c.id')
-            ->having(DB::raw('fullName LIKE "%'.$keyword.'%" OR phoneNumbers LIKE "%'.$keyword.'%" OR apn LIKE "%'.$keyword.'%"'))
-            ->get();
         
+        $data = DB::table('contacts as c')
+        ->distinct()
+        ->limit(5)
+        ->select([
+            'c.id',
+            DB::raw('(SELECT GROUP_CONCAT(cfv.value ORDER BY FIELD(cf.fieldName, "firstName", "lastName") SEPARATOR " ")
+                        FROM custom_field_values cfv
+                        JOIN custom_fields cf ON cf.id = cfv.customFieldId
+                        WHERE cfv.customableId = c.id
+                        AND cf.fieldName IN ("firstName", "lastName")
+                    ) AS fullName'),
+            DB::raw('CONCAT("[", GROUP_CONCAT(
+                            CASE WHEN cf.type IN ("mobile", "phone") THEN cfv.value END
+                            SEPARATOR ", "
+                        ), "]") AS phoneNumbers'),
+            DB::raw('MAX(CASE WHEN cf.label IN ("APN") THEN cfv.value END) AS apn')
+        ])
+        ->leftJoin('custom_field_values as cfv', 'cfv.customableId', '=', 'c.id')
+        ->leftJoin('custom_fields as cf', 'cf.id', '=', 'cfv.customFieldId')
+        ->groupBy('c.id')
+        ->having(DB::raw('fullName LIKE "%'.$keyword.'%" OR phoneNumbers LIKE "%'.$keyword.'%" OR apn LIKE "%'.$keyword.'%"'))
+        ->get();
+
         // Process phone numbers into arrays
         foreach ($data as $row) {
             $row->phoneNumbers = explode(', ', substr($row->phoneNumbers, 1, -1)); // Remove brackets and then explode
