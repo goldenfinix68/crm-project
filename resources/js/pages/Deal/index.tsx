@@ -203,7 +203,6 @@ const Deal = () => {
             };
         }
     );
-
     const [boardData, setBoardData] = useState<{ lanes: Lane[] } | undefined>();
     const [dealsByStage, setDealsByStage] = useState<DealsByStage>({});
     const [refetchingIds, setRefetchingIds] = useState<number[]>([]);
@@ -257,7 +256,6 @@ const Deal = () => {
             const initialBoardData: { lanes: Lane[] } = {
                 lanes:
                     selectedpipeline?.stages?.map((stage) => {
-                        console.log({ dealsByStage });
                         return {
                             id: stage.id,
                             title: (
@@ -514,14 +512,14 @@ const Deal = () => {
                         </>
                     }
                     {/* {isFetchingDeals && <Spin />} */}
-                    {pipelines ? (
+                    {boardData?.lanes.length ? (
                         <>
                             <div>
                                 <div className="mainDealArrow">
                                     <div
                                         style={{
                                             width: "100%",
-                                            height: "100vh",
+                                            height: "20vh",
                                         }}
                                     >
                                         {isPipelinesLoading ? (
