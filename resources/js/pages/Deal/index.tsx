@@ -203,7 +203,7 @@ const Deal = () => {
 
         const data = await dealsByStageId({
             page: current.page + 1,
-            page_size: 10,
+            page_size: 15,
             stageId: laneId,
             pipelineId: selectedpipeline?.id,
         });
@@ -667,7 +667,6 @@ const Deal = () => {
                                                     style={{
                                                         background:
                                                             "none!important",
-                                                        height: "900px",
                                                     }}
                                                     customCardLayout={true}
                                                     onLaneScroll={handleLane}
