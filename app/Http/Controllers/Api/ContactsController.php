@@ -127,8 +127,17 @@ class ContactsController extends Controller
         $userId = $this->getMainUserId();
         $keyword = $request->keyword;
 
+        // $contactIds = CustomFieldValue::select('customableId')
+        //     ->where('value', 'LIKE', "%$keyword%")
+        //     ->whereRaw('customFieldId IN (SELECT id FROM custom_fields WHERE fieldName IN ("firstName", "lastName", "mobile", "phone") OR label = "APN")')
+        //     ->join('contacts as c', 'c.id', '=', 'custom_field_values.customableId')
+        //     ->where('c.userId', $userId)
+        //     ->distinct()
+        //     ->limit(10)
+        //     ->get()
+        //     ->pluck('customableId');
 
-        $contactIds = DB::table('global_search_view')
+        $contacts = DB::table('global_search_view')
             ->select('id')
             ->where('fullName', 'LIKE', "%$keyword%")
             ->orWhere('apn', 'LIKE', "%$keyword%")
@@ -138,18 +147,6 @@ class ContactsController extends Controller
             ->get()
             ->pluck('id');
 
-            
-        $data = [];
-        foreach($contactIds as $id){
-            $contact = Contact::find($id);
-            if(!empty($contact)){
-                $data[] = [
-                    'id' => $contact->id,
-                    'fullName' => $contact->fields['firstName'] . ' ' . $contact->fields['lastName'],
-                    'phoneNumbers' => $contact->phoneNumbers,
-                ];
-            }
-        }
         
         return response()->json([
             'success' => true,
