@@ -99,11 +99,12 @@ const DealCard = ({
     };
 
     return (
-        <Tooltip title={deal.fullName}>
+        <Tooltip title={deal.fullName} style={{ overflow: "hidden" }}>
             <Card
-                className="w-100 p-0"
+                className=" p-0"
                 bodyStyle={{ padding: "12px" }}
                 loading={isContactFieldsLoading}
+                style={{ width: "250px" }}
             >
                 <Space className="w-100" direction="vertical" size={0}>
                     <Space
@@ -219,8 +220,14 @@ const DealCard = ({
                             />
                         </div>
                     </Space>
-                    <Row>
-                        <Col span={12}>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginTop: "auto",
+                        }}
+                    >
+                        <div style={{ width: "50%" }}>
                             <TextEllipsis
                                 style={{
                                     fontWeight:
@@ -231,31 +238,36 @@ const DealCard = ({
                             >
                                 {deal.fullName}
                             </TextEllipsis>
-                        </Col>
-                        <Col span={12}>
-                            {settings?.dealCardpos2FieldId ? (
-                                <div style={{ float: "right" }}>
-                                    <TextEllipsis
-                                        style={{
-                                            fontWeight:
-                                                sortBy ==
-                                                settings?.dealCardpos2FieldId
-                                                    ? "bold"
-                                                    : "normal",
-                                        }}
-                                    >
-                                        {getLabel(
-                                            deal.dealCardpos2FieldName,
-                                            deal.dealCardpos2FieldValue
-                                        )}
-                                    </TextEllipsis>
-                                </div>
-                            ) : null}
-                        </Col>
-                    </Row>
+                        </div>
 
-                    <Row gutter={12}>
-                        <Col span={12}>
+                        <div style={{ width: "50%" }}>
+                            {settings?.dealCardpos2FieldId ? (
+                                <TextEllipsis
+                                    style={{
+                                        fontWeight:
+                                            sortBy ==
+                                            settings?.dealCardpos2FieldId
+                                                ? "bold"
+                                                : "normal",
+                                    }}
+                                >
+                                    {getLabel(
+                                        deal.dealCardpos2FieldName,
+                                        deal.dealCardpos2FieldValue
+                                    )}
+                                </TextEllipsis>
+                            ) : null}
+                        </div>
+                    </div>
+
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginTop: "auto",
+                        }}
+                    >
+                        <div style={{ width: "50%" }}>
                             {settings?.dealCardpos3FieldId ? (
                                 <TextEllipsis
                                     style={{
@@ -274,9 +286,9 @@ const DealCard = ({
                             ) : (
                                 <></>
                             )}
-                        </Col>
+                        </div>
 
-                        <Col span={12} className="w-100">
+                        <div style={{ width: "50%" }}>
                             {settings?.dealCardpos4FieldId ? (
                                 <TextEllipsis
                                     style={{
@@ -296,8 +308,8 @@ const DealCard = ({
                             ) : (
                                 <></>
                             )}
-                        </Col>
-                    </Row>
+                        </div>
+                    </div>
                 </Space>
             </Card>
         </Tooltip>
