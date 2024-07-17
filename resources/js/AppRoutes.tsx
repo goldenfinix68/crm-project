@@ -12,6 +12,27 @@ import AdminDashboard from "./pages/SuperAdmin/Dashboard/AdminDashboard";
 import AdminUsers from "./pages/SuperAdmin/Users/AdminUsers";
 import { Card, Layout, theme } from "antd";
 import LoadingComponent2 from "./components/LoadingComponent2";
+import CallForwarding from "./pages/Setup/CallForwarding";
+import Users from "./pages/Users";
+import PageDashboard from "./pages/PageDashboard/PageDashboard";
+import AddEditUser from "./pages/Users/AddEditUser";
+import ContactView from "./pages/ContactView";
+import Contacts from "./pages/PageContacts/Contacts";
+import MergeContacts from "./pages/PageContacts/MergeContacts";
+import Deal from "./pages/Deal";
+import BulkAction from "./pages/PageContacts/BulkAction";
+import TextTemplates from "./pages/TextTemplates";
+import TextBoxView from "./pages/Texts/components/TextBoxView";
+import Setup from "./pages/Setup/Setup";
+import ContactSetup from "./pages/ContactSetup";
+import DealSetup from "./pages/DealSetup";
+import DealPipelineSetup from "./pages/DealPipelineSetup";
+import ComponentImportData from "./pages/Setup/Components/ComponentImportData";
+import RoorDataMapping from "./pages/Setup/Components/RoorDataMapping";
+import StopWordList from "./pages/Setup/Components/StopWordList";
+import OpenPhoneAudioImport from "./pages/Setup/Components/OpenPhoneAudioImport";
+import ImportDataGSheet from "./pages/Setup/Components/ImportDataGSheet";
+import ImportDataGSheetHistory from "./pages/Setup/Components/ImportDataGSheetHistory";
 
 const AppRoutes = () => {
     const { user, isLoading, isError } = useLoggedInUser();
@@ -24,55 +45,55 @@ const AppRoutes = () => {
         window.location.href = "/";
     }
 
-    const LazyContactView = React.lazy(() => import("./pages/ContactView"));
-    const LazyPageDashboard = React.lazy(
-        () => import("./pages/PageDashboard/PageDashboard")
-    );
-    const LazyCallForwarding = React.lazy(
-        () => import("./pages/Setup/CallForwarding")
-    );
-    const LazyUsers = React.lazy(() => import("./pages/Users"));
-    const LazyAddEditUser = React.lazy(
-        () => import("./pages/Users/AddEditUser")
-    );
-    const LazyContacts = React.lazy(
-        () => import("./pages/PageContacts/Contacts")
-    );
-    const LazyMergeContacts = React.lazy(
-        () => import("./pages/PageContacts/MergeContacts")
-    );
-    const LazyDeal = React.lazy(() => import("./pages/Deal"));
-    const LazyTextTemplates = React.lazy(() => import("./pages/TextTemplates"));
-    const LazyTextBoxView = React.lazy(
-        () => import("./pages/Texts/components/TextBoxView")
-    );
-    const LazySetup = React.lazy(() => import("./pages/Setup/Setup"));
-    const LazyContactSetup = React.lazy(() => import("./pages/ContactSetup"));
-    const LazyDealSetup = React.lazy(() => import("./pages/DealSetup"));
-    const LazyDealPipelineSetup = React.lazy(
-        () => import("./pages/DealPipelineSetup")
-    );
-    const LazyRoorDataMapping = React.lazy(
-        () => import("./pages/Setup/Components/RoorDataMapping")
-    );
-    const LazyStopWordList = React.lazy(
-        () => import("./pages/Setup/Components/StopWordList")
-    );
-    const LazyOpenPhoneAudioImport = React.lazy(
-        () => import("./pages/Setup/Components/OpenPhoneAudioImport")
-    );
-    const LazyImportDataGSheet = React.lazy(
-        () => import("./pages/Setup/Components/ImportDataGSheet")
-    );
-    const LazyImportDataGSheetHistory = React.lazy(
-        () => import("./pages/Setup/Components/ImportDataGSheetHistory")
-    );
-    const LazyComponentImportData = React.lazy(
-        () => import("./pages/Setup/Components/ComponentImportData")
-    );
-    const LazyBulkAction = React.lazy(
-        () => import("./pages/PageContacts/BulkAction")
-    );
+    // const LazyContactView = React.lazy(() => import("./pages/ContactView"));
+    // const LazyPageDashboard = React.lazy(
+    //     () => import("./pages/PageDashboard/PageDashboard")
+    // );
+    // const LazyCallForwarding = React.lazy(
+    //     () => import("./pages/Setup/CallForwarding")
+    // );
+    // const LazyUsers = React.lazy(() => import("./pages/Users"));
+    // const LazyAddEditUser = React.lazy(
+    //     () => import("./pages/Users/AddEditUser")
+    // );
+    // const LazyContacts = React.lazy(
+    //     () => import("./pages/PageContacts/Contacts")
+    // );
+    // const LazyMergeContacts = React.lazy(
+    //     () => import("./pages/PageContacts/MergeContacts")
+    // );
+    // const LazyDeal = React.lazy(() => import("./pages/Deal"));
+    // const LazyTextTemplates = React.lazy(() => import("./pages/TextTemplates"));
+    // const LazyTextBoxView = React.lazy(
+    //     () => import("./pages/Texts/components/TextBoxView")
+    // );
+    // const LazySetup = React.lazy(() => import("./pages/Setup/Setup"));
+    // const LazyContactSetup = React.lazy(() => import("./pages/ContactSetup"));
+    // const LazyDealSetup = React.lazy(() => import("./pages/DealSetup"));
+    // const LazyDealPipelineSetup = React.lazy(
+    //     () => import("./pages/DealPipelineSetup")
+    // );
+    // const LazyRoorDataMapping = React.lazy(
+    //     () => import("./pages/Setup/Components/RoorDataMapping")
+    // );
+    // const LazyStopWordList = React.lazy(
+    //     () => import("./pages/Setup/Components/StopWordList")
+    // );
+    // const LazyOpenPhoneAudioImport = React.lazy(
+    //     () => import("./pages/Setup/Components/OpenPhoneAudioImport")
+    // );
+    // const LazyImportDataGSheet = React.lazy(
+    //     () => import("./pages/Setup/Components/ImportDataGSheet")
+    // );
+    // const LazyImportDataGSheetHistory = React.lazy(
+    //     () => import("./pages/Setup/Components/ImportDataGSheetHistory")
+    // );
+    // const LazyComponentImportData = React.lazy(
+    //     () => import("./pages/Setup/Components/ComponentImportData")
+    // );
+    // const LazyBulkAction = React.lazy(
+    //     () => import("./pages/PageContacts/BulkAction")
+    // );
 
     return (
         <>
@@ -104,7 +125,7 @@ const AppRoutes = () => {
                                     path="/dashboard"
                                     element={
                                         <PrivateRoute title="Dashboard">
-                                            <LazyPageDashboard props={""} />
+                                            <PageDashboard props={""} />
                                         </PrivateRoute>
                                     }
                                 />
@@ -115,7 +136,7 @@ const AppRoutes = () => {
                                             accessibleTo={allowedroleToAccess}
                                         >
                                             <SetupLayout
-                                                content={<LazyCallForwarding />}
+                                                content={<CallForwarding />}
                                                 title="Call Forwarding"
                                             />
                                         </PrivateRoute>
@@ -128,7 +149,7 @@ const AppRoutes = () => {
                                             accessibleTo={allowedroleToAccess}
                                         >
                                             <SetupLayout
-                                                content={<LazyUsers />}
+                                                content={<Users />}
                                                 title="Users"
                                             />
                                         </PrivateRoute>
@@ -141,7 +162,7 @@ const AppRoutes = () => {
                                             accessibleTo={allowedroleToAccess}
                                         >
                                             <SetupLayout
-                                                content={<LazyAddEditUser />}
+                                                content={<AddEditUser />}
                                                 title="Users"
                                             />
                                         </PrivateRoute>
@@ -154,7 +175,7 @@ const AppRoutes = () => {
                                             accessibleTo={allowedroleToAccess}
                                         >
                                             <SetupLayout
-                                                content={<LazyAddEditUser />}
+                                                content={<AddEditUser />}
                                                 title="Users"
                                             />
                                         </PrivateRoute>
@@ -164,7 +185,7 @@ const AppRoutes = () => {
                                     path="/contacts/:contactId"
                                     element={
                                         <PrivateRoute title="Contacts">
-                                            <LazyContactView />
+                                            <ContactView />
                                         </PrivateRoute>
                                     }
                                 />
@@ -172,7 +193,7 @@ const AppRoutes = () => {
                                     path="/contacts/:contactId/:contactName"
                                     element={
                                         <PrivateRoute title="Contacts">
-                                            <LazyContactView />
+                                            <ContactView />
                                         </PrivateRoute>
                                     }
                                 />
@@ -180,19 +201,19 @@ const AppRoutes = () => {
                                     path="/contacts"
                                     element={
                                         <PrivateRoute title="Contacts">
-                                            <LazyContacts />
+                                            <Contacts />
                                         </PrivateRoute>
                                     }
                                 />
                                 <Route
                                     path="/contacts/mergeContacts"
-                                    element={<LazyMergeContacts />}
+                                    element={<MergeContacts />}
                                 />
                                 <Route
                                     path="/deals"
                                     element={
                                         <PrivateRoute title="Deals">
-                                            <LazyDeal />
+                                            <Deal />
                                         </PrivateRoute>
                                     }
                                 />
@@ -200,7 +221,7 @@ const AppRoutes = () => {
                                     path="/bulk-action"
                                     element={
                                         <PrivateRoute>
-                                            <LazyBulkAction />
+                                            <BulkAction />
                                         </PrivateRoute>
                                     }
                                 />
@@ -208,7 +229,7 @@ const AppRoutes = () => {
                                     path="/text-templates"
                                     element={
                                         <PrivateRoute>
-                                            <LazyTextTemplates />
+                                            <TextTemplates />
                                         </PrivateRoute>
                                     }
                                 />
@@ -216,7 +237,7 @@ const AppRoutes = () => {
                                     path="/text-templates/:route"
                                     element={
                                         <PrivateRoute>
-                                            <LazyTextTemplates />
+                                            <TextTemplates />
                                         </PrivateRoute>
                                     }
                                 />
@@ -224,7 +245,7 @@ const AppRoutes = () => {
                                     path="/text-threads"
                                     element={
                                         <PrivateRoute title="Texts">
-                                            <LazyTextBoxView />
+                                            <TextBoxView />
                                         </PrivateRoute>
                                     }
                                 />
@@ -232,7 +253,7 @@ const AppRoutes = () => {
                                     path="/text-threads/:threadId"
                                     element={
                                         <PrivateRoute title="Texts">
-                                            <LazyTextBoxView />
+                                            <TextBoxView />
                                         </PrivateRoute>
                                     }
                                 />
@@ -240,7 +261,7 @@ const AppRoutes = () => {
                                     path="/text-threads/contact/:contactId"
                                     element={
                                         <PrivateRoute title="Texts">
-                                            <LazyTextBoxView />
+                                            <TextBoxView />
                                         </PrivateRoute>
                                     }
                                 />
@@ -248,7 +269,7 @@ const AppRoutes = () => {
                                     path="/setup"
                                     element={
                                         <PrivateRoute>
-                                            <LazySetup />
+                                            <Setup />
                                         </PrivateRoute>
                                     }
                                 />
@@ -259,7 +280,7 @@ const AppRoutes = () => {
                                             accessibleTo={allowedroleToAccess}
                                         >
                                             <SetupLayout
-                                                content={<LazyContactSetup />}
+                                                content={<ContactSetup />}
                                                 title="Contact"
                                             />
                                         </PrivateRoute>
@@ -272,7 +293,7 @@ const AppRoutes = () => {
                                             accessibleTo={allowedroleToAccess}
                                         >
                                             <SetupLayout
-                                                content={<LazyDealSetup />}
+                                                content={<DealSetup />}
                                                 title="Deal"
                                             />
                                         </PrivateRoute>
@@ -285,9 +306,7 @@ const AppRoutes = () => {
                                             accessibleTo={allowedroleToAccess}
                                         >
                                             <SetupLayout
-                                                content={
-                                                    <LazyDealPipelineSetup />
-                                                }
+                                                content={<DealPipelineSetup />}
                                                 title="Deal Pipeline"
                                             />
                                         </PrivateRoute>
@@ -299,7 +318,7 @@ const AppRoutes = () => {
                                         <PrivateRoute>
                                             <SetupLayout
                                                 content={
-                                                    <LazyComponentImportData />
+                                                    <ComponentImportData />
                                                 }
                                                 title="Import Data"
                                             />
@@ -312,9 +331,7 @@ const AppRoutes = () => {
                                     element={
                                         <PrivateRoute>
                                             <SetupLayout
-                                                content={
-                                                    <LazyRoorDataMapping />
-                                                }
+                                                content={<RoorDataMapping />}
                                                 title="Roor Data Mapping"
                                             />
                                         </PrivateRoute>
@@ -325,7 +342,7 @@ const AppRoutes = () => {
                                     element={
                                         <PrivateRoute>
                                             <SetupLayout
-                                                content={<LazyStopWordList />}
+                                                content={<StopWordList />}
                                                 title=""
                                             />
                                         </PrivateRoute>
@@ -337,7 +354,7 @@ const AppRoutes = () => {
                                         <PrivateRoute>
                                             <SetupLayout
                                                 content={
-                                                    <LazyOpenPhoneAudioImport />
+                                                    <OpenPhoneAudioImport />
                                                 }
                                                 title="Manual Audio Import"
                                             />
@@ -350,9 +367,7 @@ const AppRoutes = () => {
                                     element={
                                         <PrivateRoute>
                                             <SetupLayout
-                                                content={
-                                                    <LazyImportDataGSheet />
-                                                }
+                                                content={<ImportDataGSheet />}
                                                 title="Import Data From Google Sheet"
                                             />
                                         </PrivateRoute>
@@ -365,7 +380,7 @@ const AppRoutes = () => {
                                         <PrivateRoute>
                                             <SetupLayout
                                                 content={
-                                                    <LazyImportDataGSheetHistory />
+                                                    <ImportDataGSheetHistory />
                                                 }
                                                 title="Import Data From Google Sheet"
                                             />
