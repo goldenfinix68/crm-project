@@ -20,6 +20,7 @@ import { TDeal } from "../../../entities";
 import CustomFieldInput from "../../../components/CustomFieldInput";
 import { dealPipelines } from "../../../api/query/dealQuery";
 import queryClient from "../../../queryClient";
+import SelectContact from "../../../components/SelectContact";
 interface Props {
     isModalOpen: boolean;
     closeModal: () => void;
@@ -27,12 +28,14 @@ interface Props {
     deal?: TDeal;
     selectedRows?: React.Key[];
     contactId?: string;
+    setUpdatedIds?: (ids: number[]) => void;
 }
 
 const ModalAddDeal = ({
     isModalOpen,
     closeModal,
     handleSubmit,
+    setUpdatedIds,
     deal,
     selectedRows,
     contactId,
@@ -49,7 +52,12 @@ const ModalAddDeal = ({
         if (contactId) {
             values.contactId = contactId;
         }
-
+        if (setUpdatedIds) {
+            deal?.stageId && deal?.stageId != stageId
+                ? setUpdatedIds([deal?.stageId, stageId])
+                : setUpdatedIds([stageId]);
+        }
+        console.log("Form Values", values);
         saveDeal.mutate({
             ...values,
             id: deal?.id ? deal.id : "",

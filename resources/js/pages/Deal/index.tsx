@@ -195,60 +195,10 @@ const Deal = () => {
     const [boardData, setBoardData] = useState<{ lanes: Lane[] } | undefined>();
 
     const [dealsByStage, setDealsByStage] = useState<DealsByStage>({});
-    const [fetchingDealsByStage, setFetchingDealsByStage] =
-        useState<boolean>(false);
+    const [refetchingIds, setRefetchingIds] = useState<number[]>([]);
+    const [refetching, setRefetching] = useState<boolean>(false);
 
-    const fetchDealsByStage = async () => {
-        const newDealsByStage = {};
-
-        await Promise.all(
-            selectedpipeline?.stages?.map(async (stage) => {
-                const current = { page: 0, data: [] };
-                const data = await dealsByStageId({
-                    page: current.page + 1,
-                    page_size: 10,
-                    stageId: stage.id,
-                    pipelineId: selectedpipeline?.id,
-                });
-
-                if (data.length) {
-                    newDealsByStage[stage.id] = {
-                        page: current.page + 1,
-                        data: [...current.data, ...data],
-                    };
-                } else {
-                    newDealsByStage[stage.id] = current;
-                }
-            }) ?? []
-        );
-
-        //setIsLoadingBoardData(false);
-        setDealsByStage(newDealsByStage);
-    };
-
-    useEffect(() => {
-        if (
-            listBoard != "List" &&
-            (!isPipelinesLoading || fetchingDealsByStage)
-        ) {
-            //setIsLoadingBoardData(true);
-            fetchDealsByStage();
-            setFetchingDealsByStage(false);
-        }
-    }, [
-        dealPipelines,
-        isPipelinesLoading,
-        fetchingDealsByStage,
-        listBoard,
-        sortBy,
-        sortByAsc,
-        selectedpipeline?.stages,
-    ]);
-
-    const handleLane = async (requestedPage, laneId) => {
-        //setIsLoadingBoardData(true);
-        const newDealsByStage = { ...dealsByStage };
-
+    const fetchLane = async (laneId, dealsByStage = {}) => {
         const current = dealsByStage[laneId] ?? { page: 0, data: [] };
 
         const data = await dealsByStageId({
@@ -258,16 +208,60 @@ const Deal = () => {
             pipelineId: selectedpipeline?.id,
         });
 
-        if (data.length) {
-            newDealsByStage[laneId] = {
-                page: current.page + 1,
-                data: [...current.data, ...data],
-            };
-        } else {
-            newDealsByStage[laneId] = current;
-        }
+        return data.length
+            ? {
+                  page: current.page + 1,
+                  data: [...current.data, ...data],
+              }
+            : current;
+    };
 
-        //setIsLoadingBoardData(false);
+    useEffect(() => {
+        const fetchDealsByStage = async () => {
+            const newDealsByStage = {};
+
+            await Promise.all(
+                selectedpipeline?.stages?.map(async (stage) => {
+                    newDealsByStage[stage.id] = await fetchLane(stage.id);
+                }) ?? []
+            );
+
+            setDealsByStage(newDealsByStage);
+        };
+
+        if (listBoard != "List" && !isPipelinesLoading) {
+            fetchDealsByStage();
+        }
+    }, [
+        isPipelinesLoading,
+        listBoard,
+        sortBy,
+        sortByAsc,
+        selectedpipeline?.stages,
+    ]);
+
+    useEffect(() => {
+        const refetchingDealsByStage = async () => {
+            const newDealsByStage = { ...dealsByStage };
+            await Promise.all(
+                refetchingIds.map(async (id) => {
+                    newDealsByStage[id] = await fetchLane(id);
+                })
+            );
+            setRefetchingIds([]);
+            setRefetching(false);
+            setDealsByStage(newDealsByStage);
+        };
+        if (refetchingIds.length && refetching) {
+            console.log("Refetching", refetchingIds);
+            refetchingDealsByStage();
+        }
+    }, [refetchingIds, refetching]);
+
+    const handleLane = async (requestedPage, laneId) => {
+        const newDealsByStage = { ...dealsByStage };
+        newDealsByStage[laneId] = await fetchLane(laneId, dealsByStage);
+
         setDealsByStage(newDealsByStage);
     };
 
@@ -372,6 +366,7 @@ const Deal = () => {
         onSuccess: (res) => {
             queryClient.invalidateQueries("dealPipelines");
             queryClient.invalidateQueries("deals");
+            setRefetching(true);
         },
     });
 
@@ -627,8 +622,8 @@ const Deal = () => {
                                                 height: "100vh",
                                             }}
                                         >
-                                            {isFetchingDeals ||
-                                            isLoadingDeals ? (
+                                            {
+                                                /*refetching ? (
                                                 <div
                                                     style={{
                                                         display: "grid",
@@ -638,7 +633,7 @@ const Deal = () => {
                                                 >
                                                     <Spin />
                                                 </div>
-                                            ) : (
+                                            ) :*/
                                                 <Board
                                                     draggable
                                                     data={boardData}
@@ -659,7 +654,7 @@ const Deal = () => {
                                                     customCardLayout={true}
                                                     onLaneScroll={handleLane}
                                                     // onDataChange={onDataChangeBoard}
-                                                    onCardMoveAcrossLanes={(
+                                                    onCardMoveAcrossLanes={async (
                                                         fromLaneId,
                                                         toLaneId,
                                                         cardId,
@@ -670,6 +665,18 @@ const Deal = () => {
                                                             toLaneId
                                                         );
 
+                                                        if (
+                                                            fromLaneId ==
+                                                            toLaneId
+                                                        ) {
+                                                            return;
+                                                        }
+
+                                                        setRefetchingIds([
+                                                            fromLaneId,
+                                                            toLaneId,
+                                                        ]);
+
                                                         moveCardAcrossLanes.mutate(
                                                             {
                                                                 dealId: cardId,
@@ -677,13 +684,9 @@ const Deal = () => {
                                                                     toLaneId,
                                                             }
                                                         );
-
-                                                        setFetchingDealsByStage(
-                                                            true
-                                                        );
                                                     }}
                                                 />
-                                            )}
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -727,8 +730,9 @@ const Deal = () => {
                         isModalOpen={isModalOpenAdd}
                         handleSubmit={() => {
                             console.log("qwe");
-                            setFetchingDealsByStage(true);
+                            setRefetching(true);
                         }}
+                        setUpdatedIds={(ids) => setRefetchingIds(ids)}
                         closeModal={() => {
                             setIsModalOpenAdd(false);
                             setSelectedDeal(undefined);
