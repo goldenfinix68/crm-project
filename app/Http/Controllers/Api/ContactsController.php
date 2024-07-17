@@ -127,42 +127,26 @@ class ContactsController extends Controller
         $userId = $this->getMainUserId();
         $keyword = $request->keyword;
 
-        // $contacts = Contact::select('contacts.*')
-        //     ->where('userId', $userId)
-        //     ->join('custom_field_values as cfv', 'cfv.customableId', '=', 'contacts.id')
-        //     ->where('cfv.value', 'LIKE', "%$keyword%");
-        //     // ->orWhereRaw('(SELECT GROUP_CONCAT(cfv.value SEPARATOR " ") AS full_name
-        //     //     FROM custom_field_values cfv
-        //     //     JOIN custom_fields cf ON cf.id = cfv.customFieldId
-        //     //     WHERE cf.fieldName IN ("firstName", "lastName") AND cfv.customableId = contacts.id) LIKE ?', ["%$keyword%"]);
-
-        // $result = $contacts->distinct()->paginate(10);
-
-        // return response()->json([
-        //     'success' => true,
-        //     'data' => $result,
-        // ], 200);
-
-
-
         $contactIds = CustomFieldValue::select('customableId')
             ->where('value', 'LIKE', "%$keyword%")
             ->whereRaw('customFieldId IN (SELECT id FROM custom_fields WHERE fieldName IN ("firstName", "lastName", "mobile", "phone") OR label = "APN")')
             ->join('contacts as c', 'c.id', '=', 'custom_field_values.customableId')
             ->where('c.userId', $userId)
             ->distinct()
-            ->limit(20)
+            ->limit(10)
             ->get()
             ->pluck('customableId');
             
         $data = [];
         foreach($contactIds as $id){
             $contact = Contact::find($id);
-            $data[] = [
-                'id' => $contact->id,
-                'fullName' => $contact->fields['firstName'] . ' ' . $contact->fields['lastName'],
-                'phoneNumbers' => $contact->phoneNumbers,
-            ];
+            if(!empty($contact)){
+                $data[] = [
+                    'id' => $contact->id,
+                    'fullName' => $contact->fields['firstName'] . ' ' . $contact->fields['lastName'],
+                    'phoneNumbers' => $contact->phoneNumbers,
+                ];
+            }
         }
         
         return response()->json([
