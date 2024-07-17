@@ -134,31 +134,58 @@ class ContactsController extends Controller
         //     ->distinct()
         //     ->limit(10)
         //     ->get();
-            
-
-        $contactIds = CustomFieldValue::select('customableId')
-            ->where('value', 'LIKE', "%$keyword%")
-            ->whereRaw('customFieldId IN (SELECT id FROM custom_fields WHERE fieldName IN ("firstName", "lastName", "mobile", "phone") OR label = "APN")')
-            ->join('contacts as c', 'c.id', '=', 'custom_field_values.customableId')
-            ->where('c.userId', $userId)
-            ->distinct()
-            ->limit(10)
-            ->get()
-            ->pluck('customableId');
-
-
-            
-        $data = [];
-        foreach($contactIds as $id){
-            $contact = Contact::find($id);
-            if(!empty($contact)){
-                $data[] = [
-                    'id' => $contact->id,
-                    'fullName' => $contact->fields['firstName'] . ' ' . $contact->fields['lastName'],
-                    'phoneNumbers' => $contact->phoneNumbers,
-                ];
-            }
+        $data = DB::table('contacts as c')
+            ->select([
+                'c.id',
+                DB::raw('(SELECT GROUP_CONCAT(cfv.value SEPARATOR " ")
+                            FROM custom_field_values cfv
+                            JOIN custom_fields cf ON cf.id = cfv.customFieldId
+                            WHERE cfv.customableId = c.id
+                            AND (cf.fieldName = "firstName" OR cf.fieldName = "lastName")
+                        ) AS fullName'),
+                DB::raw('CONCAT("[", GROUP_CONCAT(
+                                CASE WHEN cf.type IN ("mobile", "phone") THEN cfv.value END
+                                SEPARATOR ", "
+                            ), "]") AS phoneNumbers'),
+                DB::raw('MAX(CASE WHEN cf.label IN ("APN") THEN cfv.value END) AS apn')
+            ])
+            ->leftJoin('custom_field_values as cfv', 'cfv.customableId', '=', 'c.id')
+            ->leftJoin('custom_fields as cf', 'cf.id', '=', 'cfv.customFieldId')
+            ->groupBy('c.id')
+            ->having(DB::raw('fullName LIKE "%'.$keyword.'%" OR phoneNumbers LIKE "%'.$keyword.'%" OR apn LIKE "%'.$keyword.'%"'))
+            ->get();
+        
+        // Process phone numbers into arrays
+        foreach ($data as $row) {
+            $row->phoneNumbers = explode(', ', substr($row->phoneNumbers, 1, -1)); // Remove brackets and then explode
         }
+    
+
+            
+
+        // $contactIds = CustomFieldValue::select('customableId')
+        //     ->where('value', 'LIKE', "%$keyword%")
+        //     ->whereRaw('customFieldId IN (SELECT id FROM custom_fields WHERE fieldName IN ("firstName", "lastName", "mobile", "phone") OR label = "APN")')
+        //     ->join('contacts as c', 'c.id', '=', 'custom_field_values.customableId')
+        //     ->where('c.userId', $userId)
+        //     ->distinct()
+        //     ->limit(10)
+        //     ->get()
+        //     ->pluck('customableId');
+
+
+            
+        // $data = [];
+        // foreach($contactIds as $id){
+        //     $contact = Contact::find($id);
+        //     if(!empty($contact)){
+        //         $data[] = [
+        //             'id' => $contact->id,
+        //             'fullName' => $contact->fields['firstName'] . ' ' . $contact->fields['lastName'],
+        //             'phoneNumbers' => $contact->phoneNumbers,
+        //         ];
+        //     }
+        // }
         
         return response()->json([
             'success' => true,
