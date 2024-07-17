@@ -461,7 +461,6 @@ const Deal = () => {
             id: deal.id,
         });
     };
-    console.log("IsLoadingBoardData", isLoadingBoardData);
     return (
         <Row className="deal-group-row">
             <Col md={24}>
@@ -651,7 +650,9 @@ const Deal = () => {
                     {/* {isFetchingDeals && <Spin />} */}
                     {pipelines ? (
                         <>
-                            {listBoard != "List" && !isRoleStats ? (
+                            {boardData &&
+                            listBoard != "List" &&
+                            !isRoleStats ? (
                                 <div>
                                     <div className="mainDealArrow">
                                         <div
@@ -776,7 +777,7 @@ const Deal = () => {
                     <DealCardConfigureModal
                         isModalOpen={isConfigureModalOpen}
                         handleSubmit={() => {
-                            console.log("qwe");
+                            console.log("Deal Card Config", selectedpipeline);
                             const stageIds: number[] =
                                 selectedpipeline?.stages?.map((stage) =>
                                     Number(stage.id)
