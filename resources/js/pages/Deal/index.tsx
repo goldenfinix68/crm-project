@@ -29,7 +29,7 @@ import {
 } from "@ant-design/icons";
 import ModalAddDeal from "./components/ModalAddDeal";
 import Board from "react-trello";
-import { dealPipelines, useDealsAll } from "../../api/query/dealQuery";
+import { dealPipelines } from "../../api/query/dealQuery";
 import { useMutation, useQueryClient } from "react-query";
 import {
     dealsByStageId,
@@ -143,8 +143,7 @@ const Deal = () => {
     };
 
     const [isConfigureModalOpen, setIsConfigureModalOpen] = useState(false);
-    const { deals, isLoadingDeals, refetch, isFetchingDeals } =
-        useDealsAll(filterPage);
+
     let selectedpipeline = pipelines?.find(
         (pipeline) => pipeline.id === filterPage.pipelineId
     );
@@ -163,11 +162,6 @@ const Deal = () => {
         fetchTotalDeals();
     }, [selectedpipeline]);
 
-    useEffect(() => {
-        console.log("isFetchingDeals", isFetchingDeals);
-        return () => {};
-    }, [isFetchingDeals]);
-
     const [selectedDeal, setSelectedDeal] = useState<TDeal | undefined>(
         undefined
     );
@@ -179,12 +173,6 @@ const Deal = () => {
     const showModalAdd = () => {
         setIsModalOpenAdd(true);
     };
-
-    useEffect(() => {
-        if (filterPage.pipelineId) {
-            refetch();
-        }
-    }, [filterPage]);
 
     const pipelineDropdownItem: MenuProps["items"] = pipelines?.map(
         (pipeline) => {
@@ -206,7 +194,6 @@ const Deal = () => {
         }
     );
 
-    const [listBoard, setListBoard] = useState("Board");
     const [boardData, setBoardData] = useState<{ lanes: Lane[] } | undefined>();
     const [isLoadingBoardData, setIsLoadingBoardData] =
         useState<boolean>(false);
@@ -251,16 +238,10 @@ const Deal = () => {
     }, [isLoadingBoardData]);
 
     useEffect(() => {
-        if (listBoard != "List" && !isPipelinesLoading) {
+        if (!isPipelinesLoading) {
             setIsLoadingBoardData(true);
         }
-    }, [
-        isPipelinesLoading,
-        listBoard,
-        sortBy,
-        sortByAsc,
-        selectedpipeline?.stages,
-    ]);
+    }, [isPipelinesLoading, sortBy, sortByAsc, selectedpipeline?.stages]);
 
     useEffect(() => {
         console.log("Refetching ", refetchingIds, refetching);
@@ -289,146 +270,130 @@ const Deal = () => {
 
     useEffect(() => {
         if (dealsByStage) {
-            if (listBoard != "List") {
-                const initialBoardData: { lanes: Lane[] } = {
-                    lanes:
-                        selectedpipeline?.stages?.map((stage) => {
-                            return {
-                                id: stage.id,
-                                title: (
-                                    <div className="item-deals-header">
-                                        <div className="arrow top"></div>
-                                        <div className="content">
-                                            {stage.name}
-                                        </div>
-                                        <div className="arrow bottom"></div>
-                                        <span className="add-deals">
-                                            <PlusSquareOutlined
-                                                onClick={() =>
-                                                    setIsModalOpenAdd(true)
-                                                }
-                                            />
-                                        </span>
-                                    </div>
-                                ),
-                                style: {
-                                    width: 280,
-                                },
-                                label: "",
-                                cards: dealsByStage[stage.id]?.data
-                                    ? dealsByStage[stage.id]?.data
-                                          ?.slice() // Create a shallow copy of the array to avoid mutating the original array
-                                          .sort((a, b) => {
-                                              const compareValueA =
-                                                  sortBy === "aging"
-                                                      ? a.aging ?? ""
-                                                      : sortBy === "fullName"
-                                                      ? a.fullName
-                                                      : sortBy ===
-                                                        a?.dealCardpos2FieldName
-                                                      ? a?.dealCardpos2FieldValue
-                                                      : sortBy ===
-                                                        a?.dealCardpos3FieldName
-                                                      ? a?.dealCardpos3FieldValue
-                                                      : sortBy ===
-                                                        a?.dealCardpos4FieldName
-                                                      ? a?.dealCardpos4FieldValue
-                                                      : "";
-                                              const compareValueB =
-                                                  sortBy === "aging"
-                                                      ? b.aging ?? ""
-                                                      : sortBy === "fullName"
-                                                      ? b.fullName
-                                                      : sortBy ===
-                                                        b?.dealCardpos2FieldName
-                                                      ? b?.dealCardpos2FieldValue
-                                                      : sortBy ===
-                                                        b?.dealCardpos3FieldName
-                                                      ? b?.dealCardpos3FieldValue
-                                                      : sortBy ===
-                                                        b?.dealCardpos4FieldName
-                                                      ? b?.dealCardpos4FieldValue
-                                                      : "";
+            const initialBoardData: { lanes: Lane[] } = {
+                lanes:
+                    selectedpipeline?.stages?.map((stage) => {
+                        return {
+                            id: stage.id,
+                            title: (
+                                <div className="item-deals-header">
+                                    <div className="arrow top"></div>
+                                    <div className="content">{stage.name}</div>
+                                    <div className="arrow bottom"></div>
+                                    <span className="add-deals">
+                                        <PlusSquareOutlined
+                                            onClick={() =>
+                                                setIsModalOpenAdd(true)
+                                            }
+                                        />
+                                    </span>
+                                </div>
+                            ),
+                            style: {
+                                width: 280,
+                            },
+                            label: "",
+                            cards: dealsByStage[stage.id]?.data
+                                ? dealsByStage[stage.id]?.data
+                                      ?.slice() // Create a shallow copy of the array to avoid mutating the original array
+                                      .sort((a, b) => {
+                                          const compareValueA =
+                                              sortBy === "aging"
+                                                  ? a.aging ?? ""
+                                                  : sortBy === "fullName"
+                                                  ? a.fullName
+                                                  : sortBy ===
+                                                    a?.dealCardpos2FieldName
+                                                  ? a?.dealCardpos2FieldValue
+                                                  : sortBy ===
+                                                    a?.dealCardpos3FieldName
+                                                  ? a?.dealCardpos3FieldValue
+                                                  : sortBy ===
+                                                    a?.dealCardpos4FieldName
+                                                  ? a?.dealCardpos4FieldValue
+                                                  : "";
+                                          const compareValueB =
+                                              sortBy === "aging"
+                                                  ? b.aging ?? ""
+                                                  : sortBy === "fullName"
+                                                  ? b.fullName
+                                                  : sortBy ===
+                                                    b?.dealCardpos2FieldName
+                                                  ? b?.dealCardpos2FieldValue
+                                                  : sortBy ===
+                                                    b?.dealCardpos3FieldName
+                                                  ? b?.dealCardpos3FieldValue
+                                                  : sortBy ===
+                                                    b?.dealCardpos4FieldName
+                                                  ? b?.dealCardpos4FieldValue
+                                                  : "";
 
-                                              if (a.star === b.star) {
-                                                  return b.star - a.star ||
-                                                      sortByAsc
-                                                      ? compareValueA.localeCompare(
-                                                            compareValueB
-                                                        )
-                                                      : compareValueB.localeCompare(
-                                                            compareValueA
-                                                        );
-                                              } else if (a.star) {
-                                                  return -1;
-                                              }
+                                          if (a.star === b.star) {
+                                              return b.star - a.star ||
+                                                  sortByAsc
+                                                  ? compareValueA.localeCompare(
+                                                        compareValueB
+                                                    )
+                                                  : compareValueB.localeCompare(
+                                                        compareValueA
+                                                    );
+                                          } else if (a.star) {
+                                              return -1;
+                                          }
 
-                                              return 1;
-                                          })
-                                          .map((deal) => {
-                                              return {
-                                                  id: parseInt(deal.id ?? ""),
-                                                  title: (
-                                                      <DealCard
-                                                          deal={deal}
-                                                          handleEditClick={() => {
-                                                              setSelectedDeal({
-                                                                  ...deal,
-                                                                  stageId:
-                                                                      stage.id,
-                                                                  pipelineId:
-                                                                      selectedpipeline?.id,
-                                                              });
-                                                              setIsModalOpenAdd(
-                                                                  true
-                                                              );
-                                                          }}
-                                                          sortBy={sortBy}
-                                                          updateStarredDeal={
-                                                              updateStarredDeal
-                                                          }
-                                                      />
-                                                  ),
-                                                  laneId: stage.id,
-                                              };
-                                          })
-                                    : [],
-                            };
-                        }) ?? [],
-                };
+                                          return 1;
+                                      })
+                                      .map((deal) => {
+                                          return {
+                                              id: parseInt(deal.id ?? ""),
+                                              title: (
+                                                  <DealCard
+                                                      deal={deal}
+                                                      handleEditClick={() => {
+                                                          setSelectedDeal({
+                                                              ...deal,
+                                                              stageId: stage.id,
+                                                              pipelineId:
+                                                                  selectedpipeline?.id,
+                                                          });
+                                                          setIsModalOpenAdd(
+                                                              true
+                                                          );
+                                                      }}
+                                                      sortBy={sortBy}
+                                                      updateStarredDeal={(
+                                                          deal
+                                                      ) => {
+                                                          setRefetchingIds([
+                                                              Number(stage.id),
+                                                          ]);
+                                                          updateStarredDeal(
+                                                              deal
+                                                          );
+                                                      }}
+                                                  />
+                                              ),
+                                              laneId: stage.id,
+                                          };
+                                      })
+                                : [],
+                        };
+                    }) ?? [],
+            };
 
-                setBoardData(initialBoardData);
-            }
+            setBoardData(initialBoardData);
         }
     }, [dealsByStage]);
 
     const moveCardAcrossLanes = useMutation(moveCardAcrossLanesMutation, {
         onSuccess: (res) => {
             queryClient.invalidateQueries("dealPipelines");
-            queryClient.invalidateQueries("deals");
             setRefetching(true);
         },
     });
 
-    const onChangeListBoard = (e: any) => {
-        // alert(e);
-        setListBoard(e.target.value);
-        refetch();
-    };
-
     const [selectedRowsData, setSelectedRows] = useState<React.Key[]>([]);
     const [selectedData, setSelectedData] = useState<TDeals[]>([]);
-
-    const deleteContact = useMutation(useDealMutationDeleteDeal, {
-        onSuccess: () => {
-            console.log("success");
-            queryClient.invalidateQueries("deals");
-            setShowDeleteButton(false);
-        },
-    });
-    const handleDelete = () => {
-        deleteContact.mutate({ deals_id: selectedRowsData });
-    };
 
     const [isModalOpenUpdate, setisModalOpenUpdate] = useState(false);
     const [isTContact, setTContact] = useState<TDeals | null>(null);
@@ -450,7 +415,7 @@ const Deal = () => {
     const updateContact = useMutation(useDealMutationUpdateStarred, {
         onSuccess: () => {
             console.log("success");
-            queryClient.invalidateQueries("deals");
+            setRefetching(true);
             // setShowupdateButton(false);
         },
     });
@@ -464,80 +429,8 @@ const Deal = () => {
     return (
         <Row className="deal-group-row">
             <Col md={24}>
-                <Card
-                    loading={
-                        (isLoadingDeals && listBoard == "List") ||
-                        (isPipelinesLoading && listBoard != "List")
-                    }
-                >
-                    {showDeleteButton ? (
-                        <Row
-                            style={{
-                                alignItems: "center",
-                                marginBottom: "20px",
-                            }}
-                        >
-                            <Button
-                                icon={<CloseOutlined />}
-                                type="text"
-                                className="m-r-md"
-                                onClick={() => {
-                                    setShowDeleteButton(false);
-                                }}
-                            ></Button>
-                            <Typography.Text className="m-r-md">
-                                {/* {selectedRowsData?.length + " Selected"} */}
-                            </Typography.Text>
-                            <Popconfirm
-                                title="Delete Contact"
-                                description="Are you sure to delete this deal?"
-                                onConfirm={() => {
-                                    handleDelete();
-                                }}
-                            >
-                                <Button
-                                    type="primary"
-                                    danger
-                                    className="m-r-sm"
-                                >
-                                    Delete
-                                </Button>
-                            </Popconfirm>
-
-                            <Button
-                                onClick={() => {
-                                    setIsModalOpenAdd(true);
-                                }}
-                                icon={<SaveOutlined />}
-                                className="m-r-sm"
-                            >
-                                Update
-                            </Button>
-                            <Button
-                                icon={<ExportOutlined />}
-                                className="m-r-sm"
-                            >
-                                Export
-                            </Button>
-
-                            <Button icon={<MailOutlined />} className="m-r-sm">
-                                Email
-                            </Button>
-
-                            <Button
-                                icon={<CheckCircleOutlined />}
-                                className="m-r-sm"
-                            >
-                                Create Activities
-                            </Button>
-                            <Button
-                                icon={<MobileOutlined />}
-                                className="m-r-sm"
-                            >
-                                Text
-                            </Button>
-                        </Row>
-                    ) : (
+                <Card loading={isPipelinesLoading}>
+                    {
                         <>
                             <Space
                                 className="w-100"
@@ -573,7 +466,7 @@ const Deal = () => {
                                         Configure Card
                                     </Button>
 
-                                    {listBoard != "List" && (
+                                    {
                                         <Dropdown
                                             menu={{
                                                 items: sortableItems.filter(
@@ -604,22 +497,10 @@ const Deal = () => {
                                                 )}
                                             </Button>
                                         </Dropdown>
-                                    )}
+                                    }
                                 </Space>
 
                                 <Space className="w-100">
-                                    <Radio.Group
-                                        value={listBoard}
-                                        buttonStyle="solid"
-                                        onChange={onChangeListBoard}
-                                    >
-                                        <Radio.Button value="List">
-                                            List
-                                        </Radio.Button>
-                                        <Radio.Button value="Board">
-                                            Board
-                                        </Radio.Button>
-                                    </Radio.Group>
                                     <Button
                                         type="primary"
                                         onClick={showModalAdd}
@@ -646,109 +527,78 @@ const Deal = () => {
                                 </div>
                             </div>
                         </>
-                    )}
+                    }
                     {/* {isFetchingDeals && <Spin />} */}
                     {pipelines ? (
                         <>
-                            {boardData &&
-                            listBoard != "List" &&
-                            !isRoleStats ? (
-                                <div>
-                                    <div className="mainDealArrow">
-                                        <div
-                                            style={{
-                                                width: "100%",
-                                                height: "100vh",
-                                            }}
-                                        >
-                                            {isPipelinesLoading ||
-                                            isLoadingBoardData ? (
-                                                <div
-                                                    style={{
-                                                        display: "grid",
-                                                        placeItems: "center",
-                                                        marginTop: "5%",
-                                                    }}
-                                                >
-                                                    <Spin />
-                                                </div>
-                                            ) : (
-                                                <Board
-                                                    draggable
-                                                    data={boardData}
-                                                    laneDraggable={false}
-                                                    hideCardDeleteIcon={true}
-                                                    className="react-trello-board board"
-                                                    cardDragClass="card-drag"
-                                                    cardDropClass="card-drop"
-                                                    style={{
-                                                        background:
-                                                            "none!important",
-                                                    }}
-                                                    customCardLayout={true}
-                                                    onLaneScroll={handleLane}
-                                                    // onDataChange={onDataChangeBoard}
-                                                    onCardMoveAcrossLanes={async (
+                            <div>
+                                <div className="mainDealArrow">
+                                    <div
+                                        style={{
+                                            width: "100%",
+                                            height: "100vh",
+                                        }}
+                                    >
+                                        {isPipelinesLoading ||
+                                        isLoadingBoardData ||
+                                        !boardData ? (
+                                            <div
+                                                style={{
+                                                    display: "grid",
+                                                    placeItems: "center",
+                                                    marginTop: "5%",
+                                                }}
+                                            >
+                                                <Spin />
+                                            </div>
+                                        ) : (
+                                            <Board
+                                                draggable
+                                                data={boardData}
+                                                laneDraggable={false}
+                                                hideCardDeleteIcon={true}
+                                                className="react-trello-board board"
+                                                cardDragClass="card-drag"
+                                                cardDropClass="card-drop"
+                                                style={{
+                                                    background:
+                                                        "none!important",
+                                                }}
+                                                customCardLayout={true}
+                                                onLaneScroll={handleLane}
+                                                // onDataChange={onDataChangeBoard}
+                                                onCardMoveAcrossLanes={async (
+                                                    fromLaneId,
+                                                    toLaneId,
+                                                    cardId,
+                                                    index
+                                                ) => {
+                                                    console.log(
+                                                        cardId,
+                                                        toLaneId
+                                                    );
+
+                                                    if (
+                                                        fromLaneId == toLaneId
+                                                    ) {
+                                                        return;
+                                                    }
+
+                                                    setRefetchingIds([
                                                         fromLaneId,
                                                         toLaneId,
-                                                        cardId,
-                                                        index
-                                                    ) => {
-                                                        console.log(
-                                                            cardId,
-                                                            toLaneId
-                                                        );
+                                                    ]);
 
-                                                        if (
-                                                            fromLaneId ==
-                                                            toLaneId
-                                                        ) {
-                                                            return;
-                                                        }
-
-                                                        setRefetchingIds([
-                                                            fromLaneId,
-                                                            toLaneId,
-                                                        ]);
-
-                                                        moveCardAcrossLanes.mutate(
-                                                            {
-                                                                dealId: cardId,
-                                                                stageId:
-                                                                    toLaneId,
-                                                            }
-                                                        );
-                                                    }}
-                                                />
-                                            )}
-                                        </div>
+                                                    moveCardAcrossLanes.mutate({
+                                                        dealId: cardId,
+                                                        stageId: toLaneId,
+                                                    });
+                                                }}
+                                            />
+                                        )}
                                     </div>
                                 </div>
-                            ) : (
-                                <div>
-                                    <DealsTable
-                                        deals={deals ?? []}
-                                        filterPage={filterPage}
-                                        setFilterPage={setFilterPage}
-                                        showDeleteButton={showDeleteButton}
-                                        setShowDeleteButton={
-                                            setShowDeleteButton
-                                        }
-                                        selectedData={selectedData}
-                                        setSelectedData={setSelectedData}
-                                        selectedRowsData={selectedRowsData}
-                                        setSelectedRows={setSelectedRows}
-                                        isModalOpenUpdate={isModalOpenUpdate}
-                                        setisModalOpenUpdate={
-                                            setisModalOpenUpdate
-                                        }
-                                        isTContact={isTContact}
-                                        setTContact={setTContact}
-                                        isTitle={isTitle}
-                                        setTitle={setTitle}
-                                    />
-                                </div>
-                            )}
+                            </div>
                         </>
                     ) : (
                         <Card>
