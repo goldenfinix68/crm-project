@@ -69,8 +69,8 @@ const DealCardConfigureModal = ({
 
     const settings = useMutation(userSettings, {
         onSuccess: () => {
-            queryClient.invalidateQueries("user");
             queryClient.invalidateQueries("dealPipelines");
+            queryClient.invalidateQueries("user");
             closeModal();
             resetFields();
         },

@@ -172,7 +172,7 @@ const Deal = () => {
 
             setDealsByStage(newDealsByStage);
         }
-    }, [selectedpipeline?.id]);
+    }, [selectedpipeline]);
 
     const [selectedDeal, setSelectedDeal] = useState<TDeal | undefined>(
         undefined
@@ -205,8 +205,6 @@ const Deal = () => {
     );
     const [boardData, setBoardData] = useState<{ lanes: Lane[] } | undefined>();
     const [dealsByStage, setDealsByStage] = useState<DealsByStage>({});
-    const [refetchingIds, setRefetchingIds] = useState<number[]>([]);
-    const [refetching, setRefetching] = useState<boolean>(false);
 
     const fetchLane = async (laneId, dealsByStage = {}) => {
         console.log({ dealsByStage, laneId });
@@ -226,24 +224,6 @@ const Deal = () => {
               }
             : current;
     };
-
-    useEffect(() => {
-        console.log("Refetching ", refetchingIds, refetching);
-        const refetchingDealsByStage = async () => {
-            const newDealsByStage = { ...dealsByStage };
-            await Promise.all(
-                refetchingIds.map(async (id) => {
-                    newDealsByStage[id] = await fetchLane(id);
-                })
-            );
-            setRefetchingIds([]);
-            setRefetching(false);
-            setDealsByStage(newDealsByStage);
-        };
-        if (refetchingIds.length && refetching) {
-            refetchingDealsByStage();
-        }
-    }, [refetchingIds, refetching]);
 
     const handleLane = async (requestedPage, laneId) => {
         const newDealsByStage = { ...dealsByStage };
@@ -278,54 +258,7 @@ const Deal = () => {
                             label: "",
                             cards: dealsByStage[stage.id]?.data
                                 ? dealsByStage[stage.id]?.data
-                                      ?.slice() // Create a shallow copy of the array to avoid mutating the original array
-                                      //   .sort((a, b) => {
-                                      //       const compareValueA =
-                                      //           sortBy === "aging"
-                                      //               ? a.aging ?? ""
-                                      //               : sortBy === "fullName"
-                                      //               ? a.fullName
-                                      //               : sortBy ===
-                                      //                 a?.dealCardpos2FieldName
-                                      //               ? a?.dealCardpos2FieldValue
-                                      //               : sortBy ===
-                                      //                 a?.dealCardpos3FieldName
-                                      //               ? a?.dealCardpos3FieldValue
-                                      //               : sortBy ===
-                                      //                 a?.dealCardpos4FieldName
-                                      //               ? a?.dealCardpos4FieldValue
-                                      //               : "";
-                                      //       const compareValueB =
-                                      //           sortBy === "aging"
-                                      //               ? b.aging ?? ""
-                                      //               : sortBy === "fullName"
-                                      //               ? b.fullName
-                                      //               : sortBy ===
-                                      //                 b?.dealCardpos2FieldName
-                                      //               ? b?.dealCardpos2FieldValue
-                                      //               : sortBy ===
-                                      //                 b?.dealCardpos3FieldName
-                                      //               ? b?.dealCardpos3FieldValue
-                                      //               : sortBy ===
-                                      //                 b?.dealCardpos4FieldName
-                                      //               ? b?.dealCardpos4FieldValue
-                                      //               : "";
-
-                                      //       if (a.star === b.star) {
-                                      //           return b.star - a.star ||
-                                      //               sortByAsc
-                                      //               ? compareValueA.localeCompare(
-                                      //                     compareValueB
-                                      //                 )
-                                      //               : compareValueB.localeCompare(
-                                      //                     compareValueA
-                                      //                 );
-                                      //       } else if (a.star) {
-                                      //           return -1;
-                                      //       }
-
-                                      //       return 1;
-                                      //   })
+                                      ?.slice()
                                       .map((deal) => {
                                           return {
                                               id: parseInt(deal.id ?? ""),
@@ -347,9 +280,6 @@ const Deal = () => {
                                                       updateStarredDeal={(
                                                           deal
                                                       ) => {
-                                                          setRefetchingIds([
-                                                              Number(stage.id),
-                                                          ]);
                                                           updateStarredDeal(
                                                               deal
                                                           );
@@ -371,16 +301,8 @@ const Deal = () => {
     const moveCardAcrossLanes = useMutation(moveCardAcrossLanesMutation, {
         onSuccess: (res) => {
             queryClient.invalidateQueries("dealPipelines");
-            setRefetching(true);
         },
     });
-
-    const [selectedRowsData, setSelectedRows] = useState<React.Key[]>([]);
-    const [selectedData, setSelectedData] = useState<TDeals[]>([]);
-
-    const [isModalOpenUpdate, setisModalOpenUpdate] = useState(false);
-    const [isTContact, setTContact] = useState<TDeals | null>(null);
-    const [isTitle, setTitle] = useState("");
 
     //set initial pipeline
     useEffect(() => {
@@ -395,17 +317,18 @@ const Deal = () => {
         }
     }, [pipelines]);
 
-    const updateContact = useMutation(useDealMutationUpdateStarred, {
+    const dealStarred = useMutation(useDealMutationUpdateStarred, {
         onSuccess: () => {
             console.log("success");
-            setRefetching(true);
+
+            queryClient.invalidateQueries("dealPipelines");
             // setShowupdateButton(false);
         },
     });
 
     const updateStarredDeal = async (deal) => {
         console.log("deal", deal.star);
-        await updateContact.mutate({
+        await dealStarred.mutate({
             id: deal.id,
         });
     };
@@ -554,21 +477,11 @@ const Deal = () => {
                                                     cardId,
                                                     index
                                                 ) => {
-                                                    console.log(
-                                                        cardId,
-                                                        toLaneId
-                                                    );
-
                                                     if (
                                                         fromLaneId == toLaneId
                                                     ) {
                                                         return;
                                                     }
-
-                                                    setRefetchingIds([
-                                                        fromLaneId,
-                                                        toLaneId,
-                                                    ]);
 
                                                     moveCardAcrossLanes.mutate({
                                                         dealId: cardId,
@@ -595,15 +508,12 @@ const Deal = () => {
                         isModalOpen={isModalOpenAdd}
                         handleSubmit={() => {
                             console.log("qwe");
-                            setRefetching(true);
                         }}
-                        setUpdatedIds={(ids) => setRefetchingIds(ids)}
                         closeModal={() => {
                             setIsModalOpenAdd(false);
                             setSelectedDeal(undefined);
                         }}
                         deal={selectedDeal}
-                        selectedRows={!selectedDeal ? selectedRowsData : []}
                     />
                     <DealCardConfigureModal
                         isModalOpen={isConfigureModalOpen}
