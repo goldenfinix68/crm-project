@@ -33,6 +33,7 @@ class DealPipelinesController extends Controller
     
                 foreach($stage->deals as $deal){
                     // Populate the data array with the deal information and additional settings
+                    $contact = $deal->contact;
                     $data[] = [
                         'id' => $deal->id,
                         'aging' => $deal->aging,
@@ -40,12 +41,12 @@ class DealPipelinesController extends Controller
                         'stageId' => $deal->stageId,
                         'star' => $deal->star,
                         'pipelineId' => $deal->pipelineId,
-                        'fullName' => $deal->fullName,
-                        'dealCardpos2FieldValue' => $deal->contact->fields[$settings->dealCardpos2FieldId] ?? "",
+                        'fullName' => $contact->fields['firstName'] . ' ' . $contact->fields['lastName'],
+                        'dealCardpos2FieldValue' => $contact->fields[$settings->dealCardpos2FieldId] ?? "",
                         'dealCardpos2FieldName' => $settings->dealCardpos2FieldId,
-                        'dealCardpos3FieldValue' => $deal->contact->fields[$settings->dealCardpos3FieldId] ?? "",
+                        'dealCardpos3FieldValue' => $contact->fields[$settings->dealCardpos3FieldId] ?? "",
                         'dealCardpos3FieldName' => $settings->dealCardpos3FieldId,
-                        'dealCardpos4FieldValue' => $deal->contact->fields[$settings->dealCardpos4FieldId] ?? "",
+                        'dealCardpos4FieldValue' => $contact->fields[$settings->dealCardpos4FieldId] ?? "",
                         'dealCardpos4FieldName' => $settings->dealCardpos4FieldId,
                     ];
                 }

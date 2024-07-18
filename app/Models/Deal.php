@@ -14,7 +14,6 @@ class Deal extends Model
 
     protected $appends = [
         'aging',
-        'fullName',
     ];
 
     public function contact()
