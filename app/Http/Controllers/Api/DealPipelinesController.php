@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\DealPipeline;
 use App\Models\UserSetting;
+use DB;
 use Auth;
 
 class DealPipelinesController extends Controller
@@ -34,7 +35,18 @@ class DealPipelinesController extends Controller
                 foreach($stage->deals as $deal){
                     // Populate the data array with the deal information and additional settings
                     if(!empty($deal->contact)){
-                        $fields = $deal->contact->fields;
+                        // $fields = $deal->contact->fields;
+                        $modules = DB::table('custom_field_values AS cfv')
+                        ->join('custom_fields AS cf', 'cfv.customFieldId', '=', 'cf.id')
+                        ->select('cf.fieldName', DB::raw('cfv.value'))
+                        ->whereIn('cf.fieldName', [$settings->dealCardpos2FieldId, $settings->dealCardpos3FieldId, $settings->dealCardpos4FieldId, 'firstName', 'lastName'])
+                        ->where('cfv.customableId', $deal->contactId)
+                        ->get();
+                        $fields = new \stdClass();;
+                        foreach($modules as $module){
+                            $fields->{$module->fieldName} = $module->value;
+                        }
+
                         $data[] = [
                             'id' => $deal->id,
                             'aging' => $deal->aging,
@@ -42,13 +54,14 @@ class DealPipelinesController extends Controller
                             'stageId' => $deal->stageId,
                             'star' => $deal->star,
                             'pipelineId' => $deal->pipelineId,
-                            'fullName' => $fields['firstName'] . ' ' . $fields['lastName'],
-                            'dealCardpos2FieldValue' => $fields[$settings->dealCardpos2FieldId] ?? "",
+                            'fullName' => $fields->firstName . ' ' . $fields->lastName,
+                            'dealCardpos2FieldValue' => $fields->{$settings->dealCardpos2FieldId} ?? "",
                             'dealCardpos2FieldName' => $settings->dealCardpos2FieldId,
-                            'dealCardpos3FieldValue' => $fields[$settings->dealCardpos3FieldId] ?? "",
+                            'dealCardpos3FieldValue' => $fields->{$settings->dealCardpos3FieldId} ?? "",
                             'dealCardpos3FieldName' => $settings->dealCardpos3FieldId,
-                            'dealCardpos4FieldValue' => $fields[$settings->dealCardpos4FieldId] ?? "",
+                            'dealCardpos4FieldValue' => $fields->{$settings->dealCardpos4FieldId} ?? "",
                             'dealCardpos4FieldName' => $settings->dealCardpos4FieldId,
+
                         ];
                     }
                     
