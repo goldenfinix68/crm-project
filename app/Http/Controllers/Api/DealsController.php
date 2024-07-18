@@ -120,18 +120,31 @@ class DealsController extends Controller
 
         $data = [];
         foreach($deals->items() as $deal){
+            $modules = DB::table('custom_field_values AS cfv')
+                ->join('custom_fields AS cf', 'cfv.customFieldId', '=', 'cf.id')
+                ->select('cf.fieldName', DB::raw('cfv.value'))
+                ->whereIn('cf.fieldName', [$settings->dealCardpos2FieldId, $settings->dealCardpos3FieldId, $settings->dealCardpos4FieldId, 'firstName', 'lastName'])
+                ->where('cfv.customableId', $deal->contactId)
+                ->get();
+            $fields = new \stdClass();;
+            foreach($modules as $module){
+                $fields->{$module->fieldName} = $module->value;
+            }
             $data[] = [
                 'id' => $deal->id,
                 'aging' => $deal->aging,
                 'contactId' => $deal->contactId,
+                'stageId' => $deal->stageId,
                 'star' => $deal->star,
-                'fullName' => $deal->fullName,
-                'dealCardpos2FieldValue' => $deal->contact->fields[$settings->dealCardpos2FieldId] ?? "",
+                'pipelineId' => $deal->pipelineId,
+                'fullName' => $fields->firstName . ' ' . $fields->lastName,
+                'dealCardpos2FieldValue' => $fields->{$settings->dealCardpos2FieldId} ?? "",
                 'dealCardpos2FieldName' => $settings->dealCardpos2FieldId,
-                'dealCardpos3FieldValue' => $deal->contact->fields[$settings->dealCardpos3FieldId] ?? "",
+                'dealCardpos3FieldValue' => $fields->{$settings->dealCardpos3FieldId} ?? "",
                 'dealCardpos3FieldName' => $settings->dealCardpos3FieldId,
-                'dealCardpos4FieldValue' => $deal->contact->fields[$settings->dealCardpos4FieldId] ?? "",
+                'dealCardpos4FieldValue' => $fields->{$settings->dealCardpos4FieldId} ?? "",
                 'dealCardpos4FieldName' => $settings->dealCardpos4FieldId,
+
             ];
         }
 
