@@ -609,12 +609,6 @@ const Deal = () => {
                         isModalOpen={isConfigureModalOpen}
                         handleSubmit={() => {
                             console.log("Deal Card Config", selectedpipeline);
-                            const stageIds: number[] =
-                                selectedpipeline?.stages?.map((stage) =>
-                                    Number(stage.id)
-                                ) ?? [];
-                            setRefetchingIds(stageIds);
-                            setRefetching(true);
                         }}
                         closeModal={() => {
                             setIsConfigureModalOpen(false);
