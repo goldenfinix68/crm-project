@@ -33,22 +33,25 @@ class DealPipelinesController extends Controller
     
                 foreach($stage->deals as $deal){
                     // Populate the data array with the deal information and additional settings
-                    $contact = $deal->contact;
-                    $data[] = [
-                        'id' => $deal->id,
-                        'aging' => $deal->aging,
-                        'contactId' => $deal->contactId,
-                        'stageId' => $deal->stageId,
-                        'star' => $deal->star,
-                        'pipelineId' => $deal->pipelineId,
-                        'fullName' => $contact->fields['firstName'] . ' ' . $contact->fields['lastName'],
-                        'dealCardpos2FieldValue' => $contact->fields[$settings->dealCardpos2FieldId] ?? "",
-                        'dealCardpos2FieldName' => $settings->dealCardpos2FieldId,
-                        'dealCardpos3FieldValue' => $contact->fields[$settings->dealCardpos3FieldId] ?? "",
-                        'dealCardpos3FieldName' => $settings->dealCardpos3FieldId,
-                        'dealCardpos4FieldValue' => $contact->fields[$settings->dealCardpos4FieldId] ?? "",
-                        'dealCardpos4FieldName' => $settings->dealCardpos4FieldId,
-                    ];
+                    if(!empty($deal->contact)){
+                        $fields = $deal->contact->fields;
+                        $data[] = [
+                            'id' => $deal->id,
+                            'aging' => $deal->aging,
+                            'contactId' => $deal->contactId,
+                            'stageId' => $deal->stageId,
+                            'star' => $deal->star,
+                            'pipelineId' => $deal->pipelineId,
+                            'fullName' => $fields['firstName'] . ' ' . $fields['lastName'],
+                            'dealCardpos2FieldValue' => $fields[$settings->dealCardpos2FieldId] ?? "",
+                            'dealCardpos2FieldName' => $settings->dealCardpos2FieldId,
+                            'dealCardpos3FieldValue' => $fields[$settings->dealCardpos3FieldId] ?? "",
+                            'dealCardpos3FieldName' => $settings->dealCardpos3FieldId,
+                            'dealCardpos4FieldValue' => $fields[$settings->dealCardpos4FieldId] ?? "",
+                            'dealCardpos4FieldName' => $settings->dealCardpos4FieldId,
+                        ];
+                    }
+                    
                 }
     
                 // Replace the deals in the stage with the new data array
