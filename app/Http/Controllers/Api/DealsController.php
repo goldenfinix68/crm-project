@@ -106,20 +106,45 @@ class DealsController extends Controller
         }
 
         $mainUserId = $this->getMainUserId();
+        $settings = UserSetting::where('mainUserId', $mainUserId)->first();
+
+        $sortBy = $request->input('sortBy', 'firstName');
+        $sortOrder = $request->input('sortOrder', 'asc');
             
-        $deals = Deal::with(['contact'])
-            ->where('pipelineId', $request->pipelineId)
-            ->where('stageId', $request->stageId)
-            ->whereHas('contact', function ($query) use($mainUserId) {
-                $query->where('userId', $mainUserId);
-            })
-            ->orderBy('star','desc')
-            ->paginate($request->page_size);
+        $results = DB::table('deals')
+            ->select(
+                'deals.id as id',
+                'deals.contactId as contactId',
+                'deals.stageId as stageId',
+                'deals.pipelineId as pipelineId',
+                'deals.star as star',
+                'deals.agingStartDate as agingStartDate',
+                'deals.created_at as created_at',
+            )
+            ->where('stageId', '=', $request->stageId)
+            ->join('contacts', 'deals.contactId', '=', 'contacts.id')
+            ->join('custom_field_values AS cfv', 'contacts.id', '=', 'cfv.customableId')
+            ->join('custom_fields AS cf', 'cfv.customFieldId', '=', 'cf.id')
+            ->where('cf.fieldName', '=', $sortBy != 'aging'? $sortBy: 'firstName')
+            ->orderBy('star', 'desc')
+            ->orderBy(
+                $sortBy != 'aging'
+                    ? 'cfv.value'
+                    : 'agingStartDate', 
+                $sortBy != 'aging'
+                    ? $sortOrder
+                    : (
+                        $sortOrder == 'asc'
+                            ? 'desc'
+                            : 'asc'
+                    )
+            )
+            ->paginate($request->input('page_size', 15));
             
         $settings = UserSetting::where('mainUserId', $mainUserId)->first();
 
         $data = [];
-        foreach($deals->items() as $deal){
+        foreach($results->items() as $deal){
             $modules = DB::table('custom_field_values AS cfv')
                 ->join('custom_fields AS cf', 'cfv.customFieldId', '=', 'cf.id')
                 ->select('cf.fieldName', DB::raw('cfv.value'))
@@ -132,7 +157,7 @@ class DealsController extends Controller
             }
             $data[] = [
                 'id' => $deal->id,
-                'aging' => $deal->aging,
+                'aging' => $this->getAgingAttribute($deal),
                 'contactId' => $deal->contactId,
                 'stageId' => $deal->stageId,
                 'star' => $deal->star,
@@ -144,7 +169,6 @@ class DealsController extends Controller
                 'dealCardpos3FieldName' => $settings->dealCardpos3FieldId,
                 'dealCardpos4FieldValue' => $fields->{$settings->dealCardpos4FieldId} ?? "",
                 'dealCardpos4FieldName' => $settings->dealCardpos4FieldId,
-
             ];
         }
 
