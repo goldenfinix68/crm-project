@@ -235,7 +235,7 @@ const DealCard = ({
                             <TextEllipsis
                                 style={{
                                     fontWeight:
-                                        sortBy == "fullName"
+                                        sortBy == "firstName"
                                             ? "bold"
                                             : "normal",
                                 }}

@@ -90,25 +90,36 @@ const Deal = () => {
     } = useCustomFields("contact");
     const settings = loggedInUser?.settings;
 
-    const { data: pipelines, isLoading: isPipelinesLoading } = dealPipelines();
+    const [sortBy, setSortBy] = useState("firstName");
+    const [sortByAsc, setSortByAsc] = useState(true);
 
-    //const [isLoadingBoardData, setIsLoadingBoardData] =
-    //    useState<boolean>(false);
+    const {
+        data: pipelines,
+        isLoading: isPipelinesLoading,
+        refetch: refetchPipelines,
+        isRefetching: isRefetchingPipelines,
+    } = dealPipelines({
+        sortBy,
+        sortOrder: sortByAsc ? "asc" : "desc",
+    });
+
     const queryClient = useQueryClient();
     const [filterPage, setFilterPage] = useState({
         pipelineId: pipelines?.length ? pipelines[0].id : "",
         page: 1,
         page_size: 100,
     });
-    const [sortBy, setSortBy] = useState("fullName");
-    const [sortByAsc, setSortByAsc] = useState(true);
+
+    useEffect(() => {
+        refetchPipelines();
+    }, [sortBy, sortByAsc]);
 
     const getFieldLabelByFieldName = (value = "") => {
         return contactFields?.find((field) => field.fieldName == value)?.label;
     };
 
     const sortableItems: MenuProps["items"] = [
-        { key: 5, label: "Name", onClick: () => handleChangeSort("fullName") },
+        { key: 5, label: "Name", onClick: () => handleChangeSort("firstName") },
         { key: 1, label: "Aging", onClick: () => handleChangeSort("aging") },
         {
             key: settings?.dealCardpos2FieldId ? 2 : "",
@@ -215,6 +226,8 @@ const Deal = () => {
             page_size: 15,
             stageId: laneId,
             pipelineId: selectedpipeline?.id,
+            sortBy,
+            sortOrder: sortByAsc ? "asc" : "desc",
         });
 
         return data.length
@@ -391,7 +404,7 @@ const Deal = () => {
                                             >
                                                 {sortBy == "aging"
                                                     ? "Aging"
-                                                    : sortBy != "fullName"
+                                                    : sortBy != "firstName"
                                                     ? getFieldLabelByFieldName(
                                                           sortBy
                                                       )
@@ -445,7 +458,8 @@ const Deal = () => {
                                             height: "20vh",
                                         }}
                                     >
-                                        {isPipelinesLoading ? (
+                                        {isPipelinesLoading ||
+                                        isRefetchingPipelines ? (
                                             <div
                                                 style={{
                                                     display: "grid",
