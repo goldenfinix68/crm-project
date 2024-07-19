@@ -3,7 +3,7 @@ import axios from "axios";
 import { TDeal, TDealPipeline } from "../../entities";
 
 export const useDealsAll = (url: any) => {
-    const { data, isLoading, isError, refetch,isFetching } = useQuery<TDeal[]>(
+    const { data, isLoading, isError, refetch, isFetching } = useQuery<TDeal[]>(
         "deals",
         async () => {
             const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
@@ -17,7 +17,7 @@ export const useDealsAll = (url: any) => {
             );
             return response.data;
         },
-        { staleTime: Infinity , enabled: url.pipelineId ? true : false}
+        { staleTime: Infinity, enabled: url.pipelineId ? true : false }
     );
 
     return {
@@ -25,7 +25,7 @@ export const useDealsAll = (url: any) => {
         isLoadingDeals: isLoading,
         isError,
         refetch,
-        isFetchingDeals: isFetching
+        isFetchingDeals: isFetching,
     };
 };
 
@@ -80,16 +80,21 @@ export const useDealsByid = (id: string) => {
     };
 };
 
-export const dealPipelines = () => {
-    const { data, isLoading, isError, refetch } = useQuery<TDealPipeline[]>(
+export const dealPipelines = (url: any) => {
+    const { data, isLoading, isError, refetch, isRefetching } = useQuery<
+        TDealPipeline[]
+    >(
         "dealPipelines",
         async () => {
             const accessToken = localStorage.getItem("access_token"); // Retrieve the access token from local storage or cookies
-            const response = await axios.get(`/api/deal-pipelines`, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            });
+            const response = await axios.get(
+                `/api/deal-pipelines?${new URLSearchParams(url)}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            );
             return response.data;
         },
         { staleTime: Infinity }
@@ -100,5 +105,6 @@ export const dealPipelines = () => {
         isLoading,
         isError,
         refetch,
+        isRefetching,
     };
 };
