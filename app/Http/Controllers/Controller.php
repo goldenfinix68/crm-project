@@ -10,6 +10,7 @@ use App\Models\Contact;
 use App\Models\CustomFieldValue;
 use App\Models\ContactType;
 use App\Models\User;
+use Carbon\Carbon;
 use Auth;
 use DB;
 use App\Services\MobileNumberService;
@@ -27,6 +28,25 @@ class Controller extends BaseController
         }
 
         return round($bytes, 2) . ' ' . $units[$i];
+    }
+
+    public function getAgingAttribute($deal)
+    {
+        $date = $deal->agingStartDate;
+        if (empty($date)) {
+            $date = $deal->created_at;
+        }
+
+        $diffInMinutes = Carbon::now()->diffInMinutes($date);
+
+        if ($diffInMinutes <= 72 * 60) {
+            // If the difference is less than or equal to 72 hours (72 * 60 minutes), return in hours
+            $hours = floor($diffInMinutes / 60);
+            return $hours . "h";
+        } else {
+            // If the difference is more than 72 hours, return in days
+            return Carbon::now()->diffInDays($date) . "d";
+        }
     }
 
     public function getContactByMobile($mobile) {
