@@ -17,7 +17,7 @@ class DealPipelinesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $pipelines = DealPipeline::where('userId', $this->getMainUserId())
             ->get();
@@ -25,48 +25,77 @@ class DealPipelinesController extends Controller
         $mainUserId = $this->getMainUserId();
         $settings = UserSetting::where('mainUserId', $mainUserId)->first();
 
+        $sortBy = $request->input('sortBy', 'firstName');
+        $sortOrder = $request->input('sortOrder', 'asc');
+        
         $data1 = [];
         foreach($pipelines as $pipeline){
 
             $stages = [];
             foreach($pipeline->stages as $stage){
                 $data = [];
-    
-                foreach($stage->deals as $deal){
-                    // Populate the data array with the deal information and additional settings
-                    if(!empty($deal->contact)){
-                        // $fields = $deal->contact->fields;
-                        $modules = DB::table('custom_field_values AS cfv')
-                        ->join('custom_fields AS cf', 'cfv.customFieldId', '=', 'cf.id')
-                        ->select('cf.fieldName', DB::raw('cfv.value'))
-                        ->whereIn('cf.fieldName', [$settings->dealCardpos2FieldId, $settings->dealCardpos3FieldId, $settings->dealCardpos4FieldId, 'firstName', 'lastName'])
-                        ->where('cfv.customableId', $deal->contactId)
-                        ->get();
-                        $fields = new \stdClass();;
-                        foreach($modules as $module){
-                            $fields->{$module->fieldName} = $module->value;
-                        }
-
-                        $data[] = [
-                            'id' => $deal->id,
-                            'aging' => $deal->aging,
-                            'contactId' => $deal->contactId,
-                            'stageId' => $deal->stageId,
-                            'star' => $deal->star,
-                            'pipelineId' => $deal->pipelineId,
-                            'fullName' => $fields->firstName . ' ' . $fields->lastName,
-                            'dealCardpos2FieldValue' => $fields->{$settings->dealCardpos2FieldId} ?? "",
-                            'dealCardpos2FieldName' => $settings->dealCardpos2FieldId,
-                            'dealCardpos3FieldValue' => $fields->{$settings->dealCardpos3FieldId} ?? "",
-                            'dealCardpos3FieldName' => $settings->dealCardpos3FieldId,
-                            'dealCardpos4FieldValue' => $fields->{$settings->dealCardpos4FieldId} ?? "",
-                            'dealCardpos4FieldName' => $settings->dealCardpos4FieldId,
-
-                        ];
-                    }
+                $results = DB::table('deals')
+                    ->select(
+                        'deals.id as id',
+                        'deals.contactId as contactId',
+                        'deals.stageId as stageId',
+                        'deals.pipelineId as pipelineId',
+                        'deals.star as star',
+                        'deals.agingStartDate as agingStartDate',
+                        'deals.created_at as created_at',
+                    )
+                    ->where('stageId', '=', $stage->id)
+                    ->join('contacts', 'deals.contactId', '=', 'contacts.id')
+                    ->join('custom_field_values AS cfv', 'contacts.id', '=', 'cfv.customableId')
+                    ->join('custom_fields AS cf', 'cfv.customFieldId', '=', 'cf.id')
+                    ->where('cf.fieldName', '=', $sortBy != 'aging'? $sortBy: 'firstName')
+                    ->orderBy('star', 'desc')
+                    ->orderBy(
+                        $sortBy != 'aging'
+                            ? 'cfv.value'
+                            : 'agingStartDate', 
+                        $sortBy != 'aging'
+                            ? $sortOrder
+                            : (
+                                $sortOrder == 'asc'
+                                    ? 'desc'
+                                    : 'asc'
+                            )
+                    )
+                    ->limit(15)
+                    ->get();
                     
+                foreach($results as $deal){
+                    // Populate the data array with the deal information and additional settings
+                    $modules = DB::table('custom_field_values AS cfv')
+                    ->join('custom_fields AS cf', 'cfv.customFieldId', '=', 'cf.id')
+                    ->select('cf.fieldName', DB::raw('cfv.value'))
+                    ->whereIn('cf.fieldName', [$settings->dealCardpos2FieldId, $settings->dealCardpos3FieldId, $settings->dealCardpos4FieldId, 'firstName', 'lastName'])
+                    ->where('cfv.customableId', $deal->contactId)
+                    ->get();
+
+                    $fields = new \stdClass();;
+                    foreach($modules as $module){
+                        $fields->{$module->fieldName} = $module->value;
+                    }
+
+                    $data[] = [
+                        'id' => $deal->id,
+                        'aging' => $this->getAgingAttribute($deal),
+                        'contactId' => $deal->contactId,
+                        'stageId' => $deal->stageId,
+                        'star' => $deal->star,
+                        'pipelineId' => $deal->pipelineId,
+                        'fullName' => $fields->firstName . ' ' . $fields->lastName,
+                        'dealCardpos2FieldValue' => $fields->{$settings->dealCardpos2FieldId} ?? "",
+                        'dealCardpos2FieldName' => $settings->dealCardpos2FieldId,
+                        'dealCardpos3FieldValue' => $fields->{$settings->dealCardpos3FieldId} ?? "",
+                        'dealCardpos3FieldName' => $settings->dealCardpos3FieldId,
+                        'dealCardpos4FieldValue' => $fields->{$settings->dealCardpos4FieldId} ?? "",
+                        'dealCardpos4FieldName' => $settings->dealCardpos4FieldId,
+                    ];
                 }
-    
+
                 // Replace the deals in the stage with the new data array
                 $stages[] = [
                     'id' => $stage->id,
